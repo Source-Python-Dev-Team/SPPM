@@ -1,4 +1,4 @@
-from django import forms
+from common.forms import BaseCreateForm
 
 from .models import Package
 
@@ -8,11 +8,6 @@ __all__ = (
 )
 
 
-class PackageCreateForm(forms.ModelForm):
-    class Meta:
+class PackageCreateForm(BaseCreateForm):
+    class Meta(BaseCreateForm.Meta):
         model = Package
-        fields = (
-            'name',
-            'version',
-            'zip_file',
-        )

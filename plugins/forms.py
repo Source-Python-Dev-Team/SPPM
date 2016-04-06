@@ -1,4 +1,4 @@
-from django import forms
+from common.forms import BaseCreateForm
 
 from .models import Plugin
 
@@ -8,11 +8,6 @@ __all__ = (
 )
 
 
-class PluginCreateForm(forms.ModelForm):
-    class Meta:
+class PluginCreateForm(BaseCreateForm):
+    class Meta(BaseCreateForm.Meta):
         model = Plugin
-        fields = (
-            'name',
-            'version',
-            'zip_file',
-        )
