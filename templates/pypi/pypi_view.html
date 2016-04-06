@@ -14,7 +14,7 @@
         <br />
         <p>Here is a list of plugins that require {{ pypirequirement.name }}:</p>
         {% for plugin in pypirequirement.required_in_plugins.all %}
-            <li><a href="{% url 'plugins:plugin-detail' plugin_name=plugin.basename %}">{{ plugin.name }}</a></li>
+            <li><a href="{% url 'plugins:plugin-detail' slug=plugin.slug %}">{{ plugin.name }}</a></li>
         {% endfor %}
     {% endif %}
 
@@ -22,7 +22,7 @@
         <br />
         <p>Here is a list of sub-plugins that require {{ pypirequirement.name }}:</p>
         {% for sub_plugin in pypirequirement.required_in_sub_plugins.all %}
-            <li><a href="{% url 'plugins:sub_plugins:sub-plugin-detail' plugin_name=sub_plugin.plugin.basename sub_plugin_name=sub_plugin.basename %}">{{ sub_plugin.name }}</a></li>
+            <li><a href="{% url 'plugins:sub-plugins:sub-plugin-detail' slug=sub_plugin.plugin.slug sub_plugin_slug=sub_plugin.slug %}">{{ sub_plugin.name }}</a></li>
         {% endfor %}
     {% endif %}
 
@@ -30,7 +30,7 @@
         <br />
         <p>Here is a list of packages that require {{ pypirequirement.name }}:</p>
         {% for package in pypirequirement.required_in_packages.all %}
-            <li><a href="{% url 'packages:package-detail' package_name=package.basename %}">{{ package.name }}</a></li>
+            <li><a href="{% url 'packages:package-detail' slug=package.slug %}">{{ package.name }}</a></li>
         {% endfor %}
     {% endif %}
 </body>

@@ -15,7 +15,7 @@
             <h3>Plugins:</h3>
             <ul>
             {% for plugin in user.plugins.all %}
-                <li><a href="{% url 'plugins:plugin-detail' plugin_name=plugin.basename %}">{{ plugin }}</a></li>
+                <li><a href="{% url 'plugins:plugin-detail' slug=plugin.slug %}">{{ plugin }}</a></li>
             {% endfor %}
             </ul>
         {% endif %}
@@ -23,7 +23,7 @@
             <h3>Sub-plugins:</h3>
             <ul>
             {% for sub_plugin in user.sub_plugins.all %}
-                <li><a href="{% url 'plugins:sub_plugins:sub-plugin-detail' plugin_name=sub_plugin.plugin.basename sub_plugin_name=sub_plugin.basename %}">{{ sub_plugin }}</a> ( <a href="{% url 'plugins:plugin-detail' plugin_name=sub_plugin.plugin.basename %}">{{ sub_plugin.plugin }}</a> )</li>
+                <li><a href="{% url 'plugins:sub-plugins:sub-plugin-detail' slug=sub_plugin.plugin.slug sub_plugin_slug=sub_plugin.slug %}">{{ sub_plugin }}</a> ( <a href="{% url 'plugins:plugin-detail' slug=sub_plugin.plugin.slug %}">{{ sub_plugin.plugin }}</a> )</li>
             {% endfor %}
             </ul>
         {% endif %}
@@ -31,7 +31,7 @@
             <h3>Packages:</h3>
             <ul>
             {% for package in user.packages.all %}
-                <li><a href="{% url 'packages:package-detail' package_name=package.basename %}">{{ package }}</a></li>
+                <li><a href="{% url 'packages:package-detail' slug=package.slug %}">{{ package }}</a></li>
             {% endfor %}
             </ul>
         {% endif %}
@@ -46,7 +46,7 @@
             <h3>Plugins:</h3>
             <ul>
             {% for plugin in user.plugin_contributions.all %}
-                <li><a href="{% url 'plugins:plugin-detail' plugin_name=plugin.basename %}">{{ plugin }}</a></li>
+                <li><a href="{% url 'plugins:plugin-detail' slug=plugin.slug %}">{{ plugin }}</a></li>
             {% endfor %}
             </ul>
         {% endif %}
@@ -54,7 +54,7 @@
             <h3>Sub-plugins:</h3>
             <ul>
             {% for sub_plugin in user.sub_plugin_contributions.all %}
-                <li><a href="{% url 'plugins:sub_plugins:sub-plugin-detail' plugin_name=sub_plugin.plugin.basename sub_plugin_name=sub_plugin.basename %}">{{ sub_plugin }}</a> ( <a href="{% url 'plugins:plugin-detail' plugin_name=sub_plugin.plugin.basename %}">{{ sub_plugin.plugin }}</a> )</li>
+                <li><a href="{% url 'plugins:sub-plugins:sub-plugin-detail' slug=sub_plugin.plugin.slug sub_plugin_slug=sub_plugin.slug %}">{{ sub_plugin }}</a> ( <a href="{% url 'plugins:plugin-detail' slug=sub_plugin.plugin.slug %}">{{ sub_plugin.plugin }}</a> )</li>
             {% endfor %}
             </ul>
         {% endif %}
@@ -62,7 +62,7 @@
             <h3>Packages:</h3>
             <ul>
             {% for package in user.package_contributions.all %}
-                <li><a href="{% url 'packages:package-detail' package_name=package.basename %}">{{ package }}</a></li>
+                <li><a href="{% url 'packages:package-detail' slug=package.slug %}">{{ package }}</a></li>
             {% endfor %}
             </ul>
         {% endif %}

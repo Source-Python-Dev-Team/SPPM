@@ -10,7 +10,7 @@
             <h1>Recent Plugins</h1>
             <ul>
                 {% for plugin in plugin_list %}
-                    <li><a href="{% url 'plugins:plugin-detail' plugin_name=plugin.basename %}">{{ plugin }}</a></li>
+                    <li><a href="{% url 'plugins:plugin-detail' slug=plugin.slug %}">{{ plugin }}</a></li>
                 {% endfor %}
             </ul>
         {% else %}

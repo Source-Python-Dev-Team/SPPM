@@ -23,7 +23,7 @@
         <p>Last updated on {{ plugin.date_last_updated }}</p>
     {% endif %}
     {% if plugin.paths.all %}
-        <a href="{% url 'plugins:sub_plugins:sub-plugin-list' plugin_name=plugin.basename %}">{{ plugin.name }} sub-plugins</a>
+        <a href="{% url 'plugins:sub-plugins:sub-plugin-list' slug=plugin.slug %}">{{ plugin.name }} sub-plugins</a>
     {% endif %}
     </ul>
 
