@@ -1,0 +1,22 @@
+outer {
+    width: auto;
+    margin: 0 auto;
+}
+
+inner {
+    overflow: hidden;
+}
+
+content {
+    margin: 20px;
+    width: auto;
+    float: left;
+}
+
+sidebar {
+    margin: 10px;
+    border: solid #ff8a37;
+    width: auto;
+    float: left;
+    background: #cccccc;
+}

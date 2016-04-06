@@ -1,0 +1,22 @@
+{% extends "common/sidebar.html" %}
+
+{% block title %}Create {{ plugin.name }}Sub-Plugin{% endblock title %}
+
+{% block content %}
+
+<body>
+    <div class="container">
+        {% if plugin.paths.all %}
+            <h1>Create {{ plugin.name }} Sub-Plugin</h1>
+            <form enctype="multipart/form-data" action="" method="post">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <input type="submit" value="Save" />
+            </form>
+        {% else %}
+            <h1>{{ plugin.name }} does not support sub-plugins.</h1>
+        {% endif %}
+    </div>
+</body>
+
+{% endblock content %}

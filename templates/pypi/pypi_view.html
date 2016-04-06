@@ -1,0 +1,38 @@
+{% extends "common/sidebar.html" %}
+
+{% block title %}{{ pypirequirement.name }}{% endblock title %}
+
+{% block content %}
+
+<body>
+    <h1>{{ pypirequirement.name }}</h1>
+    <p>As this is a package, you cannot simply load it.  Plugins/Sub-Plugins may utilize this package by importing it in their code.</p>
+
+    <p><a href="{{ pypirequirement.get_pypi_url }}">PyPi URL</a></p>
+
+    {% if pypirequirement.required_in_plugins.all %}
+        <br />
+        <p>Here is a list of plugins that require {{ pypirequirement.name }}:</p>
+        {% for plugin in pypirequirement.required_in_plugins.all %}
+            <li><a href="{% url 'plugins:plugin-detail' plugin_name=plugin.basename %}">{{ plugin.name }}</a></li>
+        {% endfor %}
+    {% endif %}
+
+    {% if pypirequirement.required_in_sub_plugins.all %}
+        <br />
+        <p>Here is a list of sub-plugins that require {{ pypirequirement.name }}:</p>
+        {% for sub_plugin in pypirequirement.required_in_sub_plugins.all %}
+            <li><a href="{% url 'plugins:sub_plugins:sub-plugin-detail' plugin_name=sub_plugin.plugin.basename sub_plugin_name=sub_plugin.basename %}">{{ sub_plugin.name }}</a></li>
+        {% endfor %}
+    {% endif %}
+
+    {% if pypirequirement.required_in_packages.all %}
+        <br />
+        <p>Here is a list of packages that require {{ pypirequirement.name }}:</p>
+        {% for package in pypirequirement.required_in_packages.all %}
+            <li><a href="{% url 'packages:package-detail' package_name=package.basename %}">{{ package.name }}</a></li>
+        {% endfor %}
+    {% endif %}
+</body>
+
+{% endblock content %}

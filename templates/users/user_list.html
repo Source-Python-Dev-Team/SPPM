@@ -1,0 +1,22 @@
+{% extends "common/sidebar.html" %}
+
+{% block title %}User List{% endblock title %}
+
+{% block content %}
+
+<body>
+    <div class="container">
+        {% if user_list %}
+            <h1>User List</h1>
+            <ul>
+                {% for user in user_list %}
+                    <li><a href="{% url 'users:user-detail' user_name=user.name %}">{{ user.name }}</a></li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <h1>There are no users that have registered plugins or packages.</h1>
+        {% endif %}
+    </div>
+</body>
+
+{% endblock content %}

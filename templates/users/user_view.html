@@ -1,0 +1,76 @@
+{% extends "common/sidebar.html" %}
+
+{% block title %}{{ user.name }}{% endblock title %}
+
+{% block content %}
+
+<body>
+    <h1>{{ user.name }}</h1>
+    <ul><a href="{{ user.get_forum_url }}">Forum Account</a></ul>
+    {% if user.plugins.all or user.sub_plugins.all or user.packages.all %}
+        <ul>
+        <h2>Projects:</h2>
+        <ul>
+        {% if user.plugins.all %}
+            <h3>Plugins:</h3>
+            <ul>
+            {% for plugin in user.plugins.all %}
+                <li><a href="{% url 'plugins:plugin-detail' plugin_name=plugin.basename %}">{{ plugin }}</a></li>
+            {% endfor %}
+            </ul>
+        {% endif %}
+        {% if user.sub_plugins.all %}
+            <h3>Sub-plugins:</h3>
+            <ul>
+            {% for sub_plugin in user.sub_plugins.all %}
+                <li><a href="{% url 'plugins:sub_plugins:sub-plugin-detail' plugin_name=sub_plugin.plugin.basename sub_plugin_name=sub_plugin.basename %}">{{ sub_plugin }}</a> ( <a href="{% url 'plugins:plugin-detail' plugin_name=sub_plugin.plugin.basename %}">{{ sub_plugin.plugin }}</a> )</li>
+            {% endfor %}
+            </ul>
+        {% endif %}
+        {% if user.packages.all %}
+            <h3>Packages:</h3>
+            <ul>
+            {% for package in user.packages.all %}
+                <li><a href="{% url 'packages:package-detail' package_name=package.basename %}">{{ package }}</a></li>
+            {% endfor %}
+            </ul>
+        {% endif %}
+        </ul>
+        </ul>
+    {% endif %}
+    {% if user.plugin_contributions.all or user.sub_plugin_contributions.all or user.package_contributions.all %}
+        <ul>
+        <h2>Contributions:</h2>
+        <ul>
+        {% if user.plugin_contributions.all %}
+            <h3>Plugins:</h3>
+            <ul>
+            {% for plugin in user.plugin_contributions.all %}
+                <li><a href="{% url 'plugins:plugin-detail' plugin_name=plugin.basename %}">{{ plugin }}</a></li>
+            {% endfor %}
+            </ul>
+        {% endif %}
+        {% if user.sub_plugin_contributions.all %}
+            <h3>Sub-plugins:</h3>
+            <ul>
+            {% for sub_plugin in user.sub_plugin_contributions.all %}
+                <li><a href="{% url 'plugins:sub_plugins:sub-plugin-detail' plugin_name=sub_plugin.plugin.basename sub_plugin_name=sub_plugin.basename %}">{{ sub_plugin }}</a> ( <a href="{% url 'plugins:plugin-detail' plugin_name=sub_plugin.plugin.basename %}">{{ sub_plugin.plugin }}</a> )</li>
+            {% endfor %}
+            </ul>
+        {% endif %}
+        {% if user.package_contributions.all %}
+            <h3>Packages:</h3>
+            <ul>
+            {% for package in user.package_contributions.all %}
+                <li><a href="{% url 'packages:package-detail' package_name=package.basename %}">{{ package }}</a></li>
+            {% endfor %}
+            </ul>
+        {% endif %}
+        </ul>
+        </ul>
+    {% else %}
+        User does not have any plugins, sub-plugins, packages, or contributions.
+    {% endif %}
+</body>
+
+{% endblock content %}

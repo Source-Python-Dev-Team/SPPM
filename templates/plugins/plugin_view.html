@@ -1,0 +1,43 @@
+{% extends "common/sidebar.html" %}
+
+{% block title %}{{ plugin.name }} - version {{ plugin.version }}{% endblock title %}
+
+{% block content %}
+
+<body>
+    <h1>{{ plugin.name }} - version {{ plugin.version }}</h1>
+    <ul><h2>Owner:</h2>
+    <ul><a href="{% url 'users:user-detail' user_name=plugin.user.name %}">{{ plugin.user.name }}</a></ul>
+    {% if plugin.contributors.all %}
+        <h2>Contributors:</h2>
+        <ul>
+        {% for user in plugin.contributors.all %}
+            <a href="{% url 'users:user-detail' user_name=user.name %}">{{ user.name }}</a>
+            <br />
+        {% endfor %}
+        </ul>
+    {% endif %}
+    <br />
+    <p>Created on {{ plugin.date_created }}</p>
+    {% if plugin.date_last_updated %}
+        <p>Last updated on {{ plugin.date_last_updated }}</p>
+    {% endif %}
+    {% if plugin.paths.all %}
+        <a href="{% url 'plugins:sub_plugins:sub-plugin-list' plugin_name=plugin.basename %}">{{ plugin.name }} sub-plugins</a>
+    {% endif %}
+    </ul>
+
+    <h3>Installation</h3>
+    <ol>
+        <li>Download the zip file.</li>
+        <li>Extract the zip file to your server's primary directory (ie <span style="color: blue">../my_servers/css/cstrike/</span>).</li>
+        <li>Add <code>sp load {{ object.basename }}</code> to your server's autoexec.cfg.</li>
+        <li>Start/Restart your server.</li>
+    </ol>
+
+    {# TODO: Add package requirements #}
+    {# TODO: Add pypi requirements #}
+
+</body>
+
+{% endblock content %}

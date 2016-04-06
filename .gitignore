@@ -1,0 +1,17 @@
+# PyCharm directory
+.idea/
+
+# Database files
+*.sqlite3
+
+# Local batch files
+*.bat
+
+# Migrations
+*/migrations/0*
+
+# Compiled Python
+*.pyc
+
+# Local database populating directory
+populate/

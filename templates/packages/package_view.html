@@ -1,0 +1,64 @@
+{% extends "common/sidebar.html" %}
+
+{% block title %}{{ package.name }} - version {{ package.version }}{% endblock title %}
+
+{% block content %}
+
+<body>
+    <h1>{{ package.name }} - version {{ package.version }}</h1>
+    <ul><h2>Owner:</h2>
+    <ul><a href="{% url 'users:user-detail' user_name=package.user.name %}">{{ package.user.name }}</a></ul>
+    {% if package.contributors.all %}
+        <h2>Contributors:</h2>
+        <ul>
+        {% for user in package.contributors.all %}
+            <a href="{% url 'users:user-detail' user_name=user.name %}">{{ user.name }}</a>
+            <br />
+        {% endfor %}
+        </ul>
+    {% endif %}
+    <br />
+    <p>Created on {{ package.date_created }}</p>
+    {% if package.date_last_updated %}
+        <p>Last updated on {{ package.date_last_updated }}</p>
+    {% endif %}
+    </ul>
+
+    <h3>Installation</h3>
+    <ol>
+        <li>Download the zip file.</li>
+        <li>Extract the zip file to your server's primary directory (ie <span style="color: blue">../my_servers/css/cstrike/</span>).</li>
+    </ol>
+
+    <p>As this is a package, you cannot simply load it.  Plugins, Sub-Plugins, and even other Packages may utilize this package by importing it in their code.</p>
+
+    {% if package.required_in_plugins.all %}
+        <br />
+        <p>Here is a list of plugins that require {{ package.name }}:</p>
+        {% for plugin in package.required_in_plugins.all %}
+            <li><a href="{% url 'plugins:plugin-detail' plugin_name=plugin.basename %}">{{ plugin.name }}</a></li>
+        {% endfor %}
+    {% endif %}
+
+    {% if package.required_in_sub_plugins.all %}
+        <br />
+        <p>Here is a list of sub-plugins that require {{ package.name }}:</p>
+        {% for sub_plugin in package.required_in_sub_plugins.all %}
+            <li><a href="{% url 'plugins:sub_plugins:sub-plugin-detail' plugin_name=sub_plugin.plugin.basename sub_plugin_name=sub_plugin.basename %}">{{ sub_plugin.name }}</a></li>
+        {% endfor %}
+    {% endif %}
+
+    {% if package.required_in_packages.all %}
+        <br />
+        <p>Here is a list of other packages that require {{ package.name }}:</p>
+        {% for other in package.required_in_packages.all %}
+            <li><a href="{% url 'packages:package-detail' package_name=other.basename %}">{{ other.name }}</a></li>
+        {% endfor %}
+    {% endif %}
+
+    {# TODO: Add package requirements #}
+    {# TODO: Add pypi requirements #}
+
+</body>
+
+{% endblock content %}

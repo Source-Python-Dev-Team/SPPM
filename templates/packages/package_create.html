@@ -1,0 +1,17 @@
+{% extends "common/sidebar.html" %}
+
+{% block title %}Create Package{% endblock title %}
+
+{% block content %}
+
+<body>
+    <div class="container">
+        <h1>Create Package</h1>
+        <form enctype="multipart/form-data" action="" method="post">{% csrf_token %}
+            {{ form.as_p }}
+            <input type="submit" value="Save" />
+        </form>
+    </div>
+</body>
+
+{% endblock content %}

@@ -1,0 +1,22 @@
+{% extends "common/sidebar.html" %}
+
+{% block title %}Recent Packages{% endblock title %}
+
+{% block content %}
+
+<body>
+<div class="container">
+    {% if package_list %}
+        <h1>Recent Packages</h1>
+        <ul>
+            {% for package in package_list %}
+                <li><a href="{% url 'packages:package-detail' package_name=package.basename %}">{{ package }}</a></li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <h1>No packages are registered.</h1>
+    {% endif %}
+</div>
+</body>
+
+{% endblock content %}
