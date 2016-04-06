@@ -14,7 +14,7 @@ urlpatterns = [
         name='sub-plugin-create',
     ),
     url(
-        regex=r'^(?P<sub_plugin_name>.*)/$',
+        regex=r'^(?P<sub_plugin_slug>[\w-]+)/$',
         view=SubPluginView.as_view(),
         name='sub-plugin-detail',
     ),

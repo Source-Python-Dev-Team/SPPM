@@ -14,14 +14,14 @@ urlpatterns = [
         name='plugin-create',
     ),
     url(
-        regex=r'^(?P<plugin_name>.*)/sub_plugins/',
+        regex=r'^(?P<slug>[\w-]+)/sub-plugins/',
         view=include(
             'sub_plugins.urls',
-            namespace='sub_plugins',
+            namespace='sub-plugins',
         )
     ),
     url(
-        regex=r'^(?P<plugin_name>.*)/$',
+        regex=r'^(?P<slug>[\w-]+)/$',
         view=PluginView.as_view(),
         name='plugin-detail',
     ),

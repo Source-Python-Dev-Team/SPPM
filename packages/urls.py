@@ -14,7 +14,7 @@ urlpatterns = [
         name='package-create',
     ),
     url(
-        regex=r'^(?P<package_name>.*)/$',
+        regex=r'^(?P<slug>[\w-]+)/$',
         view=PackageView.as_view(),
         name='package-detail',
     ),
