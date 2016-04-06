@@ -30,5 +30,3 @@ class PluginCreateView(CreateView):
 class PluginView(DetailView):
     model = Plugin
     template_name = 'plugins/plugin_view.html'
-    slug_url_kwarg = 'plugin_name'
-    slug_field = 'basename'

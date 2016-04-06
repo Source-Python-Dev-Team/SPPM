@@ -1,4 +1,4 @@
-from django.http import Http404
+from django.core.urlresolvers import reverse
 from django.views.generic import CreateView, ListView, DetailView
 
 from plugins.models import Plugin
@@ -21,13 +21,13 @@ class SubPluginListView(ListView):
 
     def get_queryset(self):
         return super(SubPluginListView, self).get_queryset().filter(
-            plugin__basename=self.kwargs['plugin_name']
+            plugin__slug=self.kwargs['slug']
         )
 
     def get_context_data(self, **kwargs):
         context = super(SubPluginListView, self).get_context_data(**kwargs)
         context.update({
-            'plugin': Plugin.objects.get(basename=self.kwargs['plugin_name']),
+            'plugin': Plugin.objects.get(slug=self.kwargs['slug']),
             'sub_plugin_list': context['subplugin_list'],
         })
         return context
@@ -37,31 +37,34 @@ class SubPluginCreateView(CreateView):
     model = SubPlugin
     form_class = SubPluginCreateForm
     template_name = 'sub_plugins/sub_plugin_create.html'
+    plugin = None
 
     def get_context_data(self, **kwargs):
         context = super(SubPluginCreateView, self).get_context_data(**kwargs)
         context.update({
-            'plugin': Plugin.objects.get(basename=self.kwargs['plugin_name']),
+            'plugin': self.plugin,
         })
         return context
 
-    def get_form_kwargs(self):
-        kwargs = super(SubPluginCreateView, self).get_form_kwargs()
-        kwargs.update({
-            'plugin_name': self.kwargs['plugin_name'],
-        })
-        return kwargs
-
     def get_success_url(self):
-        return '/plugins/{0}/sub_plugins/{1}'.format(
-            self.object.plugin.basename, self.object.basename)
+        return self.object.get_absolute_url()
+
+    def get_initial(self):
+        initial = super(SubPluginCreateView, self).get_initial()
+        initial.update({
+            'plugin': self.get_plugin(),
+        })
+        return initial
+
+    def get_plugin(self):
+        self.plugin = Plugin.objects.get(slug=self.kwargs['slug'])
+        return self.plugin
 
 
 class SubPluginView(DetailView):
     model = SubPlugin
     template_name = 'sub_plugins/sub_plugin_view.html'
-    slug_url_kwarg = 'sub_plugin_name'
-    slug_field = 'basename'
+    slug_url_kwarg = 'sub_plugin_slug'
 
     def get_context_data(self, **kwargs):
         context = super(SubPluginView, self).get_context_data(**kwargs)

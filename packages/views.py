@@ -30,5 +30,3 @@ class PackageCreateView(CreateView):
 class PackageView(DetailView):
     model = Package
     template_name = 'packages/package_view.html'
-    slug_url_kwarg = 'package_name'
-    slug_field = 'basename'
