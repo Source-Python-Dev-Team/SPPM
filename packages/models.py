@@ -1,8 +1,10 @@
 from __future__ import unicode_literals
 
+from django.db import models
+
 from common.models import CommonBase, readable_data_file_types
 
-from django.db import models
+from .helpers import handle_package_upload
 
 
 __all__ = (
@@ -32,6 +34,10 @@ class Package(CommonBase):
     pypi_requirements = models.ManyToManyField(
         to='pypi.PyPiRequirement',
         related_name='required_in_packages',
+    )
+
+    zip_file = models.FileField(
+        upload_to=handle_package_upload,
     )
 
     allowed_file_types = dict(CommonBase.allowed_file_types)

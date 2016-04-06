@@ -49,16 +49,13 @@ class CommonBase(models.Model):
     slug = models.SlugField(
         max_length=32,
         unique=True,
+        blank=True,
     )
 
     date_created = models.DateTimeField(
         'date created',
         auto_now_add=True,
     )
-
-    zip_file = models.FileField()
-
-    can_install = models.NullBooleanField()
 
     allowed_file_types = {
         'cfg/source-python/': [
@@ -127,7 +124,7 @@ class CommonBase(models.Model):
     def save(
             self, force_insert=False, force_update=False,
             using=None, update_fields=None):
-        self.slug = slugify(self.basename)
+        self.slug = slugify(self.basename).replace('_', '-')
         super(CommonBase, self).save(
                 force_insert, force_update, using, update_fields)
 

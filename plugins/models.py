@@ -1,9 +1,11 @@
 from __future__ import unicode_literals
 
+from django.db import models
+
 from common.models import CommonBase, readable_data_file_types
 from common.validators import sub_plugin_path_validator
 
-from django.db import models
+from .helpers import handle_plugin_upload
 
 
 __all__ = (
@@ -34,6 +36,10 @@ class Plugin(CommonBase):
     pypi_requirements = models.ManyToManyField(
         to='pypi.PyPiRequirement',
         related_name='required_in_plugins',
+    )
+
+    zip_file = models.FileField(
+        upload_to=handle_plugin_upload,
     )
 
     allowed_file_types = dict(CommonBase.allowed_file_types)
