@@ -1,5 +1,6 @@
 from __future__ import unicode_literals
 
+from django.core.urlresolvers import reverse
 from django.db import models
 
 from common.models import CommonBase, readable_data_file_types
@@ -48,6 +49,14 @@ class Plugin(CommonBase):
                                                              'py',
                                                          ] + readable_data_file_types,
     })
+
+    def get_absolute_url(self):
+        return reverse(
+            viewname='plugins:plugin-detail',
+            kwargs={
+                'slug': self.slug,
+            }
+        )
 
     def get_basename(self, zip_file):
         basename = None

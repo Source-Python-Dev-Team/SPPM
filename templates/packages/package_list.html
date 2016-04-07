@@ -10,7 +10,7 @@
         <h1>Recent Packages</h1>
         <ul>
             {% for package in package_list %}
-                <li><a href="{% url 'packages:package-detail' package_name=package.basename %}">{{ package }}</a></li>
+                <li><a href="{{ package.get_absolute_url }}">{{ package }}</a></li>
             {% endfor %}
         </ul>
     {% else %}

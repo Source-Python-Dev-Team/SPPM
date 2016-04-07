@@ -26,8 +26,10 @@ class SubPluginListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super(SubPluginListView, self).get_context_data(**kwargs)
+        plugin = Plugin.objects.get(slug=self.kwargs['slug'])
         context.update({
-            'plugin': Plugin.objects.get(slug=self.kwargs['slug']),
+            'plugin': plugin,
+            'paths': plugin.paths.all(),
             'sub_plugin_list': context['subplugin_list'],
         })
         return context
@@ -43,6 +45,7 @@ class SubPluginCreateView(CreateView):
         context = super(SubPluginCreateView, self).get_context_data(**kwargs)
         context.update({
             'plugin': self.plugin,
+            'paths': self.plugin.paths.all()
         })
         return context
 
@@ -70,5 +73,6 @@ class SubPluginView(DetailView):
         context = super(SubPluginView, self).get_context_data(**kwargs)
         context.update({
             'sub_plugin': context['subplugin'],
+            'contributors': self.object.contributors.all(),
         })
         return context

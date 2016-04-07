@@ -6,14 +6,14 @@
 
 <body>
     <h1>{{ sub_plugin.name }} - version {{ sub_plugin.version }}</h1>
-    <p>Sub-Plugin for <a href="{% url 'plugins:plugin-detail' slug=sub_plugin.plugin.slug %}">{{ sub_plugin.plugin.name }}</a></p>
+    <p>Sub-Plugin for <a href="{{ sub_plugin.plugin.get_absolute_url }}">{{ sub_plugin.plugin.name }}</a></p>
     <ul><h2>Owner:</h2>
-    <ul><a href="{% url 'users:user-detail' user_name=sub_plugin.user.name %}">{{ sub_plugin.user.name }}</a></ul>
-    {% if sub_plugin.contributors.all %}
+    <ul><a href="{{ sub_plugin.user.get_absolute_url }}">{{ sub_plugin.user.name }}</a></ul>
+    {% if contributors %}
         <h2>Contributors:</h2>
         <ul>
-        {% for user in sub_plugin.contributors.all %}
-            <a href="{% url 'users:user-detail' user_name=user.name %}">{{ user.name }}</a>
+        {% for user in contributors %}
+            <a href="{{ user.get_absolute_url }}">{{ user.name }}</a>
             <br />
         {% endfor %}
         </ul>
@@ -31,7 +31,7 @@
         <li>Extract the zip file to your server's primary directory (ie <span style="color: blue">../my_servers/css/cstrike/</span>).</li>
     </ol>
 
-    <p>As this is a sub-plugin, it is up to the <a href="{% url 'plugins:plugin-detail' slug=sub_plugin.plugin.slug %}">{{ sub_plugin.plugin.name }}</a> plugin to determine how to load it.</p>
+    <p>As this is a sub-plugin, it is up to the <a href="{{ sub_plugin.plugin.get_absolute_url }}">{{ sub_plugin.plugin.name }}</a> plugin to determine how to load it.</p>
 
     {# TODO: Add package requirements #}
     {# TODO: Add pypi requirements #}

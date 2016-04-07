@@ -6,7 +6,7 @@
 
 <body>
     <div class="container">
-        {% if plugin.paths.all %}
+        {% if paths %}
             <h1>Create {{ plugin.name }} Sub-Plugin</h1>
             <form enctype="multipart/form-data" action="" method="post">
                 {% csrf_token %}

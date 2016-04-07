@@ -7,12 +7,12 @@
 <body>
     <h1>{{ package.name }} - version {{ package.version }}</h1>
     <ul><h2>Owner:</h2>
-    <ul><a href="{% url 'users:user-detail' user_name=package.user.name %}">{{ package.user.name }}</a></ul>
-    {% if package.contributors.all %}
+    <ul><a href="{{ package.user.get_absolute_url }}">{{ package.user.name }}</a></ul>
+    {% if contributors %}
         <h2>Contributors:</h2>
         <ul>
-        {% for user in package.contributors.all %}
-            <a href="{% url 'users:user-detail' user_name=user.name %}">{{ user.name }}</a>
+        {% for user in contributors %}
+            <a href="{{ user.get_absolute_url }}">{{ user.name }}</a>
             <br />
         {% endfor %}
         </ul>
@@ -32,27 +32,27 @@
 
     <p>As this is a package, you cannot simply load it.  Plugins, Sub-Plugins, and even other Packages may utilize this package by importing it in their code.</p>
 
-    {% if package.required_in_plugins.all %}
+    {% if required_in_plugins %}
         <br />
         <p>Here is a list of plugins that require {{ package.name }}:</p>
-        {% for plugin in package.required_in_plugins.all %}
-            <li><a href="{% url 'plugins:plugin-detail' slug=plugin.slug %}">{{ plugin.name }}</a></li>
+        {% for plugin in required_in_plugins %}
+            <li><a href="{{ plugin.get_absolute_url }}">{{ plugin.name }}</a></li>
         {% endfor %}
     {% endif %}
 
-    {% if package.required_in_sub_plugins.all %}
+    {% if required_in_sub_plugins %}
         <br />
         <p>Here is a list of sub-plugins that require {{ package.name }}:</p>
-        {% for sub_plugin in package.required_in_sub_plugins.all %}
-            <li><a href="{% url 'plugins:sub-plugins:sub-plugin-detail' slug=sub_plugin.plugin.slug sub_plugin_slug=sub_plugin.slug %}">{{ sub_plugin.name }}</a></li>
+        {% for sub_plugin in required_in_sub_plugins %}
+            <li><a href="{{ sub_plugin.get_absolute_url }}">{{ sub_plugin.name }}</a></li>
         {% endfor %}
     {% endif %}
 
-    {% if package.required_in_packages.all %}
+    {% if required_in_packages %}
         <br />
         <p>Here is a list of other packages that require {{ package.name }}:</p>
-        {% for other in package.required_in_packages.all %}
-            <li><a href="{% url 'packages:package-detail' slug=other.slug %}">{{ other.name }}</a></li>
+        {% for other in required_in_packages %}
+            <li><a href="{{ other.get_absolute_url }}">{{ other.name }}</a></li>
         {% endfor %}
     {% endif %}
 

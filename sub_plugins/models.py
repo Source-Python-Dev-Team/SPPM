@@ -53,6 +53,15 @@ class SubPlugin(CommonBase):
         ] + readable_data_file_types,
     })
 
+    def get_absolute_url(self):
+        return reverse(
+            viewname='plugins:sub-plugins:sub-plugin-detail',
+            kwargs={
+                'slug': self.plugin.slug,
+                'sub_plugin_slug': self.slug,
+            }
+        )
+
     def get_basename(self, zip_file):
         plugin_name = self.validate_plugin_name(zip_file)
         basename = None
@@ -100,12 +109,3 @@ class SubPlugin(CommonBase):
         if plugin_name != self.plugin.basename:
             raise ValueError('Wrong plugin base directory found in zip.')
         return plugin_name
-
-    def get_absolute_url(self):
-        return reverse(
-            viewname='plugins:sub-plugins:sub-plugin-detail',
-            kwargs={
-                'slug': self.plugin.slug,
-                'sub_plugin_slug': self.slug,
-            }
-        )

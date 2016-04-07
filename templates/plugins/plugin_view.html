@@ -7,12 +7,12 @@
 <body>
     <h1>{{ plugin.name }} - version {{ plugin.version }}</h1>
     <ul><h2>Owner:</h2>
-    <ul><a href="{% url 'users:user-detail' user_name=plugin.user.name %}">{{ plugin.user.name }}</a></ul>
-    {% if plugin.contributors.all %}
+    <ul><a href="{{ plugin.user.get_absolute_url }}">{{ plugin.user.name }}</a></ul>
+    {% if contributors %}
         <h2>Contributors:</h2>
         <ul>
-        {% for user in plugin.contributors.all %}
-            <a href="{% url 'users:user-detail' user_name=user.name %}">{{ user.name }}</a>
+        {% for user in contributors %}
+            <a href="{{ user.get_absolute_url }}">{{ user.name }}</a>
             <br />
         {% endfor %}
         </ul>
@@ -22,7 +22,7 @@
     {% if plugin.date_last_updated %}
         <p>Last updated on {{ plugin.date_last_updated }}</p>
     {% endif %}
-    {% if plugin.paths.all %}
+    {% if paths %}
         <a href="{% url 'plugins:sub-plugins:sub-plugin-list' slug=plugin.slug %}">{{ plugin.name }} sub-plugins</a>
     {% endif %}
     </ul>

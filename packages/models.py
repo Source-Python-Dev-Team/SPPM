@@ -1,5 +1,6 @@
 from __future__ import unicode_literals
 
+from django.core.urlresolvers import reverse
 from django.db import models
 
 from common.models import CommonBase, readable_data_file_types
@@ -46,6 +47,14 @@ class Package(CommonBase):
             'py',
         ] + readable_data_file_types,
     })
+
+    def get_absolute_url(self):
+        return reverse(
+            viewname='packages:package-detail',
+            kwargs={
+                'slug': self.slug,
+            }
+        )
 
     def get_basename(self, zip_file):
         basename = None

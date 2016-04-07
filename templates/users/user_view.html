@@ -7,62 +7,62 @@
 <body>
     <h1>{{ user.name }}</h1>
     <ul><a href="{{ user.get_forum_url }}">Forum Account</a></ul>
-    {% if user.plugins.all or user.sub_plugins.all or user.packages.all %}
+    {% if plugins or sub_plugins or packages %}
         <ul>
         <h2>Projects:</h2>
         <ul>
-        {% if user.plugins.all %}
+        {% if plugins %}
             <h3>Plugins:</h3>
             <ul>
-            {% for plugin in user.plugins.all %}
-                <li><a href="{% url 'plugins:plugin-detail' slug=plugin.slug %}">{{ plugin }}</a></li>
+            {% for plugin in plugins %}
+                <li><a href="{{ plugin.get_absolute_url }}">{{ plugin }}</a></li>
             {% endfor %}
             </ul>
         {% endif %}
-        {% if user.sub_plugins.all %}
+        {% if sub_plugins %}
             <h3>Sub-plugins:</h3>
             <ul>
-            {% for sub_plugin in user.sub_plugins.all %}
-                <li><a href="{% url 'plugins:sub-plugins:sub-plugin-detail' slug=sub_plugin.plugin.slug sub_plugin_slug=sub_plugin.slug %}">{{ sub_plugin }}</a> ( <a href="{% url 'plugins:plugin-detail' slug=sub_plugin.plugin.slug %}">{{ sub_plugin.plugin }}</a> )</li>
+            {% for sub_plugin in sub_plugins %}
+                <li><a href="{{ sub_plugin.get_absolute_url }}">{{ sub_plugin }}</a> ( <a href="{{ sub_plugin.plugin.get_absolute_url }}">{{ sub_plugin.plugin }}</a> )</li>
             {% endfor %}
             </ul>
         {% endif %}
-        {% if user.packages.all %}
+        {% if packages %}
             <h3>Packages:</h3>
             <ul>
-            {% for package in user.packages.all %}
-                <li><a href="{% url 'packages:package-detail' slug=package.slug %}">{{ package }}</a></li>
+            {% for package in packages %}
+                <li><a href="{{ package.get_absolute_url }}">{{ package }}</a></li>
             {% endfor %}
             </ul>
         {% endif %}
         </ul>
         </ul>
     {% endif %}
-    {% if user.plugin_contributions.all or user.sub_plugin_contributions.all or user.package_contributions.all %}
+    {% if plugin_contributions or sub_plugin_contributions or package_contributions %}
         <ul>
         <h2>Contributions:</h2>
         <ul>
-        {% if user.plugin_contributions.all %}
+        {% if plugin_contributions %}
             <h3>Plugins:</h3>
             <ul>
-            {% for plugin in user.plugin_contributions.all %}
-                <li><a href="{% url 'plugins:plugin-detail' slug=plugin.slug %}">{{ plugin }}</a></li>
+            {% for plugin in plugin_contributions %}
+                <li><a href="{{ plugin.get_absolute_url }}">{{ plugin }}</a></li>
             {% endfor %}
             </ul>
         {% endif %}
-        {% if user.sub_plugin_contributions.all %}
+        {% if sub_plugin_contributions %}
             <h3>Sub-plugins:</h3>
             <ul>
-            {% for sub_plugin in user.sub_plugin_contributions.all %}
-                <li><a href="{% url 'plugins:sub-plugins:sub-plugin-detail' slug=sub_plugin.plugin.slug sub_plugin_slug=sub_plugin.slug %}">{{ sub_plugin }}</a> ( <a href="{% url 'plugins:plugin-detail' slug=sub_plugin.plugin.slug %}">{{ sub_plugin.plugin }}</a> )</li>
+            {% for sub_plugin in sub_plugin_contributions %}
+                <li><a href="{{ sub_plugin.get_absolute_url }}">{{ sub_plugin }}</a> ( <a href="{{ sub_plugin.plugin.get_absolute_url }}">{{ sub_plugin.plugin }}</a> )</li>
             {% endfor %}
             </ul>
         {% endif %}
-        {% if user.package_contributions.all %}
+        {% if package_contributions %}
             <h3>Packages:</h3>
             <ul>
-            {% for package in user.package_contributions.all %}
-                <li><a href="{% url 'packages:package-detail' slug=package.slug %}">{{ package }}</a></li>
+            {% for package in package_contributions %}
+                <li><a href="{{ package.get_absolute_url }}">{{ package }}</a></li>
             {% endfor %}
             </ul>
         {% endif %}

@@ -10,8 +10,7 @@
         <h1>PyPi Packages</h1>
         <ul>
             {% for package in pypirequirement_list %}
-{#                <li>{{ package.name }}</li>#}
-                <li><a href="{% url 'pypi:pypi-detail' package_name=package.name %}">{{ package.name }}</a></li>
+                <li><a href="{{ package.get_absolute_url }}">{{ package.name }}</a></li>
             {% endfor %}
         </ul>
     {% else %}
