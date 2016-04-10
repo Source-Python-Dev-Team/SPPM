@@ -1,6 +1,11 @@
 from django.conf.urls import include, url
 
-from .views import PluginListView, PluginCreateView, PluginView
+from .views import (
+    PluginListView,
+    PluginCreateView,
+    PluginUpdateView,
+    PluginView,
+)
 
 urlpatterns = [
     url(
@@ -12,6 +17,11 @@ urlpatterns = [
         regex=r'^create/',
         view=PluginCreateView.as_view(),
         name='plugin-create',
+    ),
+    url(
+        regex=r'^update/(?P<slug>[\w-]+)/',
+        view=PluginUpdateView.as_view(),
+        name='plugin-update',
     ),
     url(
         regex=r'^(?P<slug>[\w-]+)/sub-plugins/',

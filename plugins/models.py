@@ -10,6 +10,7 @@ from .helpers import handle_plugin_upload
 
 
 __all__ = (
+    'OldPluginRelease',
     'Plugin',
     'SubPluginPath',
 )
@@ -17,28 +18,22 @@ __all__ = (
 
 # Create your models here.
 class Plugin(CommonBase):
-    """"""
-
     user = models.ForeignKey(
         to='users.User',
         related_name='plugins',
     )
-
     contributors = models.ManyToManyField(
         to='users.User',
         related_name='plugin_contributions',
     )
-
     package_requirements = models.ManyToManyField(
         to='packages.Package',
         related_name='required_in_plugins',
     )
-
     pypi_requirements = models.ManyToManyField(
         to='pypi.PyPiRequirement',
         related_name='required_in_plugins',
     )
-
     zip_file = models.FileField(
         upload_to=handle_plugin_upload,
     )
@@ -46,8 +41,8 @@ class Plugin(CommonBase):
     allowed_file_types = dict(CommonBase.allowed_file_types)
     allowed_file_types.update({
         'addons/source-python/plugins/{self.basename}/': [
-                                                             'py',
-                                                         ] + readable_data_file_types,
+            'py',
+        ] + readable_data_file_types,
     })
 
     def get_absolute_url(self):
@@ -58,32 +53,41 @@ class Plugin(CommonBase):
             }
         )
 
-    def get_basename(self, zip_file):
-        basename = None
-        for x in zip_file.filelist:
-            if x.filename.startswith('addons/source-python/plugins/'):
-                current = x.filename.split(
-                    'addons/source-python/plugins/', 1)[1]
-                if not current:
-                    continue
-                current = current.split('/', 1)[0]
-                if basename is None:
-                    basename = current
-                elif basename != current:
-                    raise ValueError
-        if basename is None:
-            raise ValueError
-        return basename
+    def save(
+            self, force_insert=False, force_update=False,
+            using=None, update_fields=None):
+
+        if self.current_version and self.current_zip_file:
+            release = OldPluginRelease(
+                version=self.current_version,
+                zip_file=self.current_zip_file,
+                plugin=self,
+            )
+            release.save()
+        self.current_version = self.version
+        self.current_zip_file = self.zip_file
+        super(Plugin, self).save(
+            force_insert, force_update, using, update_fields
+        )
 
 
 class SubPluginPath(models.Model):
-
     plugin = models.ForeignKey(
         to='plugins.Plugin',
         related_name='paths',
     )
-
     path = models.CharField(
         max_length=256,
         validators=[sub_plugin_path_validator],
+    )
+
+
+class OldPluginRelease(models.Model):
+    version = models.CharField(
+        max_length=8,
+    )
+    zip_file = models.FileField()
+    plugin = models.ForeignKey(
+        to='plugins.Plugin',
+        related_name='previous_releases',
     )

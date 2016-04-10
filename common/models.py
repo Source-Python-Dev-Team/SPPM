@@ -1,7 +1,5 @@
 from __future__ import unicode_literals
 
-from zipfile import ZipFile
-
 from django.db import models
 from django.utils.text import slugify
 
@@ -27,34 +25,43 @@ readable_data_file_types = [
 
 
 class CommonBase(models.Model):
-    """"""
-
     name = models.CharField(
         max_length=64,
         unique=True,
         null=False,
     )
-
     version = models.CharField(
         max_length=8,
         validators=[version_validator]
     )
-
     basename = models.CharField(
         max_length=32,
         validators=[basename_validator],
         unique=True,
+        blank=True,
     )
-
     slug = models.SlugField(
         max_length=32,
         unique=True,
         blank=True,
     )
-
     date_created = models.DateTimeField(
         'date created',
         auto_now_add=True,
+    )
+    date_last_updated = models.DateTimeField(
+        'date last updated',
+        blank=True,
+        null=True,
+    )
+    current_version = models.CharField(
+        max_length=8,
+        blank=True,
+        null=True,
+    )
+    current_zip_file = models.FileField(
+        blank=True,
+        null=True,
     )
 
     allowed_file_types = {
@@ -103,41 +110,21 @@ class CommonBase(models.Model):
         ],
     }
 
-    date_last_updated = models.DateTimeField(
-        'date last updated',
-        blank=True,
-        null=True,
-    )
-
     def __str__(self):
         return self.name
-
-    def clean_fields(self, exclude=None):
-        # TODO: Validate the zip file
-        self.validate_zip_file()
-
-        # TODO: Set the user_id based on the user that is logged in
-        from random import choice
-        self.user_id = choice(User.objects.all()).pk
-        return super(CommonBase, self).clean_fields()
 
     def save(
             self, force_insert=False, force_update=False,
             using=None, update_fields=None):
         self.slug = slugify(self.basename).replace('_', '-')
+
+        # TODO: Set the user_id based on the user that is logged in
+        from random import choice
+        if not self.user_id:
+            self.user_id = choice(User.objects.all()).pk
+
         super(CommonBase, self).save(
                 force_insert, force_update, using, update_fields)
-
-    def validate_zip_file(self):
-        zip_file = ZipFile(self.zip_file)
-        self.basename = self.get_basename(zip_file)
-        self.validate_file_types(zip_file)
-
-    def get_basename(self, zip_file):
-        raise NotImplementedError
-
-    def validate_file_types(self, zip_file):
-        pass
 
     class Meta:
         abstract = True

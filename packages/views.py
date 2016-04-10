@@ -1,12 +1,13 @@
-from django.views.generic import CreateView, DetailView, ListView
+from django.views.generic import CreateView, DetailView, ListView, UpdateView
 
 from .models import Package
-from .forms import PackageCreateForm
+from .forms import PackageCreateForm, PackageUpdateForm
 
 
 __all__ = (
     'PackageCreateView',
     'PackageListView',
+    'PackageUpdateView',
     'PackageView',
 )
 
@@ -23,8 +24,27 @@ class PackageCreateView(CreateView):
     form_class = PackageCreateForm
     template_name = 'packages/package_create.html'
 
-    def get_success_url(self):
-        return self.object.get_absolute_url()
+
+class PackageUpdateView(UpdateView):
+    model = Package
+    form_class = PackageUpdateForm
+    template_name = 'packages/package_update.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(PackageUpdateView, self).get_context_data(**kwargs)
+        context.update({
+            'package': Package.objects.get(
+                slug=context['view'].kwargs['slug'])
+        })
+        return context
+
+    def get_initial(self):
+        initial = super(PackageUpdateView, self).get_initial()
+        initial.update({
+            'version': '',
+            'zip_file': '',
+        })
+        return initial
 
 
 class PackageView(DetailView):

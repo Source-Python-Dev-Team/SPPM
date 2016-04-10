@@ -1,14 +1,15 @@
 from django.core.urlresolvers import reverse
-from django.views.generic import CreateView, ListView, DetailView
+from django.views.generic import CreateView, DetailView, ListView, UpdateView
 
 from plugins.models import Plugin
 from .models import SubPlugin
-from .forms import SubPluginCreateForm
+from .forms import SubPluginCreateForm, SubPluginUpdateForm
 
 
 __all__ = (
     'SubPluginCreateView',
     'SubPluginListView',
+    'SubPluginUpdateView',
     'SubPluginView',
 )
 
@@ -49,13 +50,41 @@ class SubPluginCreateView(CreateView):
         })
         return context
 
-    def get_success_url(self):
-        return self.object.get_absolute_url()
-
     def get_initial(self):
         initial = super(SubPluginCreateView, self).get_initial()
         initial.update({
             'plugin': self.get_plugin(),
+        })
+        return initial
+
+    def get_plugin(self):
+        self.plugin = Plugin.objects.get(slug=self.kwargs['slug'])
+        return self.plugin
+
+
+class SubPluginUpdateView(UpdateView):
+    model = SubPlugin
+    form_class = SubPluginUpdateForm
+    template_name = 'sub_plugins/sub_plugin_update.html'
+    slug_url_kwarg = 'sub_plugin_slug'
+    plugin = None
+
+    def get_context_data(self, **kwargs):
+        context = super(SubPluginUpdateView, self).get_context_data(**kwargs)
+        context.update({
+            'plugin': self.plugin,
+            'sub_plugin': SubPlugin.objects.get(
+                slug=context['view'].kwargs['sub_plugin_slug']),
+            'paths': self.plugin.paths.all(),
+        })
+        return context
+
+    def get_initial(self):
+        initial = super(SubPluginUpdateView, self).get_initial()
+        initial.update({
+            'plugin': self.get_plugin(),
+            'version': '',
+            'zip_file': '',
         })
         return initial
 

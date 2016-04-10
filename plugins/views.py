@@ -1,12 +1,13 @@
-from django.views.generic import CreateView, ListView, DetailView
+from django.views.generic import CreateView, DetailView, ListView, UpdateView
 
 from .models import Plugin
-from .forms import PluginCreateForm
+from .forms import PluginCreateForm, PluginUpdateForm
 
 
 __all__ = (
     'PluginCreateView',
     'PluginListView',
+    'PluginUpdateView',
     'PluginView',
 )
 
@@ -23,8 +24,27 @@ class PluginCreateView(CreateView):
     form_class = PluginCreateForm
     template_name = 'plugins/plugin_create.html'
 
-    def get_success_url(self):
-        return self.object.get_absolute_url()
+
+class PluginUpdateView(UpdateView):
+    model = Plugin
+    form_class = PluginUpdateForm
+    template_name = 'plugins/plugin_update.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(PluginUpdateView, self).get_context_data(**kwargs)
+        context.update({
+            'plugin': Plugin.objects.get(
+                slug=context['view'].kwargs['slug'])
+        })
+        return context
+
+    def get_initial(self):
+        initial = super(PluginUpdateView, self).get_initial()
+        initial.update({
+            'version': '',
+            'zip_file': '',
+        })
+        return initial
 
 
 class PluginView(DetailView):
