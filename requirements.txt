@@ -1,3 +1,4 @@
 django-debug-toolbar
 django-precise-bbcode
+postmarkup
 -e git://github.com/ZombieToof/django-phpbb.git
