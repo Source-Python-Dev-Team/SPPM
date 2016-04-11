@@ -2,6 +2,7 @@ from django.conf.urls import url
 
 from .views import (
     PackageCreateView,
+    PackageEditView,
     PackageListView,
     PackageUpdateView,
     PackageView,
@@ -17,6 +18,11 @@ urlpatterns = [
         regex=r'^create/',
         view=PackageCreateView.as_view(),
         name='package_create',
+    ),
+    url(
+        regex=r'^edit/(?P<slug>[\w-]+)/',
+        view=PackageEditView.as_view(),
+        name='package_edit',
     ),
     url(
         regex=r'^update/(?P<slug>[\w-]+)/',

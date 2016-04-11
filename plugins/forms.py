@@ -10,6 +10,7 @@ from .models import Plugin
 
 __all__ = (
     'PluginCreateForm',
+    'PluginEditForm',
     'PluginUpdateForm',
 )
 
@@ -20,13 +21,17 @@ class PluginCreateForm(forms.ModelForm):
         fields = (
             'name',
             'version',
+            'description',
             'version_notes',
+            'configuration',
             'slug',
             'zip_file',
         )
         widgets = {
             'slug': forms.HiddenInput(),
+            'description': forms.Textarea,
             'version_notes': forms.Textarea,
+            'configuration': forms.Textarea,
         }
 
     def clean_zip_file(self):
@@ -35,6 +40,19 @@ class PluginCreateForm(forms.ModelForm):
         basename = get_plugin_basename(file_list)
         self.instance.basename = basename
         return self.cleaned_data['zip_file']
+
+
+class PluginEditForm(forms.ModelForm):
+    class Meta:
+        model = Plugin
+        fields = (
+            'description',
+            'configuration',
+        )
+        widgets = {
+            'description': forms.Textarea,
+            'configuration': forms.Textarea,
+        }
 
 
 class PluginUpdateForm(forms.ModelForm):

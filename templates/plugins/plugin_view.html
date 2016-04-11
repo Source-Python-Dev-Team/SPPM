@@ -1,4 +1,6 @@
 {% extends "common/sidebar.html" %}
+{% load bbcode_tags %}
+{% bbcode entry.bbcode_content %}
 
 {% block title %}{{ plugin.name }} - version {{ plugin.version }}{% endblock title %}
 
@@ -27,6 +29,12 @@
     {% endif %}
     </ul>
 
+    <h3>Description</h3>
+    <ol>
+        {{ plugin.description.rendered }}
+    </ol>
+    <br />
+
     <h3>Installation</h3>
     <ol>
         <li>Download the zip file.</li>
@@ -34,6 +42,13 @@
         <li>Add <code>sp load {{ object.basename }}</code> to your server's autoexec.cfg.</li>
         <li>Start/Restart your server.</li>
     </ol>
+    <br />
+
+    <h3>Configuration</h3>
+    <ol>
+        {{ plugin.configuration.rendered }}
+    </ol>
+    <br />
 
     {# TODO: Add package requirements #}
     {# TODO: Add pypi requirements #}

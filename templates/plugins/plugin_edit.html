@@ -1,0 +1,17 @@
+{% extends "common/sidebar.html" %}
+
+{% block title %}Edit {{ plugin }}{% endblock title %}
+
+{% block content %}
+
+<body>
+    <div class="container">
+        <h1>Edit {{ plugin }}</h1>
+        <form enctype="multipart/form-data" action="" method="post">{% csrf_token %}
+            {{ form.as_p }}
+            <input type="submit" value="Save" />
+        </form>
+    </div>
+</body>
+
+{% endblock content %}

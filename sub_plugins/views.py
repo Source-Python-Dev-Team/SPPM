@@ -1,9 +1,8 @@
-from django.core.urlresolvers import reverse
 from django.views.generic import CreateView, DetailView, ListView, UpdateView
 
 from plugins.models import Plugin
 from .models import SubPlugin
-from .forms import SubPluginCreateForm, SubPluginUpdateForm
+from .forms import SubPluginCreateForm, SubPluginEditForm, SubPluginUpdateForm
 
 
 __all__ = (
@@ -60,6 +59,13 @@ class SubPluginCreateView(CreateView):
     def get_plugin(self):
         self.plugin = Plugin.objects.get(slug=self.kwargs['slug'])
         return self.plugin
+
+
+class SubPluginEditView(UpdateView):
+    model = SubPlugin
+    form_class = SubPluginEditForm
+    template_name = 'sub_plugins/sub_plugin_edit.html'
+    slug_url_kwarg = 'sub_plugin_slug'
 
 
 class SubPluginUpdateView(UpdateView):

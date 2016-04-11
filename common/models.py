@@ -3,6 +3,8 @@ from __future__ import unicode_literals
 from django.db import models
 from django.utils.text import slugify
 
+from precise_bbcode.fields import BBCodeTextField
+
 from users.models import User
 
 from .validators import basename_validator, version_validator
@@ -23,7 +25,7 @@ class CommonBase(models.Model):
         max_length=8,
         validators=[version_validator]
     )
-    version_notes = models.CharField(
+    version_notes = BBCodeTextField(
         max_length=512,
         blank=True,
         null=True,
@@ -53,12 +55,22 @@ class CommonBase(models.Model):
         blank=True,
         null=True,
     )
-    current_version_notes = models.TextField(
+    current_version_notes = BBCodeTextField(
         max_length=512,
         blank=True,
         null=True,
     )
     current_zip_file = models.FileField(
+        blank=True,
+        null=True,
+    )
+    description = BBCodeTextField(
+        max_length=1024,
+        blank=True,
+        null=True,
+    )
+    configuration = BBCodeTextField(
+        max_length=1024,
         blank=True,
         null=True,
     )

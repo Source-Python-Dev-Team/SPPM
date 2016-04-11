@@ -11,6 +11,7 @@ from .models import SubPlugin
 
 __all__ = (
     'SubPluginCreateForm',
+    'SubPluginEditForm',
     'SubPluginUpdateForm',
 )
 
@@ -21,7 +22,9 @@ class SubPluginCreateForm(forms.ModelForm):
         fields = (
             'name',
             'version',
+            'description',
             'version_notes',
+            'configuration',
             'plugin',
             'slug',
             'zip_file',
@@ -29,7 +32,9 @@ class SubPluginCreateForm(forms.ModelForm):
         widgets = {
             'plugin': forms.HiddenInput(),
             'slug': forms.HiddenInput(),
+            'description': forms.Textarea,
             'version_notes': forms.Textarea,
+            'configuration': forms.Textarea,
         }
 
     def clean_zip_file(self):
@@ -44,6 +49,19 @@ class SubPluginCreateForm(forms.ModelForm):
                 'Perhaps you are attempting to upload a sub-plugin.')
         self.instance.basename = basename
         return self.cleaned_data['zip_file']
+
+
+class SubPluginEditForm(forms.ModelForm):
+    class Meta:
+        model = SubPlugin
+        fields = (
+            'description',
+            'configuration',
+        )
+        widgets = {
+            'description': forms.Textarea,
+            'configuration': forms.Textarea,
+        }
 
 
 class SubPluginUpdateForm(forms.ModelForm):

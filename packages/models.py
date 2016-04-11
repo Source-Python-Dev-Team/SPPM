@@ -3,6 +3,8 @@ from __future__ import unicode_literals
 from django.core.urlresolvers import reverse
 from django.db import models
 
+from precise_bbcode.fields import BBCodeTextField
+
 from common.models import CommonBase
 
 from .helpers import handle_package_upload
@@ -67,12 +69,12 @@ class OldPackageRelease(models.Model):
     version = models.CharField(
         max_length=8,
     )
-    zip_file = models.FileField()
-    version_notes = models.TextField(
+    version_notes = BBCodeTextField(
         max_length=512,
         blank=True,
         null=True,
     )
+    zip_file = models.FileField()
     package = models.ForeignKey(
         to='packages.Package',
         related_name='previous_releases',

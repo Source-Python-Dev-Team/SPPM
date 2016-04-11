@@ -1,11 +1,12 @@
 from django.views.generic import CreateView, DetailView, ListView, UpdateView
 
 from .models import Plugin
-from .forms import PluginCreateForm, PluginUpdateForm
+from .forms import PluginCreateForm, PluginEditForm, PluginUpdateForm
 
 
 __all__ = (
     'PluginCreateView',
+    'PluginEditView',
     'PluginListView',
     'PluginUpdateView',
     'PluginView',
@@ -23,6 +24,12 @@ class PluginCreateView(CreateView):
     model = Plugin
     form_class = PluginCreateForm
     template_name = 'plugins/plugin_create.html'
+
+
+class PluginEditView(UpdateView):
+    model = Plugin
+    form_class = PluginEditForm
+    template_name = 'plugins/plugin_edit.html'
 
 
 class PluginUpdateView(UpdateView):

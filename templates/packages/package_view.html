@@ -1,4 +1,6 @@
 {% extends "common/sidebar.html" %}
+{% load bbcode_tags %}
+{% bbcode entry.bbcode_content %}
 
 {% block title %}{{ package.name }} - version {{ package.version }}{% endblock title %}
 
@@ -24,11 +26,24 @@
     {% endif %}
     </ul>
 
+    <h3>Description</h3>
+    <ol>
+        {{ package.description.rendered }}
+    </ol>
+    <br />
+
     <h3>Installation</h3>
     <ol>
         <li>Download the zip file.</li>
         <li>Extract the zip file to your server's primary directory (ie <span style="color: blue">../my_servers/css/cstrike/</span>).</li>
     </ol>
+    <br />
+
+    <h3>Configuration</h3>
+    <ol>
+        {{ package.configuration.rendered }}
+    </ol>
+    <br />
 
     <p>As this is a package, you cannot simply load it.  Plugins, Sub-Plugins, and even other Packages may utilize this package by importing it in their code.</p>
 

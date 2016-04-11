@@ -3,6 +3,8 @@ from __future__ import unicode_literals
 from django.core.urlresolvers import reverse
 from django.db import models
 
+from precise_bbcode.fields import BBCodeTextField
+
 from common.models import CommonBase
 from common.validators import sub_plugin_path_validator
 
@@ -58,6 +60,7 @@ class Plugin(CommonBase):
             )
             release.save()
         self.current_version = self.version
+        self.current_version_notes = self.version_notes
         self.current_zip_file = self.zip_file
         super(Plugin, self).save(
             force_insert, force_update, using, update_fields
@@ -78,6 +81,11 @@ class SubPluginPath(models.Model):
 class OldPluginRelease(models.Model):
     version = models.CharField(
         max_length=8,
+    )
+    version_notes = BBCodeTextField(
+        max_length=512,
+        blank=True,
+        null=True,
     )
     zip_file = models.FileField()
     plugin = models.ForeignKey(

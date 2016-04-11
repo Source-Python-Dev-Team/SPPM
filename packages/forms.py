@@ -10,6 +10,7 @@ from .models import Package
 
 __all__ = (
     'PackageCreateForm',
+    'PackageEditForm',
     'PackageUpdateForm',
 )
 
@@ -20,13 +21,17 @@ class PackageCreateForm(forms.ModelForm):
         fields = (
             'name',
             'version',
+            'description',
             'version_notes',
+            'configuration',
             'slug',
             'zip_file',
         )
         widgets = {
             'slug': forms.HiddenInput(),
+            'description': forms.Textarea,
             'version_notes': forms.Textarea,
+            'configuration': forms.Textarea,
         }
 
     def clean_zip_file(self):
@@ -35,6 +40,19 @@ class PackageCreateForm(forms.ModelForm):
         basename = get_package_basename(file_list)
         self.instance.basename = basename
         return self.cleaned_data['zip_file']
+
+
+class PackageEditForm(forms.ModelForm):
+    class Meta:
+        model = Package
+        fields = (
+            'description',
+            'configuration',
+        )
+        widgets = {
+            'description': forms.Textarea,
+            'configuration': forms.Textarea,
+        }
 
 
 class PackageUpdateForm(forms.ModelForm):

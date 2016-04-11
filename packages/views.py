@@ -1,11 +1,12 @@
 from django.views.generic import CreateView, DetailView, ListView, UpdateView
 
 from .models import Package
-from .forms import PackageCreateForm, PackageUpdateForm
+from .forms import PackageCreateForm, PackageEditForm, PackageUpdateForm
 
 
 __all__ = (
     'PackageCreateView',
+    'PackageEditView',
     'PackageListView',
     'PackageUpdateView',
     'PackageView',
@@ -23,6 +24,12 @@ class PackageCreateView(CreateView):
     model = Package
     form_class = PackageCreateForm
     template_name = 'packages/package_create.html'
+
+
+class PackageEditView(UpdateView):
+    model = Package
+    form_class = PackageEditForm
+    template_name = 'packages/package_edit.html'
 
 
 class PackageUpdateView(UpdateView):
