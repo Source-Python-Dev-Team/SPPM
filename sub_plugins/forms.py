@@ -38,6 +38,7 @@ class SubPluginCreateForm(forms.ModelForm):
             'description',
             'version_notes',
             'configuration',
+            'logo',
             'plugin',
             'slug',
             'zip_file',
@@ -70,6 +71,7 @@ class SubPluginEditForm(forms.ModelForm):
         fields = (
             'description',
             'configuration',
+            'logo',
         )
         widgets = {
             'description': forms.Textarea,

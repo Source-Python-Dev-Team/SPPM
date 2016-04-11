@@ -15,7 +15,8 @@ from precise_bbcode.fields import BBCodeTextField
 from common.models import CommonBase
 
 # App Imports
-from .helpers import handle_sub_plugin_upload
+from .helpers import handle_sub_plugin_logo_upload
+from .helpers import handle_sub_plugin_zip_upload
 
 
 # =============================================================================
@@ -52,7 +53,12 @@ class SubPlugin(CommonBase):
         related_name='required_in_sub_plugins',
     )
     zip_file = models.FileField(
-        upload_to=handle_sub_plugin_upload,
+        upload_to=handle_sub_plugin_zip_upload,
+    )
+    logo = models.ImageField(
+        upload_to=handle_sub_plugin_logo_upload,
+        blank=True,
+        null=True,
     )
 
     def get_absolute_url(self):

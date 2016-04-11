@@ -13,7 +13,8 @@ from plugins.constants import PLUGIN_PATH
 # =============================================================================
 __all__ = (
     'get_sub_plugin_basename',
-    'handle_sub_plugin_upload',
+    'handle_sub_plugin_logo_upload',
+    'handle_sub_plugin_zip_upload',
 )
 
 
@@ -52,11 +53,19 @@ def get_sub_plugin_basename(file_list, plugin):
     return basename, path
 
 
-def handle_sub_plugin_upload(instance, filename):
+def handle_sub_plugin_zip_upload(instance, filename):
     return 'releases/sub_plugins/{0}/{1}/{1}-v{2}.zip'.format(
         instance.plugin.basename,
         instance.basename,
         instance.version,
+    )
+
+
+def handle_sub_plugin_logo_upload(instance, filename):
+    return 'logos/sub_plugins/{0}/{1}.{2}'.format(
+        instance.plugin.basename,
+        instance.basename,
+        filename.rsplit('.', 1)[1]
     )
 
 

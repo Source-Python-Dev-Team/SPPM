@@ -16,7 +16,8 @@ from common.models import CommonBase
 from common.validators import sub_plugin_path_validator
 
 # App Imports
-from .helpers import handle_plugin_upload
+from .helpers import handle_plugin_logo_upload
+from .helpers import handle_plugin_zip_upload
 
 
 # =============================================================================
@@ -50,7 +51,12 @@ class Plugin(CommonBase):
         related_name='required_in_plugins',
     )
     zip_file = models.FileField(
-        upload_to=handle_plugin_upload,
+        upload_to=handle_plugin_zip_upload,
+    )
+    logo = models.ImageField(
+        upload_to=handle_plugin_logo_upload,
+        blank=True,
+        null=True,
     )
 
     def get_absolute_url(self):

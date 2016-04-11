@@ -13,7 +13,8 @@ from .constants import PACKAGE_PATH
 # =============================================================================
 __all__ = (
     'get_package_basename',
-    'handle_package_upload',
+    'handle_package_logo_upload',
+    'handle_package_zip_upload',
 )
 
 
@@ -45,8 +46,15 @@ def get_package_basename(file_list):
     return basename, is_module
 
 
-def handle_package_upload(instance, filename):
+def handle_package_zip_upload(instance, filename):
     return 'releases/packages/{0}/{0}-v{1}.zip'.format(
         instance.basename,
         instance.version
+    )
+
+
+def handle_package_logo_upload(instance, filename):
+    return 'logos/packages/{0}.{1}'.format(
+        instance.basename,
+        filename.rsplit('.', 1)[1]
     )

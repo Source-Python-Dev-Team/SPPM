@@ -36,6 +36,7 @@ class PackageCreateForm(forms.ModelForm):
             'description',
             'version_notes',
             'configuration',
+            'logo',
             'slug',
             'zip_file',
         )
@@ -60,6 +61,7 @@ class PackageEditForm(forms.ModelForm):
         fields = (
             'description',
             'configuration',
+            'logo',
         )
         widgets = {
             'description': forms.Textarea,

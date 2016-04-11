@@ -15,7 +15,8 @@ from precise_bbcode.fields import BBCodeTextField
 from common.models import CommonBase
 
 # App Imports
-from .helpers import handle_package_upload
+from .helpers import handle_package_logo_upload
+from .helpers import handle_package_zip_upload
 
 
 # =============================================================================
@@ -48,7 +49,12 @@ class Package(CommonBase):
         related_name='required_in_packages',
     )
     zip_file = models.FileField(
-        upload_to=handle_package_upload,
+        upload_to=handle_package_zip_upload,
+    )
+    logo = models.ImageField(
+        upload_to=handle_package_logo_upload,
+        blank=True,
+        null=True,
     )
 
     def get_absolute_url(self):

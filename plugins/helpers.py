@@ -13,7 +13,8 @@ from .constants import PLUGIN_PATH
 # =============================================================================
 __all__ = (
     'get_plugin_basename',
-    'handle_plugin_upload',
+    'handle_plugin_logo_upload',
+    'handle_plugin_zip_upload',
 )
 
 
@@ -41,8 +42,15 @@ def get_plugin_basename(file_list):
     return basename
 
 
-def handle_plugin_upload(instance, filename):
+def handle_plugin_zip_upload(instance, filename):
     return 'releases/plugins/{0}/{0}-v{1}.zip'.format(
         instance.basename,
         instance.version,
+    )
+
+
+def handle_plugin_logo_upload(instance, filename):
+    return 'logos/plugins/{0}.{1}'.format(
+        instance.basename,
+        filename.rsplit('.', 1)[1]
     )
