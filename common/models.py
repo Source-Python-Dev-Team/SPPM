@@ -10,18 +10,7 @@ from .validators import basename_validator, version_validator
 
 __all__ = (
     'CommonBase',
-    'readable_data_file_types',
 )
-
-
-readable_data_file_types = [
-    'json',
-    'ini',
-    'res',
-    'txt',
-    'vdf',
-    'xml',
-]
 
 
 class CommonBase(models.Model):
@@ -73,52 +62,6 @@ class CommonBase(models.Model):
         blank=True,
         null=True,
     )
-
-    allowed_file_types = {
-        'cfg/source-python/': [
-            'cfg',
-            'ini',
-            'md',
-        ],
-
-        'log/source-python/': [
-            'md',
-            'txt',
-        ],
-
-        'models/': [
-            'ani',
-            'mdl',
-            'phy',
-            'vmf',
-            'vmx',
-            'vtf',
-            'vtx',
-            'vvd',
-        ],
-
-        'particles/': [
-            'pcf',
-            'txt',
-        ],
-
-        'resource/source-python/events/': [
-            'md',
-            'res',
-            'txt',
-        ],
-
-        'resource/source-python/translations/': [
-            'md',
-            'ini',
-        ],
-
-        'sound/source-python/': [
-            'mp3',
-            'ogg',
-            'wav',
-        ],
-    }
 
     def __str__(self):
         return self.name

@@ -3,7 +3,7 @@ from __future__ import unicode_literals
 from django.core.urlresolvers import reverse
 from django.db import models
 
-from common.models import CommonBase, readable_data_file_types
+from common.models import CommonBase
 
 from .helpers import handle_sub_plugin_upload
 
@@ -39,13 +39,6 @@ class SubPlugin(CommonBase):
     zip_file = models.FileField(
         upload_to=handle_sub_plugin_upload,
     )
-
-    allowed_file_types = dict(CommonBase.allowed_file_types)
-    allowed_file_types.update({
-        'addons/source-python/plugins/{self.plugin.basename}/{sub_plugin_path}/{self.basename}/': [
-            'py',
-        ] + readable_data_file_types,
-    })
 
     def get_absolute_url(self):
         return reverse(
