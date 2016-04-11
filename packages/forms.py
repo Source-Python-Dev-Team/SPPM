@@ -45,6 +45,9 @@ class PackageUpdateForm(forms.ModelForm):
             'version_notes',
             'zip_file',
         )
+        widgets = {
+            'version_notes': forms.Textarea,
+        }
 
     def clean_version(self):
         all_versions = [

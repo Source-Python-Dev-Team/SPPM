@@ -84,6 +84,7 @@ class SubPluginUpdateView(UpdateView):
         initial.update({
             'plugin': self.get_plugin(),
             'version': '',
+            'version_notes': '',
             'zip_file': '',
         })
         return initial

@@ -21,6 +21,7 @@ class SubPluginCreateForm(forms.ModelForm):
         fields = (
             'name',
             'version',
+            'version_notes',
             'plugin',
             'slug',
             'zip_file',
@@ -28,6 +29,7 @@ class SubPluginCreateForm(forms.ModelForm):
         widgets = {
             'plugin': forms.HiddenInput(),
             'slug': forms.HiddenInput(),
+            'version_notes': forms.Textarea,
         }
 
     def clean_zip_file(self):
@@ -49,8 +51,12 @@ class SubPluginUpdateForm(forms.ModelForm):
         model = SubPlugin
         fields = (
             'version',
+            'version_notes',
             'zip_file',
         )
+        widgets = {
+            'version_notes': forms.Textarea,
+        }
 
     def clean_version(self):
         all_versions = [

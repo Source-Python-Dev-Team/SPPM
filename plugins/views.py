@@ -42,6 +42,7 @@ class PluginUpdateView(UpdateView):
         initial = super(PluginUpdateView, self).get_initial()
         initial.update({
             'version': '',
+            'version_notes': '',
             'zip_file': '',
         })
         return initial

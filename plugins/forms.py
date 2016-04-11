@@ -20,11 +20,13 @@ class PluginCreateForm(forms.ModelForm):
         fields = (
             'name',
             'version',
+            'version_notes',
             'slug',
             'zip_file',
         )
         widgets = {
             'slug': forms.HiddenInput(),
+            'version_notes': forms.Textarea,
         }
 
     def clean_zip_file(self):
@@ -40,8 +42,12 @@ class PluginUpdateForm(forms.ModelForm):
         model = Plugin
         fields = (
             'version',
+            'version_notes',
             'zip_file',
         )
+        widgets = {
+            'version_notes': forms.Textarea,
+        }
 
     def clean_version(self):
         all_versions = [
