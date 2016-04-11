@@ -1,6 +1,37 @@
+from django.core.exceptions import ValidationError
+
+from .constants import PACKAGE_PATH
+
+
 __all__ = (
+    'get_package_basename',
     'handle_package_upload',
 )
+
+
+def get_package_basename(file_list):
+    basename = None
+    is_module = False
+    for x in file_list:
+        if not x.endswith('.py'):
+            continue
+        if not x.startswith(PACKAGE_PATH):
+            continue
+        current = x.split(PACKAGE_PATH, 1)[1]
+        if not current:
+            continue
+        if '/' not in current:
+            current = current.rsplit('.', 1)[0]
+            is_module = True
+        else:
+            current = current.split('/', 1)[0]
+        if basename is None:
+            basename = current
+        elif basename != current:
+            raise ValidationError('Multiple base directories found for plugin')
+    if basename is None:
+        raise ValidationError('No base directory found for plugin.')
+    return basename, is_module
 
 
 def handle_package_upload(instance, filename):

@@ -3,6 +3,9 @@ from zipfile import ZipFile
 from django import forms
 from django.core.exceptions import ValidationError
 
+from plugins.constants import PLUGIN_PATH
+
+from .helpers import get_sub_plugin_basename
 from .models import SubPlugin
 
 
@@ -10,9 +13,6 @@ __all__ = (
     'SubPluginCreateForm',
     'SubPluginUpdateForm',
 )
-
-
-_path = 'addons/source-python/plugins/'
 
 
 class SubPluginCreateForm(forms.ModelForm):
@@ -34,8 +34,8 @@ class SubPluginCreateForm(forms.ModelForm):
         file_list = [x for x in ZipFile(
             self.cleaned_data['zip_file']) if not x.endswith('/')]
         plugin = self.cleaned_data['plugin']
-        basename, path = _get_basename(file_list, plugin)
-        if not _path + '{0}/{1}/{2}/{2}.py'.format(
+        basename, path = get_sub_plugin_basename(file_list, plugin)
+        if not PLUGIN_PATH + '{0}/{1}/{2}/{2}.py'.format(
                 plugin.basename, path, basename) in file_list:
             raise ValidationError(
                 'No primary file found in zip.  ' +
@@ -66,8 +66,8 @@ class SubPluginUpdateForm(forms.ModelForm):
         file_list = [x for x in ZipFile(
             self.cleaned_data['zip_file']).namelist() if not x.endswith('/')]
         plugin = self.instance.plugin
-        basename, path = _get_basename(file_list, plugin)
-        if not _path + '{0}/{1}/{2}/{2}.py'.format(
+        basename, path = get_sub_plugin_basename(file_list, plugin)
+        if not PLUGIN_PATH + '{0}/{1}/{2}/{2}.py'.format(
                 plugin.basename, path, basename) in file_list:
             raise ValidationError(
                 'No primary file found in zip.  ' +
@@ -76,57 +76,3 @@ class SubPluginUpdateForm(forms.ModelForm):
             raise ValidationError(
                 'Uploaded plugin does not match current plugin.')
         return self.cleaned_data['zip_file']
-
-
-def _get_basename(file_list, plugin):
-    plugin_name = _validate_plugin_name(file_list, plugin)
-    basename = None
-    path = None
-    paths = [x[0] for x in plugin.paths.values_list('path')]
-    for x in file_list:
-        if not x.endswith('.py'):
-            continue
-        if not x.startswith(_path + '{0}/'.format(plugin_name)):
-            continue
-        current = x.split(_path + '{0}/'.format(plugin_name), 1)[1]
-        if not current:
-            continue
-        for current_path in paths:
-            if not current.startswith(current_path):
-                continue
-            current = current.split(current_path, 1)[1]
-            if current.startswith('/'):
-                current = current[1:]
-            current = current.split('/', 1)[0]
-            if not current:
-                continue
-            if basename is None:
-                basename = current
-                path = current_path
-            elif basename != current:
-                raise ValidationError('Multiple sub-plugins found in zip.')
-    if basename is None:
-        raise ValidationError('No sub-plugin base directory found in zip.')
-    return basename, path
-
-
-def _validate_plugin_name(file_list, plugin):
-    plugin_name = None
-    for x in file_list:
-        if not x.endswith('.py'):
-            continue
-        if not x.startswith(_path):
-            continue
-        current = x.split(_path, 1)[1]
-        if not current:
-            continue
-        current = current.split('/', 1)[0]
-        if plugin_name is None:
-            plugin_name = current
-        elif plugin_name != current:
-            raise ValidationError('Multiple plugins found in zip.')
-    if plugin_name is None:
-        raise ValidationError('No plugin base directory found in zip.')
-    if plugin_name != plugin.basename:
-        raise ValidationError('Wrong plugin base directory found in zip.')
-    return plugin_name
