@@ -1,20 +1,34 @@
+# =============================================================================
+# >> IMPORTS
+# =============================================================================
+# Python Imports
 from __future__ import unicode_literals
 
+# Django Imports
 from django.db import models
 from django.utils.text import slugify
 
+# 3rd-Party Django Imports
 from precise_bbcode.fields import BBCodeTextField
 
+# Project Imports
 from users.models import User
 
+# App Imports
 from .validators import basename_validator, version_validator
 
 
+# =============================================================================
+# >> ALL DECLARATION
+# =============================================================================
 __all__ = (
     'CommonBase',
 )
 
 
+# =============================================================================
+# >> MODEL CLASSES
+# =============================================================================
 class CommonBase(models.Model):
     name = models.CharField(
         max_length=64,

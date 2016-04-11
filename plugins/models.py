@@ -1,16 +1,27 @@
+# =============================================================================
+# >> IMPORTS
+# =============================================================================
+# Python Imports
 from __future__ import unicode_literals
 
+# Django Imports
 from django.core.urlresolvers import reverse
 from django.db import models
 
+# 3rd-Party Django Imports
 from precise_bbcode.fields import BBCodeTextField
 
+# Project Imports
 from common.models import CommonBase
 from common.validators import sub_plugin_path_validator
 
+# App Imports
 from .helpers import handle_plugin_upload
 
 
+# =============================================================================
+# >> ALL DECLARATION
+# =============================================================================
 __all__ = (
     'OldPluginRelease',
     'Plugin',
@@ -18,7 +29,9 @@ __all__ = (
 )
 
 
-# Create your models here.
+# =============================================================================
+# >> MODEL CLASSES
+# =============================================================================
 class Plugin(CommonBase):
     user = models.ForeignKey(
         to='users.User',

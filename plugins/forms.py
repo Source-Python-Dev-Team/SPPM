@@ -1,13 +1,22 @@
+# =============================================================================
+# >> IMPORTS
+# =============================================================================
+# Python Imports
 from zipfile import ZipFile
 
+# Django Imports
 from django import forms
 from django.core.exceptions import ValidationError
 
+# App Imports
 from .constants import PLUGIN_PATH
 from .helpers import get_plugin_basename
 from .models import Plugin
 
 
+# =============================================================================
+# >> ALL DECLARATION
+# =============================================================================
 __all__ = (
     'PluginCreateForm',
     'PluginEditForm',
@@ -15,6 +24,9 @@ __all__ = (
 )
 
 
+# =============================================================================
+# >> FORM CLASSES
+# =============================================================================
 class PluginCreateForm(forms.ModelForm):
     class Meta:
         model = Plugin

@@ -1,14 +1,25 @@
+# =============================================================================
+# >> IMPORTS
+# =============================================================================
+# Django Imports
 from django.core.exceptions import ValidationError
 
+# Project Imports
 from plugins.constants import PLUGIN_PATH
 
 
+# =============================================================================
+# >> ALL DECLARATION
+# =============================================================================
 __all__ = (
     'get_sub_plugin_basename',
     'handle_sub_plugin_upload',
 )
 
 
+# =============================================================================
+# >> FUNCTIONS
+# =============================================================================
 def get_sub_plugin_basename(file_list, plugin):
     plugin_name = _validate_plugin_name(file_list, plugin)
     basename = None
@@ -49,6 +60,9 @@ def handle_sub_plugin_upload(instance, filename):
     )
 
 
+# =============================================================================
+# >> HELPER FUNCTIONS
+# =============================================================================
 def _validate_plugin_name(file_list, plugin):
     plugin_name = None
     for x in file_list:

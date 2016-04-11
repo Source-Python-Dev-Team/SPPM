@@ -1,9 +1,17 @@
+# =============================================================================
+# >> IMPORTS
+# =============================================================================
+# Django Imports
 from django.views.generic import CreateView, DetailView, ListView, UpdateView
 
+# App Imports
 from .models import Package
 from .forms import PackageCreateForm, PackageEditForm, PackageUpdateForm
 
 
+# =============================================================================
+# >> ALL DECLARATION
+# =============================================================================
 __all__ = (
     'PackageCreateView',
     'PackageEditView',
@@ -13,7 +21,9 @@ __all__ = (
 )
 
 
-# Create your views here.
+# =============================================================================
+# >> VIEW CLASSES
+# =============================================================================
 class PackageListView(ListView):
     model = Package
     paginate_by = 20

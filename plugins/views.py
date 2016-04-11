@@ -1,9 +1,17 @@
+# =============================================================================
+# >> IMPORTS
+# =============================================================================
+# Django Imports
 from django.views.generic import CreateView, DetailView, ListView, UpdateView
 
+# App Imports
 from .models import Plugin
 from .forms import PluginCreateForm, PluginEditForm, PluginUpdateForm
 
 
+# =============================================================================
+# >> ALL DECLARATION
+# =============================================================================
 __all__ = (
     'PluginCreateView',
     'PluginEditView',
@@ -13,7 +21,9 @@ __all__ = (
 )
 
 
-# Create your views here.
+# =============================================================================
+# >> VIEW CLASSES
+# =============================================================================
 class PluginListView(ListView):
     model = Plugin
     paginate_by = 20

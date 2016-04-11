@@ -1,10 +1,20 @@
+# =============================================================================
+# >> IMPORTS
+# =============================================================================
+# Django Imports
 from django.views.generic import CreateView, DetailView, ListView, UpdateView
 
+# Project Imports
 from plugins.models import Plugin
+
+# App Imports
 from .models import SubPlugin
 from .forms import SubPluginCreateForm, SubPluginEditForm, SubPluginUpdateForm
 
 
+# =============================================================================
+# >> ALL DECLARATION
+# =============================================================================
 __all__ = (
     'SubPluginCreateView',
     'SubPluginListView',
@@ -13,7 +23,9 @@ __all__ = (
 )
 
 
-# Create your views here.
+# =============================================================================
+# >> VIEW CLASSES
+# =============================================================================
 class SubPluginListView(ListView):
     model = SubPlugin
     paginate_by = 20

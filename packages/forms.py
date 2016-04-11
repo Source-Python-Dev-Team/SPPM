@@ -1,13 +1,22 @@
+# =============================================================================
+# >> IMPORTS
+# =============================================================================
+# Python Imports
 from zipfile import ZipFile
 
+# Django Imports
 from django import forms
 from django.core.exceptions import ValidationError
 
+# App Imports
 from .constants import PACKAGE_PATH
 from .helpers import get_package_basename
 from .models import Package
 
 
+# =============================================================================
+# >> ALL DECLARATION
+# =============================================================================
 __all__ = (
     'PackageCreateForm',
     'PackageEditForm',
@@ -15,6 +24,9 @@ __all__ = (
 )
 
 
+# =============================================================================
+# >> FORM CLASSES
+# =============================================================================
 class PackageCreateForm(forms.ModelForm):
     class Meta:
         model = Package

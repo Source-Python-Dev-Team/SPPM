@@ -1,17 +1,29 @@
+# =============================================================================
+# >> IMPORTS
+# =============================================================================
+# Python Imports
 from __future__ import unicode_literals
 
+# Django Imports
 from django.core.urlresolvers import reverse
 from django.db import models
 from django.utils.text import slugify
 
+# Project Imports
 from SPPM.settings import PYPI_URL
 
 
+# =============================================================================
+# >> ALL DECLARATION
+# =============================================================================
 __all__ = (
     'PyPiRequirement',
 )
 
 
+# =============================================================================
+# >> MODEL CLASSES
+# =============================================================================
 class PyPiRequirement(models.Model):
     name = models.CharField(
         max_length=32,

@@ -1,14 +1,24 @@
+# =============================================================================
+# >> IMPORTS
+# =============================================================================
+# Python Imports
 from zipfile import ZipFile
 
+# Django Imports
 from django import forms
 from django.core.exceptions import ValidationError
 
+# Project Imports
 from plugins.constants import PLUGIN_PATH
 
+# App Imports
 from .helpers import get_sub_plugin_basename
 from .models import SubPlugin
 
 
+# =============================================================================
+# >> ALL DECLARATION
+# =============================================================================
 __all__ = (
     'SubPluginCreateForm',
     'SubPluginEditForm',
@@ -16,6 +26,9 @@ __all__ = (
 )
 
 
+# =============================================================================
+# >> FORM CLASSES
+# =============================================================================
 class SubPluginCreateForm(forms.ModelForm):
     class Meta:
         model = SubPlugin

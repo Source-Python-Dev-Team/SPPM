@@ -1,22 +1,35 @@
+# =============================================================================
+# >> IMPORTS
+# =============================================================================
+# Python Imports
 from __future__ import unicode_literals
 
+# Django Imports
 from django.core.urlresolvers import reverse
 from django.db import models
 
+# 3rd-Party Django Imports
 from precise_bbcode.fields import BBCodeTextField
 
+# Project Imports
 from common.models import CommonBase
 
+# App Imports
 from .helpers import handle_package_upload
 
 
+# =============================================================================
+# >> ALL DECLARATION
+# =============================================================================
 __all__ = (
     'OldPackageRelease',
     'Package',
 )
 
 
-# Create your models here.
+# =============================================================================
+# >> MODEL CLASSES
+# =============================================================================
 class Package(CommonBase):
     user = models.ForeignKey(
         to='users.User',
