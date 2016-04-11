@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'phpbb',
     'debug_toolbar',
     'precise_bbcode',
     'common',
@@ -77,6 +78,11 @@ TEMPLATES = [
         },
     },
 ]
+
+AUTHENTICATION_BACKENDS = (
+    'phpbb.backends.PhpbbBackend',
+    'django.contrib.auth.backends.ModelBackend',
+)
 
 WSGI_APPLICATION = 'SPPM.wsgi.application'
 
@@ -141,3 +147,5 @@ GITHUB_URL = 'http://github.com/Source-Python-Dev-Team/Source.Python'
 PYPI_URL = 'https://pypi.python.org/pypi'
 
 MEDIA_ROOT = os.path.join(os.getcwd(), 'media')
+
+PHPBB_TABLE_PREFIX = 'phpbb_'
