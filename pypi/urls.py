@@ -6,11 +6,11 @@ urlpatterns = [
     url(
         regex=r'^$',
         view=PyPiListView.as_view(),
-        name='pypi-list',
+        name='pypi_list',
     ),
     url(
         regex=r'^(?P<slug>[\w-]+)/$',
         view=PyPiView.as_view(),
-        name='pypi-detail',
+        name='pypi_detail',
     ),
 ]

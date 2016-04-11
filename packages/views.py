@@ -42,6 +42,7 @@ class PackageUpdateView(UpdateView):
         initial = super(PackageUpdateView, self).get_initial()
         initial.update({
             'version': '',
+            'version_notes': '',
             'zip_file': '',
         })
         return initial

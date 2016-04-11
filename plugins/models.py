@@ -47,7 +47,7 @@ class Plugin(CommonBase):
 
     def get_absolute_url(self):
         return reverse(
-            viewname='plugins:plugin-detail',
+            viewname='plugins:plugin_detail',
             kwargs={
                 'slug': self.slug,
             }

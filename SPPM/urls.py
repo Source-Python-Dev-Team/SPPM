@@ -20,13 +20,13 @@ from django.views.generic import RedirectView
 urlpatterns = [
     url(
         regex=r'^admin/',
-        view=admin.site.urls
+        view=admin.site.urls,
     ),
     url(
         regex=r'^plugins/',
         view=include(
             'plugins.urls',
-            namespace='plugins'
+            namespace='plugins',
         ),
     ),
     url(
@@ -47,7 +47,7 @@ urlpatterns = [
         regex=r'^pypi/',
         view=include(
             'pypi.urls',
-            namespace='pypi'
+            namespace='pypi',
         ),
     ),
 ]

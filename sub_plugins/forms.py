@@ -12,6 +12,9 @@ __all__ = (
 )
 
 
+_path = 'addons/source-python/plugins/'
+
+
 class SubPluginCreateForm(forms.ModelForm):
     class Meta:
         model = SubPlugin
@@ -28,11 +31,12 @@ class SubPluginCreateForm(forms.ModelForm):
         }
 
     def clean_zip_file(self):
-        zip_file = ZipFile(self.cleaned_data['zip_file'])
+        file_list = [x for x in ZipFile(
+            self.cleaned_data['zip_file']) if not x.endswith('/')]
         plugin = self.cleaned_data['plugin']
-        basename, path = _get_basename(zip_file, plugin)
-        if not 'addons/source-python/plugins/{0}/{1}/{2}/{2}.py'.format(
-                plugin.basename, path, basename) in zip_file.namelist():
+        basename, path = _get_basename(file_list, plugin)
+        if not _path + '{0}/{1}/{2}/{2}.py'.format(
+                plugin.basename, path, basename) in file_list:
             raise ValidationError(
                 'No primary file found in zip.  ' +
                 'Perhaps you are attempting to upload a sub-plugin.')
@@ -59,11 +63,12 @@ class SubPluginUpdateForm(forms.ModelForm):
         return self.cleaned_data['version']
 
     def clean_zip_file(self):
-        zip_file = ZipFile(self.cleaned_data['zip_file'])
+        file_list = [x for x in ZipFile(
+            self.cleaned_data['zip_file']).namelist() if not x.endswith('/')]
         plugin = self.instance.plugin
-        basename, path = _get_basename(zip_file, plugin)
-        if not 'addons/source-python/plugins/{0}/{1}/{2}/{2}.py'.format(
-                plugin.basename, path, basename) in zip_file.namelist():
+        basename, path = _get_basename(file_list, plugin)
+        if not _path + '{0}/{1}/{2}/{2}.py'.format(
+                plugin.basename, path, basename) in file_list:
             raise ValidationError(
                 'No primary file found in zip.  ' +
                 'Perhaps you are attempting to upload a sub-plugin.')
@@ -73,17 +78,17 @@ class SubPluginUpdateForm(forms.ModelForm):
         return self.cleaned_data['zip_file']
 
 
-def _get_basename(zip_file, plugin):
-    plugin_name = _validate_plugin_name(zip_file, plugin)
+def _get_basename(file_list, plugin):
+    plugin_name = _validate_plugin_name(file_list, plugin)
     basename = None
     path = None
     paths = [x[0] for x in plugin.paths.values_list('path')]
-    for x in zip_file.namelist():
-        if not x.startswith(
-                'addons/source-python/plugins/{0}/'.format(plugin_name)):
+    for x in file_list:
+        if not x.endswith('.py'):
             continue
-        current = x.split(
-            'addons/source-python/plugins/{0}/'.format(plugin_name), 1)[1]
+        if not x.startswith(_path + '{0}/'.format(plugin_name)):
+            continue
+        current = x.split(_path + '{0}/'.format(plugin_name), 1)[1]
         if not current:
             continue
         for current_path in paths:
@@ -105,13 +110,14 @@ def _get_basename(zip_file, plugin):
     return basename, path
 
 
-def _validate_plugin_name(zip_file, plugin):
+def _validate_plugin_name(file_list, plugin):
     plugin_name = None
-    for x in zip_file.filelist:
-        if not x.filename.startswith('addons/source-python/plugins/'):
+    for x in file_list:
+        if not x.endswith('.py'):
             continue
-        current = x.filename.split(
-            'addons/source-python/plugins/', 1)[1]
+        if not x.startswith(_path):
+            continue
+        current = x.split(_path, 1)[1]
         if not current:
             continue
         current = current.split('/', 1)[0]

@@ -34,6 +34,11 @@ class CommonBase(models.Model):
         max_length=8,
         validators=[version_validator]
     )
+    version_notes = models.CharField(
+        max_length=512,
+        blank=True,
+        null=True,
+    )
     basename = models.CharField(
         max_length=32,
         validators=[basename_validator],
@@ -56,6 +61,11 @@ class CommonBase(models.Model):
     )
     current_version = models.CharField(
         max_length=8,
+        blank=True,
+        null=True,
+    )
+    current_version_notes = models.TextField(
+        max_length=512,
         blank=True,
         null=True,
     )

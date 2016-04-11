@@ -11,28 +11,28 @@ urlpatterns = [
     url(
         regex=r'^$',
         view=PluginListView.as_view(),
-        name='plugin-list',
+        name='plugin_list',
     ),
     url(
         regex=r'^create/',
         view=PluginCreateView.as_view(),
-        name='plugin-create',
+        name='plugin_create',
     ),
     url(
         regex=r'^update/(?P<slug>[\w-]+)/',
         view=PluginUpdateView.as_view(),
-        name='plugin-update',
+        name='plugin_update',
     ),
     url(
         regex=r'^(?P<slug>[\w-]+)/sub-plugins/',
         view=include(
             'sub_plugins.urls',
-            namespace='sub-plugins',
-        )
+            namespace='sub_plugins',
+        ),
     ),
     url(
         regex=r'^(?P<slug>[\w-]+)/$',
         view=PluginView.as_view(),
-        name='plugin-detail',
+        name='plugin_detail',
     ),
 ]

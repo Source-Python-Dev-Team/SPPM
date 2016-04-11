@@ -45,32 +45,11 @@ class Package(CommonBase):
 
     def get_absolute_url(self):
         return reverse(
-            viewname='packages:package-detail',
+            viewname='packages:package_detail',
             kwargs={
                 'slug': self.slug,
             }
         )
-
-    def get_basename(self, zip_file):
-        basename = None
-        for x in zip_file.filelist:
-            if x.filename.startswith('addons/source-python/packages/custom/'):
-                current = x.filename.split(
-                    'addons/source-python/packages/custom/', 1)[1]
-                if not current:
-                    continue
-                if not current.endswith('.py'):
-                    continue
-                current = current.split('/', 1)[0]
-                if current.endswith('.py'):
-                    current = current.rsplit('.', 1)[0]
-                if basename is None:
-                    basename = current
-                elif basename != current:
-                    raise ValueError('Multiple packages included in zip.')
-        if basename is None:
-            raise ValueError('No package found in zip.')
-        return basename
 
     def save(
             self, force_insert=False, force_update=False,
@@ -78,11 +57,13 @@ class Package(CommonBase):
         if self.current_version and self.current_zip_file:
             release = OldPackageRelease(
                 version=self.current_version,
+                version_notes=self.current_version_notes,
                 zip_file=self.current_zip_file,
             )
             release.save()
             self.previous_releases.add(release)
         self.current_version = self.version
+        self.current_version_notes = self.version_notes
         self.current_zip_file = self.zip_file
         super(Package, self).save(
             force_insert, force_update, using, update_fields
@@ -94,6 +75,11 @@ class OldPackageRelease(models.Model):
         max_length=8,
     )
     zip_file = models.FileField()
+    version_notes = models.TextField(
+        max_length=512,
+        blank=True,
+        null=True,
+    )
     package = models.ForeignKey(
         to='packages.Package',
         related_name='previous_releases',

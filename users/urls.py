@@ -6,11 +6,11 @@ urlpatterns = [
     url(
         regex=r'^$',
         view=UserListView.as_view(),
-        name='user-list'
+        name='user_list',
     ),
     url(
         regex=r'^(?P<slug>[\w-]+)/$',
         view=UserView.as_view(),
-        name='user-detail',
+        name='user_detail',
     ),
 ]

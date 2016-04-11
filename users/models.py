@@ -17,16 +17,13 @@ _forum_member_url = FORUM_URL + '/member.php?{0}'
 
 # Create your models here.
 class User(models.Model):
-
     name = models.CharField(
         max_length=30,
     )
-
     forum_id = models.IntegerField(
         primary_key=True,
         unique=True,
     )
-
     slug = models.SlugField(
         max_length=32,
         unique=True,
@@ -41,7 +38,7 @@ class User(models.Model):
 
     def get_absolute_url(self):
         return reverse(
-            viewname='users:user-detail',
+            viewname='users:user_detail',
             kwargs={
                 'slug': self.slug,
             }

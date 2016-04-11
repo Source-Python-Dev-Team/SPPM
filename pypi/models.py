@@ -13,12 +13,10 @@ __all__ = (
 
 
 class PyPiRequirement(models.Model):
-
     name = models.CharField(
         max_length=32,
         unique=True,
     )
-
     slug = models.SlugField(
         max_length=32,
         unique=True,
@@ -33,7 +31,7 @@ class PyPiRequirement(models.Model):
 
     def get_absolute_url(self):
         return reverse(
-            viewname='pypi:pypi-detail',
+            viewname='pypi:pypi_detail',
             kwargs={
                 'slug': self.slug,
             }
