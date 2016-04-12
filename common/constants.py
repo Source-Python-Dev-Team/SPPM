@@ -3,6 +3,11 @@
 # =============================================================================
 __all__ = (
     'ALLOWED_FILE_TYPES',
+    'LOGO_MAX_HEIGHT',
+    'LOGO_MAX_WIDTH',
+    'IMAGE_MAX_HEIGHT',
+    'IMAGE_MAX_WIDTH',
+    'MAX_IMAGES',
     'READABLE_DATA_FILE_TYPES',
 )
 
@@ -15,6 +20,8 @@ LOGO_MAX_HEIGHT = 200
 
 IMAGE_MAX_WIDTH = 400
 IMAGE_MAX_HEIGHT = 400
+
+MAX_IMAGES = 10
 
 READABLE_DATA_FILE_TYPES = [
     'json',
