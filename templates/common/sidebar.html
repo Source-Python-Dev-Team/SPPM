@@ -3,45 +3,45 @@
 
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <title>{% block title %}{% endblock title %}</title>
-    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
-    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
-    <link rel="shortcut icon" type="image/png" href="{% static "common/sp_icon_plugins.png" %}"/>
-    <link rel="stylesheet" href="{% static 'common/base.css' %}">
-    <meta charset="UTF-8">
-</head>
+    <head>
+        <title>{% block title %}{% endblock title %}</title>
+        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+        <link rel="shortcut icon" type="image/png" href="{% static "common/sp_icon_plugins.png" %}"/>
+        <link rel="stylesheet" href="{% static 'common/base.css' %}">
+        <meta charset="UTF-8">
+    </head>
 
-<outer>
-    <inner>
-        <sidebar>
-            <p><img src="{% static "common/sp_logo_plugins.png" %}" height="135" width="135" alt="SP Plugin Logo"></p>
-            <b>&nbsp;Plugin Menu&nbsp;</b><br />
-            &nbsp;<a href="{% url 'plugins:plugin_list' %}"><b>Latest Plugins</b></a>&nbsp;<br />
-            {# TODO: Add in sorting by other types #}
-            {#<a href="{% url 'plugins:plugin_list' %}">Top Plugins</a><br />#}
-            {#<a href="{% url 'plugins:plugin_list' %}">By Game</a><br />#}
-            {#<a href="{% url 'plugins:plugin_list' %}">By Tag</a><br />#}
-            {#<a href="{% url 'plugins:plugin_list' %}">By Author</a><br />#}
-            &nbsp;<a href="{% url 'plugins:plugin_create' %}"><b>Create New Plugin</b></a>&nbsp;<br />
-            <br />
-            <b>&nbsp;Package Menu&nbsp;</b><br />
-            &nbsp;<a href="{% url 'packages:package_list' %}"><b>Latest Packages</b></a>&nbsp;<br />
-            &nbsp;<a href="{% url 'packages:package_create' %}"><b>Create New Package</b></a>&nbsp;<br />
-            <br />
-            <b>&nbsp;PyPi Menu&nbsp;</b><br />
-            &nbsp;<a href="{% url 'pypi:pypi_list' %}"><b>PyPi List</b></a>&nbsp;<br />
-            <br />
-            <b>&nbsp;User Menu&nbsp;</b><br />
-            &nbsp;<a href="{% url 'users:user_list' %}"><b>User List</b></a>&nbsp;<br />
-            <br />
-            <b>&nbsp;Source.Python Links&nbsp;</b><br />
-            &nbsp;<a href="{{ FORUM_URL }}"><b>Forums</b></a>&nbsp;<br />
-            &nbsp;<a href="{{ WIKI_URL }}"><b>Wiki</b></a>&nbsp;<br />
-            &nbsp;<a href="{{ GITHUB_URL }}"><b>Source Code</b></a>&nbsp;<br />
-            &nbsp;<a href="{{ GITHUB_URL }}/issues"><b>Issues List</b></a>&nbsp;<br />
-        </sidebar>
-        <content>{% block content %}{% endblock content %}</content>
-    </inner>
-</outer>
+    <outer>
+        <inner>
+            <sidebar>
+                <p><img src="{% static "common/sp_logo_plugins.png" %}" height="135" width="135" alt="SP Plugin Logo"></p>
+                <b>&nbsp;Plugin Menu&nbsp;</b><br />
+                &nbsp;<a href="{% url 'plugins:plugin_list' %}"><b>Latest Plugins</b></a>&nbsp;<br />
+                {# TODO: Add in sorting by other types #}
+                {#<a href="{% url 'plugins:plugin_list' %}">Top Plugins</a><br />#}
+                {#<a href="{% url 'plugins:plugin_list' %}">By Game</a><br />#}
+                {#<a href="{% url 'plugins:plugin_list' %}">By Tag</a><br />#}
+                {#<a href="{% url 'plugins:plugin_list' %}">By Author</a><br />#}
+                &nbsp;<a href="{% url 'plugins:plugin_create' %}"><b>Create New Plugin</b></a>&nbsp;<br />
+                <br />
+                <b>&nbsp;Package Menu&nbsp;</b><br />
+                &nbsp;<a href="{% url 'packages:package_list' %}"><b>Latest Packages</b></a>&nbsp;<br />
+                &nbsp;<a href="{% url 'packages:package_create' %}"><b>Create New Package</b></a>&nbsp;<br />
+                <br />
+                <b>&nbsp;PyPi Menu&nbsp;</b><br />
+                &nbsp;<a href="{% url 'pypi:pypi_list' %}"><b>PyPi List</b></a>&nbsp;<br />
+                <br />
+                <b>&nbsp;User Menu&nbsp;</b><br />
+                &nbsp;<a href="{% url 'users:user_list' %}"><b>User List</b></a>&nbsp;<br />
+                <br />
+                <b>&nbsp;Source.Python Links&nbsp;</b><br />
+                &nbsp;<a href="{{ FORUM_URL }}"><b>Forums</b></a>&nbsp;<br />
+                &nbsp;<a href="{{ WIKI_URL }}"><b>Wiki</b></a>&nbsp;<br />
+                &nbsp;<a href="{{ GITHUB_URL }}"><b>Source Code</b></a>&nbsp;<br />
+                &nbsp;<a href="{{ GITHUB_URL }}/issues"><b>Issues List</b></a>&nbsp;<br />
+            </sidebar>
+            <content>{% block content %}{% endblock content %}</content>
+        </inner>
+    </outer>
 </html>

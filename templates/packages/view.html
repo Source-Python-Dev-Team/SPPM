@@ -6,74 +6,80 @@
 
 {% block content %}
 
-<body>
-    <h1>{{ package.name }} - version {{ package.version }}</h1>
-    <ul><h2>Owner:</h2>
-    <ul><a href="{{ package.user.get_absolute_url }}">{{ package.user.name }}</a></ul>
-    {% if contributors %}
-        <h2>Contributors:</h2>
+    <body>
+
+        {% if plugin.logo %}
+            <img src="{{ MEDIA_URL }}{{ package.logo }}" height="135" width="135" alt="{{ package }} Logo"/>
+        {% endif %}
+        <h1>{{ package.name }} - version {{ package.version }}</h1>
         <ul>
-        {% for user in contributors %}
-            <a href="{{ user.get_absolute_url }}">{{ user.name }}</a>
+            <h2>Owner:</h2>
+            <ul><a href="{{ package.user.get_absolute_url }}">{{ package.user.name }}</a></ul>
+            {% if contributors %}
+                <h2>Contributors:</h2>
+                <ul>
+                    {% for user in contributors %}
+                        <a href="{{ user.get_absolute_url }}">{{ user.name }}</a>
+                        <br />
+                    {% endfor %}
+                </ul>
+            {% endif %}
+
             <br />
-        {% endfor %}
+            <p>Created on {{ package.date_created }}</p>
+            {% if package.date_last_updated %}
+                <p>Last updated on {{ package.date_last_updated }}</p>
+            {% endif %}
         </ul>
-    {% endif %}
-    <br />
-    <p>Created on {{ package.date_created }}</p>
-    {% if package.date_last_updated %}
-        <p>Last updated on {{ package.date_last_updated }}</p>
-    {% endif %}
-    </ul>
 
-    <h3>Description</h3>
-    <ol>
-        {{ package.description.rendered }}
-    </ol>
-    <br />
-
-    <h3>Installation</h3>
-    <ol>
-        <li>Download the zip file.</li>
-        <li>Extract the zip file to your server's primary directory (ie <span style="color: blue">../my_servers/css/cstrike/</span>).</li>
-    </ol>
-    <br />
-
-    <h3>Configuration</h3>
-    <ol>
-        {{ package.configuration.rendered }}
-    </ol>
-    <br />
-
-    <p>As this is a package, you cannot simply load it.  Plugins, Sub-Plugins, and even other Packages may utilize this package by importing it in their code.</p>
-
-    {% if required_in_plugins %}
+        <h3>Description</h3>
+        <ol>
+            {{ package.description.rendered }}
+        </ol>
         <br />
-        <p>Here is a list of plugins that require {{ package.name }}:</p>
-        {% for plugin in required_in_plugins %}
-            <li><a href="{{ plugin.get_absolute_url }}">{{ plugin.name }}</a></li>
-        {% endfor %}
-    {% endif %}
 
-    {% if required_in_sub_plugins %}
+        <h3>Installation</h3>
+        <ol>
+            <li>Download the zip file.</li>
+            <li>Extract the zip file to your server's primary directory (ie <span style="color: blue">../my_servers/css/cstrike/</span>).</li>
+        </ol>
         <br />
-        <p>Here is a list of sub-plugins that require {{ package.name }}:</p>
-        {% for sub_plugin in required_in_sub_plugins %}
-            <li><a href="{{ sub_plugin.get_absolute_url }}">{{ sub_plugin.name }}</a></li>
-        {% endfor %}
-    {% endif %}
 
-    {% if required_in_packages %}
+        <h3>Configuration</h3>
+        <ol>
+            {{ package.configuration.rendered }}
+        </ol>
         <br />
-        <p>Here is a list of other packages that require {{ package.name }}:</p>
-        {% for other in required_in_packages %}
-            <li><a href="{{ other.get_absolute_url }}">{{ other.name }}</a></li>
-        {% endfor %}
-    {% endif %}
 
-    {# TODO: Add package requirements #}
-    {# TODO: Add pypi requirements #}
+        <p>As this is a package, you cannot simply load it.  Plugins, Sub-Plugins, and even other Packages may utilize this package by importing it in their code.</p>
 
-</body>
+        {% if required_in_plugins %}
+            <br />
+            <p>Here is a list of plugins that require {{ package.name }}:</p>
+            {% for plugin in required_in_plugins %}
+                <li><a href="{{ plugin.get_absolute_url }}">{{ plugin.name }}</a></li>
+            {% endfor %}
+        {% endif %}
+
+        {% if required_in_sub_plugins %}
+            <br />
+            <p>Here is a list of sub-plugins that require {{ package.name }}:</p>
+            {% for sub_plugin in required_in_sub_plugins %}
+                <li><a href="{{ sub_plugin.get_absolute_url }}">{{ sub_plugin.name }}</a></li>
+            {% endfor %}
+        {% endif %}
+
+        {% if required_in_packages %}
+            <br />
+            <p>Here is a list of other packages that require {{ package.name }}:</p>
+            {% for other in required_in_packages %}
+                <li><a href="{{ other.get_absolute_url }}">{{ other.name }}</a></li>
+            {% endfor %}
+        {% endif %}
+
+        {# TODO: Add package requirements #}
+        {# TODO: Add pypi requirements #}
+
+    </body>
 
 {% endblock content %}

@@ -6,51 +6,56 @@
 
 {% block content %}
 
-<body>
-    <h1>{{ sub_plugin.name }} - version {{ sub_plugin.version }}</h1>
-    <p>Sub-Plugin for <a href="{{ sub_plugin.plugin.get_absolute_url }}">{{ sub_plugin.plugin.name }}</a></p>
-    <ul><h2>Owner:</h2>
-    <ul><a href="{{ sub_plugin.user.get_absolute_url }}">{{ sub_plugin.user.name }}</a></ul>
-    {% if contributors %}
-        <h2>Contributors:</h2>
+    <body>
+
+        {% if plugin.logo %}
+            <img src="{{ MEDIA_URL }}{{ sub_plugin.logo }}" height="135" width="135" alt="{{ sub_plugin }} Logo"/>
+        {% endif %}
+        <h1>{{ sub_plugin.name }} - version {{ sub_plugin.version }}</h1>
+        <p>Sub-Plugin for <a href="{{ sub_plugin.plugin.get_absolute_url }}">{{ sub_plugin.plugin.name }}</a></p>
         <ul>
-        {% for user in contributors %}
-            <a href="{{ user.get_absolute_url }}">{{ user.name }}</a>
+            <h2>Owner:</h2>
+            <ul><a href="{{ sub_plugin.user.get_absolute_url }}">{{ sub_plugin.user.name }}</a></ul>
+            {% if contributors %}
+                <h2>Contributors:</h2>
+                <ul>
+                    {% for user in contributors %}
+                        <a href="{{ user.get_absolute_url }}">{{ user.name }}</a>
+                        <br />
+                    {% endfor %}
+                </ul>
+            {% endif %}
             <br />
-        {% endfor %}
+            <p>Created on {{ sub_plugin.date_created }}</p>
+            {% if sub_plugin.date_last_updated %}
+                <p>Last updated on {{ sub_plugin.date_last_updated }}</p>
+            {% endif %}
         </ul>
-    {% endif %}
-    <br />
-    <p>Created on {{ sub_plugin.date_created }}</p>
-    {% if sub_plugin.date_last_updated %}
-        <p>Last updated on {{ sub_plugin.date_last_updated }}</p>
-    {% endif %}
-    </ul>
 
-    <h3>Description</h3>
-    <ol>
-        {{ sub_plugin.description.rendered }}
-    </ol>
-    <br />
+        <h3>Description</h3>
+        <ol>
+            {{ sub_plugin.description.rendered }}
+        </ol>
+        <br />
 
-    <h3>Installation</h3>
-    <ol>
-        <li>Download the zip file.</li>
-        <li>Extract the zip file to your server's primary directory (ie <span style="color: blue">../my_servers/css/cstrike/</span>).</li>
-    </ol>
-    <br />
+        <h3>Installation</h3>
+        <ol>
+            <li>Download the zip file.</li>
+            <li>Extract the zip file to your server's primary directory (ie <span style="color: blue">../my_servers/css/cstrike/</span>).</li>
+        </ol>
+        <br />
 
-    <h3>Configuration</h3>
-    <ol>
-        {{ sub_plugin.configuration.rendered }}
-    </ol>
-    <br />
+        <h3>Configuration</h3>
+        <ol>
+            {{ sub_plugin.configuration.rendered }}
+        </ol>
+        <br />
 
-    <p>As this is a sub-plugin, it is up to the <a href="{{ sub_plugin.plugin.get_absolute_url }}">{{ sub_plugin.plugin.name }}</a> plugin to determine how to load it.</p>
+        <p>As this is a sub-plugin, it is up to the <a href="{{ sub_plugin.plugin.get_absolute_url }}">{{ sub_plugin.plugin.name }}</a> plugin to determine how to load it.</p>
 
-    {# TODO: Add package requirements #}
-    {# TODO: Add pypi requirements #}
+        {# TODO: Add package requirements #}
+        {# TODO: Add pypi requirements #}
 
-</body>
+    </body>
 
 {% endblock content %}
