@@ -135,7 +135,9 @@ class CommonBase(models.Model):
         if self.current_version and self.current_zip_file:
             release = self.old_release_class(
                 version=self.current_version,
+                version_notes=self.current_version_notes,
                 zip_file=self.current_zip_file,
+                plugin=self,
             )
             release.save()
             self.previous_releases.add(release)
