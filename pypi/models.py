@@ -5,12 +5,10 @@
 from __future__ import unicode_literals
 
 # Django Imports
+from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.db import models
 from django.utils.text import slugify
-
-# Project Imports
-from SPPM.settings import PYPI_URL
 
 
 # =============================================================================
@@ -50,4 +48,4 @@ class PyPiRequirement(models.Model):
         )
 
     def get_pypi_url(self):
-        return PYPI_URL + '/{0}'.format(self.name)
+        return settings.PYPI_URL + '/{0}'.format(self.name)
