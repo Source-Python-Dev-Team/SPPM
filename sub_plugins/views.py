@@ -29,7 +29,7 @@ __all__ = (
 class SubPluginListView(ListView):
     model = SubPlugin
     paginate_by = 20
-    template_name = 'sub_plugins/sub_plugin_list.html'
+    template_name = 'sub_plugins/list.html'
 
     def get_queryset(self):
         return super(SubPluginListView, self).get_queryset().filter(
@@ -50,7 +50,7 @@ class SubPluginListView(ListView):
 class SubPluginCreateView(CreateView):
     model = SubPlugin
     form_class = SubPluginCreateForm
-    template_name = 'sub_plugins/sub_plugin_create.html'
+    template_name = 'sub_plugins/create.html'
     plugin = None
 
     def get_context_data(self, **kwargs):
@@ -76,14 +76,14 @@ class SubPluginCreateView(CreateView):
 class SubPluginEditView(UpdateView):
     model = SubPlugin
     form_class = SubPluginEditForm
-    template_name = 'sub_plugins/sub_plugin_edit.html'
+    template_name = 'sub_plugins/edit.html'
     slug_url_kwarg = 'sub_plugin_slug'
 
 
 class SubPluginUpdateView(UpdateView):
     model = SubPlugin
     form_class = SubPluginUpdateForm
-    template_name = 'sub_plugins/sub_plugin_update.html'
+    template_name = 'sub_plugins/update.html'
     slug_url_kwarg = 'sub_plugin_slug'
     plugin = None
 
@@ -114,7 +114,7 @@ class SubPluginUpdateView(UpdateView):
 
 class SubPluginView(DetailView):
     model = SubPlugin
-    template_name = 'sub_plugins/sub_plugin_view.html'
+    template_name = 'sub_plugins/view.html'
     slug_url_kwarg = 'sub_plugin_slug'
 
     def get_context_data(self, **kwargs):

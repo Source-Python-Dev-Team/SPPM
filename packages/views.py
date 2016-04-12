@@ -27,25 +27,25 @@ __all__ = (
 class PackageListView(ListView):
     model = Package
     paginate_by = 20
-    template_name = 'packages/package_list.html'
+    template_name = 'packages/list.html'
 
 
 class PackageCreateView(CreateView):
     model = Package
     form_class = PackageCreateForm
-    template_name = 'packages/package_create.html'
+    template_name = 'packages/create.html'
 
 
 class PackageEditView(UpdateView):
     model = Package
     form_class = PackageEditForm
-    template_name = 'packages/package_edit.html'
+    template_name = 'packages/edit.html'
 
 
 class PackageUpdateView(UpdateView):
     model = Package
     form_class = PackageUpdateForm
-    template_name = 'packages/package_update.html'
+    template_name = 'packages/update.html'
 
     def get_context_data(self, **kwargs):
         context = super(PackageUpdateView, self).get_context_data(**kwargs)
@@ -67,7 +67,7 @@ class PackageUpdateView(UpdateView):
 
 class PackageView(DetailView):
     model = Package
-    template_name = 'packages/package_view.html'
+    template_name = 'packages/view.html'
 
     def get_context_data(self, **kwargs):
         context = super(PackageView, self).get_context_data(**kwargs)

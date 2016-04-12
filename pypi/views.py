@@ -23,12 +23,12 @@ __all__ = (
 class PyPiListView(ListView):
     model = PyPiRequirement
     paginate_by = 20
-    template_name = 'pypi/pypi_list.html'
+    template_name = 'pypi/list.html'
 
 
 class PyPiView(DetailView):
     model = PyPiRequirement
-    template_name = 'pypi/pypi_view.html'
+    template_name = 'pypi/view.html'
 
     def get_context_data(self, **kwargs):
         context = super(PyPiView, self).get_context_data(**kwargs)

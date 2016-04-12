@@ -22,7 +22,7 @@ __all__ = (
 # =============================================================================
 class UserListView(ListView):
     model = User
-    template_name = 'users/user_list.html'
+    template_name = 'users/list.html'
 
     def get_queryset(self):
         return User.objects.exclude(
@@ -34,7 +34,7 @@ class UserListView(ListView):
 
 class UserView(DetailView):
     model = User
-    template_name = 'users/user_view.html'
+    template_name = 'users/view.html'
 
     def get_context_data(self, **kwargs):
         context = super(UserView, self).get_context_data(**kwargs)

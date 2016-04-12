@@ -27,25 +27,25 @@ __all__ = (
 class PluginListView(ListView):
     model = Plugin
     paginate_by = 20
-    template_name = 'plugins/plugin_list.html'
+    template_name = 'plugins/list.html'
 
 
 class PluginCreateView(CreateView):
     model = Plugin
     form_class = PluginCreateForm
-    template_name = 'plugins/plugin_create.html'
+    template_name = 'plugins/create.html'
 
 
 class PluginEditView(UpdateView):
     model = Plugin
     form_class = PluginEditForm
-    template_name = 'plugins/plugin_edit.html'
+    template_name = 'plugins/edit.html'
 
 
 class PluginUpdateView(UpdateView):
     model = Plugin
     form_class = PluginUpdateForm
-    template_name = 'plugins/plugin_update.html'
+    template_name = 'plugins/update.html'
 
     def get_context_data(self, **kwargs):
         context = super(PluginUpdateView, self).get_context_data(**kwargs)
@@ -67,7 +67,7 @@ class PluginUpdateView(UpdateView):
 
 class PluginView(DetailView):
     model = Plugin
-    template_name = 'plugins/plugin_view.html'
+    template_name = 'plugins/view.html'
 
     def get_context_data(self, **kwargs):
         context = super(PluginView, self).get_context_data(**kwargs)
