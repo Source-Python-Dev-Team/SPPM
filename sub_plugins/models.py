@@ -15,6 +15,7 @@ from precise_bbcode.fields import BBCodeTextField
 from common.models import CommonBase
 
 # App Imports
+from .helpers import handle_sub_plugin_image_upload
 from .helpers import handle_sub_plugin_logo_upload
 from .helpers import handle_sub_plugin_zip_upload
 
@@ -25,6 +26,7 @@ from .helpers import handle_sub_plugin_zip_upload
 __all__ = (
     'OldSubPluginRelease',
     'SubPlugin',
+    'SubPluginImage',
 )
 
 
@@ -87,3 +89,13 @@ class SubPlugin(CommonBase):
                 'sub_plugin_slug': self.slug,
             }
         )
+
+
+class SubPluginImage(models.Model):
+    image = models.ImageField(
+        upload_to=handle_sub_plugin_image_upload,
+    )
+    sub_plugin = models.ForeignKey(
+        to='sub_plugins.SubPlugin',
+        related_name='images',
+    )

@@ -16,6 +16,7 @@ from common.models import CommonBase
 from common.validators import sub_plugin_path_validator
 
 # App Imports
+from .helpers import handle_plugin_image_upload
 from .helpers import handle_plugin_logo_upload
 from .helpers import handle_plugin_zip_upload
 
@@ -94,4 +95,14 @@ class SubPluginPath(models.Model):
     path = models.CharField(
         max_length=256,
         validators=[sub_plugin_path_validator],
+    )
+
+
+class PluginImage(models.Model):
+    image = models.ImageField(
+        upload_to=handle_plugin_image_upload,
+    )
+    plugin = models.ForeignKey(
+        to='plugins.Plugin',
+        related_name='images',
     )

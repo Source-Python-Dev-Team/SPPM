@@ -15,6 +15,7 @@ from precise_bbcode.fields import BBCodeTextField
 from common.models import CommonBase
 
 # App Imports
+from .helpers import handle_package_image_upload
 from .helpers import handle_package_logo_upload
 from .helpers import handle_package_zip_upload
 
@@ -25,6 +26,7 @@ from .helpers import handle_package_zip_upload
 __all__ = (
     'OldPackageRelease',
     'Package',
+    'PackageImage',
 )
 
 
@@ -82,3 +84,13 @@ class Package(CommonBase):
                 'slug': self.slug,
             }
         )
+
+
+class PackageImage(models.Model):
+    image = models.ImageField(
+        upload_to=handle_package_image_upload,
+    )
+    package = models.ForeignKey(
+        to='packages.Package',
+        related_name='images',
+    )
