@@ -21,4 +21,5 @@ def common_urls(request):
         'FORUM_URL': settings.FORUM_URL,
         'WIKI_URL': settings.WIKI_URL,
         'GITHUB_URL': settings.GITHUB_URL,
+        'MEDIA_URL': settings.MEDIA_URL,
     }
