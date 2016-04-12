@@ -5,6 +5,9 @@
 from django.core.exceptions import ValidationError
 
 # Project Imports
+from common.helpers import find_image_number
+
+# Project Imports
 from plugins.constants import PLUGIN_PATH
 
 
@@ -13,6 +16,7 @@ from plugins.constants import PLUGIN_PATH
 # =============================================================================
 __all__ = (
     'get_sub_plugin_basename',
+    'handle_sub_plugin_image_upload',
     'handle_sub_plugin_logo_upload',
     'handle_sub_plugin_zip_upload',
 )
@@ -66,6 +70,15 @@ def handle_sub_plugin_logo_upload(instance, filename):
         instance.plugin.basename,
         instance.basename,
         filename.rsplit('.', 1)[1]
+    )
+
+
+def handle_sub_plugin_image_upload(instance, filename):
+    return 'images/sub_plugins/{0}/{1}.{2}'.format(
+        instance.basename,
+        find_image_number('sub_plugins/{0}'.format(
+            instance.plugin.basename), instance.basename),
+        filename.rsplit('.', 1)[1],
     )
 
 

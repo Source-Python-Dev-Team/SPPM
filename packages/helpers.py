@@ -4,6 +4,9 @@
 # Django Imports
 from django.core.exceptions import ValidationError
 
+# Project Imports
+from common.helpers import find_image_number
+
 # App Imports
 from .constants import PACKAGE_PATH
 
@@ -13,6 +16,7 @@ from .constants import PACKAGE_PATH
 # =============================================================================
 __all__ = (
     'get_package_basename',
+    'handle_package_image_upload',
     'handle_package_logo_upload',
     'handle_package_zip_upload',
 )
@@ -49,12 +53,20 @@ def get_package_basename(file_list):
 def handle_package_zip_upload(instance, filename):
     return 'releases/packages/{0}/{0}-v{1}.zip'.format(
         instance.basename,
-        instance.version
+        instance.version,
     )
 
 
 def handle_package_logo_upload(instance, filename):
     return 'logos/packages/{0}.{1}'.format(
         instance.basename,
-        filename.rsplit('.', 1)[1]
+        filename.rsplit('.', 1)[1],
+    )
+
+
+def handle_package_image_upload(instance, filename):
+    return 'images/packages/{0}/{1}.{2}'.format(
+        instance.basename,
+        find_image_number('packages', instance.basename),
+        filename.rsplit('.', 1)[1],
     )

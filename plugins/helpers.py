@@ -4,6 +4,9 @@
 # Django Imports
 from django.core.exceptions import ValidationError
 
+# Project Imports
+from common.helpers import find_image_number
+
 # App Imports
 from .constants import PLUGIN_PATH
 
@@ -13,6 +16,7 @@ from .constants import PLUGIN_PATH
 # =============================================================================
 __all__ = (
     'get_plugin_basename',
+    'handle_plugin_image_upload',
     'handle_plugin_logo_upload',
     'handle_plugin_zip_upload',
 )
@@ -53,4 +57,12 @@ def handle_plugin_logo_upload(instance, filename):
     return 'logos/plugins/{0}.{1}'.format(
         instance.basename,
         filename.rsplit('.', 1)[1]
+    )
+
+
+def handle_plugin_image_upload(instance, filename):
+    return 'images/plugin/{0}/{1}.{2}'.format(
+        instance.basename,
+        find_image_number('plugin', instance.basename),
+        filename.rsplit('.', 1)[1],
     )
