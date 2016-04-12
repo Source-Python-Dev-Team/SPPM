@@ -10,6 +10,12 @@ __all__ = (
 # =============================================================================
 # >> GLOBAL VARIABLES
 # =============================================================================
+LOGO_MAX_WIDTH = 200
+LOGO_MAX_HEIGHT = 200
+
+IMAGE_MAX_WIDTH = 400
+IMAGE_MAX_HEIGHT = 400
+
 READABLE_DATA_FILE_TYPES = [
     'json',
     'ini',

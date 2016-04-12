@@ -31,6 +31,22 @@ __all__ = (
 # =============================================================================
 # >> MODEL CLASSES
 # =============================================================================
+class OldPackageRelease(models.Model):
+    version = models.CharField(
+        max_length=8,
+    )
+    version_notes = BBCodeTextField(
+        max_length=512,
+        blank=True,
+        null=True,
+    )
+    zip_file = models.FileField()
+    package = models.ForeignKey(
+        to='packages.Package',
+        related_name='previous_releases',
+    )
+
+
 class Package(CommonBase):
     user = models.ForeignKey(
         to='users.User',
@@ -57,6 +73,8 @@ class Package(CommonBase):
         null=True,
     )
 
+    old_release_class = OldPackageRelease
+
     def get_absolute_url(self):
         return reverse(
             viewname='packages:package_detail',
@@ -64,37 +82,3 @@ class Package(CommonBase):
                 'slug': self.slug,
             }
         )
-
-    def save(
-            self, force_insert=False, force_update=False,
-            using=None, update_fields=None):
-        if self.current_version and self.current_zip_file:
-            release = OldPackageRelease(
-                version=self.current_version,
-                version_notes=self.current_version_notes,
-                zip_file=self.current_zip_file,
-            )
-            release.save()
-            self.previous_releases.add(release)
-        self.current_version = self.version
-        self.current_version_notes = self.version_notes
-        self.current_zip_file = self.zip_file
-        super(Package, self).save(
-            force_insert, force_update, using, update_fields
-        )
-
-
-class OldPackageRelease(models.Model):
-    version = models.CharField(
-        max_length=8,
-    )
-    version_notes = BBCodeTextField(
-        max_length=512,
-        blank=True,
-        null=True,
-    )
-    zip_file = models.FileField()
-    package = models.ForeignKey(
-        to='packages.Package',
-        related_name='previous_releases',
-    )

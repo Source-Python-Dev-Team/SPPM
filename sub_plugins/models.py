@@ -31,6 +31,22 @@ __all__ = (
 # =============================================================================
 # >> MODEL CLASSES
 # =============================================================================
+class OldSubPluginRelease(models.Model):
+    version = models.CharField(
+        max_length=8,
+    )
+    version_notes = BBCodeTextField(
+        max_length=512,
+        blank=True,
+        null=True,
+    )
+    zip_file = models.FileField()
+    sub_plugin = models.ForeignKey(
+        to='sub_plugins.SubPlugin',
+        related_name='previous_releases',
+    )
+
+
 class SubPlugin(CommonBase):
     user = models.ForeignKey(
         to='users.User',
@@ -61,6 +77,8 @@ class SubPlugin(CommonBase):
         null=True,
     )
 
+    old_release_class = OldSubPluginRelease
+
     def get_absolute_url(self):
         return reverse(
             viewname='plugins:sub_plugins:sub_plugin_detail',
@@ -69,35 +87,3 @@ class SubPlugin(CommonBase):
                 'sub_plugin_slug': self.slug,
             }
         )
-
-    def save(
-            self, force_insert=False, force_update=False,
-            using=None, update_fields=None):
-        if self.current_version and self.current_zip_file:
-            release = OldSubPluginRelease(
-                version=self.current_version,
-                zip_file=self.current_zip_file,
-            )
-            self.previous_releases.add(release)
-        self.current_version = self.version
-        self.current_version_notes = self.version_notes
-        self.current_zip_file = self.zip_file
-        super(SubPlugin, self).save(
-            force_insert, force_update, using, update_fields
-        )
-
-
-class OldSubPluginRelease(models.Model):
-    version = models.CharField(
-        max_length=8,
-    )
-    version_notes = BBCodeTextField(
-        max_length=512,
-        blank=True,
-        null=True,
-    )
-    zip_file = models.FileField()
-    sub_plugin = models.ForeignKey(
-        to='sub_plugins.SubPlugin',
-        related_name='previous_releases',
-    )
