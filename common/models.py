@@ -6,7 +6,11 @@ from __future__ import unicode_literals
 from collections import defaultdict
 from PIL import Image
 
+# 3rd-Party Python
+from path import Path
+
 # Django Imports
+from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils.text import slugify
@@ -93,6 +97,8 @@ class CommonBase(models.Model):
         null=True,
     )
 
+    logo = None
+
     def __str__(self):
         return self.name
 
@@ -145,6 +151,13 @@ class CommonBase(models.Model):
         self.current_version = self.version
         self.current_version_notes = self.version_notes
         self.current_zip_file = self.zip_file
+
+        if self.logo and u'logo/' not in self.logo:
+            path = Path(settings.MEDIA_ROOT) / 'logos' / 'plugins'
+            if path.isdir():
+                logo = [x for x in path.files() if x.namebase == self.basename]
+                if logo:
+                    logo[0].remove()
 
         super(CommonBase, self).save(
             force_insert, force_update, using, update_fields
