@@ -4,7 +4,11 @@
 # Python Imports
 from __future__ import unicode_literals
 
+# 3rd-Party Python
+from path import Path
+
 # Django Imports
+from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.db import models
 
@@ -85,6 +89,20 @@ class Plugin(CommonBase):
                 'slug': self.slug,
             }
         )
+
+    def save(
+            self, force_insert=False, force_update=False,
+            using=None, update_fields=None):
+        """Remove the old logo before storing the new one."""
+        if self.logo and u'logo/' not in self.logo:
+            path = Path(settings.MEDIA_ROOT) / 'logos' / 'plugins'
+            if path.isdir():
+                logo = [x for x in path.files() if x.namebase == self.basename]
+                if logo:
+                    logo[0].remove()
+
+        super(Plugin, self).save(
+            force_insert, force_update, using, update_fields)
 
 
 class SubPluginPath(models.Model):
