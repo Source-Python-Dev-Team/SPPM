@@ -1,5 +1,6 @@
 django-debug-toolbar
 django-precise-bbcode
+django-crispy-forms
 postmarkup
 path.py
 -e git://github.com/ZombieToof/django-phpbb.git
