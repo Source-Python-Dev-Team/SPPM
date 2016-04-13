@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'phpbb',
     'debug_toolbar',
     'precise_bbcode',
+    'crispy_forms',
     'common',
     'packages',
     'plugins',
@@ -149,3 +150,5 @@ PYPI_URL = 'https://pypi.python.org/pypi'
 MEDIA_ROOT = os.path.join(os.getcwd(), 'media')
 
 PHPBB_TABLE_PREFIX = 'phpbb_'
+
+CRISPY_TEMPLATE_PACK = 'uni_form'
