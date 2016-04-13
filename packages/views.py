@@ -41,6 +41,13 @@ class PackageEditView(UpdateView):
     form_class = PackageEditForm
     template_name = 'packages/edit.html'
 
+    def get_initial(self):
+        initial = super(PackageEditView, self).get_initial()
+        initial.update({
+            'logo': '',
+        })
+        return initial
+
 
 class PackageUpdateView(UpdateView):
     model = Package

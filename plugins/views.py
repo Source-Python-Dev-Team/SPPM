@@ -41,6 +41,13 @@ class PluginEditView(UpdateView):
     form_class = PluginEditForm
     template_name = 'plugins/edit.html'
 
+    def get_initial(self):
+        initial = super(PluginEditView, self).get_initial()
+        initial.update({
+            'logo': '',
+        })
+        return initial
+
 
 class PluginUpdateView(UpdateView):
     model = Plugin

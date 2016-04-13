@@ -79,6 +79,13 @@ class SubPluginEditView(UpdateView):
     template_name = 'sub_plugins/edit.html'
     slug_url_kwarg = 'sub_plugin_slug'
 
+    def get_initial(self):
+        initial = super(SubPluginEditView, self).get_initial()
+        initial.update({
+            'logo': '',
+        })
+        return initial
+
 
 class SubPluginUpdateView(UpdateView):
     model = SubPlugin
