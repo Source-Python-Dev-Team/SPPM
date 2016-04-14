@@ -5,6 +5,7 @@
 from django.core.exceptions import ValidationError
 
 # Project Imports
+from common.constants import CANNOT_BE_NAMED, CANNOT_START_WITH
 from common.helpers import find_image_number
 
 # Project Imports
@@ -54,6 +55,12 @@ def get_sub_plugin_basename(file_list, plugin):
                 raise ValidationError('Multiple sub-plugins found in zip.')
     if basename is None:
         raise ValidationError('No sub-plugin base directory found in zip.')
+    if basename in CANNOT_BE_NAMED:
+        raise ValidationError(
+            'Sub-plugin basename cannot be "{0}".'.format(basename))
+    if basename.startswith(CANNOT_START_WITH):
+        raise ValidationError(
+            'Sub-plugin basename cannot start with "{0}".'.format(basename))
     return basename, path
 
 

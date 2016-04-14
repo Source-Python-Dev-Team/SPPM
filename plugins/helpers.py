@@ -5,6 +5,7 @@
 from django.core.exceptions import ValidationError
 
 # Project Imports
+from common.constants import CANNOT_BE_NAMED, CANNOT_START_WITH
 from common.helpers import find_image_number
 
 # App Imports
@@ -43,6 +44,12 @@ def get_plugin_basename(file_list):
                 'Multiple base directories found for plugin')
     if basename is None:
         raise ValidationError('No base directory found for plugin.')
+    if basename in CANNOT_BE_NAMED:
+        raise ValidationError(
+            'Plugin basename cannot be "{0}".'.format(basename))
+    if basename.startswith(CANNOT_START_WITH):
+        raise ValidationError(
+            'Plugin basename cannot start with "{0}".'.format(basename))
     return basename
 
 

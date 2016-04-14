@@ -5,6 +5,7 @@
 from django.core.exceptions import ValidationError
 
 # Project Imports
+from common.constants import CANNOT_BE_NAMED, CANNOT_START_WITH
 from common.helpers import find_image_number
 
 # App Imports
@@ -44,9 +45,16 @@ def get_package_basename(file_list):
         if basename is None:
             basename = current
         elif basename != current:
-            raise ValidationError('Multiple base directories found for plugin')
+            raise ValidationError(
+                'Multiple base directories found for package.')
     if basename is None:
-        raise ValidationError('No base directory found for plugin.')
+        raise ValidationError('No base directory or file found for package.')
+    if basename in CANNOT_BE_NAMED:
+        raise ValidationError(
+            'Package basename cannot be "{0}".'.format(basename))
+    if basename.startswith(CANNOT_START_WITH):
+        raise ValidationError(
+            'Package basename cannot start with "{0}".'.format(basename))
     return basename, is_module
 
 
