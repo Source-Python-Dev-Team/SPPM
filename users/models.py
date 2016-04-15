@@ -32,23 +32,12 @@ class User(models.Model):
         primary_key=True,
         unique=True,
     )
-    slug = models.SlugField(
-        max_length=32,
-        unique=True,
-    )
-
-    def save(
-            self, force_insert=False, force_update=False,
-            using=None, update_fields=None):
-        self.slug = slugify(self.name).replace('_', '-')
-        super(User, self).save(
-                force_insert, force_update, using, update_fields)
 
     def get_absolute_url(self):
         return reverse(
             viewname='users:user_detail',
             kwargs={
-                'slug': self.slug,
+                'pk': self.forum_id,
             }
         )
 

@@ -18,7 +18,7 @@ urlpatterns = [
         name='user_list',
     ),
     url(
-        regex=r'^(?P<slug>[\w-]+)/$',
+        regex=r'^(?P<pk>[0-9]+)/$',
         view=UserView.as_view(),
         name='user_detail',
     ),
