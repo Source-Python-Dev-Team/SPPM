@@ -27,6 +27,7 @@ __all__ = (
 # >> FUNCTIONS
 # =============================================================================
 def get_package_basename(file_list):
+    """Return the package's basename."""
     basename = None
     is_module = False
     for x in file_list:
@@ -59,6 +60,7 @@ def get_package_basename(file_list):
 
 
 def handle_package_zip_upload(instance, filename):
+    """Return the path to store the zip for the current release."""
     return 'releases/packages/{0}/{0}-v{1}.zip'.format(
         instance.basename,
         instance.version,
@@ -66,6 +68,7 @@ def handle_package_zip_upload(instance, filename):
 
 
 def handle_package_logo_upload(instance, filename):
+    """Return the path to store the package's logo."""
     return 'logos/packages/{0}.{1}'.format(
         instance.basename,
         filename.rsplit('.', 1)[1],
@@ -73,6 +76,7 @@ def handle_package_logo_upload(instance, filename):
 
 
 def handle_package_image_upload(instance, filename):
+    """Return the path to store the image."""
     return 'images/packages/{0}/{1}.{2}'.format(
         instance.basename,
         find_image_number('packages', instance.basename),

@@ -3,7 +3,6 @@
 # =============================================================================
 # Python Imports
 from __future__ import unicode_literals
-from collections import defaultdict
 from PIL import Image
 
 # Django Imports
@@ -34,6 +33,7 @@ __all__ = (
 # >> MODEL CLASSES
 # =============================================================================
 class CommonBase(models.Model):
+    """Base model for upload content."""
     name = models.CharField(
         max_length=64,
         unique=True,
@@ -93,33 +93,36 @@ class CommonBase(models.Model):
     )
 
     def __str__(self):
+        """Return the object's name when str cast."""
         return self.name
 
-    @property
-    def old_release_class(self):
-        raise NotImplementedError('No old release class set for class.')
-
     def clean(self):
-        errors = defaultdict(list)
-        self.clean_logo(errors)
+        """Clean all attributes and raise any errors that occur."""
+        errors = dict()
+        logo_errors = self.clean_logo()
+        if logo_errors:
+            errors['logo'] = logo_errors
         if errors:
             raise ValidationError(errors)
         return super(CommonBase, self).clean()
 
-    def clean_logo(self, errors):
+    def clean_logo(self):
+        """Verify the logo is within the proper dimensions."""
+        errors = list()
         if not self.logo:
-            return
+            return errors
         width, height = Image.open(self.logo).size
         if width > LOGO_MAX_WIDTH:
-            errors['logo'].append(
+            errors.append(
                 'Logo width must be no more than {0}.'.format(
                     LOGO_MAX_WIDTH)
             )
         if height > LOGO_MAX_HEIGHT:
-            errors['logo'].append(
+            errors.append(
                 'Logo height must be no more than {0}.'.format(
                     LOGO_MAX_HEIGHT)
             )
+        return errors
 
     def save(
             self, force_insert=False, force_update=False,
@@ -131,20 +134,6 @@ class CommonBase(models.Model):
         from random import choice
         if not self.user_id:
             self.user_id = choice(User.objects.all()).pk
-
-        if self.current_version and self.current_zip_file:
-            release = self.old_release_class(
-                version=self.current_version,
-                version_notes=self.current_version_notes,
-                zip_file=self.current_zip_file,
-                plugin=self,
-            )
-            release.save()
-            self.previous_releases.add(release)
-
-        self.current_version = self.version
-        self.current_version_notes = self.version_notes
-        self.current_zip_file = self.zip_file
 
         super(CommonBase, self).save(
             force_insert, force_update, using, update_fields

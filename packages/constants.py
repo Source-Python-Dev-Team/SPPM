@@ -17,8 +17,10 @@ __all__ = (
 # =============================================================================
 # >> GLOBAL VARIABLES
 # =============================================================================
+# The base path for packages
 PACKAGE_PATH = 'addons/source-python/packages/custom/'
 
+# The allowed file types by directory for packages
 PACKAGE_ALLOWED_FILE_TYPES = dict(ALLOWED_FILE_TYPES)
 PACKAGE_ALLOWED_FILE_TYPES.update({
     'addons/source-python/packages/custom/': [

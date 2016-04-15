@@ -27,6 +27,7 @@ __all__ = (
 # >> FUNCTIONS
 # =============================================================================
 def get_plugin_basename(file_list):
+    """Return the plugin's basename."""
     basename = None
     for x in file_list:
         if not x.endswith('.py'):
@@ -54,6 +55,7 @@ def get_plugin_basename(file_list):
 
 
 def handle_plugin_zip_upload(instance, filename):
+    """Return the path to store the zip for the current release."""
     return 'releases/plugins/{0}/{0}-v{1}.zip'.format(
         instance.basename,
         instance.version,
@@ -61,6 +63,7 @@ def handle_plugin_zip_upload(instance, filename):
 
 
 def handle_plugin_logo_upload(instance, filename):
+    """Return the path to store the plugin's logo."""
     return 'logos/plugins/{0}.{1}'.format(
         instance.basename,
         filename.rsplit('.', 1)[1]
@@ -68,6 +71,7 @@ def handle_plugin_logo_upload(instance, filename):
 
 
 def handle_plugin_image_upload(instance, filename):
+    """Return the path to store the image."""
     return 'images/plugin/{0}/{1}.{2}'.format(
         instance.basename,
         find_image_number('plugin', instance.basename),

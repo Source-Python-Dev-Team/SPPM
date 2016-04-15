@@ -48,6 +48,7 @@ class PluginCreateForm(forms.ModelForm):
         }
 
     def clean_zip_file(self):
+        """Verify the zip file contents."""
         file_list = [x for x in ZipFile(
             self.cleaned_data['zip_file']) if not x.endswith('/')]
         basename = get_plugin_basename(file_list)
@@ -82,6 +83,7 @@ class PluginUpdateForm(forms.ModelForm):
         }
 
     def clean_version(self):
+        """Verify the version doesn't already exist."""
         all_versions = [
             x[0] for x in self.instance.previous_releases.values_list(
                 'version')] + [self.instance.version]
@@ -92,6 +94,7 @@ class PluginUpdateForm(forms.ModelForm):
         return self.cleaned_data['version']
 
     def clean_zip_file(self):
+        """Verify the zip file contents."""
         file_list = [x for x in ZipFile(
             self.cleaned_data['zip_file']).namelist() if not x.endswith('/')]
         basename = get_plugin_basename(file_list)

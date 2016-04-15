@@ -17,6 +17,7 @@ __all__ = (
 # >> FUNCTIONS
 # =============================================================================
 def common_urls(request):
+    """Expose common urls to templates."""
     return {
         'FORUM_URL': settings.FORUM_URL,
         'WIKI_URL': settings.WIKI_URL,

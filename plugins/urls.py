@@ -1,5 +1,10 @@
+# =============================================================================
+# >> IMPORTS
+# =============================================================================
+# Django Imports
 from django.conf.urls import include, url
 
+# App Imports
 from .views import (
     PluginCreateView,
     PluginEditView,
@@ -8,6 +13,10 @@ from .views import (
     PluginView,
 )
 
+
+# =============================================================================
+# >> GLOBAL VARIABLES
+# =============================================================================
 urlpatterns = [
     url(
         regex=r'^$',

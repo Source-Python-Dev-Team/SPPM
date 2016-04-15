@@ -16,6 +16,7 @@ __all__ = (
 # =============================================================================
 # >> GLOBAL VARIABLES
 # =============================================================================
+# The allowed file types by directory for sub-plugins
 SUB_PLUGIN_ALLOWED_FILE_TYPES = dict(ALLOWED_FILE_TYPES)
 SUB_PLUGIN_ALLOWED_FILE_TYPES.update({
     'addons/source-python/plugins/{self.plugin.basename}/' +

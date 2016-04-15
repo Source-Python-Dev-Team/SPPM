@@ -27,6 +27,7 @@ __all__ = (
 # >> FUNCTIONS
 # =============================================================================
 def get_sub_plugin_basename(file_list, plugin):
+    """Return the sub-plugin's basename."""
     plugin_name = _validate_plugin_name(file_list, plugin)
     basename = None
     path = None
@@ -65,6 +66,7 @@ def get_sub_plugin_basename(file_list, plugin):
 
 
 def handle_sub_plugin_zip_upload(instance, filename):
+    """Return the path to store the zip for the current release."""
     return 'releases/sub_plugins/{0}/{1}/{1}-v{2}.zip'.format(
         instance.plugin.basename,
         instance.basename,
@@ -73,6 +75,7 @@ def handle_sub_plugin_zip_upload(instance, filename):
 
 
 def handle_sub_plugin_logo_upload(instance, filename):
+    """Return the path to store the sub-plugin's logo."""
     return 'logos/sub_plugins/{0}/{1}.{2}'.format(
         instance.plugin.basename,
         instance.basename,
@@ -81,6 +84,7 @@ def handle_sub_plugin_logo_upload(instance, filename):
 
 
 def handle_sub_plugin_image_upload(instance, filename):
+    """Return the path to store the image."""
     return 'images/sub_plugins/{0}/{1}.{2}'.format(
         instance.basename,
         find_image_number('sub_plugins/{0}'.format(
@@ -93,6 +97,7 @@ def handle_sub_plugin_image_upload(instance, filename):
 # >> HELPER FUNCTIONS
 # =============================================================================
 def _validate_plugin_name(file_list, plugin):
+    """Return the name of the plugin."""
     plugin_name = None
     for x in file_list:
         if not x.endswith('.py'):

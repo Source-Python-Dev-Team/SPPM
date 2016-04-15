@@ -48,6 +48,7 @@ class PackageCreateForm(forms.ModelForm):
         }
 
     def clean_zip_file(self):
+        """Verify the zip file contents."""
         file_list = [x for x in ZipFile(
             self.cleaned_data['zip_file']) if not x.endswith('/')]
         basename = get_package_basename(file_list)
@@ -82,6 +83,7 @@ class PackageUpdateForm(forms.ModelForm):
         }
 
     def clean_version(self):
+        """Verify the version doesn't already exist."""
         all_versions = [
             x[0] for x in self.instance.previous_releases.values_list(
                 'version')] + [self.instance.version]
@@ -92,8 +94,9 @@ class PackageUpdateForm(forms.ModelForm):
         return self.cleaned_data['version']
 
     def clean_zip_file(self):
+        """Verify the zip file contents."""
         file_list = [x for x in ZipFile(
-            self.cleaned_data['zip_file']) if not x.endswith('/')]
+            self.cleaned_data['zip_file']).namelist() if not x.endswith('/')]
         basename, is_module = get_package_basename(file_list)
         if not is_module and PACKAGE_PATH + '{0}/{0}.py'.format(
                 basename) in file_list:
