@@ -15,11 +15,11 @@ urlpatterns = [
     url(
         regex=r'^$',
         view=UserListView.as_view(),
-        name='user_list',
+        name='list',
     ),
     url(
         regex=r'^(?P<pk>[0-9]+)/$',
         view=UserView.as_view(),
-        name='user_detail',
+        name='detail',
     ),
 ]

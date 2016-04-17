@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'debug_toolbar',
     'precise_bbcode',
     'crispy_forms',
+    'django_filters',
     'common',
     'packages',
     'plugins',

@@ -38,12 +38,12 @@ __all__ = (
 # >> MODEL CLASSES
 # =============================================================================
 class SubPlugin(CommonBase):
-    user = models.ForeignKey(
-        to='users.User',
+    owner = models.ForeignKey(
+        to='users.ForumUser',
         related_name='sub_plugins',
     )
     contributors = models.ManyToManyField(
-        to='users.User',
+        to='users.ForumUser',
         related_name='sub_plugin_contributions',
     )
     plugin = models.ForeignKey(
@@ -69,7 +69,7 @@ class SubPlugin(CommonBase):
 
     def get_absolute_url(self):
         return reverse(
-            viewname='plugins:sub_plugins:sub_plugin_detail',
+            viewname='plugins:sub_plugins:detail',
             kwargs={
                 'slug': self.plugin.slug,
                 'sub_plugin_slug': self.slug,

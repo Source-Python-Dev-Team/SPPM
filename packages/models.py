@@ -38,12 +38,12 @@ __all__ = (
 # >> MODEL CLASSES
 # =============================================================================
 class Package(CommonBase):
-    user = models.ForeignKey(
-        to='users.User',
+    owner = models.ForeignKey(
+        to='users.ForumUser',
         related_name='packages',
     )
     contributors = models.ManyToManyField(
-        to='users.User',
+        to='users.ForumUser',
         related_name='package_contributions',
     )
     package_requirements = models.ManyToManyField(
@@ -65,7 +65,7 @@ class Package(CommonBase):
 
     def get_absolute_url(self):
         return reverse(
-            viewname='packages:package_detail',
+            viewname='packages:detail',
             kwargs={
                 'slug': self.slug,
             }

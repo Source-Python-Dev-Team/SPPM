@@ -1,12 +1,12 @@
 {% extends "common/sidebar.html" %}
 
-{% block title %}{{ user.name }}{% endblock title %}
+{% block title %}{{ forumuser }}{% endblock title %}
 
 {% block content %}
 
 <body>
-    <h1>{{ user.name }}</h1>
-    <ul><a href="{{ user.get_forum_url }}">Forum Account</a></ul>
+    <h1>{{ forumuser }}</h1>
+    <ul><a href="{{ forumuser.get_forum_url }}">Forum Account</a></ul>
     {% if plugins or sub_plugins or packages %}
         <ul>
         <h2>Projects:</h2>

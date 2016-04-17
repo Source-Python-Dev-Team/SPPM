@@ -41,7 +41,7 @@ class PyPiRequirement(models.Model):
 
     def get_absolute_url(self):
         return reverse(
-            viewname='pypi:pypi_detail',
+            viewname='pypi:detail',
             kwargs={
                 'slug': self.slug,
             }

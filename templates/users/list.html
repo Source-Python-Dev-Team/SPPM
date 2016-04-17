@@ -6,11 +6,11 @@
 
 <body>
     <div class="container">
-        {% if user_list %}
+        {% if forumuser_list %}
             <h1>User List</h1>
             <ul>
-                {% for user in user_list %}
-                    <li><a href="{{ user.get_absolute_url }}">{{ user.name }}</a></li>
+                {% for user in forumuser_list %}
+                    <li><a href="{{ user.get_absolute_url }}">{{ user }}</a></li>
                 {% endfor %}
             </ul>
         {% else %}

@@ -14,12 +14,12 @@
         <h1>{{ package.name }} - version {{ package.version }}</h1>
         <ul>
             <h2>Owner:</h2>
-            <ul><a href="{{ package.user.get_absolute_url }}">{{ package.user.name }}</a></ul>
+            <ul><a href="{{ package.owner.get_absolute_url }}">{{ package.owner }}</a></ul>
             {% if contributors %}
                 <h2>Contributors:</h2>
                 <ul>
                     {% for user in contributors %}
-                        <a href="{{ user.get_absolute_url }}">{{ user.name }}</a>
+                        <a href="{{ user.get_absolute_url }}">{{ user }}</a>
                         <br />
                     {% endfor %}
                 </ul>
@@ -32,11 +32,13 @@
             {% endif %}
         </ul>
 
-        <h3>Description</h3>
-        <ol>
-            {{ package.description.rendered }}
-        </ol>
-        <br />
+        {% if package.description.rendered %}
+            <h3>Description</h3>
+            <ol>
+                {{ package.description.rendered }}
+            </ol>
+            <br />
+        {% endif %}
 
         <h3>Installation</h3>
         <ol>
@@ -45,11 +47,13 @@
         </ol>
         <br />
 
-        <h3>Configuration</h3>
-        <ol>
-            {{ package.configuration.rendered }}
-        </ol>
-        <br />
+        {% if package.configuration.rendered %}
+            <h3>Configuration</h3>
+            <ol>
+                {{ package.configuration.rendered }}
+            </ol>
+            <br />
+        {% endif %}
 
         <p>As this is a package, you cannot simply load it.  Plugins, Sub-Plugins, and even other Packages may utilize this package by importing it in their code.</p>
 
@@ -79,6 +83,10 @@
 
         {# TODO: Add package requirements #}
         {# TODO: Add pypi requirements #}
+
+        <b><a href="{% url 'packages:add_contributors' slug=package.slug %}">Manage Contributors</a></b><br />
+        <b><a href="{% url 'packages:edit' slug=package.slug %}">Edit Page</a></b><br />
+        <b><a href="{% url 'packages:update' slug=package.slug %}">Update Package</a></b>
 
     </body>
 

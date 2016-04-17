@@ -7,7 +7,6 @@ from __future__ import unicode_literals
 # Django Imports
 from django.core.urlresolvers import reverse
 from django.db import models
-from django.utils.text import slugify
 
 # App Imports
 from .constants import FORUM_MEMBER_URL
@@ -17,29 +16,32 @@ from .constants import FORUM_MEMBER_URL
 # >> ALL DECLARATION
 # =============================================================================
 __all__ = (
-    'User',
+    'ForumUser',
 )
 
 
 # =============================================================================
 # >> MODEL CLASSES
 # =============================================================================
-class User(models.Model):
-    name = models.CharField(
+class ForumUser(models.Model):
+    username = models.CharField(
         max_length=30,
     )
-    forum_id = models.IntegerField(
+    id = models.IntegerField(
         primary_key=True,
         unique=True,
     )
 
+    def __str__(self):
+        return self.username
+
     def get_absolute_url(self):
         return reverse(
-            viewname='users:user_detail',
+            viewname='users:detail',
             kwargs={
-                'pk': self.forum_id,
+                'pk': self.id,
             }
         )
 
     def get_forum_url(self):
-        return FORUM_MEMBER_URL.format(self.forum_id)
+        return FORUM_MEMBER_URL.format(self.id)

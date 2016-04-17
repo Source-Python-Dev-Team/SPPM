@@ -10,6 +10,7 @@ from django.core.exceptions import ValidationError
 
 # Project Imports
 from plugins.constants import PLUGIN_PATH
+from users.models import ForumUser
 
 # App Imports
 from .helpers import get_sub_plugin_basename
@@ -20,6 +21,7 @@ from .models import SubPlugin
 # >> ALL DECLARATION
 # =============================================================================
 __all__ = (
+    'SubPluginAddContributorConfirmationForm',
     'SubPluginCreateForm',
     'SubPluginEditForm',
     'SubPluginUpdateForm',
@@ -78,6 +80,20 @@ class SubPluginEditForm(forms.ModelForm):
             'description': forms.Textarea,
             'configuration': forms.Textarea,
         }
+
+
+class SubPluginAddContributorConfirmationForm(forms.ModelForm):
+    class Meta:
+        model = ForumUser
+        fields = (
+            "id",
+        )
+        widgets = {
+            "id": forms.HiddenInput(),
+        }
+
+    def validate_unique(self):
+        pass
 
 
 class SubPluginUpdateForm(forms.ModelForm):

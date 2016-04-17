@@ -6,6 +6,8 @@ from django.conf.urls import include, url
 
 # App Imports
 from .views import (
+    PluginAddContributorConfirmationView,
+    PluginAddContributorsView,
     PluginCreateView,
     PluginEditView,
     PluginListView,
@@ -21,22 +23,22 @@ urlpatterns = [
     url(
         regex=r'^$',
         view=PluginListView.as_view(),
-        name='plugin_list',
+        name='list',
     ),
     url(
         regex=r'^create/',
         view=PluginCreateView.as_view(),
-        name='plugin_create',
+        name='create',
     ),
     url(
         regex=r'^edit/(?P<slug>[\w-]+)/',
         view=PluginEditView.as_view(),
-        name='plugin_edit',
+        name='edit',
     ),
     url(
         regex=r'^update/(?P<slug>[\w-]+)/',
         view=PluginUpdateView.as_view(),
-        name='plugin_update',
+        name='update',
     ),
     url(
         regex=r'^(?P<slug>[\w-]+)/sub-plugins/',
@@ -48,6 +50,16 @@ urlpatterns = [
     url(
         regex=r'^(?P<slug>[\w-]+)/$',
         view=PluginView.as_view(),
-        name='plugin_detail',
+        name='detail',
+    ),
+    url(
+        regex=r'^(?P<slug>[\w-]+)/contributors/add/$',
+        view=PluginAddContributorsView.as_view(),
+        name='add_contributors',
+    ),
+    url(
+        regex=r'^(?P<slug>[\w-]+)/contributors/add/(?P<id>\d+)/$',
+        view=PluginAddContributorConfirmationView.as_view(),
+        name='confirm_contributor',
     ),
 ]

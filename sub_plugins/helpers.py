@@ -97,7 +97,7 @@ def handle_sub_plugin_image_upload(instance, filename):
 # >> HELPER FUNCTIONS
 # =============================================================================
 def _validate_plugin_name(file_list, plugin):
-    """Return the name of the plugin."""
+    """Return the username of the plugin."""
     plugin_name = None
     for x in file_list:
         if not x.endswith('.py'):

@@ -2,17 +2,38 @@
 # >> IMPORTS
 # =============================================================================
 # Django Imports
-from django.views.generic import CreateView, DetailView, ListView, UpdateView
+from django.shortcuts import HttpResponseRedirect
+from django.views.generic import (
+    CreateView,
+    DetailView,
+    FormView,
+    ListView,
+    UpdateView,
+)
+
+# 3rd-Party Django
+from django_filters.views import FilterView
+
+# Project Imports
+from users.filtersets import ForumUserFilterSet
+from users.models import ForumUser
 
 # App Imports
+from .forms import (
+    PluginAddContributorConfirmationForm,
+    PluginCreateForm,
+    PluginEditForm,
+    PluginUpdateForm,
+)
 from .models import Plugin
-from .forms import PluginCreateForm, PluginEditForm, PluginUpdateForm
 
 
 # =============================================================================
 # >> ALL DECLARATION
 # =============================================================================
 __all__ = (
+    'PluginAddContributorConfirmationView',
+    'PluginAddContributorsView',
     'PluginCreateView',
     'PluginEditView',
     'PluginListView',
@@ -47,6 +68,47 @@ class PluginEditView(UpdateView):
             'logo': '',
         })
         return initial
+
+
+class PluginAddContributorsView(FilterView):
+    model = ForumUser
+    template_name = 'plugins/contributors/add.html'
+    filterset_class = ForumUserFilterSet
+
+
+class PluginAddContributorConfirmationView(FormView):
+    form_class = PluginAddContributorConfirmationForm
+    template_name = 'plugins/contributors/add_confirmation.html'
+
+    def get_initial(self):
+        initial = super(
+            PluginAddContributorConfirmationView, self).get_initial()
+        initial.update({
+            'id': self.kwargs['id']
+        })
+        return initial
+
+    def get_context_data(self, **kwargs):
+        plugin = Plugin.objects.get(slug=self.kwargs['slug'])
+        user = ForumUser.objects.get(id=self.kwargs['id'])
+        message = None
+        if plugin.owner == user:
+            message = 'is the owner and cannot be added as a contributor.'
+        elif user in plugin.contributors.all():
+            message = 'is already a contributor.'
+        context = super(
+            PluginAddContributorConfirmationView, self).get_context_data(
+            **kwargs)
+        context.update({
+            'username': ForumUser.objects.get(id=self.kwargs['id']).username,
+            'message': message,
+        })
+        return context
+
+    def form_valid(self, form):
+        plugin = Plugin.objects.get(slug=self.kwargs['slug'])
+        plugin.contributors.add(form.cleaned_data['id'])
+        return HttpResponseRedirect(plugin.get_absolute_url())
 
 
 class PluginUpdateView(UpdateView):

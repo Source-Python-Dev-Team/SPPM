@@ -2,20 +2,39 @@
 # >> IMPORTS
 # =============================================================================
 # Django Imports
-from django.views.generic import CreateView, DetailView, ListView, UpdateView
+from django.shortcuts import HttpResponseRedirect
+from django.views.generic import (
+    CreateView,
+    DetailView,
+    FormView,
+    ListView,
+    UpdateView,
+)
+
+# 3rd-Party Django
+from django_filters.views import FilterView
 
 # Project Imports
 from plugins.models import Plugin
+from users.filtersets import ForumUserFilterSet
+from users.models import ForumUser
 
 # App Imports
+from .forms import (
+    SubPluginAddContributorConfirmationForm,
+    SubPluginCreateForm,
+    SubPluginEditForm,
+    SubPluginUpdateForm,
+)
 from .models import SubPlugin
-from .forms import SubPluginCreateForm, SubPluginEditForm, SubPluginUpdateForm
 
 
 # =============================================================================
 # >> ALL DECLARATION
 # =============================================================================
 __all__ = (
+    'SubPluginAddContributorConfirmationView',
+    'SubPluginAddContributorsView',
     'SubPluginCreateView',
     'SubPluginListView',
     'SubPluginUpdateView',
@@ -87,6 +106,57 @@ class SubPluginEditView(UpdateView):
         return initial
 
 
+class SubPluginAddContributorsView(FilterView):
+    model = ForumUser
+    template_name = 'sub_plugins/contributors/add.html'
+    filterset_class = ForumUserFilterSet
+
+
+class SubPluginAddContributorConfirmationView(FormView):
+    form_class = SubPluginAddContributorConfirmationForm
+    template_name = 'sub_plugins/contributors/add_confirmation.html'
+    plugin = None
+
+    def get_initial(self):
+        initial = super(
+            SubPluginAddContributorConfirmationView, self).get_initial()
+        initial.update({
+            'id': self.kwargs['id']
+        })
+        return initial
+
+    def get_context_data(self, **kwargs):
+        plugin = self.get_plugin()
+        sub_plugin = SubPlugin.objects.get(
+            plugin=plugin, slug=self.kwargs['sub_plugin_slug'])
+        user = ForumUser.objects.get(id=self.kwargs['id'])
+        message = None
+        if sub_plugin.owner == user:
+            message = 'is the owner and cannot be added as a contributor.'
+        elif user in sub_plugin.contributors.all():
+            message = 'is already a contributor.'
+        context = super(
+            SubPluginAddContributorConfirmationView, self).get_context_data(
+            **kwargs)
+        context.update({
+            'username': ForumUser.objects.get(id=self.kwargs['id']).username,
+            'message': message,
+        })
+        return context
+
+    def form_valid(self, form):
+        plugin = self.get_plugin()
+        sub_plugin = SubPlugin.objects.get(
+            plugin=plugin, slug=self.kwargs['sub_plugin_slug'])
+        sub_plugin.contributors.add(form.cleaned_data['id'])
+        return HttpResponseRedirect(sub_plugin.get_absolute_url())
+
+    def get_plugin(self):
+        if self.plugin is None:
+            self.plugin = Plugin.objects.get(slug=self.kwargs['slug'])
+        return self.plugin
+
+
 class SubPluginUpdateView(UpdateView):
     model = SubPlugin
     form_class = SubPluginUpdateForm
@@ -115,7 +185,8 @@ class SubPluginUpdateView(UpdateView):
         return initial
 
     def get_plugin(self):
-        self.plugin = Plugin.objects.get(slug=self.kwargs['slug'])
+        if self.plugin is None:
+            self.plugin = Plugin.objects.get(slug=self.kwargs['slug'])
         return self.plugin
 
 

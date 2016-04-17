@@ -14,7 +14,7 @@ from django.utils.text import slugify
 from precise_bbcode.fields import BBCodeTextField
 
 # Project Imports
-from users.models import User
+from users.models import ForumUser
 
 # App Imports
 from .constants import LOGO_MAX_HEIGHT, LOGO_MAX_WIDTH
@@ -132,8 +132,8 @@ class CommonBase(models.Model):
 
         # TODO: Set the user_id based on the user that is logged in
         from random import choice
-        if not self.user_id:
-            self.user_id = choice(User.objects.all()).pk
+        if not self.owner:
+            self.owner = choice(ForumUser.objects.all()).pk
 
         super(CommonBase, self).save(
             force_insert, force_update, using, update_fields

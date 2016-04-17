@@ -8,6 +8,9 @@ from zipfile import ZipFile
 from django import forms
 from django.core.exceptions import ValidationError
 
+# Project Imports
+from users.models import ForumUser
+
 # App Imports
 from .constants import PACKAGE_PATH
 from .helpers import get_package_basename
@@ -18,6 +21,7 @@ from .models import Package
 # >> ALL DECLARATION
 # =============================================================================
 __all__ = (
+    'PackageAddContributorConfirmationForm',
     'PackageCreateForm',
     'PackageEditForm',
     'PackageUpdateForm',
@@ -68,6 +72,20 @@ class PackageEditForm(forms.ModelForm):
             'description': forms.Textarea,
             'configuration': forms.Textarea,
         }
+
+
+class PackageAddContributorConfirmationForm(forms.ModelForm):
+    class Meta:
+        model = ForumUser
+        fields = (
+            "id",
+        )
+        widgets = {
+            "id": forms.HiddenInput(),
+        }
+
+    def validate_unique(self):
+        pass
 
 
 class PackageUpdateForm(forms.ModelForm):

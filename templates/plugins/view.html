@@ -16,12 +16,12 @@
         <h1>{{ plugin.name }} - version {{ plugin.version }}</h1>
         <ul>
             <h2>Owner:</h2>
-            <ul><a href="{{ plugin.user.get_absolute_url }}">{{ plugin.user.name }}</a></ul>
+            <ul><a href="{{ plugin.owner.get_absolute_url }}">{{ plugin.owner }}</a></ul>
             {% if contributors %}
                 <h2>Contributors:</h2>
                 <ul>
                     {% for user in contributors %}
-                        <a href="{{ user.get_absolute_url }}">{{ user.name }}</a>
+                        <a href="{{ user.get_absolute_url }}">{{ user }}</a>
                         <br />
                     {% endfor %}
                 </ul>
@@ -32,15 +32,17 @@
                 <p>Last updated on {{ plugin.date_last_updated }}</p>
             {% endif %}
             {% if paths %}
-                <a href="{% url 'plugins:sub_plugins:sub_plugin_list' slug=plugin.slug %}">{{ plugin.name }} sub-plugins</a>
+                <a href="{% url 'plugins:sub_plugins:list' slug=plugin.slug %}">{{ plugin.name }} sub-plugins</a>
             {% endif %}
         </ul>
 
-        <h3>Description</h3>
-        <ol>
-            {{ plugin.description.rendered }}
-        </ol>
-        <br />
+        {% if plugin.description.rendered %}
+            <h3>Description</h3>
+            <ol>
+                {{ plugin.description.rendered }}
+            </ol>
+            <br />
+        {% endif %}
 
         <h3>Installation</h3>
         <ol>
@@ -51,14 +53,20 @@
         </ol>
         <br />
 
-        <h3>Configuration</h3>
-        <ol>
-            {{ plugin.configuration.rendered }}
-        </ol>
-        <br />
+        {% if plugin.configuration.rendered %}
+            <h3>Configuration</h3>
+            <ol>
+                {{ plugin.configuration.rendered }}
+            </ol>
+            <br />
+        {% endif %}
 
         {# TODO: Add package requirements #}
         {# TODO: Add pypi requirements #}
+
+        <b><a href="{% url 'plugins:add_contributors' slug=plugin.slug %}">Manage Contributors</a></b><br />
+        <b><a href="{% url 'plugins:edit' slug=plugin.slug %}">Edit Page</a></b><br />
+        <b><a href="{% url 'plugins:update' slug=plugin.slug %}">Update Plugin</a></b>
 
     </body>
 

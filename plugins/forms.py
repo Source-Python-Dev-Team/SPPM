@@ -8,6 +8,9 @@ from zipfile import ZipFile
 from django import forms
 from django.core.exceptions import ValidationError
 
+# Project Imports
+from users.models import ForumUser
+
 # App Imports
 from .constants import PLUGIN_PATH
 from .helpers import get_plugin_basename
@@ -18,6 +21,7 @@ from .models import Plugin
 # >> ALL DECLARATION
 # =============================================================================
 __all__ = (
+    'PluginAddContributorConfirmationForm',
     'PluginCreateForm',
     'PluginEditForm',
     'PluginUpdateForm',
@@ -68,6 +72,20 @@ class PluginEditForm(forms.ModelForm):
             'description': forms.Textarea,
             'configuration': forms.Textarea,
         }
+
+
+class PluginAddContributorConfirmationForm(forms.ModelForm):
+    class Meta:
+        model = ForumUser
+        fields = (
+            "id",
+        )
+        widgets = {
+            "id": forms.HiddenInput(),
+        }
+
+    def validate_unique(self):
+        pass
 
 
 class PluginUpdateForm(forms.ModelForm):

@@ -5,7 +5,7 @@
 from django.views.generic import DetailView, ListView
 
 # App Imports
-from .models import User
+from .models import ForumUser
 
 
 # =============================================================================
@@ -21,11 +21,11 @@ __all__ = (
 # >> VIEW CLASSES
 # =============================================================================
 class UserListView(ListView):
-    model = User
+    model = ForumUser
     template_name = 'users/list.html'
 
     def get_queryset(self):
-        return User.objects.exclude(
+        return ForumUser.objects.exclude(
             plugins__isnull=True, plugin_contributions__isnull=True,
             sub_plugins__isnull=True, sub_plugin_contributions__isnull=True,
             packages__isnull=True, package_contributions__isnull=True,
@@ -33,7 +33,7 @@ class UserListView(ListView):
 
 
 class UserView(DetailView):
-    model = User
+    model = ForumUser
     template_name = 'users/view.html'
 
     def get_context_data(self, **kwargs):

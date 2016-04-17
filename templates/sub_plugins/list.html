@@ -17,7 +17,7 @@
             {% else %}
                 <h1>No sub-plugins are registered for {{ plugin.name }}.</h1>
             {% endif %}
-            <a href="{% url 'plugins:sub_plugins:sub_plugin_create' slug=plugin.slug %}">Create Sub-Plugin?</a>
+            <a href="{% url 'plugins:sub_plugins:create' slug=plugin.slug %}">Create Sub-Plugin?</a>
         {% else %}
             <h1>{{ plugin.name }} does not support sub-plugins.</h1>
         {% endif %}

@@ -39,12 +39,12 @@ __all__ = (
 # >> MODEL CLASSES
 # =============================================================================
 class Plugin(CommonBase):
-    user = models.ForeignKey(
-        to='users.User',
+    owner = models.ForeignKey(
+        to='users.ForumUser',
         related_name='plugins',
     )
     contributors = models.ManyToManyField(
-        to='users.User',
+        to='users.ForumUser',
         related_name='plugin_contributions',
     )
     package_requirements = models.ManyToManyField(
@@ -66,7 +66,7 @@ class Plugin(CommonBase):
 
     def get_absolute_url(self):
         return reverse(
-            viewname='plugins:plugin_detail',
+            viewname='plugins:detail',
             kwargs={
                 'slug': self.slug,
             }

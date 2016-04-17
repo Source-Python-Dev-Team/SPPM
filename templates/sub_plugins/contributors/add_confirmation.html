@@ -1,0 +1,17 @@
+{% extends "common/sidebar.html" %}
+
+{% block content %}
+    {% if message %}
+
+        <b><span style="color: #ff8a37">{{ username }}</span></b> {{ message }}
+
+    {% else %}
+
+        <p>Are you sure you want to add <b><span style="color: #ff8a37">{{ username }}</span></b> as a contributor?</p>
+        <form method="post">{% csrf_token %}
+            {{ form.as_p }}
+        <input type="submit" name="Yes" />
+        </form>
+
+    {% endif %}
+{% endblock content %}

@@ -6,6 +6,8 @@ from django.conf.urls import url
 
 # App Imports
 from .views import (
+    SubPluginAddContributorConfirmationView,
+    SubPluginAddContributorsView,
     SubPluginCreateView,
     SubPluginEditView,
     SubPluginListView,
@@ -21,26 +23,36 @@ urlpatterns = [
     url(
         regex=r'^$',
         view=SubPluginListView.as_view(),
-        name='sub_plugin_list',
+        name='list',
     ),
     url(
         regex=r'^create/',
         view=SubPluginCreateView.as_view(),
-        name='sub_plugin_create',
+        name='create',
     ),
     url(
         regex=r'^edit/(?P<sub_plugin_slug>[\w-]+)/',
         view=SubPluginEditView.as_view(),
-        name='sub_plugin_edit',
+        name='edit',
     ),
     url(
         regex=r'^update/(?P<sub_plugin_slug>[\w-]+)/',
         view=SubPluginUpdateView.as_view(),
-        name='sub_plugin_update',
+        name='update',
     ),
     url(
         regex=r'^(?P<sub_plugin_slug>[\w-]+)/$',
         view=SubPluginView.as_view(),
-        name='sub_plugin_detail',
+        name='detail',
+    ),
+    url(
+        regex=r'^(?P<sub_plugin_slug>[\w-]+)/contributors/add/$',
+        view=SubPluginAddContributorsView.as_view(),
+        name='add_contributors',
+    ),
+    url(
+        regex=r'^(?P<sub_plugin_slug>[\w-]+)/contributors/add/(?P<id>\d+)/$',
+        view=SubPluginAddContributorConfirmationView.as_view(),
+        name='confirm_contributor',
     ),
 ]
