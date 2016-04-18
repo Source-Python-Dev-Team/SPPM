@@ -132,8 +132,8 @@ class CommonBase(models.Model):
 
         # TODO: Set the user_id based on the user that is logged in
         from random import choice
-        if not self.owner:
-            self.owner = choice(ForumUser.objects.all()).pk
+        if not self.owner_id:
+            self.owner = choice(ForumUser.objects.all())
 
         super(CommonBase, self).save(
             force_insert, force_update, using, update_fields

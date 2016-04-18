@@ -7,10 +7,11 @@ from django.conf.urls import url
 # App Imports
 from .views import (
     PackageAddContributorConfirmationView,
-    PackageAddContributorsView,
+    PackageAddContributorView,
     PackageCreateView,
     PackageEditView,
     PackageListView,
+    PackageListContributorsView,
     PackageUpdateView,
     PackageView,
 )
@@ -47,12 +48,17 @@ urlpatterns = [
     ),
     url(
         regex=r'^(?P<slug>[\w-]+)/contributors/add/$',
-        view=PackageAddContributorsView.as_view(),
-        name='add_contributors',
+        view=PackageAddContributorView.as_view(),
+        name='add_contributor',
     ),
     url(
         regex=r'^(?P<slug>[\w-]+)/contributors/add/(?P<id>\d+)/$',
         view=PackageAddContributorConfirmationView.as_view(),
-        name='confirm_contributor',
+        name='confirm_add_contributor',
+    ),
+    url(
+        regex=r'^(?P<slug>[\w-]+)/contributors/$',
+        view=PackageListContributorsView.as_view(),
+        name='list_contributors',
     ),
 ]

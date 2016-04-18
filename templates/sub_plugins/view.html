@@ -60,7 +60,7 @@
         {# TODO: Add package requirements #}
         {# TODO: Add pypi requirements #}
 
-        <b><a href="{% url 'plugins:sub_plugins:add_contributors' slug=sub_plugin.plugin.slug sub_plugin_slug=sub_plugin.slug %}">Manage Contributors</a></b><br />
+        <b><a href="{% url 'plugins:sub_plugins:add_contributor' slug=sub_plugin.plugin.slug sub_plugin_slug=sub_plugin.slug %}">Manage Contributors</a></b><br />
         <b><a href="{% url 'plugins:sub_plugins:edit' slug=sub_plugin.plugin.slug sub_plugin_slug=sub_plugin.slug %}">Edit Page</a></b><br />
         <b><a href="{% url 'plugins:sub_plugins:update' slug=sub_plugin.plugin.slug sub_plugin_slug=sub_plugin.slug %}">Update Sub-Plugin</a></b>
 

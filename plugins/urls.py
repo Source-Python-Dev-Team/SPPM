@@ -55,11 +55,11 @@ urlpatterns = [
     url(
         regex=r'^(?P<slug>[\w-]+)/contributors/add/$',
         view=PluginAddContributorsView.as_view(),
-        name='add_contributors',
+        name='add_contributor',
     ),
     url(
         regex=r'^(?P<slug>[\w-]+)/contributors/add/(?P<id>\d+)/$',
         view=PluginAddContributorConfirmationView.as_view(),
-        name='confirm_contributor',
+        name='confirm_add_contributor',
     ),
 ]

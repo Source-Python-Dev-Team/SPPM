@@ -56,6 +56,10 @@ class PackageCreateForm(forms.ModelForm):
         file_list = [x for x in ZipFile(
             self.cleaned_data['zip_file']) if not x.endswith('/')]
         basename = get_package_basename(file_list)
+        current = Package.objects.filter(basename=basename)
+        if current:
+            raise ValidationError(
+                'Package {0} is already registered.'.format(basename))
         self.instance.basename = basename
         return self.cleaned_data['zip_file']
 
@@ -86,6 +90,18 @@ class PackageAddContributorConfirmationForm(forms.ModelForm):
 
     def validate_unique(self):
         pass
+
+
+class PackageListContributorsForm(forms.ModelForm):
+    class Meta:
+        model = Package
+        fields = (
+            'contributors',
+        )
+
+    def __init__(self, *args, **kwargs):
+        super(PackageListContributorsForm, self).__init__(*args, **kwargs)
+        #print(dir(self))
 
 
 class PackageUpdateForm(forms.ModelForm):

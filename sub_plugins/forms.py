@@ -64,6 +64,11 @@ class SubPluginCreateForm(forms.ModelForm):
             raise ValidationError(
                 'No primary file found in zip.  ' +
                 'Perhaps you are attempting to upload a sub-plugin.')
+        current = SubPlugin.objects.filter(plugin=plugin, basename=basename)
+        if current:
+            raise ValidationError(
+                'Sub-plugin {0} has already been uploaded for '
+                'plugin {1}.'.format(basename, plugin.name))
         self.instance.basename = basename
         return self.cleaned_data['zip_file']
 

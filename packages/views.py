@@ -23,6 +23,7 @@ from .forms import (
     PackageAddContributorConfirmationForm,
     PackageCreateForm,
     PackageEditForm,
+    PackageListContributorsForm,
     PackageUpdateForm,
 )
 from .models import Package
@@ -33,7 +34,7 @@ from .models import Package
 # =============================================================================
 __all__ = (
     'PackageAddContributorConfirmationView',
-    'PackageAddContributorsView',
+    'PackageAddContributorView',
     'PackageCreateView',
     'PackageEditView',
     'PackageListView',
@@ -70,7 +71,7 @@ class PackageEditView(UpdateView):
         return initial
 
 
-class PackageAddContributorsView(FilterView):
+class PackageAddContributorView(FilterView):
     model = ForumUser
     template_name = 'packages/contributors/add.html'
     filterset_class = ForumUserFilterSet
@@ -111,6 +112,18 @@ class PackageAddContributorConfirmationView(FormView):
         return HttpResponseRedirect(package.get_absolute_url())
 
 
+class PackageListContributorsView(UpdateView):
+    model = Package
+    form_class = PackageListContributorsForm
+    template_name = 'packages/contributors/list.html'
+
+    def get_form(self, form_class=None):
+        form = super(PackageListContributorsView, self).get_form(form_class)
+        package = Package.objects.get(slug=self.kwargs['slug'])
+        form.fields['contributors'].queryset = package.contributors.all()
+        return form
+
+
 class PackageUpdateView(UpdateView):
     model = Package
     form_class = PackageUpdateForm
@@ -142,6 +155,8 @@ class PackageView(DetailView):
         context = super(PackageView, self).get_context_data(**kwargs)
         context.update({
             'contributors': self.object.contributors.all(),
+            'package_requirements': self.object.package_requirements.all(),
+            'pypi_requirements': self.object.pypi_requirements.all(),
             'required_in_plugins': self.object.required_in_plugins.all(),
             'required_in_sub_plugins': self.object.required_in_sub_plugins.all(),
             'required_in_packages': self.object.required_in_packages.all(),

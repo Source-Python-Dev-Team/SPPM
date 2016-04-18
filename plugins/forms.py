@@ -54,8 +54,12 @@ class PluginCreateForm(forms.ModelForm):
     def clean_zip_file(self):
         """Verify the zip file contents."""
         file_list = [x for x in ZipFile(
-            self.cleaned_data['zip_file']) if not x.endswith('/')]
+            self.cleaned_data['zip_file']).namelist() if not x.endswith('/')]
         basename = get_plugin_basename(file_list)
+        current = Plugin.objects.filter(basename=basename)
+        if current:
+            raise ValidationError(
+                'Plugin {0} already registered.'.format(basename))
         self.instance.basename = basename
         return self.cleaned_data['zip_file']
 

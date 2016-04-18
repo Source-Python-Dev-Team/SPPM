@@ -76,7 +76,7 @@ class Plugin(CommonBase):
             self, force_insert=False, force_update=False,
             using=None, update_fields=None):
         """Remove the old logo before storing the new one."""
-        if self.logo and u'logo/' not in self.logo:
+        if u'logos/' not in str(self.logo):
             path = Path(settings.MEDIA_ROOT) / 'logos' / 'plugins'
             if path.isdir():
                 logo = [x for x in path.files() if x.namebase == self.basename]
