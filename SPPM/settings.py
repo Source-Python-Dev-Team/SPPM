@@ -135,7 +135,11 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.9/howto/static-files/
 STATIC_URL = '/static/'
 
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+
 MEDIA_URL = '/media/'
+
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 FORUM_URL = 'http://forums.sourcepython.com'
 
@@ -144,8 +148,6 @@ WIKI_URL = 'http://wiki.sourcepython.com'
 GITHUB_URL = 'http://github.com/Source-Python-Dev-Team/Source.Python'
 
 PYPI_URL = 'https://pypi.python.org/pypi'
-
-MEDIA_ROOT = os.path.join(os.getcwd(), 'media')
 
 PHPBB_TABLE_PREFIX = 'phpbb_'
 
