@@ -136,7 +136,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, 'static'),
+    os.path.join(os.getcwd(), 'static'),
 )
 
 MEDIA_URL = '/media/'
@@ -149,7 +149,7 @@ GITHUB_URL = 'http://github.com/Source-Python-Dev-Team/Source.Python'
 
 PYPI_URL = 'https://pypi.python.org/pypi'
 
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_ROOT = os.path.join(os.getcwd(), 'media')
 
 PHPBB_TABLE_PREFIX = 'phpbb_'
 
