@@ -7,6 +7,9 @@
 # Local batch files
 *.bat
 
+# Local shell files
+*.sh
+
 # Migrations
 */migrations/0*
 
