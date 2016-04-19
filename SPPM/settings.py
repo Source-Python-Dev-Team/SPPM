@@ -142,7 +142,7 @@ MEDIA_URL = '/media/'
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-FORUM_URL = 'http://forums.sourcepython.com'
+FORUM_URL = 'http://forums.sourcepython.com/'
 
 WIKI_URL = 'http://wiki.sourcepython.com'
 
