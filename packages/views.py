@@ -23,7 +23,6 @@ from .forms import (
     PackageAddContributorConfirmationForm,
     PackageCreateForm,
     PackageEditForm,
-    PackageListContributorsForm,
     PackageUpdateForm,
 )
 from .models import Package
@@ -73,13 +72,37 @@ class PackageEditView(UpdateView):
 
 class PackageAddContributorView(FilterView):
     model = ForumUser
-    template_name = 'packages/contributors/add.html'
+    template_name = 'packages/contributor/add.html'
     filterset_class = ForumUserFilterSet
+
+    def get_context_data(self, **kwargs):
+        context = super(
+            PackageAddContributorView, self).get_context_data(**kwargs)
+        message = ''
+        user = None
+        if 'username' in self.request.GET:
+            package = Package.objects.get(slug=self.kwargs['slug'])
+            try:
+                user = ForumUser.objects.get(
+                    username=self.request.GET['username'])
+            except ForumUser.DoesNotExist:
+                pass
+            else:
+                if user == package.owner:
+                    message = (
+                        'is the owner and cannot be added as a contributor.')
+                elif user in package.contributors.all():
+                    message = 'is already a contributor.'
+        context.update({
+            'message': message,
+            'user': user,
+        })
+        return context
 
 
 class PackageAddContributorConfirmationView(FormView):
     form_class = PackageAddContributorConfirmationForm
-    template_name = 'packages/contributors/add_confirmation.html'
+    template_name = 'packages/contributor/add_confirmation.html'
 
     def get_initial(self):
         initial = super(
@@ -110,18 +133,6 @@ class PackageAddContributorConfirmationView(FormView):
         package = Package.objects.get(slug=self.kwargs['slug'])
         package.contributors.add(form.cleaned_data['id'])
         return HttpResponseRedirect(package.get_absolute_url())
-
-
-class PackageListContributorsView(UpdateView):
-    model = Package
-    form_class = PackageListContributorsForm
-    template_name = 'packages/contributors/list.html'
-
-    def get_form(self, form_class=None):
-        form = super(PackageListContributorsView, self).get_form(form_class)
-        package = Package.objects.get(slug=self.kwargs['slug'])
-        form.fields['contributors'].queryset = package.contributors.all()
-        return form
 
 
 class PackageUpdateView(UpdateView):

@@ -1,0 +1,24 @@
+{% extends "common/sidebar.html" %}
+
+{% block content %}
+
+    <form action="" method="get">
+        {{ filter.form.as_p }}
+        <input type="submit" />
+    </form>
+
+    {% if request.GET %}
+        {% if message %}
+            <b><span style="color: red">{{ user.username }}</span></b> {{ message }}
+        {% elif user %}
+            <br />
+            Select the username to go to the confirmation page.
+            <br />
+            <a href="{% url 'plugins:confirm_add_contributor' slug=view.kwargs.slug id=user.id %}">{{ user.username }}</a>
+            <br />
+        {% else %}
+            <b>No user <span style="color: red">{{ request.GET.username }}</span> found.</b>
+        {% endif %}
+    {% endif %}
+
+{% endblock content %}

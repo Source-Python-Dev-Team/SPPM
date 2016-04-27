@@ -33,7 +33,7 @@ from .models import Plugin
 # =============================================================================
 __all__ = (
     'PluginAddContributorConfirmationView',
-    'PluginAddContributorsView',
+    'PluginAddContributorView',
     'PluginCreateView',
     'PluginEditView',
     'PluginListView',
@@ -70,15 +70,39 @@ class PluginEditView(UpdateView):
         return initial
 
 
-class PluginAddContributorsView(FilterView):
+class PluginAddContributorView(FilterView):
     model = ForumUser
-    template_name = 'plugins/contributors/add.html'
+    template_name = 'plugins/contributor/add.html'
     filterset_class = ForumUserFilterSet
+
+    def get_context_data(self, **kwargs):
+        context = super(
+            PluginAddContributorView, self).get_context_data(**kwargs)
+        message = ''
+        user = None
+        if 'username' in self.request.GET:
+            plugin = Plugin.objects.get(slug=self.kwargs['slug'])
+            try:
+                user = ForumUser.objects.get(
+                    username=self.request.GET['username'])
+            except ForumUser.DoesNotExist:
+                pass
+            else:
+                if user == plugin.owner:
+                    message = (
+                        'is the owner and cannot be added as a contributor.')
+                elif user in plugin.contributors.all():
+                    message = 'is already a contributor.'
+        context.update({
+            'message': message,
+            'user': user,
+        })
+        return context
 
 
 class PluginAddContributorConfirmationView(FormView):
     form_class = PluginAddContributorConfirmationForm
-    template_name = 'plugins/contributors/add_confirmation.html'
+    template_name = 'plugins/contributor/add_confirmation.html'
 
     def get_initial(self):
         initial = super(

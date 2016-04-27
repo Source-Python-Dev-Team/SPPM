@@ -1,4 +1,5 @@
 {% extends "common/sidebar.html" %}
+{% load i18n %}
 {% load bbcode_tags %}
 {% bbcode entry.bbcode_content %}
 
@@ -14,25 +15,66 @@
             <img src="{{ MEDIA_URL }}{{ plugin.logo }}" height="135" width="135" alt="{{ plugin }} Logo"/>
         {% endif %}
         <h1>{{ plugin.name }} - version {{ plugin.version }}</h1>
-        <ul>
-            <h2>Owner:</h2>
-            <ul><a href="{{ plugin.owner.get_absolute_url }}">{{ plugin.owner }}</a></ul>
-            {% if contributors %}
-                <h2>Contributors:</h2>
-                <ul>
-                    {% for user in contributors %}
-                        <a href="{{ user.get_absolute_url }}">{{ user }}</a>
-                        <br />
-                    {% endfor %}
-                </ul>
-            {% endif %}
+
+        <br />
+        <p>Created on {{ plugin.date_created }}</p>
+        {% if plugin.date_last_updated %}
+            <p>Last updated on {{ plugin.date_last_updated }}</p>
+        {% endif %}
+        {% if paths %}
+            <a href="{% url 'plugins:sub_plugins:list' slug=plugin.slug %}">{{ plugin.name }} sub-plugins</a>
             <br />
-            <p>Created on {{ plugin.date_created }}</p>
-            {% if plugin.date_last_updated %}
-                <p>Last updated on {{ plugin.date_last_updated }}</p>
-            {% endif %}
-            {% if paths %}
-                <a href="{% url 'plugins:sub_plugins:list' slug=plugin.slug %}">{{ plugin.name }} sub-plugins</a>
+        {% endif %}
+
+        <br />
+        <ul>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="panel panel-primary panel-primary-custom">
+                        <div class="panel-heading panel-heading-custom">
+                            <h3 class="panel-title">{% trans 'Owner' %}</h3>
+                        </div>
+                        <table class="table">
+                            <tbody>
+                                <tr>
+                                    <td><a href="{{ plugin.owner.get_absolute_url }}">{{ plugin.owner }}</a></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            {% if contributors %}
+                <br />
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="panel panel-primary panel-primary-custom">
+                            <div class="panel-heading panel-heading-custom">
+                                <h3 class="panel-title">{% trans 'Contributors' %}</h3>
+                                {#  TODO: only show this if the user is logged in and is the owner #}
+                                <span class="pull-right" style="margin-top: -20px">
+                                    <a href="{% url 'plugins:add_contributor' slug=plugin.slug %}">
+                                        <button type="button" class="btn btn-xs btn-default">Add Contributor</button>
+                                    </a>
+                                </span>
+                            </div>
+                            <table class="table table-striped">
+                                <tbody>
+                                    {% for contributor in contributors %}
+                                        <tr>
+                                            <td><a href="{{ contributor.get_absolute_url }}">{{ contributor }}</a></td>
+                                            {# TODO: only show this if the user is logged in and is the owner #}
+                                            <td class="text-right">
+            {#                                    <a data-toggle="modal" href="#{{  }}"#}
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
             {% endif %}
         </ul>
 
@@ -64,7 +106,6 @@
         {# TODO: Add package requirements #}
         {# TODO: Add pypi requirements #}
 
-        <b><a href="{% url 'plugins:add_contributor' slug=plugin.slug %}">Manage Contributors</a></b><br />
         <b><a href="{% url 'plugins:edit' slug=plugin.slug %}">Edit Page</a></b><br />
         <b><a href="{% url 'plugins:update' slug=plugin.slug %}">Update Plugin</a></b>
 

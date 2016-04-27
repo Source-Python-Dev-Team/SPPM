@@ -92,18 +92,6 @@ class PackageAddContributorConfirmationForm(forms.ModelForm):
         pass
 
 
-class PackageListContributorsForm(forms.ModelForm):
-    class Meta:
-        model = Package
-        fields = (
-            'contributors',
-        )
-
-    def __init__(self, *args, **kwargs):
-        super(PackageListContributorsForm, self).__init__(*args, **kwargs)
-        #print(dir(self))
-
-
 class PackageUpdateForm(forms.ModelForm):
     class Meta:
         model = Package

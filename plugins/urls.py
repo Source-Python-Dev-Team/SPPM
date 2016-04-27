@@ -7,7 +7,7 @@ from django.conf.urls import include, url
 # App Imports
 from .views import (
     PluginAddContributorConfirmationView,
-    PluginAddContributorsView,
+    PluginAddContributorView,
     PluginCreateView,
     PluginEditView,
     PluginListView,
@@ -53,12 +53,12 @@ urlpatterns = [
         name='detail',
     ),
     url(
-        regex=r'^(?P<slug>[\w-]+)/contributors/add/$',
-        view=PluginAddContributorsView.as_view(),
+        regex=r'^(?P<slug>[\w-]+)/add-contributor/$',
+        view=PluginAddContributorView.as_view(),
         name='add_contributor',
     ),
     url(
-        regex=r'^(?P<slug>[\w-]+)/contributors/add/(?P<id>\d+)/$',
+        regex=r'^(?P<slug>[\w-]+)/add-contributor/(?P<id>\d+)/$',
         view=PluginAddContributorConfirmationView.as_view(),
         name='confirm_add_contributor',
     ),

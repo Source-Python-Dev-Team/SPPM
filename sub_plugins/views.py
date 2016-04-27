@@ -34,7 +34,7 @@ from .models import SubPlugin
 # =============================================================================
 __all__ = (
     'SubPluginAddContributorConfirmationView',
-    'SubPluginAddContributorsView',
+    'SubPluginAddContributorView',
     'SubPluginCreateView',
     'SubPluginListView',
     'SubPluginUpdateView',
@@ -106,15 +106,47 @@ class SubPluginEditView(UpdateView):
         return initial
 
 
-class SubPluginAddContributorsView(FilterView):
+class SubPluginAddContributorView(FilterView):
     model = ForumUser
-    template_name = 'sub_plugins/contributors/add.html'
+    template_name = 'sub_plugins/contributor/add.html'
     filterset_class = ForumUserFilterSet
+    plugin = None
+
+    def get_context_data(self, **kwargs):
+        context = super(
+            SubPluginAddContributorView, self).get_context_data(**kwargs)
+        message = ''
+        user = None
+        if 'username' in self.request.GET:
+            plugin = self.get_plugin()
+            sub_plugin = SubPlugin.objects.get(
+                plugin=plugin, slug=self.kwargs['sub_plugin_slug'])
+            try:
+                user = ForumUser.objects.get(
+                    username=self.request.GET['username'])
+            except ForumUser.DoesNotExist:
+                pass
+            else:
+                if user == sub_plugin.owner:
+                    message = (
+                        'is the owner and cannot be added as a contributor.')
+                elif user in sub_plugin.contributors.all():
+                    message = 'is already a contributor.'
+        context.update({
+            'message': message,
+            'user': user,
+        })
+        return context
+
+    def get_plugin(self):
+        if self.plugin is None:
+            self.plugin = Plugin.objects.get(slug=self.kwargs['slug'])
+        return self.plugin
 
 
 class SubPluginAddContributorConfirmationView(FormView):
     form_class = SubPluginAddContributorConfirmationForm
-    template_name = 'sub_plugins/contributors/add_confirmation.html'
+    template_name = 'sub_plugins/contributor/add_confirmation.html'
     plugin = None
 
     def get_initial(self):

@@ -1,34 +1,76 @@
 {% extends "common/sidebar.html" %}
+{% load i18n %}
 {% load bbcode_tags %}
 {% bbcode entry.bbcode_content %}
 
-{% block title %}{{ package.name }} - version {{ package.version }}{% endblock title %}
+{% block title %}
+    {{ package.name }} - version {{ package.version }}
+{% endblock title %}
 
 {% block content %}
 
     <body>
 
-        {% if plugin.logo %}
+        {% if package.logo %}
             <img src="{{ MEDIA_URL }}{{ package.logo }}" height="135" width="135" alt="{{ package }} Logo"/>
         {% endif %}
         <h1>{{ package.name }} - version {{ package.version }}</h1>
-        <ul>
-            <h2>Owner:</h2>
-            <ul><a href="{{ package.owner.get_absolute_url }}">{{ package.owner }}</a></ul>
-            {% if contributors %}
-                <h2>Contributors:</h2>
-                <ul>
-                    {% for user in contributors %}
-                        <a href="{{ user.get_absolute_url }}">{{ user }}</a>
-                        <br />
-                    {% endfor %}
-                </ul>
-            {% endif %}
 
-            <br />
-            <p>Created on {{ package.date_created }}</p>
-            {% if package.date_last_updated %}
-                <p>Last updated on {{ package.date_last_updated }}</p>
+        <br />
+        <p>Created on {{ package.date_created }}</p>
+        {% if package.date_last_updated %}
+            <p>Last updated on {{ package.date_last_updated }}</p>
+        {% endif %}
+
+        <br />
+        <ul>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="panel panel-primary panel-primary-custom">
+                        <div class="panel-heading panel-heading-custom">
+                            <h3 class="panel-title">{% trans 'Owner' %}</h3>
+                        </div>
+                        <table class="table">
+                            <tbody>
+                                <tr>
+                                    <td><a href="{{ package.owner.get_absolute_url }}">{{ package.owner }}</a></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            {% if contributors %}
+                <br />
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="panel panel-primary panel-primary-custom">
+                            <div class="panel-heading panel-heading-custom">
+                                <h3 class="panel-title">{% trans 'Contributors' %}</h3>
+                                {#  TODO: only show this if the user is logged in and is the owner #}
+                                <span class="pull-right" style="margin-top: -20px">
+                                    <a href="{% url 'packages:add_contributor' slug=package.slug %}">
+                                        <button type="button" class="btn btn-xs btn-default">Add Contributor</button>
+                                    </a>
+                                </span>
+                            </div>
+                            <table class="table table-striped">
+                                <tbody>
+                                    {% for contributor in contributors %}
+                                        <tr>
+                                            <td><a href="{{ contributor.get_absolute_url }}">{{ contributor }}</a></td>
+                                            {# TODO: only show this if the user is logged in and is the owner #}
+                                            <td class="text-right">
+            {#                                    <a data-toggle="modal" href="#{{  }}"#}
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
             {% endif %}
         </ul>
 
@@ -116,7 +158,6 @@
         {# TODO: Add pypi requirements #}
 
         <br />
-        <b><a href="{% url 'packages:list_contributors' slug=package.slug %}">Manage Contributors</a></b><br />
         <b><a href="{% url 'packages:edit' slug=package.slug %}">Edit Page</a></b><br />
         <b><a href="{% url 'packages:update' slug=package.slug %}">Update Package</a></b>
 

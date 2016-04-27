@@ -20,3 +20,14 @@ sidebar {
     float: left;
     background: #cccccc;
 }
+
+.panel-heading.panel-heading-custom {
+    background: #ff8a37;
+    color: white;
+    border-color: #ff8a37;
+}
+
+.panel-primary.panel-primary-custom {
+    border-color: #ff8a37;
+    width: 450px;
+}
