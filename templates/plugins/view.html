@@ -45,37 +45,39 @@
                 </div>
             </div>
 
-            {% if contributors %}
-                <br />
-                <div class="row">
-                    <div class="col-sm-12">
-                        <div class="panel panel-primary panel-primary-custom">
-                            <div class="panel-heading panel-heading-custom">
-                                <h3 class="panel-title">{% trans 'Contributors' %}</h3>
-                                {#  TODO: only show this if the user is logged in and is the owner #}
-                                <span class="pull-right" style="margin-top: -20px">
-                                    <a href="{% url 'plugins:add_contributor' slug=plugin.slug %}">
-                                        <button type="button" class="btn btn-xs btn-default">Add Contributor</button>
-                                    </a>
-                                </span>
-                            </div>
-                            <table class="table table-striped">
-                                <tbody>
-                                    {% for contributor in contributors %}
-                                        <tr>
-                                            <td><a href="{{ contributor.get_absolute_url }}">{{ contributor }}</a></td>
-                                            {# TODO: only show this if the user is logged in and is the owner #}
-                                            <td class="text-right">
-            {#                                    <a data-toggle="modal" href="#{{  }}"#}
-                                            </td>
-                                        </tr>
-                                    {% endfor %}
-                                </tbody>
-                            </table>
+            <br />
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="panel panel-primary panel-primary-custom">
+                        <div class="panel-heading panel-heading-custom">
+                            <h3 class="panel-title">{% trans 'Contributors' %}</h3>
+                            {#  TODO: only show this if the user is logged in and is the owner #}
+                            <span class="pull-right" style="margin-top: -20px">
+                                <a href="{% url 'plugins:add_contributor' slug=plugin.slug %}">
+                                    <button type="button" class="btn btn-xs btn-default">Add Contributor</button>
+                                </a>
+                            </span>
                         </div>
+                        <table class="table table-striped">
+                            <tbody>
+                                {% for contributor in contributors %}
+                                    <tr>
+                                        <td><a href="{{ contributor.get_absolute_url }}">{{ contributor }}</a></td>
+                                        {# TODO: only show this if the user is logged in and is the owner #}
+                                        <td class="text-right">
+        {#                                    <a data-toggle="modal" href="#{{  }}"#}
+                                        </td>
+                                    </tr>
+                                {% empty %}
+                                    <tr>
+                                        <td colspan="2" class="text-center">There are no contributors</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
                     </div>
                 </div>
-            {% endif %}
+            </div>
         </ul>
 
         {% if plugin.description.rendered %}
