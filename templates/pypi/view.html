@@ -1,36 +1,38 @@
 {% extends "common/sidebar.html" %}
 
-{% block title %}{{ pypirequirement.name }}{% endblock title %}
+{% block title %}
+    {{ pypirequirement }}
+{% endblock title %}
 
 {% block content %}
 
 <body>
-    <h1>{{ pypirequirement.name }}</h1>
+    <h1>{{ pypirequirement }}</h1>
     <p>As this is a package, you cannot simply load it.  Plugins/Sub-Plugins may utilize this package by importing it in their code.</p>
 
     <p><a href="{{ pypirequirement.get_pypi_url }}">PyPi URL</a></p>
 
     {% if required_in_plugins %}
         <br />
-        <p>Here is a list of plugins that require {{ pypirequirement.name }}:</p>
+        <p>Here is a list of plugins that require {{ pypirequirement }}:</p>
         {% for plugin in required_in_plugins %}
-            <li><a href="{{ plugin.get_absolute_url }}">{{ plugin.name }}</a></li>
+            <li><a href="{{ plugin.get_absolute_url }}">{{ plugin }}</a></li>
         {% endfor %}
     {% endif %}
 
     {% if required_in_sub_plugins %}
         <br />
-        <p>Here is a list of sub-plugins that require {{ pypirequirement.name }}:</p>
+        <p>Here is a list of sub-plugins that require {{ pypirequirement }}:</p>
         {% for sub_plugin in required_in_sub_plugins %}
-            <li><a href="{{ sub_plugin.get_absolute_url }}">{{ sub_plugin.name }}</a></li>
+            <li><a href="{{ sub_plugin.get_absolute_url }}">{{ sub_plugin }}</a></li>
         {% endfor %}
     {% endif %}
 
     {% if required_in_packages %}
         <br />
-        <p>Here is a list of packages that require {{ pypirequirement.name }}:</p>
+        <p>Here is a list of packages that require {{ pypirequirement }}:</p>
         {% for package in required_in_packages %}
-            <li><a href="{{ package.get_absolute_url }}">{{ package.name }}</a></li>
+            <li><a href="{{ package.get_absolute_url }}">{{ package }}</a></li>
         {% endfor %}
     {% endif %}
 </body>

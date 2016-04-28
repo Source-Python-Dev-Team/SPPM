@@ -32,6 +32,10 @@ class PyPiRequirement(models.Model):
         unique=True,
     )
 
+    def __str__(self):
+        """Return the object's name when str cast."""
+        return self.name
+
     def save(
             self, force_insert=False, force_update=False,
             using=None, update_fields=None):
