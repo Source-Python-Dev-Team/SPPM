@@ -103,6 +103,8 @@
         {# TODO: Add package requirements #}
         {# TODO: Add pypi requirements #}
 
+        <br />
+        {# TODO: only show this if the logged in user is the owner or a contributor #}
         <b><a href="{% url 'plugins:sub_plugins:edit' slug=sub_plugin.plugin.slug sub_plugin_slug=sub_plugin.slug %}">Edit Page</a></b><br />
         <b><a href="{% url 'plugins:sub_plugins:update' slug=sub_plugin.plugin.slug sub_plugin_slug=sub_plugin.slug %}">Update Sub-Plugin</a></b>
 

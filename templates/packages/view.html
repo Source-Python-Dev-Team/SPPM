@@ -158,6 +158,7 @@
         {# TODO: Add pypi requirements #}
 
         <br />
+        {# TODO: only show this if the logged in user is the owner or a contributor #}
         <b><a href="{% url 'packages:edit' slug=package.slug %}">Edit Page</a></b><br />
         <b><a href="{% url 'packages:update' slug=package.slug %}">Update Package</a></b>
 
