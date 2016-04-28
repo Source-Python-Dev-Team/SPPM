@@ -48,10 +48,12 @@ INSTALLED_APPS = [
     'crispy_forms',
     'django_filters',
     'common',
+    'games',
     'packages',
     'plugins',
     'pypi',
     'sub_plugins',
+    'tags',
     'users',
 ]
 

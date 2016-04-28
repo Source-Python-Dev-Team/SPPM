@@ -1,0 +1,100 @@
+{% extends "common/sidebar.html" %}
+
+{% block title %}
+    {{ game }}
+{% endblock title %}
+
+{% block content %}
+
+<body>
+    <h1>{{ game }}</h1>
+
+    <br />
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="panel panel-primary panel-primary-custom">
+                <div class="panel-heading panel-heading-custom">
+                    <h3 class="panel-title">Plugins</h3>
+                </div>
+                <table class="table table-striped">
+                    <tbody>
+                        {% for group in plugins %}
+                            <tr>
+                                {% for plugin in group %}
+                                    {% if plugin %}
+                                        <td><a href="{% url 'plugins:detail' slug=plugin.slug %}">{{ plugin }}</a></td>
+                                    {% else %}
+                                        <td></td>
+                                    {% endif %}
+                                {% endfor %}
+                            </tr>
+                        {% empty %}
+                            <tr>
+                                <td colspan="3" class="text-center">No plugins currently support {{ game }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <br />
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="panel panel-primary panel-primary-custom">
+                <div class="panel-heading panel-heading-custom">
+                    <h3 class="panel-title">Packages</h3>
+                </div>
+                <table class="table table-striped">
+                    <tbody>
+                        {% for group in packages %}
+                            <tr>
+                                {% for package in group %}
+                                    {% if package %}
+                                        <td><a href="{% url 'packages:detail' slug=package.slug %}">{{ package }}</a></td>
+                                    {% endif %}
+                                {% endfor %}
+                            </tr>
+                        {% empty %}
+                            <tr>
+                                <td colspan="1" class="text-center">No packages currently support {{ game }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <br />
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="panel panel-primary panel-primary-custom">
+                <div class="panel-heading panel-heading-custom">
+                    <h3 class="panel-title">Sub-Plugins</h3>
+                </div>
+                <table class="table table-striped">
+                    <tbody>
+                        {% for group in sub_plugins %}
+                            <tr>
+                                {% for sub_plugin in group %}
+                                    {% if sub_plugin %}
+                                        <td><a href="{% url 'plugins:sub_plugins:detail' slug=sub_plugin.plugin.slug sub_plugin_slug=sub_plugin.slug %}">{{ sub_plugin }} ({{ sub_plugin.plugin }})</a></td>
+                                    {% endif %}
+                                {% endfor %}
+                            </tr>
+                        {% empty %}
+                            <tr>
+                                <td colspan="1" class="text-center">No sub-plugins currently support {{ game }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+{% endblock content %}

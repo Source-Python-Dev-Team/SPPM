@@ -1,0 +1,32 @@
+{% extends "common/sidebar.html" %}
+{% load i18n %}
+
+{% block title %}Supported Games{% endblock title %}
+
+{% block content %}
+
+<body>
+
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="panel panel-primary panel-primary-custom">
+                <div class="panel-heading panel-heading-custom">
+                    <h3 class="panel-title">{% trans 'Supported Games' %}</h3>
+                </div>
+                <table class="table">
+                    <tbody>
+                        {% for game in game_list %}
+                            <tr>
+                                <td bgcolor="gray"><img src="{{ MEDIA_URL }}{{ game.icon }}" height="32" width="32" alt="{{ game }} Icon"/></td>
+                                <td><h4>&nbsp;&nbsp;<a href="{% url 'games:detail' slug=game.slug %}">{{ game }}</a></h4></td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+{% endblock content %}

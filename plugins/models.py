@@ -63,6 +63,10 @@ class Plugin(CommonBase):
         blank=True,
         null=True,
     )
+    supported_games = models.ManyToManyField(
+        to='games.Game',
+        related_name='plugins',
+    )
 
     def get_absolute_url(self):
         return reverse(

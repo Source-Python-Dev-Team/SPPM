@@ -66,6 +66,10 @@ class SubPlugin(CommonBase):
         blank=True,
         null=True,
     )
+    supported_games = models.ManyToManyField(
+        to='games.Game',
+        related_name='sub_plugins',
+    )
 
     def get_absolute_url(self):
         return reverse(
