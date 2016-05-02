@@ -232,5 +232,8 @@ class SubPluginView(DetailView):
         context.update({
             'sub_plugin': context['subplugin'],
             'contributors': self.object.contributors.all(),
+            'package_requirements': self.object.package_requirements.all(),
+            'pypi_requirements': self.object.pypi_requirements.all(),
+            'supported_games': self.object.supported_games.all(),
         })
         return context

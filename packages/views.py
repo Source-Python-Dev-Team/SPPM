@@ -168,6 +168,7 @@ class PackageView(DetailView):
             'contributors': self.object.contributors.all(),
             'package_requirements': self.object.package_requirements.all(),
             'pypi_requirements': self.object.pypi_requirements.all(),
+            'supported_games': self.object.supported_games.all(),
             'required_in_plugins': self.object.required_in_plugins.all(),
             'required_in_sub_plugins': self.object.required_in_sub_plugins.all(),
             'required_in_packages': self.object.required_in_packages.all(),

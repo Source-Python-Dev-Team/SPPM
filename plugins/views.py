@@ -167,5 +167,8 @@ class PluginView(DetailView):
         context.update({
             'contributors': self.object.contributors.all(),
             'paths': self.object.paths.all(),
+            'package_requirements': self.object.package_requirements.all(),
+            'pypi_requirements': self.object.pypi_requirements.all(),
+            'supported_games': self.object.supported_games.all(),
         })
         return context
