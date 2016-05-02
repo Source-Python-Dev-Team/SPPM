@@ -4,6 +4,9 @@
 # Python Imports
 from django.views.generic import DetailView, ListView
 
+# Project Imports
+from common.helpers import get_groups
+
 # App Imports
 from .models import Game
 
@@ -32,17 +35,8 @@ class GameView(DetailView):
     def get_context_data(self, **kwargs):
         context = super(GameView, self).get_context_data(**kwargs)
         context.update({
-            'plugins': self.get_groups(self.object.plugins.all()),
-            'packages': self.get_groups(self.object.packages.all()),
-            'sub_plugins': self.get_groups(self.object.sub_plugins.all()),
+            'plugins': get_groups(self.object.plugins.all()),
+            'packages': get_groups(self.object.packages.all()),
+            'sub_plugins': get_groups(self.object.sub_plugins.all()),
         })
         return context
-
-    @staticmethod
-    def get_groups(iterable, n=3):
-        if not iterable:
-            return iterable
-        iterable = list(iterable)
-        remainder = len(iterable) % n
-        iterable.extend([''] * (n - remainder))
-        return zip(*(iter(iterable), ) * n)
