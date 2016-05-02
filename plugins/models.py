@@ -11,6 +11,7 @@ from path import Path
 from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.db import models
+from django.utils.timezone import now
 
 # 3rd-Party Django Imports
 from precise_bbcode.fields import BBCodeTextField
@@ -96,6 +97,7 @@ class Plugin(CommonBase):
                 zip_file=self.current_zip_file,
                 plugin=self,
             )
+            self.date_last_updated = now()
 
         self.current_version = self.version
         self.current_version_notes = self.version_notes
