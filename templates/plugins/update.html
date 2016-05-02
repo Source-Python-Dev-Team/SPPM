@@ -1,4 +1,5 @@
 {% extends "common/sidebar.html" %}
+{% load crispy_forms_tags %}
 
 {% block title %}Update {{ plugin }}{% endblock title %}
 
@@ -8,10 +9,7 @@
     <div class="container">
         <h1>Update {{ plugin }}</h1>
         <ul><b>Current Version: {{ plugin.current_version }}</b></ul><br />
-        <form enctype="multipart/form-data" action="" method="post">{% csrf_token %}
-            {{ form.as_p }}
-            <input type="submit" value="Save" />
-        </form>
+        {% crispy form %}
     </div>
 </body>
 

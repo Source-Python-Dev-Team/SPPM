@@ -8,6 +8,10 @@ from zipfile import ZipFile
 from django import forms
 from django.core.exceptions import ValidationError
 
+# 3rd Party Django Imports
+from crispy_forms.helper import FormHelper
+from crispy_forms.layout import Submit
+
 # Project Imports
 from plugins.constants import PLUGIN_PATH
 from users.models import ForumUser
@@ -53,6 +57,11 @@ class SubPluginCreateForm(forms.ModelForm):
             'configuration': forms.Textarea,
         }
 
+    def __init__(self, *args, **kwargs):
+        super(SubPluginCreateForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.add_input(Submit('submit', 'Submit'))
+
     def clean_zip_file(self):
         """Verify the zip file contents."""
         file_list = [x for x in ZipFile(
@@ -86,6 +95,11 @@ class SubPluginEditForm(forms.ModelForm):
             'configuration': forms.Textarea,
         }
 
+    def __init__(self, *args, **kwargs):
+        super(SubPluginEditForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.add_input(Submit('submit', 'Submit'))
+
 
 class SubPluginAddContributorConfirmationForm(forms.ModelForm):
     class Meta:
@@ -112,6 +126,11 @@ class SubPluginUpdateForm(forms.ModelForm):
         widgets = {
             'version_notes': forms.Textarea,
         }
+
+    def __init__(self, *args, **kwargs):
+        super(SubPluginUpdateForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.add_input(Submit('submit', 'Submit'))
 
     def clean_version(self):
         """Verify the version doesn't already exist."""

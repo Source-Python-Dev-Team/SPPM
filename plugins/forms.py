@@ -8,6 +8,10 @@ from zipfile import ZipFile
 from django import forms
 from django.core.exceptions import ValidationError
 
+# 3rd Party Django Imports
+from crispy_forms.helper import FormHelper
+from crispy_forms.layout import Submit
+
 # Project Imports
 from users.models import ForumUser
 
@@ -51,6 +55,11 @@ class PluginCreateForm(forms.ModelForm):
             'configuration': forms.Textarea,
         }
 
+    def __init__(self, *args, **kwargs):
+        super(PluginCreateForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.add_input(Submit('submit', 'Submit'))
+
     def clean_zip_file(self):
         """Verify the zip file contents."""
         file_list = [x for x in ZipFile(
@@ -76,6 +85,11 @@ class PluginEditForm(forms.ModelForm):
             'description': forms.Textarea,
             'configuration': forms.Textarea,
         }
+
+    def __init__(self, *args, **kwargs):
+        super(PluginEditForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.add_input(Submit('submit', 'Submit'))
 
 
 class PluginAddContributorConfirmationForm(forms.ModelForm):
@@ -103,6 +117,11 @@ class PluginUpdateForm(forms.ModelForm):
         widgets = {
             'version_notes': forms.Textarea,
         }
+
+    def __init__(self, *args, **kwargs):
+        super(PluginUpdateForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.add_input(Submit('submit', 'Submit'))
 
     def clean_version(self):
         """Verify the version doesn't already exist."""
