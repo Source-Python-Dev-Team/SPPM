@@ -9,7 +9,7 @@
 
 {% block content %}
 
-    <body>
+    <body xmlns="http://www.w3.org/1999/html">
 
         {% if package.logo %}
             <img src="{{ MEDIA_URL }}{{ package.logo }}" height="135" width="135" alt="{{ package }} Logo"/>
@@ -101,16 +101,6 @@
 
         <p>As this is a package, you cannot simply load it.  Plugins, Sub-Plugins, and even other Packages may utilize this package by importing it in their code.</p>
 
-        {% if required_in_plugins %}
-            <br />
-            <p>Here is a list of plugins that require {{ package.name }}:</p>
-            <ul>
-            {% for plugin in required_in_plugins %}
-                <li><a href="{{ plugin.get_absolute_url }}">{{ plugin.name }}</a></li>
-            {% endfor %}
-            </ul>
-        {% endif %}
-
         {% if package_requirements or pypi_requirements %}
             <h3>Requirements</h3>
 
@@ -161,23 +151,86 @@
             </ul>
         {% endif %}
 
-        {% if required_in_sub_plugins %}
-            <br />
-            <p>Here is a list of sub-plugins that require {{ package.name }}:</p>
+        {% if required_in_plugins or required_in_sub_plugins or required_in_packages %}
+            <h3>Usage Lists</h3>
             <ul>
-            {% for sub_plugin in required_in_sub_plugins %}
-                <li><a href="{{ sub_plugin.get_absolute_url }}">{{ sub_plugin.name }}</a></li>
-            {% endfor %}
-            </ul>
-        {% endif %}
+                {% if required_in_plugins %}
+                    <br />
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="panel panel-primary panel-primary-custom">
+                                <div class="panel-heading panel-heading-custom">
+                                    <h3 class="panel-title">Plugins that require {{ package }}</h3>
+                                </div>
+                                <table class="table">
+                                    <tbody>
+                                        {% for group in required_in_plugins %}
+                                            <tr>
+                                                {% for plugin in group %}
+                                                    {% if plugin %}
+                                                        <td><a href="{% url 'plugins:detail' slug=plugin.slug %}">{{ plugin }}</a></td>
+                                                    {% endif %}
+                                                {% endfor %}
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
 
-        {% if required_in_packages %}
-            <br />
-            <p>Here is a list of other packages that require {{ package.name }}:</p>
-            <ul>
-            {% for other in required_in_packages %}
-                <li><a href="{{ other.get_absolute_url }}">{{ other.name }}</a></li>
-            {% endfor %}
+                {% if required_in_sub_plugins %}
+                    <br />
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="panel panel-primary panel-primary-custom">
+                                <div class="panel-heading panel-heading-custom">
+                                    <h3 class="panel-title">Sub-Plugins that require {{ package }}</h3>
+                                </div>
+                                <table class="table">
+                                    <tbody>
+                                        {% for group in required_in_sub_plugins %}
+                                            <tr>
+                                                {% for sub_plugin in group %}
+                                                    {% if sub_plugin %}
+                                                        <td><a href="{% url 'plugins:sub_plugins:detail' slug=sub_plugin.plugin.slug sub_plugin_slug=sub_plugin.slug %}">{{ sub_plugin }}</a></td>
+                                                    {% endif %}
+                                                {% endfor %}
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+
+                {% if required_in_packages %}
+                    <br />
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="panel panel-primary panel-primary-custom">
+                                <div class="panel-heading panel-heading-custom">
+                                    <h3 class="panel-title">Packages that require {{ package }}</h3>
+                                </div>
+                                <table class="table">
+                                    <tbody>
+                                        {% for group in required_in_packages %}
+                                            <tr>
+                                                {% for other in group %}
+                                                    {% if other %}
+                                                        <td><a href="{% url 'packages:detail' slug=other.slug %}">{{ other }}</a></td>
+                                                    {% endif %}
+                                                {% endfor %}
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
             </ul>
         {% endif %}
 

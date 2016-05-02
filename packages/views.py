@@ -15,6 +15,7 @@ from django.views.generic import (
 from django_filters.views import FilterView
 
 # Project Imports
+from common.helpers import get_groups
 from users.filtersets import ForumUserFilterSet
 from users.models import ForumUser
 
@@ -169,8 +170,11 @@ class PackageView(DetailView):
             'package_requirements': self.object.package_requirements.all(),
             'pypi_requirements': self.object.pypi_requirements.all(),
             'supported_games': self.object.supported_games.all(),
-            'required_in_plugins': self.object.required_in_plugins.all(),
-            'required_in_sub_plugins': self.object.required_in_sub_plugins.all(),
-            'required_in_packages': self.object.required_in_packages.all(),
+            'required_in_plugins': get_groups(
+                self.object.required_in_plugins.all()),
+            'required_in_sub_plugins': get_groups(
+                self.object.required_in_sub_plugins.all()),
+            'required_in_packages': get_groups(
+                self.object.required_in_packages.all()),
         })
         return context
