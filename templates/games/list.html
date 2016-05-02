@@ -17,7 +17,7 @@
                     <tbody>
                         {% for game in game_list %}
                             <tr>
-                                <td bgcolor="gray"><img src="{{ MEDIA_URL }}{{ game.icon }}" height="32" width="32" alt="{{ game }} Icon"/></td>
+                                <td bgcolor="#aaaaaa"><img src="{{ MEDIA_URL }}{{ game.icon }}" style="margin-right: -14px;" alt="{{ game }} Icon"/></td>
                                 <td><h4>&nbsp;&nbsp;<a href="{% url 'games:detail' slug=game.slug %}">{{ game }}</a></h4></td>
                             </tr>
                         {% endfor %}
