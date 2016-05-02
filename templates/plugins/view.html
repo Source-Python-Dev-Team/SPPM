@@ -22,7 +22,7 @@
             <p>Last updated on {{ plugin.date_last_updated }}</p>
         {% endif %}
         {% if paths %}
-            <a href="{% url 'plugins:sub_plugins:list' slug=plugin.slug %}">{{ plugin.name }} sub-plugins</a>
+            <h><a href="{% url 'plugins:sub_plugins:list' slug=plugin.slug %}">{{ plugin.name }} sub-plugins</a></h>
             <br />
         {% endif %}
 
@@ -32,7 +32,7 @@
                 <div class="col-sm-12">
                     <div class="panel panel-primary panel-primary-custom">
                         <div class="panel-heading panel-heading-custom">
-                            <h3 class="panel-title">{% trans 'Owner' %}</h3>
+                            <h3 class="panel-title">Owner</h3>
                         </div>
                         <table class="table">
                             <tbody>
@@ -50,7 +50,7 @@
                 <div class="col-sm-12">
                     <div class="panel panel-primary panel-primary-custom">
                         <div class="panel-heading panel-heading-custom">
-                            <h3 class="panel-title">{% trans 'Contributors' %}</h3>
+                            <h3 class="panel-title">Contributors</h3>
                             {#  TODO: only show this if the user is logged in and is the owner #}
                             <span class="pull-right" style="margin-top: -20px">
                                 <a href="{% url 'plugins:add_contributor' slug=plugin.slug %}">
@@ -105,8 +105,55 @@
             <br />
         {% endif %}
 
-        {# TODO: Add package requirements #}
-        {# TODO: Add pypi requirements #}
+        {% if package_requirements or pypi_requirements %}
+            <h3>Requirements</h3>
+
+            <ul>
+                {% if package_requirements %}
+                    <br />
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="panel panel-primary panel-primary-custom">
+                                <div class="panel-heading panel-heading-custom">
+                                    <h3 class="panel-title">Package Requirements</h3>
+                                </div>
+                                <table class="table">
+                                    <tbody>
+                                        {% for package_requirement in package_requirements %}
+                                            <tr>
+                                                <td><a href="{% url 'packages:detail' slug=package_requirement.slug %}">{{ package_requirement }}</a></td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+
+                {% if pypi_requirements %}
+                    <br />
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="panel panel-primary panel-primary-custom">
+                                <div class="panel-heading panel-heading-custom">
+                                    <h3 class="panel-title">PyPi Requirements</h3>
+                                </div>
+                                <table class="table">
+                                    <tbody>
+                                        {% for pypi_requirement in pypi_requirements %}
+                                            <tr>
+                                                <td><a href="{% url 'pypi:detail' slug=pypi_requirement.slug %}">{{ pypi_requirement }}</a></td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+            </ul>
+        {% endif %}
 
         {# TODO: only show this if the logged in user is the owner or a contributor #}
         <b><a href="{% url 'plugins:edit' slug=plugin.slug %}">Edit Page</a></b><br />

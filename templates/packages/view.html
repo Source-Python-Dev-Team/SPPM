@@ -28,7 +28,7 @@
                 <div class="col-sm-12">
                     <div class="panel panel-primary panel-primary-custom">
                         <div class="panel-heading panel-heading-custom">
-                            <h3 class="panel-title">{% trans 'Owner' %}</h3>
+                            <h3 class="panel-title">Owner</h3>
                         </div>
                         <table class="table">
                             <tbody>
@@ -46,7 +46,7 @@
                 <div class="col-sm-12">
                     <div class="panel panel-primary panel-primary-custom">
                         <div class="panel-heading panel-heading-custom">
-                            <h3 class="panel-title">{% trans 'Contributors' %}</h3>
+                            <h3 class="panel-title">Contributors</h3>
                             {#  TODO: only show this if the user is logged in and is the owner #}
                             <span class="pull-right" style="margin-top: -20px">
                                 <a href="{% url 'packages:add_contributor' slug=package.slug %}">
@@ -84,31 +84,6 @@
             <br />
         {% endif %}
 
-        {% if package_requirements or pypi_requirements %}
-            <h3>Requirements</h3>
-            {% if package_requirements %}
-                <br />
-                <ul>
-                <p>Required packages:</p>
-                <ul>
-                {% for required_package in package_requirements %}
-                    <li><a href="{{ required_package.get_absolute_url }}">{{ required_package.name }}</a></li>
-                {% endfor %}
-                </ul>
-                </ul>
-            {% endif %}
-            {% if pypi_requirements %}
-                <br />
-                <ul><p>Required PyPi packages:</p>
-                <ul>
-                {% for required_pypi in pypi_requirements %}
-                    <li><a href="{{ required_pypi.get_absolute_url }}">{{ required_pypi.name }}</a></li>
-                {% endfor %}
-                </ul>
-                </ul>
-            {% endif %}
-        {% endif %}
-
         <h3>Installation</h3>
         <ol>
             <li>Download the zip file.</li>
@@ -136,6 +111,56 @@
             </ul>
         {% endif %}
 
+        {% if package_requirements or pypi_requirements %}
+            <h3>Requirements</h3>
+
+            <ul>
+                {% if package_requirements %}
+                    <br />
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="panel panel-primary panel-primary-custom">
+                                <div class="panel-heading panel-heading-custom">
+                                    <h3 class="panel-title">Package Requirements</h3>
+                                </div>
+                                <table class="table">
+                                    <tbody>
+                                        {% for package_requirement in package_requirements %}
+                                            <tr>
+                                                <td><a href="{% url 'packages:detail' slug=package_requirement.slug %}">{{ package_requirement }}</a></td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+
+                {% if pypi_requirements %}
+                    <br />
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="panel panel-primary panel-primary-custom">
+                                <div class="panel-heading panel-heading-custom">
+                                    <h3 class="panel-title">PyPi Requirements</h3>
+                                </div>
+                                <table class="table">
+                                    <tbody>
+                                        {% for pypi_requirement in pypi_requirements %}
+                                            <tr>
+                                                <td><a href="{% url 'pypi:detail' slug=pypi_requirement.slug %}">{{ pypi_requirement }}</a></td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+            </ul>
+        {% endif %}
+
         {% if required_in_sub_plugins %}
             <br />
             <p>Here is a list of sub-plugins that require {{ package.name }}:</p>
@@ -155,9 +180,6 @@
             {% endfor %}
             </ul>
         {% endif %}
-
-        {# TODO: Add package requirements #}
-        {# TODO: Add pypi requirements #}
 
         <br />
         {# TODO: only show this if the logged in user is the owner or a contributor #}

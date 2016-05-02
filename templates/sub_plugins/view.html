@@ -29,7 +29,7 @@
                 <div class="col-sm-12">
                     <div class="panel panel-primary panel-primary-custom">
                         <div class="panel-heading panel-heading-custom">
-                            <h3 class="panel-title">{% trans 'Owner' %}</h3>
+                            <h3 class="panel-title">Owner</h3>
                         </div>
                         <table class="table">
                             <tbody>
@@ -47,7 +47,7 @@
                 <div class="col-sm-12">
                     <div class="panel panel-primary panel-primary-custom">
                         <div class="panel-heading panel-heading-custom">
-                            <h3 class="panel-title">{% trans 'Contributors' %}</h3>
+                            <h3 class="panel-title">Contributors</h3>
                             {#  TODO: only show this if the user is logged in and is the owner #}
                             <span class="pull-right" style="margin-top: -20px">
                                 <a href="{% url 'plugins:sub_plugins:add_contributor' slug=sub_plugin.plugin.slug sub_plugin_slug=sub_plugin.slug %}">
@@ -102,8 +102,55 @@
 
         <p>As this is a sub-plugin, it is up to the <a href="{{ sub_plugin.plugin.get_absolute_url }}">{{ sub_plugin.plugin.name }}</a> plugin to determine how to load it.</p>
 
-        {# TODO: Add package requirements #}
-        {# TODO: Add pypi requirements #}
+        {% if package_requirements or pypi_requirements %}
+            <h3>Requirements</h3>
+
+            <ul>
+                {% if package_requirements %}
+                    <br />
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="panel panel-primary panel-primary-custom">
+                                <div class="panel-heading panel-heading-custom">
+                                    <h3 class="panel-title">Package Requirements</h3>
+                                </div>
+                                <table class="table">
+                                    <tbody>
+                                        {% for package_requirement in package_requirements %}
+                                            <tr>
+                                                <td><a href="{% url 'packages:detail' slug=package_requirement.slug %}">{{ package_requirement }}</a></td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+
+                {% if pypi_requirements %}
+                    <br />
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="panel panel-primary panel-primary-custom">
+                                <div class="panel-heading panel-heading-custom">
+                                    <h3 class="panel-title">PyPi Requirements</h3>
+                                </div>
+                                <table class="table">
+                                    <tbody>
+                                        {% for pypi_requirement in pypi_requirements %}
+                                            <tr>
+                                                <td><a href="{% url 'pypi:detail' slug=pypi_requirement.slug %}">{{ pypi_requirement }}</a></td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+            </ul>
+        {% endif %}
 
         <br />
         {# TODO: only show this if the logged in user is the owner or a contributor #}
