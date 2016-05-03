@@ -42,7 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'phpbb',
+    # 'phpbb',
     'debug_toolbar',
     'precise_bbcode',
     'crispy_forms',
@@ -89,7 +89,7 @@ TEMPLATES = [
 ]
 
 AUTHENTICATION_BACKENDS = (
-    'phpbb.backends.PhpbbBackend',
+    # 'phpbb.backends.PhpbbBackend',
     'django.contrib.auth.backends.ModelBackend',
 )
 
@@ -152,6 +152,6 @@ GITHUB_URL = 'http://github.com/Source-Python-Dev-Team/Source.Python'
 
 PYPI_URL = 'https://pypi.python.org/pypi'
 
-PHPBB_TABLE_PREFIX = 'phpbb_'
+# PHPBB_TABLE_PREFIX = 'phpbb_'
 
 CRISPY_TEMPLATE_PACK = 'uni_form'

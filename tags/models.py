@@ -24,3 +24,6 @@ class Tag(models.Model):
         max_length=16,
         unique=True,
     )
+
+    def __str__(self):
+        return self.name
