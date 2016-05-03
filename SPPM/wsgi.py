@@ -1,5 +1,5 @@
 """
-WSGI config for SPPM project.
+WSGI config for plugin_manager project.
 
 It exposes the WSGI callable as a module-level variable named ``application``.
 
@@ -20,6 +20,6 @@ from django.core.wsgi import get_wsgi_application
 # =============================================================================
 # >> GLOBAL VARIABLES
 # =============================================================================
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "SPPM.settings")
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "plugin_manager.settings")
 
 application = get_wsgi_application()

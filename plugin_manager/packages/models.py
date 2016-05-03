@@ -18,60 +18,59 @@ from precise_bbcode.fields import BBCodeTextField
 
 # Project Imports
 from ..common.models import CommonBase
-from ..common.validators import sub_plugin_path_validator
 
 # App Imports
-from .helpers import handle_plugin_image_upload
-from .helpers import handle_plugin_logo_upload
-from .helpers import handle_plugin_zip_upload
+from .helpers import handle_package_image_upload
+from .helpers import handle_package_logo_upload
+from .helpers import handle_package_zip_upload
 
 
 # =============================================================================
 # >> ALL DECLARATION
 # =============================================================================
 __all__ = (
-    'OldPluginRelease',
-    'Plugin',
-    'SubPluginPath',
+    'OldPackageRelease',
+    'Package',
+    'PackageImage',
 )
 
 
 # =============================================================================
 # >> MODEL CLASSES
 # =============================================================================
-class Plugin(CommonBase):
+class Package(CommonBase):
     owner = models.ForeignKey(
-        to='SPPM.ForumUser',
-        related_name='plugins',
+        to='plugin_manager.ForumUser',
+        related_name='packages',
     )
     contributors = models.ManyToManyField(
-        to='SPPM.ForumUser',
-        related_name='plugin_contributions',
+        to='plugin_manager.ForumUser',
+        related_name='package_contributions',
     )
     package_requirements = models.ManyToManyField(
-        to='SPPM.Package',
-        related_name='required_in_plugins',
+        to='plugin_manager.Package',
+        related_name='required_in_packages',
     )
     pypi_requirements = models.ManyToManyField(
-        to='SPPM.PyPiRequirement',
-        related_name='required_in_plugins',
+        to='plugin_manager.PyPiRequirement',
+        related_name='required_in_packages',
     )
     zip_file = models.FileField(
-        upload_to=handle_plugin_zip_upload,
+        upload_to=handle_package_zip_upload,
     )
     logo = models.ImageField(
-        upload_to=handle_plugin_logo_upload,
+        upload_to=handle_package_logo_upload,
         blank=True,
         null=True,
     )
     supported_games = models.ManyToManyField(
-        to='SPPM.Game',
-        related_name='plugins',
+        to='plugin_manager.Game',
+        related_name='packages',
     )
 
     def get_absolute_url(self):
         return reverse(
-            viewname='plugins:detail',
+            viewname='packages:detail',
             kwargs={
                 'slug': self.slug,
             }
@@ -81,8 +80,8 @@ class Plugin(CommonBase):
             self, force_insert=False, force_update=False,
             using=None, update_fields=None):
         """Remove the old logo before storing the new one."""
-        if u'logos/' not in str(self.logo):
-            path = Path(settings.MEDIA_ROOT) / 'logos' / 'plugins'
+        if self.logo and u'logo/' not in self.logo:
+            path = Path(settings.MEDIA_ROOT) / 'logos' / 'package'
             if path.isdir():
                 logo = [x for x in path.files() if x.namebase == self.basename]
                 if logo:
@@ -91,11 +90,11 @@ class Plugin(CommonBase):
         release = None
 
         if self.current_version and self.current_version != self.version:
-            release = OldPluginRelease(
+            release = OldPackageRelease(
                 version=self.current_version,
                 version_notes=self.current_version_notes,
                 zip_file=self.current_zip_file,
-                plugin=self,
+                package=self,
             )
             self.date_last_updated = now()
 
@@ -103,7 +102,7 @@ class Plugin(CommonBase):
         self.current_version_notes = self.version_notes
         self.current_zip_file = self.zip_file
 
-        super(Plugin, self).save(
+        super(Package, self).save(
             force_insert, force_update, using, update_fields)
 
         if release is not None:
@@ -111,7 +110,8 @@ class Plugin(CommonBase):
             self.previous_releases.add(release)
 
 
-class OldPluginRelease(models.Model):
+class OldPackageRelease(models.Model):
+    """Store the information for """
     version = models.CharField(
         max_length=8,
     )
@@ -121,28 +121,17 @@ class OldPluginRelease(models.Model):
         null=True,
     )
     zip_file = models.FileField()
-    plugin = models.ForeignKey(
-        to='SPPM.Plugin',
+    package = models.ForeignKey(
+        to='plugin_manager.Package',
         related_name='previous_releases',
     )
 
 
-class SubPluginPath(models.Model):
-    plugin = models.ForeignKey(
-        to='SPPM.Plugin',
-        related_name='paths',
-    )
-    path = models.CharField(
-        max_length=256,
-        validators=[sub_plugin_path_validator],
-    )
-
-
-class PluginImage(models.Model):
+class PackageImage(models.Model):
     image = models.ImageField(
-        upload_to=handle_plugin_image_upload,
+        upload_to=handle_package_image_upload,
     )
-    plugin = models.ForeignKey(
-        to='SPPM.Plugin',
+    package = models.ForeignKey(
+        to='plugin_manager.Package',
         related_name='images',
     )

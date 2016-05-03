@@ -1,4 +1,4 @@
-"""SPPM URL Configuration
+"""plugin_manager URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/1.9/topics/http/urls/
@@ -43,42 +43,42 @@ urlpatterns = [
     url(
         regex=r'^plugins/',
         view=include(
-            'SPPM.plugins.urls',
+            'plugin_manager.plugins.urls',
             namespace='plugins',
         ),
     ),
     url(
         regex=r'^packages/',
         view=include(
-            'SPPM.packages.urls',
+            'plugin_manager.packages.urls',
             namespace='packages',
         ),
     ),
     url(
         regex=r'^users/',
         view=include(
-            'SPPM.users.urls',
+            'plugin_manager.users.urls',
             namespace='users',
         ),
     ),
     url(
         regex=r'^pypi/',
         view=include(
-            'SPPM.pypi.urls',
+            'plugin_manager.pypi.urls',
             namespace='pypi',
         ),
     ),
     url(
         regex=r'^games/',
         view=include(
-            'SPPM.games.urls',
+            'plugin_manager.games.urls',
             namespace='games',
         ),
     ),
     url(
         regex=r'^tags/',
         view=include(
-            'SPPM.tags.urls',
+            'plugin_manager.tags.urls',
             namespace='tags',
         ),
     ),

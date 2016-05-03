@@ -40,23 +40,23 @@ __all__ = (
 # =============================================================================
 class SubPlugin(CommonBase):
     owner = models.ForeignKey(
-        to='SPPM.ForumUser',
+        to='plugin_manager.ForumUser',
         related_name='sub_plugins',
     )
     contributors = models.ManyToManyField(
-        to='SPPM.ForumUser',
+        to='plugin_manager.ForumUser',
         related_name='sub_plugin_contributions',
     )
     plugin = models.ForeignKey(
-        to='SPPM.Plugin',
+        to='plugin_manager.Plugin',
         related_name='sub_plugins',
     )
     package_requirements = models.ManyToManyField(
-        to='SPPM.Package',
+        to='plugin_manager.Package',
         related_name='required_in_sub_plugins',
     )
     pypi_requirements = models.ManyToManyField(
-        to='SPPM.PyPiRequirement',
+        to='plugin_manager.PyPiRequirement',
         related_name='required_in_sub_plugins',
     )
     zip_file = models.FileField(
@@ -68,7 +68,7 @@ class SubPlugin(CommonBase):
         null=True,
     )
     supported_games = models.ManyToManyField(
-        to='SPPM.Game',
+        to='plugin_manager.Game',
         related_name='sub_plugins',
     )
 
@@ -126,7 +126,7 @@ class OldSubPluginRelease(models.Model):
     )
     zip_file = models.FileField()
     sub_plugin = models.ForeignKey(
-        to='SPPM.SubPlugin',
+        to='plugin_manager.SubPlugin',
         related_name='previous_releases',
     )
 
@@ -136,6 +136,6 @@ class SubPluginImage(models.Model):
         upload_to=handle_sub_plugin_image_upload,
     )
     sub_plugin = models.ForeignKey(
-        to='SPPM.SubPlugin',
+        to='plugin_manager.SubPlugin',
         related_name='images',
     )

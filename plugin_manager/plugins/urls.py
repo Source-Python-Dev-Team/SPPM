@@ -43,7 +43,7 @@ urlpatterns = [
     url(
         regex=r'^(?P<slug>[\w-]+)/sub-plugins/',
         view=include(
-            'SPPM.sub_plugins.urls',
+            'plugin_manager.sub_plugins.urls',
             namespace='sub_plugins',
         ),
     ),
