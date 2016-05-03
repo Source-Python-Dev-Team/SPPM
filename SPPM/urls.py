@@ -43,42 +43,42 @@ urlpatterns = [
     url(
         regex=r'^plugins/',
         view=include(
-            'plugins.urls',
+            'SPPM.plugins.urls',
             namespace='plugins',
         ),
     ),
     url(
         regex=r'^packages/',
         view=include(
-            'packages.urls',
+            'SPPM.packages.urls',
             namespace='packages',
         ),
     ),
     url(
         regex=r'^users/',
         view=include(
-            'users.urls',
+            'SPPM.users.urls',
             namespace='users',
         ),
     ),
     url(
         regex=r'^pypi/',
         view=include(
-            'pypi.urls',
+            'SPPM.pypi.urls',
             namespace='pypi',
         ),
     ),
     url(
         regex=r'^games/',
         view=include(
-            'games.urls',
+            'SPPM.games.urls',
             namespace='games',
         ),
     ),
     url(
         regex=r'^tags/',
         view=include(
-            'tags.urls',
+            'SPPM.tags.urls',
             namespace='tags',
         ),
     ),

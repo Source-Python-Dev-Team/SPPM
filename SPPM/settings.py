@@ -47,14 +47,7 @@ INSTALLED_APPS = [
     'precise_bbcode',
     'crispy_forms',
     'django_filters',
-    'common',
-    'games',
-    'packages',
-    'plugins',
-    'pypi',
-    'sub_plugins',
-    'tags',
-    'users',
+    'SPPM',
 ]
 
 MIDDLEWARE_CLASSES = [
@@ -82,7 +75,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'common.context_processors.common_urls',
+                'SPPM.common.context_processors.common_urls',
             ],
         },
     },
