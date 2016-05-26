@@ -86,7 +86,7 @@ AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
 )
 
-WSGI_APPLICATION = 'plugin_manager.wsgi.application'
+WSGI_APPLICATION = 'SPPM.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/1.9/ref/settings/#databases

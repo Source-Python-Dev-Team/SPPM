@@ -20,6 +20,6 @@ from django.core.wsgi import get_wsgi_application
 # =============================================================================
 # >> GLOBAL VARIABLES
 # =============================================================================
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "plugin_manager.settings")
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "SPPM.settings")
 
 application = get_wsgi_application()
