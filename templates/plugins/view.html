@@ -16,6 +16,12 @@
         {% endif %}
         <h1>{{ plugin.name }} - version {{ plugin.version }}</h1>
 
+        {% if plugin.synopsis %}
+            <br />
+            {{ plugin.synopsis }}
+            <br />
+        {% endif %}
+
         <br />
         <p>Created on {{ plugin.date_created }}</p>
         {% if plugin.date_last_updated %}

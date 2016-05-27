@@ -77,6 +77,7 @@ class PluginEditForm(forms.ModelForm):
     class Meta:
         model = Plugin
         fields = (
+            'synopsis',
             'description',
             'configuration',
             'logo',

@@ -86,6 +86,7 @@ class SubPluginEditForm(forms.ModelForm):
     class Meta:
         model = SubPlugin
         fields = (
+            'synopsis',
             'description',
             'configuration',
             'logo',

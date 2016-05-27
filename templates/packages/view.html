@@ -16,6 +16,12 @@
         {% endif %}
         <h1>{{ package.name }} - version {{ package.version }}</h1>
 
+        {% if package.synopsis %}
+            <br />
+            {{ package.synopsis }}
+            <br />
+        {% endif %}
+
         <br />
         <p>Created on {{ package.date_created }}</p>
         {% if package.date_last_updated %}

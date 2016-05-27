@@ -77,6 +77,7 @@ class PackageEditForm(forms.ModelForm):
     class Meta:
         model = Package
         fields = (
+            'synopsis',
             'description',
             'configuration',
             'logo',

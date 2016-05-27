@@ -17,6 +17,12 @@
         <h1>{{ sub_plugin.name }} - version {{ sub_plugin.version }}</h1>
         <p>Sub-Plugin for <a href="{{ sub_plugin.plugin.get_absolute_url }}">{{ sub_plugin.plugin.name }}</a></p>
 
+        {% if package.synopsis %}
+            <br />
+            {{ package.synopsis }}
+            <br />
+        {% endif %}
+
         <br />
         <p>Created on {{ sub_plugin.date_created }}</p>
         {% if sub_plugin.date_last_updated %}

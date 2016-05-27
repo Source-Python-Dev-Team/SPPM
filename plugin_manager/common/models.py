@@ -86,6 +86,11 @@ class CommonBase(models.Model):
         blank=True,
         null=True,
     )
+    synopsis = models.CharField(
+        max_length=128,
+        blank=True,
+        null=True,
+    )
     configuration = BBCodeTextField(
         max_length=1024,
         blank=True,
