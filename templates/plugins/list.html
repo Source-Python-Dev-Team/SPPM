@@ -13,6 +13,20 @@
                     <li><a href="{{ plugin.get_absolute_url }}">{{ plugin }}</a></li>
                 {% endfor %}
             </ul>
+            {% if has_other_pages %}
+                {% if previous_page %}
+                    <a href="{% url 'plugins:list' %}?page={{ previous_page }}">prev</a>
+                {% endif %}
+                {% if current_page != 1 %}
+                    <a href="{% url 'plugins:list' %}?page=1">1</a>
+                {% endif %}
+                {% if current_page != total_pages %}
+                    <a href="{% url 'plugins:list' %}?page={{ total_pages }}">{{ total_pages }}</a>
+                {% endif %}
+                {% if next_page %}
+                    <a href="{% url 'plugins:list' %}?page={{ next_page }}">next</a>
+                {% endif %}
+            {% endif %}
         {% else %}
             <h1>No plugins are registered.</h1>
         {% endif %}

@@ -18,6 +18,21 @@
                 <h1>No sub-plugins are registered for {{ plugin.name }}.</h1>
             {% endif %}
             <a href="{% url 'plugins:sub_plugins:create' slug=plugin.slug %}">Create Sub-Plugin?</a>
+            {% if has_other_pages %}
+                <br />
+                {% if previous_page %}
+                    <a href="{% url 'plugins:sub_plugins:list' slug=plugin.slug %}?page={{ previous_page }}">prev</a>
+                {% endif %}
+                {% if current_page != 1 %}
+                    <a href="{% url 'plugins:sub_plugins:list' slug=plugin.slug %}?page=1">1</a>
+                {% endif %}
+                {% if current_page != total_pages %}
+                    <a href="{% url 'plugins:sub_plugins:list' slug=plugin.slug %}?page={{ total_pages }}">{{ total_pages }}</a>
+                {% endif %}
+                {% if next_page %}
+                    <a href="{% url 'plugins:sub_plugins:list' slug=plugin.slug %}?page={{ next_page }}">next</a>
+                {% endif %}
+            {% endif %}
         {% else %}
             <h1>{{ plugin.name }} does not support sub-plugins.</h1>
         {% endif %}

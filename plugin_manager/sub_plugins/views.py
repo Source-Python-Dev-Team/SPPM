@@ -58,10 +58,21 @@ class SubPluginListView(ListView):
     def get_context_data(self, **kwargs):
         context = super(SubPluginListView, self).get_context_data(**kwargs)
         plugin = Plugin.objects.get(slug=self.kwargs['slug'])
+        paginator = context['paginator']
+        page = context['page_obj']
+        previous_page = (
+            page.previous_page_number() if page.has_previous() else None
+        )
+        next_page = page.next_page_number() if page.has_next() else None
         context.update({
             'plugin': plugin,
             'paths': plugin.paths.all(),
             'sub_plugin_list': context['subplugin_list'],
+            'has_other_pages': page.has_other_pages(),
+            'next_page': next_page,
+            'previous_page': previous_page,
+            'current_page': page.number,
+            'total_pages': paginator.num_pages,
         })
         return context
 
