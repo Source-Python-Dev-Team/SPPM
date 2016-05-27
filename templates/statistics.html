@@ -1,0 +1,9 @@
+{% extends "common/sidebar.html" %}
+
+{% block title %}SPPM Statistics{% endblock title %}
+
+{% block content %}
+    Packages: {{ package_count }}<br />
+    Plugins: {{ plugin_count }}<br />
+    SubPlugins: {{ sub_plugin_count }}<br />
+{% endblock content %}

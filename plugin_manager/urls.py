@@ -23,6 +23,9 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.views.generic.base import RedirectView
 
+# App Imports
+from .views import StatisticsView
+
 
 # =============================================================================
 # >> GLOBAL VARIABLES
@@ -35,6 +38,10 @@ urlpatterns = [
             permanent=False,
         ),
         name='index',
+    ),
+    url(
+        regex=r'^statistics',
+        view=StatisticsView.as_view(),
     ),
     url(
         regex=r'^admin/',
