@@ -13,20 +13,13 @@
                     <li><a href="{{ package.get_absolute_url }}">{{ package }}</a></li>
                 {% endfor %}
             </ul>
-            {% if has_other_pages %}
-                {% if previous_page %}
-                    <a href="{% url 'packages:list' %}?page={{ previous_page }}">prev</a>
+            {% for page_url in page_url_list %}
+                {% if page_url.url %}
+                    <a href="{% url 'packages:list' %}{{ page_url.url }}">{{ page_url.display }}</a>
+                {% else %}
+                    {{ page_url.display }}
                 {% endif %}
-                {% if current_page != 1 %}
-                    <a href="{% url 'packages:list' %}?page=1">1</a>
-                {% endif %}
-                {% if current_page != total_pages %}
-                    <a href="{% url 'packages:list' %}?page={{ total_pages }}">{{ total_pages }}</a>
-                {% endif %}
-                {% if next_page %}
-                    <a href="{% url 'packages:list' %}?page={{ next_page }}">next</a>
-                {% endif %}
-            {% endif %}
+            {% endfor %}
         {% else %}
             <h1>No packages are registered.</h1>
         {% endif %}
