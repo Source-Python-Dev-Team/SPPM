@@ -1,7 +1,8 @@
-django-debug-toolbar
-django-precise-bbcode
-django-crispy-forms
-postmarkup
-path.py
-django-filter
 -e git://github.com/ZombieToof/django-phpbb.git
+django-braces
+django-crispy-forms
+django-debug-toolbar
+django-filter
+django-precise-bbcode
+path.py
+postmarkup
