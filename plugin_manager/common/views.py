@@ -37,10 +37,11 @@ class OrderableListView(OrderableListMixin, ListView):
     def get_context_data(self, **kwargs):
         context = super(OrderableListView, self).get_context_data(**kwargs)
         default = self.get_orderable_columns_default()
+        orderable_columns = sorted(self.get_orderable_columns())
         order_by = context['order_by']
         order_by_url = (
             'order_by={0}'.format(order_by)
-            if order_by in self.get_orderable_columns() and
+            if order_by in orderable_columns and
             order_by != default else None
         )
         ordering_url = (
@@ -48,6 +49,7 @@ class OrderableListView(OrderableListMixin, ListView):
         )
         order_list = filter(None, [order_by_url, ordering_url])
         context.update({
+            'orderable_columns': orderable_columns,
             'order_url': '&'.join(order_list) if order_list else None,
         })
         return context
@@ -147,4 +149,6 @@ class OrderablePaginatedListView(OrderableListView, PaginatedListView):
             for item in context['page_url_list']:
                 if item.url is not None:
                     item.url += '&' + order_url
+        for x, y in context.items():
+            print(x, y)
         return context
