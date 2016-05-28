@@ -1,6 +1,38 @@
+# =============================================================================
+# >> IMPORTS
+# =============================================================================
+# Django Imports
 from django.contrib import admin
 
+# App Imports
+from .models import OldSubPluginRelease
 from .models import SubPlugin
+from .models import SubPluginImage
+
+
+# =============================================================================
+# >> ADMIN CLASSES
+# =============================================================================
+@admin.register(OldSubPluginRelease)
+class OldSubPluginReleaseAdmin(admin.ModelAdmin):
+    list_display = (
+        'sub_plugin',
+        'version',
+    )
+    readonly_fields = (
+        'sub_plugin',
+        'version',
+        'version_notes',
+        'zip_file',
+    )
+    search_fields = (
+        'sub_plugin__name',
+        'sub_plugin__basename',
+        'sub_plugin__owner__username',
+        'sub_plugin__contributors__username',
+        'sub_plugin__plugin__basename',
+        'sub_plugin__plugin__name',
+    )
 
 
 @admin.register(SubPlugin)
@@ -14,6 +46,7 @@ class SubPluginAdmin(admin.ModelAdmin):
         'name',
         'basename',
         'owner',
+        'plugin',
     )
     list_select_related = (
         'owner',
@@ -32,4 +65,23 @@ class SubPluginAdmin(admin.ModelAdmin):
         'basename',
         'owner__username',
         'contributors__username',
+        'plugin__name',
+        'plugin__basename',
+    )
+
+
+@admin.register(SubPluginImage)
+class SubPluginImageAdmin(admin.ModelAdmin):
+    list_display = (
+        'sub_plugin',
+        'image',
+    )
+    readonly_fields = (
+        'sub_plugin',
+    )
+    search_fields = (
+        'sub_plugin__name',
+        'sub_plugin__basename',
+        'sub_plugin__plugin__name',
+        'sub_plugin__plugin__basename',
     )
