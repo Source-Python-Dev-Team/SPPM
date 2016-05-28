@@ -149,6 +149,4 @@ class OrderablePaginatedListView(OrderableListView, PaginatedListView):
             for item in context['page_url_list']:
                 if item.url is not None:
                     item.url += '&' + order_url
-        for x, y in context.items():
-            print(x, y)
         return context
