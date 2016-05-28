@@ -66,14 +66,14 @@ def handle_plugin_logo_upload(instance, filename):
     """Return the path to store the plugin's logo."""
     return 'logos/plugins/{0}.{1}'.format(
         instance.basename,
-        filename.rsplit('.', 1)[1]
+        filename.rsplit('.', 1)[1],
     )
 
 
 def handle_plugin_image_upload(instance, filename):
     """Return the path to store the image."""
-    return 'images/plugin/{0}/{1}.{2}'.format(
-        instance.basename,
-        find_image_number('plugin', instance.basename),
+    return 'images/plugins/{0}/{1}.{2}'.format(
+        instance.plugin.basename,
+        find_image_number('plugin', instance.plugin.basename),
         filename.rsplit('.', 1)[1],
     )

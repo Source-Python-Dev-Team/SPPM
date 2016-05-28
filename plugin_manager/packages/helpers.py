@@ -78,7 +78,7 @@ def handle_package_logo_upload(instance, filename):
 def handle_package_image_upload(instance, filename):
     """Return the path to store the image."""
     return 'images/packages/{0}/{1}.{2}'.format(
-        instance.basename,
-        find_image_number('packages', instance.basename),
+        instance.package.basename,
+        find_image_number('packages', instance.package.basename),
         filename.rsplit('.', 1)[1],
     )

@@ -79,16 +79,18 @@ def handle_sub_plugin_logo_upload(instance, filename):
     return 'logos/sub_plugins/{0}/{1}.{2}'.format(
         instance.plugin.basename,
         instance.basename,
-        filename.rsplit('.', 1)[1]
+        filename.rsplit('.', 1)[1],
     )
 
 
 def handle_sub_plugin_image_upload(instance, filename):
     """Return the path to store the image."""
-    return 'images/sub_plugins/{0}/{1}.{2}'.format(
-        instance.basename,
+    return 'images/sub_plugins/{0}/{1}/{2}.{3}'.format(
+        instance.sub_plugin.basename,
+        instance.sub_plugin.plugin.basename,
         find_image_number('sub_plugins/{0}'.format(
-            instance.plugin.basename), instance.basename),
+            instance.sub_plugin.plugin.basename),
+            instance.sub_plugin.basename),
         filename.rsplit('.', 1)[1],
     )
 
