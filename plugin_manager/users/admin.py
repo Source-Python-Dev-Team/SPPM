@@ -13,7 +13,14 @@ from .models import ForumUser
 # =============================================================================
 @admin.register(ForumUser)
 class ForumUserAdmin(admin.ModelAdmin):
+    list_display = (
+        'username',
+        'id',
+    )
     readonly_fields = (
         'username',
         'id',
+    )
+    search_fields = (
+        'username',
     )
