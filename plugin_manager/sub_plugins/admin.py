@@ -74,6 +74,7 @@ class SubPluginAdmin(admin.ModelAdmin):
 class SubPluginImageAdmin(admin.ModelAdmin):
     list_display = (
         'sub_plugin',
+        'get_plugin',
         'image',
     )
     readonly_fields = (
@@ -85,3 +86,8 @@ class SubPluginImageAdmin(admin.ModelAdmin):
         'sub_plugin__plugin__name',
         'sub_plugin__plugin__basename',
     )
+
+    def get_plugin(self, obj):
+        return obj.sub_plugin.plugin
+    get_plugin.short_description = 'Plugin'
+    get_plugin.admin_order_field = 'sub_plugin__plugin'
