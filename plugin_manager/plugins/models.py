@@ -126,6 +126,10 @@ class OldPluginRelease(models.Model):
         related_name='previous_releases',
     )
 
+    class Meta:
+        verbose_name = 'Old Release (Plugin)'
+        verbose_name_plural = 'Old Releases (Plugin)'
+
 
 class SubPluginPath(models.Model):
     plugin = models.ForeignKey(
@@ -137,6 +141,10 @@ class SubPluginPath(models.Model):
         validators=[sub_plugin_path_validator],
     )
 
+    class Meta:
+        verbose_name = 'SubPlugin path (Plugin)'
+        verbose_name_plural = 'SubPlugin paths (Plugin)'
+
 
 class PluginImage(models.Model):
     image = models.ImageField(
@@ -146,3 +154,7 @@ class PluginImage(models.Model):
         to='plugin_manager.Plugin',
         related_name='images',
     )
+
+    class Meta:
+        verbose_name = 'Image (Plugin)'
+        verbose_name_plural = 'Images (Plugin)'

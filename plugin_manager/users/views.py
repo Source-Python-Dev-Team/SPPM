@@ -43,7 +43,9 @@ class UserView(DetailView):
             'sub_plugins': self.object.sub_plugins.all(),
             'packages': self.object.packages.all(),
             'plugin_contributions': self.object.plugin_contributions.all(),
-            'sub_plugin_contributions': self.object.sub_plugin_contributions.all(),
+            'sub_plugin_contributions': (
+                self.object.sub_plugin_contributions.all()
+            ),
             'package_contributions': self.object.package_contributions.all(),
         })
         return context

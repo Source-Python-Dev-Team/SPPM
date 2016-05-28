@@ -32,6 +32,10 @@ class PyPiRequirement(models.Model):
         unique=True,
     )
 
+    class Meta:
+        verbose_name = 'PyPi Requirement'
+        verbose_name_plural = 'PyPi Requirements'
+
     def __str__(self):
         """Return the object's name when str cast."""
         return self.name

@@ -72,6 +72,10 @@ class SubPlugin(CommonBase):
         related_name='sub_plugins',
     )
 
+    class Meta:
+        verbose_name = 'SubPlugin'
+        verbose_name_plural = 'SubPlugins'
+
     def get_absolute_url(self):
         return reverse(
             viewname='plugins:sub_plugins:detail',
@@ -130,6 +134,10 @@ class OldSubPluginRelease(models.Model):
         related_name='previous_releases',
     )
 
+    class Meta:
+        verbose_name = 'Old Release (SubPlugin)'
+        verbose_name_plural = 'Old Releases (SubPlugin)'
+
 
 class SubPluginImage(models.Model):
     image = models.ImageField(
@@ -139,3 +147,7 @@ class SubPluginImage(models.Model):
         to='plugin_manager.SubPlugin',
         related_name='images',
     )
+
+    class Meta:
+        verbose_name = 'Image (SubPlugin)'
+        verbose_name_plural = 'Images (SubPlugin)'

@@ -126,6 +126,10 @@ class OldPackageRelease(models.Model):
         related_name='previous_releases',
     )
 
+    class Meta:
+        verbose_name = 'Old Release (Package)'
+        verbose_name_plural = 'Old Releases (Package)'
+
 
 class PackageImage(models.Model):
     image = models.ImageField(
@@ -135,3 +139,7 @@ class PackageImage(models.Model):
         to='plugin_manager.Package',
         related_name='images',
     )
+
+    class Meta:
+        verbose_name = 'Image (Package)'
+        verbose_name_plural = 'Images (Package)'
