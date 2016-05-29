@@ -1,10 +1,10 @@
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
-# Python Imports
+# Python
 from django.views.generic import ListView
 
-# App Imports
+# App
 from .models import Tag
 
 

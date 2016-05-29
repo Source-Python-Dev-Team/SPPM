@@ -1,15 +1,13 @@
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
-# Django Imports
+# Django
 from django.core.exceptions import ValidationError
 
-# Project Imports
+# App
+from .constants import PLUGIN_PATH
 from ..common.constants import CANNOT_BE_NAMED, CANNOT_START_WITH
 from ..common.helpers import find_image_number
-
-# App Imports
-from .constants import PLUGIN_PATH
 
 
 # =============================================================================

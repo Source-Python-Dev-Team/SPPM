@@ -1,24 +1,22 @@
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
-# Python Imports
+# Python
 from __future__ import unicode_literals
 from PIL import Image
 
-# Django Imports
+# Django
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils.text import slugify
 
-# 3rd-Party Django Imports
+# 3rd-Party Django
 from precise_bbcode.fields import BBCodeTextField
 
-# Project Imports
-from ..users.models import ForumUser
-
-# App Imports
+# App
 from .constants import LOGO_MAX_HEIGHT, LOGO_MAX_WIDTH
 from .validators import basename_validator, version_validator
+from ..users.models import ForumUser
 
 
 # =============================================================================

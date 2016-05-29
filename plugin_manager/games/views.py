@@ -1,14 +1,12 @@
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
-# Python Imports
+# Python
 from django.views.generic import DetailView, ListView
 
-# Project Imports
-from ..common.helpers import get_groups
-
-# App Imports
+# App
 from .models import Game
+from ..common.helpers import get_groups
 
 
 # =============================================================================
@@ -16,6 +14,7 @@ from .models import Game
 # =============================================================================
 __all__ = (
     'GameListView',
+    'GameView',
 )
 
 

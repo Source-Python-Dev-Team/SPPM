@@ -1,7 +1,7 @@
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
-# Django Imports
+# Django
 from django.shortcuts import HttpResponseRedirect
 from django.views.generic import (
     CreateView,
@@ -13,12 +13,7 @@ from django.views.generic import (
 # 3rd-Party Django
 from django_filters.views import FilterView
 
-# Project Imports
-from ..common.views import OrderablePaginatedListView
-from ..users.filtersets import ForumUserFilterSet
-from ..users.models import ForumUser
-
-# App Imports
+# App
 from .forms import (
     PluginAddContributorConfirmationForm,
     PluginCreateForm,
@@ -26,6 +21,9 @@ from .forms import (
     PluginUpdateForm,
 )
 from .models import Plugin
+from ..common.views import OrderablePaginatedListView
+from ..users.filtersets import ForumUserFilterSet
+from ..users.models import ForumUser
 
 
 # =============================================================================

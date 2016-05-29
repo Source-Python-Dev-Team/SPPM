@@ -1,10 +1,10 @@
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
-# Python Imports
+# Python
 from __future__ import unicode_literals
 
-# Django Imports
+# Django
 from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.db import models

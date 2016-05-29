@@ -13,7 +13,7 @@ https://docs.djangoproject.com/en/1.9/ref/settings/
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
-# 3rd-Party Python Imports
+# 3rd-Party Python
 from path import Path
 
 

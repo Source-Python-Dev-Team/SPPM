@@ -1,14 +1,25 @@
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
-# Django Imports
+# Django
 from django.contrib import admin
 
-# App Imports
+# App
 from .models import OldPluginRelease
 from .models import Plugin
 from .models import PluginImage
 from .models import SubPluginPath
+
+
+# =============================================================================
+# >> ALL DECLARATION
+# =============================================================================
+__all__ = (
+    'OldPluginReleaseAdmin',
+    'PluginAdmin',
+    'PluginImageAdmin',
+    'SubPluginPathAdmin',
+)
 
 
 # =============================================================================

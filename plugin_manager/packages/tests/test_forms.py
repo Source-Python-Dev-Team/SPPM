@@ -5,7 +5,10 @@
 from django.test import TestCase
 
 # App
-from ..forms import PackageCreateForm, PackageEditForm, PackageUpdateForm
+from ..forms import PackageAddContributorConfirmationForm
+from ..forms import PackageCreateForm
+from ..forms import PackageEditForm
+from ..forms import PackageUpdateForm
 
 
 # =============================================================================

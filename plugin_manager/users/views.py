@@ -1,10 +1,10 @@
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
-# Django Imports
+# Django
 from django.views.generic import DetailView, ListView
 
-# App Imports
+# App
 from .models import ForumUser
 
 

@@ -1,29 +1,27 @@
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
-# Python Imports
+# Python
 from __future__ import unicode_literals
 
 # 3rd-Party Python
 from path import Path
 
-# Django Imports
+# Django
 from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.db import models
 from django.utils.timezone import now
 
-# 3rd-Party Django Imports
+# 3rd-Party Django
 from precise_bbcode.fields import BBCodeTextField
 
-# Project Imports
-from ..common.models import CommonBase
-from ..common.validators import sub_plugin_path_validator
-
-# App Imports
+# App
 from .helpers import handle_plugin_image_upload
 from .helpers import handle_plugin_logo_upload
 from .helpers import handle_plugin_zip_upload
+from ..common.models import CommonBase
+from ..common.validators import sub_plugin_path_validator
 
 
 # =============================================================================
@@ -32,6 +30,7 @@ from .helpers import handle_plugin_zip_upload
 __all__ = (
     'OldPluginRelease',
     'Plugin',
+    'PluginImage',
     'SubPluginPath',
 )
 

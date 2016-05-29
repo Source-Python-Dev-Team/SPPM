@@ -1,10 +1,10 @@
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
-# Django Imports
+# Django
 from django.views.generic import ListView
 
-# 3rd-Party Django Imports
+# 3rd-Party Django
 from braces.views import OrderableListMixin
 
 
@@ -21,7 +21,7 @@ __all__ = (
 # =============================================================================
 # HELPER CLASSES
 # =============================================================================
-class PageObject(object):
+class _PageObject(object):
     def __init__(self, display, url):
         self.display = display
         self.url = url
@@ -100,39 +100,39 @@ class PaginatedListView(ListView):
         if context['is_paginated']:
             if current_page != 1:
                 page_url_list.append(
-                    PageObject('prev', '?page={0}'.format(current_page - 1))
+                    _PageObject('prev', '?page={0}'.format(current_page - 1))
                 )
             if 1 not in previous_page_list + [current_page]:
                 page_url_list.append(
-                    PageObject('1', '?page=1')
+                    _PageObject('1', '?page=1')
                 )
             if 2 not in previous_page_list + next_page_list + [current_page]:
                 page_url_list.append(
-                    PageObject('...', None)
+                    _PageObject('...', None)
                 )
             for item in previous_page_list:
                 page_url_list.append(
-                    PageObject(item, '?page={0}'.format(item))
+                    _PageObject(item, '?page={0}'.format(item))
                 )
             page_url_list.append(
-                PageObject(current_page, None)
+                _PageObject(current_page, None)
             )
             for item in next_page_list:
                 page_url_list.append(
-                    PageObject(item, '?page={0}'.format(item))
+                    _PageObject(item, '?page={0}'.format(item))
                 )
             if total_pages - 1 not in (
                     previous_page_list + next_page_list + [current_page]):
                 page_url_list.append(
-                    PageObject('...', None)
+                    _PageObject('...', None)
                 )
             if total_pages not in next_page_list + [current_page]:
                 page_url_list.append(
-                    PageObject(total_pages, '?page={0}'.format(total_pages))
+                    _PageObject(total_pages, '?page={0}'.format(total_pages))
                 )
             if current_page != total_pages:
                 page_url_list.append(
-                    PageObject('next', '?page={0}'.format(current_page + 1))
+                    _PageObject('next', '?page={0}'.format(current_page + 1))
                 )
         context.update({
             'page_url_list': page_url_list,

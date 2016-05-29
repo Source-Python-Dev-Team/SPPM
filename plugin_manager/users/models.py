@@ -1,14 +1,14 @@
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
-# Python Imports
+# Python
 from __future__ import unicode_literals
 
-# Django Imports
+# Django
 from django.core.urlresolvers import reverse
 from django.db import models
 
-# App Imports
+# App
 from .constants import FORUM_MEMBER_URL
 
 

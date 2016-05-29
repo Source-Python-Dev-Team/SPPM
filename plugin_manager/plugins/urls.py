@@ -1,10 +1,10 @@
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
-# Django Imports
+# Django
 from django.conf.urls import include, url
 
-# App Imports
+# App
 from .views import (
     PluginAddContributorConfirmationView,
     PluginAddContributorView,

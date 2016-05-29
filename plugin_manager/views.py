@@ -1,10 +1,10 @@
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
-# Django Imports
+# Django
 from django.views.generic import TemplateView
 
-# App Imports
+# App
 from .models import Package
 from .models import Plugin
 from .models import SubPlugin

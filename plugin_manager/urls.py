@@ -16,14 +16,14 @@ Including another URLconf
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
-# Django Imports
+# Django
 from django.conf import settings
 from django.conf.urls import include, url
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.views.generic.base import RedirectView
 
-# App Imports
+# App
 from .views import StatisticsView
 
 

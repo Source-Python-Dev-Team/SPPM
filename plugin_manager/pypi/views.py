@@ -1,14 +1,12 @@
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
-# Python Imports
+# Python
 from django.views.generic import DetailView, ListView
 
-# Project Imports
-from ..common.helpers import get_groups
-
-# App Imports
+# App
 from .models import PyPiRequirement
+from ..common.helpers import get_groups
 
 
 # =============================================================================

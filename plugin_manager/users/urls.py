@@ -1,10 +1,10 @@
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
-# Django Imports
+# Django
 from django.conf.urls import url
 
-# App Imports
+# App
 from .views import UserListView, UserView
 
 

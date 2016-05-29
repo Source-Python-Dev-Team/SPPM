@@ -1,24 +1,22 @@
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
-# Python Imports
+# Python
 from zipfile import ZipFile
 
-# Django Imports
+# Django
 from django import forms
 from django.core.exceptions import ValidationError
 
-# 3rd Party Django Imports
+# 3rd-Party Django
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Submit
 
-# Project Imports
-from ..users.models import ForumUser
-
-# App Imports
+# App
 from .constants import PLUGIN_PATH
 from .helpers import get_plugin_basename
 from .models import Plugin
+from ..users.models import ForumUser
 
 
 # =============================================================================

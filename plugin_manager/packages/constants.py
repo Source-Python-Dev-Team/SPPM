@@ -1,7 +1,7 @@
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
-# Project Imports
+# App
 from ..common.constants import ALLOWED_FILE_TYPES, READABLE_DATA_FILE_TYPES
 
 

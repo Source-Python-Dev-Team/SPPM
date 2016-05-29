@@ -10,10 +10,10 @@ https://docs.djangoproject.com/en/1.9/howto/deployment/wsgi/
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
-# Python Imports
+# Python
 import os
 
-# Django Imports
+# Django
 from django.core.wsgi import get_wsgi_application
 
 
