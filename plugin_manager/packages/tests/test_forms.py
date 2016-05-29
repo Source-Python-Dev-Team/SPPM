@@ -5,15 +5,21 @@
 from django.test import TestCase
 
 # App
-from ..forms import PackageAddContributorConfirmationForm
-from ..forms import PackageCreateForm
-from ..forms import PackageEditForm
-from ..forms import PackageUpdateForm
+from ..forms import (
+    PackageAddContributorConfirmationForm,
+    PackageCreateForm,
+    PackageEditForm,
+    PackageUpdateForm
+)
 
 
 # =============================================================================
 # >> TEST CLASSES
 # =============================================================================
+class TestPackageAddContributorConfirmationForm(TestCase):
+    pass
+
+
 class TestPackageCreateForm(TestCase):
     pass
 
