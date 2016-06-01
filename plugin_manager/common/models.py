@@ -65,20 +65,6 @@ class CommonBase(models.Model):
         blank=True,
         null=True,
     )
-    current_version = models.CharField(
-        max_length=8,
-        blank=True,
-        null=True,
-    )
-    current_version_notes = BBCodeTextField(
-        max_length=512,
-        blank=True,
-        null=True,
-    )
-    current_zip_file = models.FileField(
-        blank=True,
-        null=True,
-    )
     description = BBCodeTextField(
         max_length=1024,
         blank=True,

@@ -65,7 +65,6 @@ class PluginAdmin(admin.ModelAdmin):
     )
     readonly_fields = (
         'basename',
-        'current_version',
         'date_created',
         'date_last_updated',
     )

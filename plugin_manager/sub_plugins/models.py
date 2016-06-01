@@ -14,6 +14,7 @@ from django.db import models
 from django.utils.timezone import now
 
 # 3rd-Party Django
+from model_utils import FieldTracker
 from precise_bbcode.fields import BBCodeTextField
 
 # App
@@ -70,6 +71,8 @@ class SubPlugin(CommonBase):
         related_name='sub_plugins',
     )
 
+    field_tracker = FieldTracker(['version', 'version_notes', 'zip_file'])
+
     class Meta:
         verbose_name = 'SubPlugin'
         verbose_name_plural = 'SubPlugins'
@@ -94,20 +97,17 @@ class SubPlugin(CommonBase):
                 if logo:
                     logo[0].remove()
 
+        tracker = self.field_tracker
         release = None
-
-        if self.current_version and self.current_version != self.version:
+        version = tracker.saved_data.get('version', None)
+        if tracker.has_changed('version') and version:
             release = OldSubPluginRelease(
-                version=self.current_version,
-                version_notes=self.current_version_notes,
-                zip_file=self.current_zip_file,
-                sub_plugin=self,
+                version=version,
+                version_notes=tracker.saved_data['version_notes'],
+                zip_file=tracker.saved_data['zip_file'],
+                plugin=self,
             )
             self.date_last_updated = now()
-
-        self.current_version = self.version
-        self.current_version_notes = self.version_notes
-        self.current_zip_file = self.zip_file
 
         super(SubPlugin, self).save(
             force_insert, force_update, using, update_fields)

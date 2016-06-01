@@ -3,6 +3,7 @@ django-braces
 django-crispy-forms
 django-debug-toolbar
 django-filter
+django-model-utils
 django-precise-bbcode
 path.py
 postmarkup
