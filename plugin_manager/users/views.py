@@ -2,6 +2,7 @@
 # >> IMPORTS
 # =============================================================================
 # Django
+from django.http.response import Http404
 from django.views.generic import DetailView, ListView
 
 # App
@@ -49,3 +50,19 @@ class UserView(DetailView):
             'package_contributions': self.object.package_contributions.all(),
         })
         return context
+
+    def get_object(self, queryset=None):
+        try:
+            o = super(UserView, self).get_object(queryset)
+        except Http404:
+            # TODO: Get user from forum
+
+            from random import choice, randint
+            import string
+            all_chars = string.ascii_letters + string.digits + '-._'
+            o = ForumUser.objects.create(
+                username=''.join(choice(all_chars) for x in range(
+                    randint(4, 12))),
+                id=self.kwargs['pk'],
+            )
+        return o
