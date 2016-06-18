@@ -21,6 +21,3 @@
 
 # Mac files
 .DS_Store
-
-# Python files in the base directory (used for testing)
-/*.py
