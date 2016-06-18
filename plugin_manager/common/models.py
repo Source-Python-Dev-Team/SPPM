@@ -119,7 +119,7 @@ class CommonBase(models.Model):
         """Store the slug and release data."""
         self.slug = slugify(self.basename).replace('_', '-')
 
-        # TODO: Set the user_id based on the user that is logged in
+        # TODO: Set the owner based on the user that is logged in
         if not self.owner_id:
             from random import choice
             self.owner = choice(ForumUser.objects.all())
