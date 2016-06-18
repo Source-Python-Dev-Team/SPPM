@@ -53,7 +53,7 @@ class SubPluginListView(OrderablePaginatedListView):
         'date_last_updated',
     )
     orderable_columns_default = 'date_created'
-    paginate_by = 1
+    paginate_by = 20
     template_name = 'sub_plugins/list.html'
 
     def get_queryset(self):
