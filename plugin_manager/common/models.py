@@ -120,8 +120,8 @@ class CommonBase(models.Model):
         self.slug = slugify(self.basename).replace('_', '-')
 
         # TODO: Set the user_id based on the user that is logged in
-        from random import choice
         if not self.owner_id:
+            from random import choice
             self.owner = choice(ForumUser.objects.all())
 
         super(CommonBase, self).save(
