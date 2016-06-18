@@ -53,16 +53,16 @@ class UserView(DetailView):
 
     def get_object(self, queryset=None):
         try:
-            o = super(UserView, self).get_object(queryset)
+            forum_user = super(UserView, self).get_object(queryset)
         except Http404:
             # TODO: Get user from forum
 
             from random import choice, randint
             import string
             all_chars = string.ascii_letters + string.digits + '-._'
-            o = ForumUser.objects.create(
+            forum_user = ForumUser.objects.create(
                 username=''.join(choice(all_chars) for x in range(
                     randint(4, 12))),
                 id=self.kwargs['pk'],
             )
-        return o
+        return forum_user
