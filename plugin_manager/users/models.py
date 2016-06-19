@@ -26,6 +26,7 @@ __all__ = (
 class ForumUser(models.Model):
     username = models.CharField(
         max_length=30,
+        unique=True,
     )
     id = models.IntegerField(
         primary_key=True,
