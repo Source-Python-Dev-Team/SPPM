@@ -5,9 +5,9 @@
 from django.views.generic import TemplateView
 
 # App
-from .models import Package
-from .models import Plugin
-from .models import SubPlugin
+from .packages.models import Package
+from .plugins.models import Plugin
+from .sub_plugins.models import SubPlugin
 
 
 # =============================================================================
