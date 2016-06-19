@@ -23,7 +23,6 @@ __all__ = (
 # =============================================================================
 class GameListView(ListView):
     model = Game
-    paginate_by = 20
     template_name = 'games/list.html'
 
 
