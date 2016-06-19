@@ -1,11 +1,9 @@
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
-# Python
-from django.views.generic import ListView
-
 # App
 from .models import Tag
+from ..common.views import PaginatedListView
 
 
 # =============================================================================
@@ -19,7 +17,7 @@ __all__ = (
 # =============================================================================
 # >> VIEW CLASSES
 # =============================================================================
-class TagListView(ListView):
+class TagListView(PaginatedListView):
     model = Tag
     paginate_by = 20
     template_name = 'tags/list.html'
