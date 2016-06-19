@@ -2,11 +2,12 @@
 # >> IMPORTS
 # =============================================================================
 # Python
-from django.views.generic import DetailView, ListView
+from django.views.generic import DetailView
 
 # App
 from .models import PyPiRequirement
 from ..common.helpers import get_groups
+from ..common.views import PaginatedListView
 
 
 # =============================================================================
@@ -21,7 +22,7 @@ __all__ = (
 # =============================================================================
 # >> VIEW CLASSES
 # =============================================================================
-class PyPiListView(ListView):
+class PyPiListView(PaginatedListView):
     model = PyPiRequirement
     paginate_by = 20
     template_name = 'pypi/list.html'
