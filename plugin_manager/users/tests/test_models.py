@@ -2,6 +2,7 @@
 # >> IMPORTS
 # =============================================================================
 # Django
+from django.db import IntegrityError
 from django.test import TestCase
 
 # App
@@ -12,4 +13,21 @@ from ..models import ForumUser
 # >> TEST CLASSES
 # =============================================================================
 class TestForumUser(TestCase):
-    pass
+    def setUp(self):
+        ForumUser.objects.create(username='test_user', id=1)
+
+    def test_username_must_be_unique(self):
+        self.assertRaises(
+            IntegrityError,
+            ForumUser.objects.create,
+            username='test_user',
+            id=2,
+        )
+
+    def test_id_must_be_unique(self):
+        self.assertRaises(
+            IntegrityError,
+            ForumUser.objects.create,
+            username='test_user2',
+            id=1,
+        )

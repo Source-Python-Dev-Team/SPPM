@@ -17,12 +17,16 @@ class TestGame(TestCase):
         Game.objects.create(name='Test', basename='test')
         self.assertRaises(
             IntegrityError,
-            Game.objects.create(name='Test', basename='test2'),
+            Game.objects.create,
+            name='Test',
+            basename='test2',
         )
 
     def test_basename_must_be_unique(self):
         Game.objects.create(name='Test', basename='test')
         self.assertRaises(
             IntegrityError,
-            Game.objects.create(name='Test2', basename='test'),
+            Game.objects.create,
+            name='Test2',
+            basename='test',
         )
