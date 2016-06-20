@@ -61,7 +61,7 @@ class PackageCreateForm(forms.ModelForm):
     def clean_zip_file(self):
         """Verify the zip file contents."""
         file_list = [x for x in ZipFile(
-            self.cleaned_data['zip_file']) if not x.endswith('/')]
+            self.cleaned_data['zip_file']).namelist() if not x.endswith('/')]
         basename = get_package_basename(file_list)
         current = Package.objects.filter(basename=basename)
         if current:
