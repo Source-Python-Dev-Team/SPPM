@@ -16,7 +16,6 @@ from precise_bbcode.fields import BBCodeTextField
 # App
 from .constants import LOGO_MAX_HEIGHT, LOGO_MAX_WIDTH
 from .validators import basename_validator, version_validator
-from ..users.models import ForumUser
 
 
 # =============================================================================
@@ -104,12 +103,14 @@ class CommonBase(models.Model):
         if width > LOGO_MAX_WIDTH:
             errors.append(
                 'Logo width must be no more than {0}.'.format(
-                    LOGO_MAX_WIDTH)
+                    LOGO_MAX_WIDTH
+                )
             )
         if height > LOGO_MAX_HEIGHT:
             errors.append(
                 'Logo height must be no more than {0}.'.format(
-                    LOGO_MAX_HEIGHT)
+                    LOGO_MAX_HEIGHT
+                )
             )
         return errors
 
@@ -118,11 +119,6 @@ class CommonBase(models.Model):
             using=None, update_fields=None):
         """Store the slug and release data."""
         self.slug = slugify(self.basename).replace('_', '-')
-
-        # TODO: Set the owner based on the user that is logged in
-        if not self.owner_id:
-            from random import choice
-            self.owner = choice(ForumUser.objects.all())
 
         super(CommonBase, self).save(
             force_insert, force_update, using, update_fields

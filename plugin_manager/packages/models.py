@@ -22,6 +22,7 @@ from .helpers import handle_package_image_upload
 from .helpers import handle_package_logo_upload
 from .helpers import handle_package_zip_upload
 from ..common.models import CommonBase
+from ..users.models import ForumUser
 
 
 # =============================================================================
@@ -81,7 +82,7 @@ class Package(CommonBase):
             self, force_insert=False, force_update=False,
             using=None, update_fields=None):
         """Remove the old logo before storing the new one."""
-        if self.logo and u'logo/' not in self.logo:
+        if self.logo and u'logo/' not in str(self.logo):
             path = Path(settings.MEDIA_ROOT) / 'logos' / 'package'
             if path.isdir():
                 logo = [x for x in path.files() if x.namebase == self.basename]
@@ -99,6 +100,11 @@ class Package(CommonBase):
                 plugin=self,
             )
             self.date_last_updated = now()
+
+        # TODO: Set the owner based on the user that is logged in
+        if not self.owner_id:
+            from random import choice
+            self.owner = choice(ForumUser.objects.all())
 
         super(Package, self).save(
             force_insert, force_update, using, update_fields)

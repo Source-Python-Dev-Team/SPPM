@@ -23,6 +23,7 @@ from .helpers import handle_plugin_logo_upload
 from .helpers import handle_plugin_zip_upload
 from ..common.models import CommonBase
 from ..common.validators import sub_plugin_path_validator
+from ..users.models import ForumUser
 
 
 # =============================================================================
@@ -83,7 +84,7 @@ class Plugin(CommonBase):
             self, force_insert=False, force_update=False,
             using=None, update_fields=None):
         """Remove the old logo before storing the new one."""
-        if u'logos/' not in str(self.logo):
+        if self.logo and u'logos/' not in str(self.logo):
             path = Path(settings.MEDIA_ROOT) / 'logos' / 'plugins'
             if path.isdir():
                 logo = [x for x in path.files() if x.namebase == self.basename]
@@ -101,6 +102,11 @@ class Plugin(CommonBase):
                 plugin=self,
             )
             self.date_last_updated = now()
+
+        # TODO: Set the owner based on the user that is logged in
+        if not self.owner_id:
+            from random import choice
+            self.owner = choice(ForumUser.objects.all())
 
         super(Plugin, self).save(
             force_insert, force_update, using, update_fields)
