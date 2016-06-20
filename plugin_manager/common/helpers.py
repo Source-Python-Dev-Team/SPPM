@@ -27,10 +27,10 @@ def find_image_number(directory, basename):
     return '%04d' % (max(map(int, current_files or [0])) + 1)
 
 
-def get_groups(iterable, n=3):
+def get_groups(iterable, count=3):
     if not iterable:
         return iterable
     iterable = list(iterable)
-    remainder = len(iterable) % n
-    iterable.extend([''] * (n - remainder))
-    return zip(*(iter(iterable), ) * n)
+    remainder = len(iterable) % count
+    iterable.extend([''] * (count - remainder))
+    return zip(*(iter(iterable), ) * count)
