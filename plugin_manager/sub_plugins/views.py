@@ -120,7 +120,9 @@ class SubPluginAddContributorView(FilterView):
 
     def get_context_data(self, **kwargs):
         context = super(
-            SubPluginAddContributorView, self).get_context_data(**kwargs)
+            SubPluginAddContributorView,
+            self
+        ).get_context_data(**kwargs)
         message = ''
         user = None
         if 'username' in self.request.GET:
@@ -174,8 +176,8 @@ class SubPluginAddContributorConfirmationView(FormView):
         elif user in sub_plugin.contributors.all():
             message = 'is already a contributor.'
         context = super(
-            SubPluginAddContributorConfirmationView, self).get_context_data(
-            **kwargs)
+            SubPluginAddContributorConfirmationView,
+            self).get_context_data(**kwargs)
         context.update({
             'username': ForumUser.objects.get(id=self.kwargs['id']).username,
             'message': message,

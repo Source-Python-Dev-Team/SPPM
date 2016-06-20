@@ -127,8 +127,9 @@ class PackageAddContributorConfirmationView(FormView):
         elif user in package.contributors.all():
             message = 'is already a contributor.'
         context = super(
-            PackageAddContributorConfirmationView, self).get_context_data(
-            **kwargs)
+            PackageAddContributorConfirmationView,
+            self,
+        ).get_context_data(**kwargs)
         context.update({
             'username': ForumUser.objects.get(id=self.kwargs['id']).username,
             'message': message,

@@ -126,8 +126,9 @@ class PluginAddContributorConfirmationView(FormView):
         elif user in plugin.contributors.all():
             message = 'is already a contributor.'
         context = super(
-            PluginAddContributorConfirmationView, self).get_context_data(
-            **kwargs)
+            PluginAddContributorConfirmationView,
+            self
+        ).get_context_data(**kwargs)
         context.update({
             'username': ForumUser.objects.get(id=self.kwargs['id']).username,
             'message': message,

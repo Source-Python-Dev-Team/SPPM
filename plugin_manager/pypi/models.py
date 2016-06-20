@@ -45,7 +45,11 @@ class PyPiRequirement(models.Model):
             using=None, update_fields=None):
         self.slug = slugify(self.name).replace('_', '-')
         super(PyPiRequirement, self).save(
-                force_insert, force_update, using, update_fields)
+            force_insert,
+            force_update,
+            using,
+            update_fields
+        )
 
     def get_absolute_url(self):
         return reverse(
