@@ -27,12 +27,12 @@ __all__ = (
 def get_plugin_basename(file_list):
     """Return the plugin's basename."""
     basename = None
-    for x in file_list:
-        if not x.endswith('.py'):
+    for file_path in file_list:
+        if not file_path.endswith('.py'):
             continue
-        if not x.startswith(PLUGIN_PATH):
+        if not file_path.startswith(PLUGIN_PATH):
             continue
-        current = x.split(PLUGIN_PATH, 1)[1]
+        current = file_path.split(PLUGIN_PATH, 1)[1]
         if not current:
             continue
         current = current.split('/', 1)[0]

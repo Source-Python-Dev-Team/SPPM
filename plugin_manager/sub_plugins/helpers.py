@@ -30,12 +30,13 @@ def get_sub_plugin_basename(file_list, plugin):
     basename = None
     path = None
     paths = [x[0] for x in plugin.paths.values_list('path')]
-    for x in file_list:
-        if not x.endswith('.py'):
+    for file_path in file_list:
+        if not file_path.endswith('.py'):
             continue
-        if not x.startswith(PLUGIN_PATH + '{0}/'.format(plugin_name)):
+        if not file_path.startswith(PLUGIN_PATH + '{0}/'.format(plugin_name)):
             continue
-        current = x.split(PLUGIN_PATH + '{0}/'.format(plugin_name), 1)[1]
+        current = file_path.split(
+            PLUGIN_PATH + '{0}/'.format(plugin_name), 1)[1]
         if not current:
             continue
         for current_path in paths:
@@ -86,9 +87,12 @@ def handle_sub_plugin_image_upload(instance, filename):
     return 'images/sub_plugins/{0}/{1}/{2}.{3}'.format(
         instance.sub_plugin.basename,
         instance.sub_plugin.plugin.basename,
-        find_image_number('sub_plugins/{0}'.format(
-            instance.sub_plugin.plugin.basename),
-            instance.sub_plugin.basename),
+        find_image_number(
+            'sub_plugins/{0}'.format(
+                instance.sub_plugin.plugin.basename,
+            ),
+            instance.sub_plugin.basename,
+        ),
         filename.rsplit('.', 1)[1],
     )
 
@@ -99,12 +103,12 @@ def handle_sub_plugin_image_upload(instance, filename):
 def _validate_plugin_name(file_list, plugin):
     """Return the username of the plugin."""
     plugin_name = None
-    for x in file_list:
-        if not x.endswith('.py'):
+    for file_path in file_list:
+        if not file_path.endswith('.py'):
             continue
-        if not x.startswith(PLUGIN_PATH):
+        if not file_path.startswith(PLUGIN_PATH):
             continue
-        current = x.split(PLUGIN_PATH, 1)[1]
+        current = file_path.split(PLUGIN_PATH, 1)[1]
         if not current:
             continue
         current = current.split('/', 1)[0]

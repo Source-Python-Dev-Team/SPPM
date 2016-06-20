@@ -28,12 +28,12 @@ def get_package_basename(file_list):
     """Return the package's basename."""
     basename = None
     is_module = False
-    for x in file_list:
-        if not x.endswith('.py'):
+    for file_path in file_list:
+        if not file_path.endswith('.py'):
             continue
-        if not x.startswith(PACKAGE_PATH):
+        if not file_path.startswith(PACKAGE_PATH):
             continue
-        current = x.split(PACKAGE_PATH, 1)[1]
+        current = file_path.split(PACKAGE_PATH, 1)[1]
         if not current:
             continue
         if '/' not in current:
