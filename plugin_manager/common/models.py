@@ -23,6 +23,7 @@ from .validators import basename_validator, version_validator
 # =============================================================================
 __all__ = (
     'CommonBase',
+    'DownloadStatistics',
 )
 
 
@@ -126,3 +127,19 @@ class CommonBase(models.Model):
 
     class Meta:
         abstract = True
+
+
+class DownloadStatistics(models.Model):
+    download_url = models.CharField(
+        max_length=132,
+    )
+    count = models.PositiveIntegerField()
+
+    class Meta:
+        abstract = True
+
+    @property
+    def full_url(self):
+        raise NotImplementedError(
+            'Class {class_name} must implement a "full_url" property.'
+        )

@@ -18,10 +18,11 @@ from model_utils import FieldTracker
 from precise_bbcode.fields import BBCodeTextField
 
 # App
+from .constants import PLUGIN_LOGO_URL, PLUGIN_RELEASE_URL
 from .helpers import handle_plugin_image_upload
 from .helpers import handle_plugin_logo_upload
 from .helpers import handle_plugin_zip_upload
-from ..common.models import CommonBase
+from ..common.models import CommonBase, DownloadStatistics
 from ..common.validators import sub_plugin_path_validator
 from ..users.models import ForumUser
 
@@ -84,8 +85,8 @@ class Plugin(CommonBase):
             self, force_insert=False, force_update=False,
             using=None, update_fields=None):
         """Remove the old logo before storing the new one."""
-        if self.logo and u'logos/' not in str(self.logo):
-            path = Path(settings.MEDIA_ROOT) / 'logos' / 'plugins'
+        if self.logo and PLUGIN_LOGO_URL not in str(self.logo):
+            path = Path(settings.MEDIA_ROOT) / PLUGIN_LOGO_URL
             if path.isdir():
                 logo = [x for x in path.files() if x.namebase == self.basename]
                 if logo:
@@ -163,3 +164,10 @@ class PluginImage(models.Model):
     class Meta:
         verbose_name = 'Image (Plugin)'
         verbose_name_plural = 'Images (Plugin)'
+
+
+class PluginDownloadStatistics(DownloadStatistics):
+
+    @property
+    def full_url(self):
+        return PLUGIN_RELEASE_URL + self.download_url

@@ -18,10 +18,11 @@ from model_utils import FieldTracker
 from precise_bbcode.fields import BBCodeTextField
 
 # App
+from .constants import PACKAGE_LOGO_URL, PACKAGE_RELEASE_URL
 from .helpers import handle_package_image_upload
 from .helpers import handle_package_logo_upload
 from .helpers import handle_package_zip_upload
-from ..common.models import CommonBase
+from ..common.models import CommonBase, DownloadStatistics
 from ..users.models import ForumUser
 
 
@@ -82,8 +83,8 @@ class Package(CommonBase):
             self, force_insert=False, force_update=False,
             using=None, update_fields=None):
         """Remove the old logo before storing the new one."""
-        if self.logo and u'logo/' not in str(self.logo):
-            path = Path(settings.MEDIA_ROOT) / 'logos' / 'package'
+        if self.logo and PACKAGE_LOGO_URL not in str(self.logo):
+            path = Path(settings.MEDIA_ROOT) / PACKAGE_LOGO_URL
             if path.isdir():
                 logo = [x for x in path.files() if x.namebase == self.basename]
                 if logo:
@@ -147,3 +148,10 @@ class PackageImage(models.Model):
     class Meta:
         verbose_name = 'Image (Package)'
         verbose_name_plural = 'Images (Package)'
+
+
+class PackageDownloadStatistics(DownloadStatistics):
+
+    @property
+    def full_url(self):
+        return PACKAGE_RELEASE_URL + self.download_url
