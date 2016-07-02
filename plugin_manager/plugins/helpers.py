@@ -49,12 +49,13 @@ def get_plugin_basename(file_list):
                 basename=basename
             )
         )
-    if basename.startswith(CANNOT_START_WITH):
-        raise ValidationError(
-            'Plugin basename cannot start with "{basename}".'.format(
-                basename=basename
+    for start in CANNOT_START_WITH:
+        if basename.startswith(start):
+            raise ValidationError(
+                'Plugin basename cannot start with "{start}".'.format(
+                    start=start,
+                )
             )
-        )
     return basename
 
 

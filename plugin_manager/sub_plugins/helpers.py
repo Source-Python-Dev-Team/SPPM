@@ -64,12 +64,13 @@ def get_sub_plugin_basename(file_list, plugin):
                 basename=basename,
             )
         )
-    if basename.startswith(CANNOT_START_WITH):
-        raise ValidationError(
-            'Sub-plugin basename cannot start with "{basename}".'.format(
-                basename=basename,
+    for start in CANNOT_START_WITH:
+        if basename.startswith(start):
+            raise ValidationError(
+                'Sub-plugin basename cannot start with "{start}".'.format(
+                    start=start,
+                )
             )
-        )
     return basename, path
 
 
