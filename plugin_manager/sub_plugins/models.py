@@ -32,6 +32,7 @@ from ..users.models import ForumUser
 __all__ = (
     'OldSubPluginRelease',
     'SubPlugin',
+    'SubPluginDownloadStatistics',
     'SubPluginImage',
 )
 

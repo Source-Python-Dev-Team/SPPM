@@ -32,6 +32,7 @@ from ..users.models import ForumUser
 __all__ = (
     'OldPackageRelease',
     'Package',
+    'PackageDownloadStatistics',
     'PackageImage',
 )
 
