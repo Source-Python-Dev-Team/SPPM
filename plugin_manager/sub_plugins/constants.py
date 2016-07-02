@@ -2,7 +2,10 @@
 # >> IMPORTS
 # =============================================================================
 # App
-from ..common.constants import ALLOWED_FILE_TYPES, READABLE_DATA_FILE_TYPES
+from ..common.constants import (
+    ALLOWED_FILE_TYPES, IMAGE_URL, LOGO_URL, READABLE_DATA_FILE_TYPES,
+    RELEASE_URL,
+)
 from ..plugins.constants import PLUGIN_PATH
 
 
@@ -11,6 +14,9 @@ from ..plugins.constants import PLUGIN_PATH
 # =============================================================================
 __all__ = (
     'SUB_PLUGIN_ALLOWED_FILE_TYPES',
+    'SUB_PLUGIN_IMAGE_URL',
+    'SUB_PLUGIN_LOGO_URL',
+    'SUB_PLUGIN_RELEASE_URL',
 )
 
 
@@ -23,3 +29,7 @@ SUB_PLUGIN_ALLOWED_FILE_TYPES.update({
     PLUGIN_PATH + '{self.plugin.basename}/{sub_plugin_path}/'
     '{self.basename}/': ['py'] + READABLE_DATA_FILE_TYPES,
 })
+
+SUB_PLUGIN_IMAGE_URL = IMAGE_URL + 'sub-plugins/'
+SUB_PLUGIN_LOGO_URL = LOGO_URL + 'sub-plugins/'
+SUB_PLUGIN_RELEASE_URL = RELEASE_URL + 'sub-plugins/'

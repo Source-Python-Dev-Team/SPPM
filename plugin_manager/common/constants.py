@@ -28,6 +28,11 @@ IMAGE_MAX_HEIGHT = 400
 # Maximum numbe of images allowed per package, plugin, or sub-plugin
 MAX_IMAGES = 10
 
+# URLs
+IMAGE_URL = 'images/'
+LOGO_URL = 'logos/'
+RELEASE_URL = 'releases/'
+
 # Values that packages, plugins, and sub-plugins cannot be named
 # Current values are due to the url setup for creating, editing, and updating
 CANNOT_BE_NAMED = (

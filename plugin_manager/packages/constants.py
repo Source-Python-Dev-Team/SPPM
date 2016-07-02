@@ -2,7 +2,10 @@
 # >> IMPORTS
 # =============================================================================
 # App
-from ..common.constants import ALLOWED_FILE_TYPES, READABLE_DATA_FILE_TYPES
+from ..common.constants import (
+    ALLOWED_FILE_TYPES, IMAGE_URL, LOGO_URL, READABLE_DATA_FILE_TYPES,
+    RELEASE_URL,
+)
 
 
 # =============================================================================
@@ -10,7 +13,10 @@ from ..common.constants import ALLOWED_FILE_TYPES, READABLE_DATA_FILE_TYPES
 # =============================================================================
 __all__ = (
     'PACKAGE_ALLOWED_FILE_TYPES',
+    'PACKAGE_IMAGE_URL',
+    'PACKAGE_LOGO_URL',
     'PACKAGE_PATH',
+    'PACKAGE_RELEASE_URL',
 )
 
 
@@ -29,3 +35,7 @@ PACKAGE_ALLOWED_FILE_TYPES.update({
     # Other files allowed if in a package
     PACKAGE_PATH + '{self.basename}/': ['py'] + READABLE_DATA_FILE_TYPES,
 })
+
+PACKAGE_IMAGE_URL = IMAGE_URL + 'packages/'
+PACKAGE_LOGO_URL = LOGO_URL + 'packages/'
+PACKAGE_RELEASE_URL = RELEASE_URL + 'packages/'

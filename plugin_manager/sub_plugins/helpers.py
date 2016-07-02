@@ -5,6 +5,9 @@
 from django.core.exceptions import ValidationError
 
 # App
+from .constants import (
+    SUB_PLUGIN_IMAGE_URL, SUB_PLUGIN_LOGO_URL, SUB_PLUGIN_RELEASE_URL,
+)
 from ..plugins.constants import PLUGIN_PATH
 from ..common.constants import CANNOT_BE_NAMED, CANNOT_START_WITH
 from ..common.helpers import find_image_number
@@ -77,8 +80,9 @@ def get_sub_plugin_basename(file_list, plugin):
 def handle_sub_plugin_zip_upload(instance, filename):
     """Return the path to store the zip for the current release."""
     return (
-        'releases/sub_plugins/{plugin_basename}/{basename}/'
+        '{release_url}{plugin_basename}/{basename}/'
         '{basename}-v{version}.zip'.format(
+            release_url=SUB_PLUGIN_RELEASE_URL,
             plugin_basename=instance.plugin.basename,
             basename=instance.basename,
             version=instance.version,
@@ -88,7 +92,8 @@ def handle_sub_plugin_zip_upload(instance, filename):
 
 def handle_sub_plugin_logo_upload(instance, filename):
     """Return the path to store the sub-plugin's logo."""
-    return 'logos/sub_plugins/{plugin_basename}/{basename}.{extension}'.format(
+    return '{logo_url}{plugin_basename}/{basename}.{extension}'.format(
+        logo_url=SUB_PLUGIN_LOGO_URL,
         plugin_basename=instance.plugin.basename,
         basename=instance.basename,
         extension=filename.rsplit('.', 1)[1],
@@ -98,8 +103,9 @@ def handle_sub_plugin_logo_upload(instance, filename):
 def handle_sub_plugin_image_upload(instance, filename):
     """Return the path to store the image."""
     return (
-        'images/sub_plugins/{basename}/{plugin_basename}/'
+        '{image_url}{basename}/{plugin_basename}/'
         '{image_number}.{extension}'.format(
+            image_url=SUB_PLUGIN_IMAGE_URL,
             basename=instance.sub_plugin.basename,
             plugin_basename=instance.sub_plugin.plugin.basename,
             image_number=find_image_number(
