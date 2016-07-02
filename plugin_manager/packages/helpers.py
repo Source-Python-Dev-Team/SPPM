@@ -50,33 +50,39 @@ def get_package_basename(file_list):
         raise ValidationError('No base directory or file found for package.')
     if basename in CANNOT_BE_NAMED:
         raise ValidationError(
-            'Package basename cannot be "{0}".'.format(basename))
+            'Package basename cannot be "{basename}".'.format(
+                basename=basename
+            )
+        )
     if basename.startswith(CANNOT_START_WITH):
         raise ValidationError(
-            'Package basename cannot start with "{0}".'.format(basename))
+            'Package basename cannot start with "{basename}".'.format(
+                basename=basename
+            )
+        )
     return basename, is_module
 
 
 def handle_package_zip_upload(instance, filename):
     """Return the path to store the zip for the current release."""
-    return 'releases/packages/{0}/{0}-v{1}.zip'.format(
-        instance.basename,
-        instance.version,
+    return 'releases/packages/{basename}/{basename}-v{version}.zip'.format(
+        basename=instance.basename,
+        version=instance.version,
     )
 
 
 def handle_package_logo_upload(instance, filename):
     """Return the path to store the package's logo."""
-    return 'logos/packages/{0}.{1}'.format(
-        instance.basename,
-        filename.rsplit('.', 1)[1],
+    return 'logos/packages/{basename}.{extension}'.format(
+        basename=instance.basename,
+        extension=filename.rsplit('.', 1)[1],
     )
 
 
 def handle_package_image_upload(instance, filename):
     """Return the path to store the image."""
-    return 'images/packages/{0}/{1}.{2}'.format(
-        instance.package.basename,
-        find_image_number('packages', instance.package.basename),
-        filename.rsplit('.', 1)[1],
+    return 'images/packages/{basename}/{image_number}.{extension}'.format(
+        basename=instance.package.basename,
+        image_number=find_image_number('packages', instance.package.basename),
+        extension=filename.rsplit('.', 1)[1],
     )

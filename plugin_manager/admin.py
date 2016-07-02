@@ -12,4 +12,6 @@ from path import Path
 # =============================================================================
 for _dir in Path(__file__).parent.dirs():
     if _dir.joinpath('admin.py').isfile():
-        import_module('plugin_manager.{0}.admin'.format(_dir.namebase))
+        import_module('plugin_manager.{directory}.admin'.format(
+            directory=_dir.namebase,
+        ))

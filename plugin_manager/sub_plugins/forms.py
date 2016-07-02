@@ -66,16 +66,27 @@ class SubPluginCreateForm(forms.ModelForm):
             self.cleaned_data['zip_file']).namelist() if not x.endswith('/')]
         plugin = self.cleaned_data['plugin']
         basename, path = get_sub_plugin_basename(file_list, plugin)
-        if not PLUGIN_PATH + '{0}/{1}/{2}/{2}.py'.format(
-                plugin.basename, path, basename) in file_list:
+        if not (
+            '{plugin_path}{plugin_basename}/{path}/{basename}/'
+            '{basename}.py'.format(
+                plugin_path=PLUGIN_PATH,
+                plugin_basename=plugin.basename,
+                path=path,
+                basename=basename
+            ) in file_list
+        ):
             raise ValidationError(
                 'No primary file found in zip.  ' +
                 'Perhaps you are attempting to upload a sub-plugin.')
         current = SubPlugin.objects.filter(plugin=plugin, basename=basename)
         if current:
             raise ValidationError(
-                'Sub-plugin {0} has already been uploaded for '
-                'plugin {1}.'.format(basename, plugin.name))
+                'Sub-plugin {basename} has already been uploaded for '
+                'plugin {plugin_name}.'.format(
+                    basename=basename,
+                    plugin_name=plugin.name
+                )
+            )
         self.instance.basename = basename
         return self.cleaned_data['zip_file']
 
@@ -138,8 +149,10 @@ class SubPluginUpdateForm(forms.ModelForm):
                 'version')] + [self.instance.version]
         if self.cleaned_data['version'] in all_versions:
             raise ValidationError(
-                'Release version "{0}" already exists.'.format(
-                    self.cleaned_data['version']))
+                'Release version "{version}" already exists.'.format(
+                    version=self.cleaned_data['version']
+                )
+            )
         return self.cleaned_data['version']
 
     def clean_zip_file(self):
@@ -148,8 +161,15 @@ class SubPluginUpdateForm(forms.ModelForm):
             self.cleaned_data['zip_file']).namelist() if not x.endswith('/')]
         plugin = self.instance.plugin
         basename, path = get_sub_plugin_basename(file_list, plugin)
-        if not PLUGIN_PATH + '{0}/{1}/{2}/{2}.py'.format(
-                plugin.basename, path, basename) in file_list:
+        if not (
+            '{plugin_path}{plugin_basename}/{path}/{basename}/'
+            '{basename}.py'.format(
+                plugin_path=PLUGIN_PATH,
+                plugin_basename=plugin.basename,
+                path=path,
+                basename=basename
+            ) in file_list
+        ):
             raise ValidationError(
                 'No primary file found in zip.  ' +
                 'Perhaps you are attempting to upload a sub-plugin.')

@@ -16,4 +16,6 @@ __all__ = (
 # =============================================================================
 # >> GLOBAL VARIABLES
 # =============================================================================
-FORUM_MEMBER_URL = settings.FORUM_URL + 'memberlist.php?mode=viewprofile&u={0}'
+FORUM_MEMBER_URL = (
+    settings.FORUM_URL + 'memberlist.php?mode=viewprofile&u={user_id}'
+)

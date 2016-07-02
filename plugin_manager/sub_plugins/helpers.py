@@ -33,10 +33,13 @@ def get_sub_plugin_basename(file_list, plugin):
     for file_path in file_list:
         if not file_path.endswith('.py'):
             continue
-        if not file_path.startswith(PLUGIN_PATH + '{0}/'.format(plugin_name)):
+        file_path_start = '{plugin_path}{plugin_name}/'.format(
+            plugin_path=PLUGIN_PATH,
+            plugin_name=plugin_name,
+        )
+        if not file_path.startswith(file_path_start):
             continue
-        current = file_path.split(
-            PLUGIN_PATH + '{0}/'.format(plugin_name), 1)[1]
+        current = file_path.split(file_path_start, 1)[1]
         if not current:
             continue
         for current_path in paths:
@@ -57,43 +60,55 @@ def get_sub_plugin_basename(file_list, plugin):
         raise ValidationError('No sub-plugin base directory found in zip.')
     if basename in CANNOT_BE_NAMED:
         raise ValidationError(
-            'Sub-plugin basename cannot be "{0}".'.format(basename))
+            'Sub-plugin basename cannot be "{basename}".'.format(
+                basename=basename,
+            )
+        )
     if basename.startswith(CANNOT_START_WITH):
         raise ValidationError(
-            'Sub-plugin basename cannot start with "{0}".'.format(basename))
+            'Sub-plugin basename cannot start with "{basename}".'.format(
+                basename=basename,
+            )
+        )
     return basename, path
 
 
 def handle_sub_plugin_zip_upload(instance, filename):
     """Return the path to store the zip for the current release."""
-    return 'releases/sub_plugins/{0}/{1}/{1}-v{2}.zip'.format(
-        instance.plugin.basename,
-        instance.basename,
-        instance.version,
+    return (
+        'releases/sub_plugins/{plugin_basename}/{basename}/'
+        '{basename}-v{version}.zip'.format(
+            plugin_basename=instance.plugin.basename,
+            basename=instance.basename,
+            version=instance.version,
+        )
     )
 
 
 def handle_sub_plugin_logo_upload(instance, filename):
     """Return the path to store the sub-plugin's logo."""
-    return 'logos/sub_plugins/{0}/{1}.{2}'.format(
-        instance.plugin.basename,
-        instance.basename,
-        filename.rsplit('.', 1)[1],
+    return 'logos/sub_plugins/{plugin_basename}/{basename}.{extension}'.format(
+        plugin_basename=instance.plugin.basename,
+        basename=instance.basename,
+        extension=filename.rsplit('.', 1)[1],
     )
 
 
 def handle_sub_plugin_image_upload(instance, filename):
     """Return the path to store the image."""
-    return 'images/sub_plugins/{0}/{1}/{2}.{3}'.format(
-        instance.sub_plugin.basename,
-        instance.sub_plugin.plugin.basename,
-        find_image_number(
-            'sub_plugins/{0}'.format(
-                instance.sub_plugin.plugin.basename,
+    return (
+        'images/sub_plugins/{basename}/{plugin_basename}/'
+        '{image_number}.{extension}'.format(
+            basename=instance.sub_plugin.basename,
+            plugin_basename=instance.sub_plugin.plugin.basename,
+            image_number=find_image_number(
+                'sub_plugins/{plugin_basename}'.format(
+                    plugin_basename=instance.sub_plugin.plugin.basename,
+                ),
+                instance.sub_plugin.basename,
             ),
-            instance.sub_plugin.basename,
-        ),
-        filename.rsplit('.', 1)[1],
+            extension=filename.rsplit('.', 1)[1],
+        )
     )
 
 

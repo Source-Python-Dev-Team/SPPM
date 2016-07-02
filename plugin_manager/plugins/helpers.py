@@ -45,33 +45,39 @@ def get_plugin_basename(file_list):
         raise ValidationError('No base directory found for plugin.')
     if basename in CANNOT_BE_NAMED:
         raise ValidationError(
-            'Plugin basename cannot be "{0}".'.format(basename))
+            'Plugin basename cannot be "{basename}".'.format(
+                basename=basename
+            )
+        )
     if basename.startswith(CANNOT_START_WITH):
         raise ValidationError(
-            'Plugin basename cannot start with "{0}".'.format(basename))
+            'Plugin basename cannot start with "{basename}".'.format(
+                basename=basename
+            )
+        )
     return basename
 
 
 def handle_plugin_zip_upload(instance, filename):
     """Return the path to store the zip for the current release."""
-    return 'releases/plugins/{0}/{0}-v{1}.zip'.format(
-        instance.basename,
-        instance.version,
+    return 'releases/plugins/{basename}/{basename}-v{version}.zip'.format(
+        basename=instance.basename,
+        version=instance.version,
     )
 
 
 def handle_plugin_logo_upload(instance, filename):
     """Return the path to store the plugin's logo."""
-    return 'logos/plugins/{0}.{1}'.format(
-        instance.basename,
-        filename.rsplit('.', 1)[1],
+    return 'logos/plugins/{basename}.{extension}'.format(
+        basename=instance.basename,
+        extension=filename.rsplit('.', 1)[1],
     )
 
 
 def handle_plugin_image_upload(instance, filename):
     """Return the path to store the image."""
-    return 'images/plugins/{0}/{1}.{2}'.format(
-        instance.plugin.basename,
-        find_image_number('plugin', instance.plugin.basename),
-        filename.rsplit('.', 1)[1],
+    return 'images/plugins/{basename}/{image_number}.{extension}'.format(
+        basename=instance.plugin.basename,
+        image_number=find_image_number('plugin', instance.plugin.basename),
+        extension=filename.rsplit('.', 1)[1],
     )

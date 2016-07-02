@@ -66,7 +66,10 @@ class PackageCreateForm(forms.ModelForm):
         current = Package.objects.filter(basename=basename)
         if current:
             raise ValidationError(
-                'Package {0} is already registered.'.format(basename))
+                'Package {basename} is already registered.'.format(
+                    basename=basename
+                )
+            )
         self.instance.basename = basename
         return self.cleaned_data['zip_file']
 
@@ -129,8 +132,10 @@ class PackageUpdateForm(forms.ModelForm):
                 'version')] + [self.instance.version]
         if self.cleaned_data['version'] in all_versions:
             raise ValidationError(
-                'Release version "{0}" already exists.'.format(
-                    self.cleaned_data['version']))
+                'Release version "{version}" already exists.'.format(
+                    version=self.cleaned_data['version']
+                )
+            )
         return self.cleaned_data['version']
 
     def clean_zip_file(self):
@@ -138,8 +143,10 @@ class PackageUpdateForm(forms.ModelForm):
         file_list = [x for x in ZipFile(
             self.cleaned_data['zip_file']).namelist() if not x.endswith('/')]
         basename, is_module = get_package_basename(file_list)
-        if not is_module and PACKAGE_PATH + '{0}/{0}.py'.format(
-                basename) in file_list:
+        if not is_module and '{package_path}{basename}/{basename}.py'.format(
+            package_path=PACKAGE_PATH,
+            basename=basename,
+        ) in file_list:
             raise ValidationError('No primary file found in zip.')
         if basename != self.instance.basename:
             raise ValidationError(

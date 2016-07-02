@@ -102,14 +102,14 @@ class CommonBase(models.Model):
         width, height = Image.open(self.logo).size
         if width > LOGO_MAX_WIDTH:
             errors.append(
-                'Logo width must be no more than {0}.'.format(
-                    LOGO_MAX_WIDTH
+                'Logo width must be no more than {max_width}.'.format(
+                    max_width=LOGO_MAX_WIDTH,
                 )
             )
         if height > LOGO_MAX_HEIGHT:
             errors.append(
-                'Logo height must be no more than {0}.'.format(
-                    LOGO_MAX_HEIGHT
+                'Logo height must be no more than {max_height}.'.format(
+                    max_height=LOGO_MAX_HEIGHT,
                 )
             )
         return errors

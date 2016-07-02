@@ -60,4 +60,4 @@ class PyPiRequirement(models.Model):
         )
 
     def get_pypi_url(self):
-        return settings.PYPI_URL + '/{0}'.format(self.name)
+        return settings.PYPI_URL + '/{name}'.format(name=self.name)

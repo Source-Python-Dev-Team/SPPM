@@ -45,4 +45,4 @@ class ForumUser(models.Model):
         )
 
     def get_forum_url(self):
-        return FORUM_MEMBER_URL.format(self.id)
+        return FORUM_MEMBER_URL.format(user_id=self.id)
