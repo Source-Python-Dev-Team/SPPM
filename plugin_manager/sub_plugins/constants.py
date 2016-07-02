@@ -3,6 +3,7 @@
 # =============================================================================
 # App
 from ..common.constants import ALLOWED_FILE_TYPES, READABLE_DATA_FILE_TYPES
+from ..plugins.constants import PLUGIN_PATH
 
 
 # =============================================================================
@@ -19,8 +20,6 @@ __all__ = (
 # The allowed file types by directory for sub-plugins
 SUB_PLUGIN_ALLOWED_FILE_TYPES = dict(ALLOWED_FILE_TYPES)
 SUB_PLUGIN_ALLOWED_FILE_TYPES.update({
-    'addons/source-python/plugins/{self.plugin.basename}/' +
-    '{sub_plugin_path}/{self.basename}/': [
-        'py',
-    ] + READABLE_DATA_FILE_TYPES,
+    PLUGIN_PATH + '{self.plugin.basename}/{sub_plugin_path}/'
+    '{self.basename}/': ['py'] + READABLE_DATA_FILE_TYPES,
 })

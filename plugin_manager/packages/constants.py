@@ -23,7 +23,9 @@ PACKAGE_PATH = 'addons/source-python/packages/custom/'
 # The allowed file types by directory for packages
 PACKAGE_ALLOWED_FILE_TYPES = dict(ALLOWED_FILE_TYPES)
 PACKAGE_ALLOWED_FILE_TYPES.update({
-    'addons/source-python/packages/custom/': [
-        'py',
-    ] + READABLE_DATA_FILE_TYPES,
+    # Just the base file if just a module
+    PACKAGE_PATH: ['py'],
+
+    # Other files allowed if in a package
+    PACKAGE_PATH + '{self.basename}/': ['py'] + READABLE_DATA_FILE_TYPES,
 })
