@@ -71,7 +71,7 @@
                                 {% for contributor in contributors %}
                                     <tr>
                                         <td><a href="{{ contributor.get_absolute_url }}">{{ contributor }}</a></td>
-                                        {# TODO: only show this if the user is logged in and is the owner #}
+                                        {# TODO: add the delete button.  only show if the user is the owner #}
                                         <td class="text-right">
         {#                                    <a data-toggle="modal" href="#{{  }}"#}
                                         </td>
@@ -86,6 +86,18 @@
                     </div>
                 </div>
             </div>
+
+            <h3>Supported Games</h3>
+            <ul>
+                {% if supported_games %}
+                    {% for game in supported_games %}
+                        <a href="{% url 'games:detail' slug=game.slug %}"><img src="{{ MEDIA_URL }}{{ game.icon }}" style="margin-right: -14px;" alt="{{ game }} Icon"/></a> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    {% endfor %}
+                {% endif %}
+
+                <h5>Add games</h5>
+            </ul>
+
         </ul>
 
         {% if plugin.description.rendered %}
