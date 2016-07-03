@@ -3,7 +3,12 @@
 {% block title %}SPPM Statistics{% endblock title %}
 
 {% block content %}
+    Users with contributions: {{ users }}<br />
     Packages: {{ package_count }}<br />
     Plugins: {{ plugin_count }}<br />
-    SubPlugins: {{ sub_plugin_count }}<br />
+    Sub-Plugins: {{ sub_plugin_count }}<br />
+    Package Downloads: {{ package_downloads }}<br />
+    Plugin Downloads: {{ plugin_downloads }}<br />
+    Sub-Plugin Downloads: {{ sub_plugin_downloads }}<br />
+    Total Downloads: {{ total_downloads }}
 {% endblock content %}
