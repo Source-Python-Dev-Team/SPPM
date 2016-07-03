@@ -8,7 +8,7 @@ from django.conf.urls import url
 from .views import (
     SubPluginAddContributorConfirmationView, SubPluginAddContributorView,
     SubPluginCreateView, SubPluginEditView, SubPluginListView,
-    SubPluginUpdateView, SubPluginView,
+    SubPluginReleaseListView, SubPluginUpdateView, SubPluginView,
 )
 
 
@@ -45,6 +45,12 @@ urlpatterns = [
         regex=r'^(?P<sub_plugin_slug>[\w-]+)/$',
         view=SubPluginView.as_view(),
         name='detail',
+    ),
+    url(
+        # http://plugins.sourcepython.com/plugins/<slug>/sub-plugins/<sub_plugin_slug>/releases/
+        regex=r'^(?P<sub_plugin_slug>[\w-]+)/releases/',
+        view=SubPluginReleaseListView.as_view(),
+        name='releases',
     ),
     url(
         # http://plugins.sourcepython.com/plugins/<slug>/sub-plugins/<sub_plugin_slug>/add-contributor/

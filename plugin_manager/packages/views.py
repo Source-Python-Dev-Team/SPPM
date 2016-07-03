@@ -7,7 +7,7 @@ from django.db.models import F
 from django.http import Http404, HttpResponse
 from django.shortcuts import HttpResponseRedirect
 from django.views.generic import (
-    CreateView, DetailView, FormView, UpdateView, View,
+    CreateView, DetailView, FormView, ListView, UpdateView, View,
 )
 
 # 3rd-Party Django
@@ -36,6 +36,7 @@ __all__ = (
     'PackageEditView',
     'PackageListView',
     'PackageReleaseDownloadView',
+    'PackageReleaseListView',
     'PackageUpdateView',
     'PackageView',
 )
@@ -231,3 +232,32 @@ class PackageReleaseDownloadView(View):
             download_count=F('download_count') + 1
         )
         return response
+
+
+class PackageReleaseListView(ListView):
+    model = PackageRelease
+    template_name = 'packages/releases.html'
+    _package = None
+
+    @property
+    def package(self):
+        if self._package is None:
+            self._package = Package.objects.get(
+                slug=self.kwargs['slug'],
+            )
+        return self._package
+
+    def get_context_data(self, **kwargs):
+        context = super(
+            PackageReleaseListView,
+            self
+        ).get_context_data(**kwargs)
+        context.update({
+            'package': self.package,
+        })
+        return context
+
+    def get_queryset(self):
+        return PackageRelease.objects.filter(
+            package=self.package,
+        ).order_by('-created')

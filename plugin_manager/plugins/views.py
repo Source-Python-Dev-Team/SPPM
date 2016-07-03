@@ -7,7 +7,7 @@ from django.db.models import F
 from django.http import Http404, HttpResponse
 from django.shortcuts import HttpResponseRedirect
 from django.views.generic import (
-    CreateView, DetailView, FormView, UpdateView, View,
+    CreateView, DetailView, FormView, ListView, UpdateView, View,
 )
 
 # 3rd-Party Django
@@ -35,6 +35,7 @@ __all__ = (
     'PluginEditView',
     'PluginListView',
     'PluginReleaseDownloadView',
+    'PluginReleaseListView',
     'PluginUpdateView',
     'PluginView',
 )
@@ -225,3 +226,29 @@ class PluginReleaseDownloadView(View):
             download_count=F('download_count') + 1
         )
         return response
+
+
+class PluginReleaseListView(ListView):
+    model = PluginRelease
+    template_name = 'plugins/releases.html'
+    _plugin = None
+
+    @property
+    def plugin(self):
+        if self._plugin is None:
+            self._plugin = Plugin.objects.get(
+                slug=self.kwargs['slug'],
+            )
+        return self._plugin
+
+    def get_context_data(self, **kwargs):
+        context = super(PluginReleaseListView, self).get_context_data(**kwargs)
+        context.update({
+            'plugin': self.plugin,
+        })
+        return context
+
+    def get_queryset(self):
+        return PluginRelease.objects.filter(
+            plugin=self.plugin,
+        ).order_by('-created')

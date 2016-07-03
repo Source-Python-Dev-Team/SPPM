@@ -7,8 +7,8 @@ from django.conf.urls import url
 # App
 from .views import (
     PackageAddContributorConfirmationView, PackageAddContributorView,
-    PackageCreateView, PackageEditView, PackageListView, PackageUpdateView,
-    PackageView,
+    PackageCreateView, PackageEditView, PackageListView,
+    PackageReleaseListView, PackageUpdateView, PackageView,
 )
 
 
@@ -45,6 +45,12 @@ urlpatterns = [
         regex=r'^(?P<slug>[\w-]+)/$',
         view=PackageView.as_view(),
         name='detail',
+    ),
+    url(
+        # http://plugins.sourcepython.com/packages/<slug>/releases/
+        regex=r'^(?P<slug>[\w-]+)/releases/',
+        view=PackageReleaseListView.as_view(),
+        name='releases',
     ),
     url(
         # http://plugins.sourcepython.com/packages/<slug>/add-contributor/
