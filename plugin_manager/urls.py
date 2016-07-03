@@ -116,7 +116,8 @@ urlpatterns = [
     ),
     url(
         # http://plugins.sourcepython.com/media/releases/sub-plugins/<slug>/<sub_plugin_slug>/<zip_file>
-        regex=r'^media/releases/sub-plugins/(?P<slug>[\w-]+)/(?P<sub_plugin_slug>[\w-]+)/(?P<zip_file>.+)',
+        regex=r'^media/releases/sub-plugins/(?P<slug>[\w-]+)/'
+              r'(?P<sub_plugin_slug>[\w-]+)/(?P<zip_file>.+)',
         view=SubPluginReleaseDownloadView.as_view(),
         name='sub-plugin-download',
     ),
