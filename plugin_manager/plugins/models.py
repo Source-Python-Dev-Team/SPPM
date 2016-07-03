@@ -104,6 +104,15 @@ class PluginRelease(Release):
         verbose_name = 'Release (Plugin)'
         verbose_name_plural = 'Releases (Plugin)'
 
+    def get_absolute_url(self):
+        return reverse(
+            viewname='plugin-download',
+            kwargs={
+                'slug': self.plugin.slug,
+                'zip_file': self.file_name,
+            }
+        )
+
 
 class PluginImage(models.Model):
     image = models.ImageField(

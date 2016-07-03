@@ -111,6 +111,16 @@ class SubPluginRelease(Release):
         verbose_name = 'Release (SubPlugin)'
         verbose_name_plural = 'Releases (SubPlugin)'
 
+    def get_absolute_url(self):
+        return reverse(
+            viewname='sub-plugin-download',
+            kwargs={
+                'slug': self.sub_plugin.plugin.slug,
+                'sub_plugin_slug': self.sub_plugin.slug,
+                'zip_file': self.file_name,
+            }
+        )
+
 
 class SubPluginImage(models.Model):
     image = models.ImageField(

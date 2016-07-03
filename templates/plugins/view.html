@@ -15,7 +15,7 @@
             <img src="{{ MEDIA_URL }}{{ plugin.logo }}" height="135" width="135" alt="{{ plugin }} Logo"/>
         {% endif %}
         <h1>{{ plugin.name }} - version {{ current_release.version }}</h1>
-        <h4>Download current version: <a href="{% url 'plugin-download' slug=plugin.slug zip_file=current_release.file_name %}">Version {{ current_release.version }}</a></h4>
+        <h4>Download current version: <a href="{{ current_release.get_absolute_url }}">Version {{ current_release.version }}</a></h4>
 
         {% if plugin.synopsis %}
             <br />

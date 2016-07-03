@@ -103,6 +103,15 @@ class PackageRelease(Release):
         verbose_name = 'Release (Package)'
         verbose_name_plural = 'Releases (Package)'
 
+    def get_absolute_url(self):
+        return reverse(
+            viewname='package-download',
+            kwargs={
+                'slug': self.package.slug,
+                'zip_file': self.file_name,
+            }
+        )
+
 
 class PackageImage(models.Model):
     image = models.ImageField(
