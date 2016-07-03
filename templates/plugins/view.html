@@ -4,7 +4,7 @@
 {% bbcode entry.bbcode_content %}
 
 {% block title %}
-    {{ plugin.name }} - version {{ current_release.version }}
+    {{ plugin }} - version {{ current_release.version }}
 {% endblock title %}
 
 {% block content %}
@@ -14,7 +14,7 @@
         {% if plugin.logo %}
             <img src="{{ MEDIA_URL }}{{ plugin.logo }}" height="135" width="135" alt="{{ plugin }} Logo"/>
         {% endif %}
-        <h1>{{ plugin.name }} - version {{ current_release.version }}</h1>
+        <h1>{{ plugin }} - version {{ current_release.version }}</h1>
         <h4>Download current version: <a href="{{ current_release.get_absolute_url }}">Version {{ current_release.version }}</a></h4>
 
         {% if plugin.synopsis %}
@@ -29,7 +29,7 @@
             <p>Last updated on {{ plugin.date_last_updated }}</p>
         {% endif %}
         {% if paths %}
-            <h><a href="{% url 'plugins:sub_plugins:list' slug=plugin.slug %}">{{ plugin.name }} sub-plugins</a></h>
+            <h><a href="{% url 'plugins:sub_plugins:list' slug=plugin.slug %}">{{ plugin }} sub-plugins</a></h>
             <br />
         {% endif %}
 
