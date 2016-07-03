@@ -2,25 +2,24 @@
 # >> IMPORTS
 # =============================================================================
 # Django
+from django.conf import settings
+from django.db.models import F
+from django.http import Http404, HttpResponse
 from django.shortcuts import HttpResponseRedirect
 from django.views.generic import (
-    CreateView,
-    DetailView,
-    FormView,
-    UpdateView,
+    CreateView, DetailView, FormView, UpdateView, View,
 )
 
 # 3rd-Party Django
 from django_filters.views import FilterView
 
 # App
+from .constants import PACKAGE_RELEASE_URL
 from .forms import (
-    PackageAddContributorConfirmationForm,
-    PackageCreateForm,
-    PackageEditForm,
+    PackageAddContributorConfirmationForm, PackageCreateForm, PackageEditForm,
     PackageUpdateForm,
 )
-from .models import Package
+from .models import Package, PackageRelease
 from ..common.helpers import get_groups
 from ..common.views import OrderablePaginatedListView
 from ..users.filtersets import ForumUserFilterSet
@@ -36,6 +35,7 @@ __all__ = (
     'PackageCreateView',
     'PackageEditView',
     'PackageListView',
+    'PackageReleaseView',
     'PackageUpdateView',
     'PackageView',
 )
@@ -49,10 +49,8 @@ class PackageListView(OrderablePaginatedListView):
     orderable_columns = (
         'name',
         'basename',
-        'date_created',
-        'date_last_updated',
     )
-    orderable_columns_default = 'date_created'
+    orderable_columns_default = 'basename'
     paginate_by = 20
     template_name = 'packages/list.html'
 
@@ -149,9 +147,13 @@ class PackageUpdateView(UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super(PackageUpdateView, self).get_context_data(**kwargs)
+        package = Package.objects.get(slug=context['view'].kwargs['slug'])
+        current_release = PackageRelease.objects.filter(
+            package=package,
+        ).order_by('-created')[0]
         context.update({
-            'package': Package.objects.get(
-                slug=context['view'].kwargs['slug'])
+            'package': package,
+            'current_release': current_release,
         })
         return context
 
@@ -171,7 +173,11 @@ class PackageView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super(PackageView, self).get_context_data(**kwargs)
+        current_release = PackageRelease.objects.filter(
+            package=context['package'],
+        ).order_by('-created')[0]
         context.update({
+            'current_release': current_release,
             'contributors': self.object.contributors.all(),
             'package_requirements': self.object.package_requirements.all(),
             'pypi_requirements': self.object.pypi_requirements.all(),
@@ -184,3 +190,41 @@ class PackageView(DetailView):
                 self.object.required_in_packages.all()),
         })
         return context
+
+
+class PackageReleaseView(View):
+    model = PackageRelease
+    full_path = None
+
+    def dispatch(self, request, *args, **kwargs):
+        self.full_path = (
+            settings.MEDIA_ROOT / PACKAGE_RELEASE_URL / kwargs['slug'] /
+            kwargs['zip_file']
+        )
+        if not self.full_path.isfile():
+            raise Http404
+        return super(PackageReleaseView, self).dispatch(request, *args, **kwargs)
+
+    def get(self, request, *args, **kwargs):
+        zip_file = kwargs['zip_file']
+        with self.full_path.open('rb') as open_file:
+            response = HttpResponse(
+                content=open_file.read(),
+                content_type='application/force-download',
+            )
+        response['Content-Disposition'] = (
+            'attachment: filename={filename}'.format(
+                filename=zip_file,
+            )
+        )
+        package = Package.objects.get(slug=kwargs['slug'])
+        version = zip_file.split(
+            '{slug}-v'.format(slug=package.slug), 1
+        )[1].rsplit('.', 1)[0]
+        PackageRelease.objects.filter(
+            package=package,
+            version=version
+        ).update(
+            download_count=F('download_count') + 1
+        )
+        return response

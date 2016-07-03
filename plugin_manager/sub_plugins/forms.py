@@ -2,6 +2,7 @@
 # >> IMPORTS
 # =============================================================================
 # Python
+from collections import OrderedDict
 from zipfile import ZipFile
 
 # Django
@@ -14,7 +15,7 @@ from crispy_forms.layout import Submit
 
 # App
 from .helpers import get_sub_plugin_basename
-from .models import SubPlugin
+from .models import SubPlugin, SubPluginRelease
 from ..plugins.constants import PLUGIN_PATH
 from ..users.models import ForumUser
 
@@ -34,46 +35,90 @@ __all__ = (
 # >> FORM CLASSES
 # =============================================================================
 class SubPluginCreateForm(forms.ModelForm):
+    version = forms.CharField(
+        max_length=8,
+    )
+    version_notes = forms.CharField(
+        max_length=512,
+        required=False,
+        widget=forms.Textarea(
+            attrs={
+                'cols': '64',
+                'rows': '8',
+            }
+        )
+    )
+    zip_file = forms.FileField()
+
     class Meta:
         model = SubPlugin
         fields = (
             'name',
-            'version',
+            'synopsis',
             'description',
-            'version_notes',
             'configuration',
             'logo',
             'plugin',
             'slug',
-            'zip_file',
         )
         widgets = {
+            'synopsis': forms.Textarea(
+                attrs={
+                    'cols': '64',
+                    'rows': '2',
+                }
+            ),
+            'description': forms.Textarea(
+                attrs={
+                    'cols': '64',
+                    'rows': '16',
+                }
+            ),
+            'configuration': forms.Textarea(
+                attrs={
+                    'cols': '64',
+                    'rows': '16',
+                }
+            ),
             'plugin': forms.HiddenInput(),
             'slug': forms.HiddenInput(),
-            'description': forms.Textarea,
-            'version_notes': forms.Textarea,
-            'configuration': forms.Textarea,
         }
 
     def __init__(self, *args, **kwargs):
         super(SubPluginCreateForm, self).__init__(*args, **kwargs)
+        old_fields = self.fields
+        self.fields = OrderedDict([x, old_fields.pop(x)] for x in [
+            'name', 'version', 'version_notes', 'zip_file', 'synopsis',
+            'description', 'configuration', 'logo',
+        ])
+        self.fields.update(old_fields)
         self.helper = FormHelper()
         self.helper.add_input(Submit('submit', 'Submit'))
+
+    def save(self, commit=True):
+        instance = super(SubPluginCreateForm, self).save(commit)
+        SubPluginRelease.objects.create(
+            sub_plugin=instance,
+            version=self.cleaned_data['version'],
+            notes=self.cleaned_data['version_notes'],
+            zip_file=self.cleaned_data['zip_file'],
+        )
+        return instance
 
     def clean_zip_file(self):
         """Verify the zip file contents."""
         file_list = [x for x in ZipFile(
             self.cleaned_data['zip_file']).namelist() if not x.endswith('/')]
-        plugin = self.cleaned_data['plugin']
+        plugin = self.initial['plugin']
         basename, path = get_sub_plugin_basename(file_list, plugin)
         if not (
-            '{plugin_path}{plugin_basename}/{path}/{basename}/'
-            '{basename}.py'.format(
-                plugin_path=PLUGIN_PATH,
-                plugin_basename=plugin.basename,
-                path=path,
-                basename=basename
-            ) in file_list
+                '{plugin_path}{plugin_basename}/{path}/{basename}/'
+                '{basename}.py'.format(
+                    plugin_path=PLUGIN_PATH,
+                    plugin_basename=plugin.basename,
+                    path=path,
+                    basename=basename
+                ) in file_list
         ):
             raise ValidationError(
                 'No primary file found in zip.  ' +
@@ -101,8 +146,24 @@ class SubPluginEditForm(forms.ModelForm):
             'logo',
         )
         widgets = {
-            'description': forms.Textarea,
-            'configuration': forms.Textarea,
+            'synopsis': forms.Textarea(
+                attrs={
+                    'cols': '64',
+                    'rows': '2',
+                }
+            ),
+            'description': forms.Textarea(
+                attrs={
+                    'cols': '64',
+                    'rows': '16',
+                }
+            ),
+            'configuration': forms.Textarea(
+                attrs={
+                    'cols': '64',
+                    'rows': '16',
+                }
+            ),
         }
 
     def __init__(self, *args, **kwargs):
@@ -127,14 +188,19 @@ class SubPluginAddContributorConfirmationForm(forms.ModelForm):
 
 class SubPluginUpdateForm(forms.ModelForm):
     class Meta:
-        model = SubPlugin
+        model = SubPluginRelease
         fields = (
             'version',
-            'version_notes',
+            'notes',
             'zip_file',
         )
         widgets = {
-            'version_notes': forms.Textarea,
+            'notes': forms.Textarea(
+                attrs={
+                    'cols': '64',
+                    'rows': '8',
+                }
+            )
         }
 
     def __init__(self, *args, **kwargs):
@@ -142,11 +208,21 @@ class SubPluginUpdateForm(forms.ModelForm):
         self.helper = FormHelper()
         self.helper.add_input(Submit('submit', 'Submit'))
 
+    def save(self, commit=True):
+        instance = super(SubPluginUpdateForm, self).save(commit)
+        SubPluginRelease.objects.create(
+            sub_plugin=instance,
+            version=self.cleaned_data['version'],
+            notes=self.cleaned_data['notes'],
+            zip_file=self.cleaned_data['zip_file'],
+        )
+        return instance
+
     def clean_version(self):
         """Verify the version doesn't already exist."""
-        all_versions = [
-            x[0] for x in self.instance.previous_releases.values_list(
-                'version')] + [self.instance.version]
+        all_versions = SubPluginRelease.objects.filter(
+            sub_plugin=self.instance
+        ).values_list('version', flat=True)
         if self.cleaned_data['version'] in all_versions:
             raise ValidationError(
                 'Release version "{version}" already exists.'.format(
@@ -162,18 +238,18 @@ class SubPluginUpdateForm(forms.ModelForm):
         plugin = self.instance.plugin
         basename, path = get_sub_plugin_basename(file_list, plugin)
         if not (
-            '{plugin_path}{plugin_basename}/{path}/{basename}/'
-            '{basename}.py'.format(
-                plugin_path=PLUGIN_PATH,
-                plugin_basename=plugin.basename,
-                path=path,
-                basename=basename
-            ) in file_list
+                '{plugin_path}{plugin_basename}/{path}/{basename}/'
+                '{basename}.py'.format(
+                    plugin_path=PLUGIN_PATH,
+                    plugin_basename=plugin.basename,
+                    path=path,
+                    basename=basename
+                ) in file_list
         ):
             raise ValidationError(
                 'No primary file found in zip.  ' +
                 'Perhaps you are attempting to upload a sub-plugin.')
         if basename != self.instance.basename:
             raise ValidationError(
-                'Uploaded plugin does not match current plugin.')
+                'Uploaded sub-plugin does not match current sub-plugin.')
         return self.cleaned_data['zip_file']

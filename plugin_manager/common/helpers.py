@@ -20,9 +20,9 @@ __all__ = (
 # =============================================================================
 # >> FUNCTIONS
 # =============================================================================
-def find_image_number(directory, basename):
+def find_image_number(directory, slug):
     """Return the next available image number."""
-    path = Path(settings.MEDIA_ROOT) / 'images' / directory / basename
+    path = Path(settings.MEDIA_ROOT) / 'images' / directory / slug
     current_files = [x.namebase for x in path.files()] if path.isdir() else []
     return '%04d' % (max(map(int, current_files or [0])) + 1)
 

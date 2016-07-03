@@ -11,6 +11,7 @@ from django.db import models
 from django.utils.text import slugify
 
 # 3rd-Party Django
+from model_utils.models import TimeStampedModel
 from precise_bbcode.fields import BBCodeTextField
 
 # App
@@ -23,7 +24,7 @@ from .validators import basename_validator, version_validator
 # =============================================================================
 __all__ = (
     'CommonBase',
-    'DownloadStatistics',
+    'Release',
 )
 
 
@@ -35,15 +36,6 @@ class CommonBase(models.Model):
     name = models.CharField(
         max_length=64,
         unique=True,
-    )
-    version = models.CharField(
-        max_length=8,
-        validators=[version_validator]
-    )
-    version_notes = BBCodeTextField(
-        max_length=512,
-        blank=True,
-        null=True,
     )
     basename = models.CharField(
         max_length=32,
@@ -57,11 +49,11 @@ class CommonBase(models.Model):
         blank=True,
     )
     date_created = models.DateTimeField(
-        'date created',
+        verbose_name='date created',
         auto_now_add=True,
     )
     date_last_updated = models.DateTimeField(
-        'date last updated',
+        verbose_name='date last updated',
         blank=True,
         null=True,
     )
@@ -129,17 +121,23 @@ class CommonBase(models.Model):
         abstract = True
 
 
-class DownloadStatistics(models.Model):
-    download_url = models.CharField(
-        max_length=132,
+class Release(TimeStampedModel):
+    version = models.CharField(
+        max_length=8,
+        validators=[version_validator]
     )
-    count = models.PositiveIntegerField()
+    notes = BBCodeTextField(
+        max_length=512,
+        blank=True,
+        null=True,
+    )
+    download_count = models.PositiveIntegerField(
+        default=0,
+    )
 
     class Meta:
         abstract = True
 
     @property
-    def full_url(self):
-        raise NotImplementedError(
-            'Class {class_name} must implement a "full_url" property.'
-        )
+    def file_name(self):
+        return self.zip_file.name.rsplit('/', 1)[1]

@@ -5,7 +5,7 @@
 from django.contrib import admin
 
 # App
-from .models import OldSubPluginRelease
+from .models import SubPluginRelease
 from .models import SubPlugin
 from .models import SubPluginImage
 
@@ -14,7 +14,7 @@ from .models import SubPluginImage
 # >> ALL DECLARATION
 # =============================================================================
 __all__ = (
-    'OldSubPluginReleaseAdmin',
+    'SubPluginReleaseAdmin',
     'SubPluginAdmin',
     'SubPluginImageAdmin',
 )
@@ -23,17 +23,13 @@ __all__ = (
 # =============================================================================
 # >> ADMIN CLASSES
 # =============================================================================
-@admin.register(OldSubPluginRelease)
-class OldSubPluginReleaseAdmin(admin.ModelAdmin):
+@admin.register(SubPluginRelease)
+class SubPluginReleaseAdmin(admin.ModelAdmin):
     list_display = (
         'sub_plugin',
-        'version',
     )
     readonly_fields = (
         'sub_plugin',
-        'version',
-        'version_notes',
-        'zip_file',
     )
     search_fields = (
         'sub_plugin__name',
@@ -48,8 +44,6 @@ class OldSubPluginReleaseAdmin(admin.ModelAdmin):
 @admin.register(SubPlugin)
 class SubPluginAdmin(admin.ModelAdmin):
     exclude = (
-        'zip_file',
-        'version',
         'slug',
     )
     list_display = (
@@ -66,8 +60,6 @@ class SubPluginAdmin(admin.ModelAdmin):
     )
     readonly_fields = (
         'basename',
-        'date_created',
-        'date_last_updated',
     )
     search_fields = (
         'name',

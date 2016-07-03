@@ -2,6 +2,7 @@
 # >> IMPORTS
 # =============================================================================
 # Python
+from collections import OrderedDict
 from zipfile import ZipFile
 
 # Django
@@ -15,7 +16,7 @@ from crispy_forms.layout import Submit
 # App
 from .constants import PLUGIN_PATH
 from .helpers import get_plugin_basename
-from .models import Plugin
+from .models import Plugin, PluginRelease
 from ..users.models import ForumUser
 
 
@@ -34,29 +35,73 @@ __all__ = (
 # >> FORM CLASSES
 # =============================================================================
 class PluginCreateForm(forms.ModelForm):
+    version = forms.CharField(
+        max_length=8,
+    )
+    version_notes = forms.CharField(
+        max_length=512,
+        required=False,
+        widget=forms.Textarea(
+            attrs={
+                'cols': '64',
+                'rows': '8',
+            }
+        )
+    )
+    zip_file = forms.FileField()
+
     class Meta:
         model = Plugin
         fields = (
             'name',
-            'version',
+            'synopsis',
             'description',
-            'version_notes',
             'configuration',
             'logo',
             'slug',
-            'zip_file',
         )
         widgets = {
+            'synopsis': forms.Textarea(
+                attrs={
+                    'cols': '64',
+                    'rows': '2',
+                }
+            ),
+            'description': forms.Textarea(
+                attrs={
+                    'cols': '64',
+                    'rows': '16',
+                }
+            ),
+            'configuration': forms.Textarea(
+                attrs={
+                    'cols': '64',
+                    'rows': '16',
+                }
+            ),
             'slug': forms.HiddenInput(),
-            'description': forms.Textarea,
-            'version_notes': forms.Textarea,
-            'configuration': forms.Textarea,
         }
 
     def __init__(self, *args, **kwargs):
         super(PluginCreateForm, self).__init__(*args, **kwargs)
+        old_fields = self.fields
+        self.fields = OrderedDict([x, old_fields.pop(x)] for x in [
+            'name', 'version', 'version_notes', 'zip_file', 'synopsis',
+            'description', 'configuration', 'logo',
+        ])
+        self.fields.update(old_fields)
         self.helper = FormHelper()
         self.helper.add_input(Submit('submit', 'Submit'))
+
+    def save(self, commit=True):
+        instance = super(PluginCreateForm, self).save(commit)
+        PluginRelease.objects.create(
+            plugin=instance,
+            version=self.cleaned_data['version'],
+            notes=self.cleaned_data['version_notes'],
+            zip_file=self.cleaned_data['zip_file'],
+        )
+        return instance
 
     def clean_zip_file(self):
         """Verify the zip file contents."""
@@ -84,8 +129,24 @@ class PluginEditForm(forms.ModelForm):
             'logo',
         )
         widgets = {
-            'description': forms.Textarea,
-            'configuration': forms.Textarea,
+            'synopsis': forms.Textarea(
+                attrs={
+                    'cols': '64',
+                    'rows': '2',
+                }
+            ),
+            'description': forms.Textarea(
+                attrs={
+                    'cols': '64',
+                    'rows': '16',
+                }
+            ),
+            'configuration': forms.Textarea(
+                attrs={
+                    'cols': '64',
+                    'rows': '16',
+                }
+            ),
         }
 
     def __init__(self, *args, **kwargs):
@@ -110,14 +171,19 @@ class PluginAddContributorConfirmationForm(forms.ModelForm):
 
 class PluginUpdateForm(forms.ModelForm):
     class Meta:
-        model = Plugin
+        model = PluginRelease
         fields = (
             'version',
-            'version_notes',
+            'notes',
             'zip_file',
         )
         widgets = {
-            'version_notes': forms.Textarea,
+            'notes': forms.Textarea(
+                attrs={
+                    'cols': '64',
+                    'rows': '8',
+                }
+            )
         }
 
     def __init__(self, *args, **kwargs):
@@ -125,11 +191,21 @@ class PluginUpdateForm(forms.ModelForm):
         self.helper = FormHelper()
         self.helper.add_input(Submit('submit', 'Submit'))
 
+    def save(self, commit=True):
+        instance = super(PluginUpdateForm, self).save(commit)
+        PluginRelease.objects.create(
+            plugin=instance,
+            version=self.cleaned_data['version'],
+            notes=self.cleaned_data['notes'],
+            zip_file=self.cleaned_data['zip_file'],
+        )
+        return instance
+
     def clean_version(self):
         """Verify the version doesn't already exist."""
-        all_versions = [
-            x[0] for x in self.instance.previous_releases.values_list(
-                'version')] + [self.instance.version]
+        all_versions = PluginRelease.objects.filter(
+            plugin=self.instance
+        ).values_list('version', flat=True)
         if self.cleaned_data['version'] in all_versions:
             raise ValidationError(
                 'Release version "{version}" already exists.'.format(
@@ -144,8 +220,8 @@ class PluginUpdateForm(forms.ModelForm):
             self.cleaned_data['zip_file']).namelist() if not x.endswith('/')]
         basename = get_plugin_basename(file_list)
         if not '{plugin_path}{basename}/{basename}.py'.format(
-            plugin_path=PLUGIN_PATH,
-            basename=basename,
+                plugin_path=PLUGIN_PATH,
+                basename=basename,
         ) in file_list:
             raise ValidationError(
                 'No primary file found in zip.  ' +

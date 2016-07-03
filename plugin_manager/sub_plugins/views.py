@@ -2,25 +2,24 @@
 # >> IMPORTS
 # =============================================================================
 # Django
+from django.conf import settings
+from django.db.models import F
+from django.http import Http404, HttpResponse
 from django.shortcuts import HttpResponseRedirect
 from django.views.generic import (
-    CreateView,
-    DetailView,
-    FormView,
-    UpdateView,
+    CreateView, DetailView, FormView, UpdateView, View,
 )
 
 # 3rd-Party Django
 from django_filters.views import FilterView
 
 # App
+from .constants import SUB_PLUGIN_RELEASE_URL
 from .forms import (
-    SubPluginAddContributorConfirmationForm,
-    SubPluginCreateForm,
-    SubPluginEditForm,
-    SubPluginUpdateForm,
+    SubPluginAddContributorConfirmationForm, SubPluginCreateForm,
+    SubPluginEditForm, SubPluginUpdateForm,
 )
-from .models import SubPlugin
+from .models import SubPlugin, SubPluginRelease
 from ..common.views import OrderablePaginatedListView
 from ..plugins.models import Plugin
 from ..users.filtersets import ForumUserFilterSet
@@ -36,6 +35,7 @@ __all__ = (
     'SubPluginCreateView',
     'SubPluginListView',
     'SubPluginEditView',
+    'SubPluginReleaseView',
     'SubPluginUpdateView',
     'SubPluginView',
 )
@@ -49,10 +49,8 @@ class SubPluginListView(OrderablePaginatedListView):
     orderable_columns = (
         'name',
         'basename',
-        'date_created',
-        'date_last_updated',
     )
-    orderable_columns_default = 'date_created'
+    orderable_columns_default = 'basename'
     paginate_by = 20
     template_name = 'sub_plugins/list.html'
 
@@ -76,7 +74,13 @@ class SubPluginCreateView(CreateView):
     model = SubPlugin
     form_class = SubPluginCreateForm
     template_name = 'sub_plugins/create.html'
-    plugin = None
+    _plugin = None
+
+    @property
+    def plugin(self):
+        if self._plugin is None:
+            self._plugin = Plugin.objects.get(slug=self.kwargs['slug'])
+        return self._plugin
 
     def get_context_data(self, **kwargs):
         context = super(SubPluginCreateView, self).get_context_data(**kwargs)
@@ -89,13 +93,9 @@ class SubPluginCreateView(CreateView):
     def get_initial(self):
         initial = super(SubPluginCreateView, self).get_initial()
         initial.update({
-            'plugin': self.get_plugin(),
+            'plugin': self.plugin,
         })
         return initial
-
-    def get_plugin(self):
-        self.plugin = Plugin.objects.get(slug=self.kwargs['slug'])
-        return self.plugin
 
 
 class SubPluginEditView(UpdateView):
@@ -116,7 +116,13 @@ class SubPluginAddContributorView(FilterView):
     model = ForumUser
     template_name = 'sub_plugins/contributor/add.html'
     filterset_class = ForumUserFilterSet
-    plugin = None
+    _plugin = None
+
+    @property
+    def plugin(self):
+        if self._plugin is None:
+            self._plugin = Plugin.objects.get(slug=self.kwargs['slug'])
+        return self._plugin
 
     def get_context_data(self, **kwargs):
         context = super(
@@ -126,7 +132,7 @@ class SubPluginAddContributorView(FilterView):
         message = ''
         user = None
         if 'username' in self.request.GET:
-            plugin = self.get_plugin()
+            plugin = self.plugin
             sub_plugin = SubPlugin.objects.get(
                 plugin=plugin, slug=self.kwargs['sub_plugin_slug'])
             try:
@@ -146,16 +152,17 @@ class SubPluginAddContributorView(FilterView):
         })
         return context
 
-    def get_plugin(self):
-        if self.plugin is None:
-            self.plugin = Plugin.objects.get(slug=self.kwargs['slug'])
-        return self.plugin
-
 
 class SubPluginAddContributorConfirmationView(FormView):
     form_class = SubPluginAddContributorConfirmationForm
     template_name = 'sub_plugins/contributor/add_confirmation.html'
-    plugin = None
+    _plugin = None
+
+    @property
+    def plugin(self):
+        if self._plugin is None:
+            self._plugin = Plugin.objects.get(slug=self.kwargs['slug'])
+        return self._plugin
 
     def get_initial(self):
         initial = super(
@@ -166,7 +173,7 @@ class SubPluginAddContributorConfirmationView(FormView):
         return initial
 
     def get_context_data(self, **kwargs):
-        plugin = self.get_plugin()
+        plugin = self.plugin
         sub_plugin = SubPlugin.objects.get(
             plugin=plugin, slug=self.kwargs['sub_plugin_slug'])
         user = ForumUser.objects.get(id=self.kwargs['id'])
@@ -185,16 +192,10 @@ class SubPluginAddContributorConfirmationView(FormView):
         return context
 
     def form_valid(self, form):
-        plugin = self.get_plugin()
         sub_plugin = SubPlugin.objects.get(
-            plugin=plugin, slug=self.kwargs['sub_plugin_slug'])
+            plugin=self.plugin, slug=self.kwargs['sub_plugin_slug'])
         sub_plugin.contributors.add(form.cleaned_data['id'])
         return HttpResponseRedirect(sub_plugin.get_absolute_url())
-
-    def get_plugin(self):
-        if self.plugin is None:
-            self.plugin = Plugin.objects.get(slug=self.kwargs['slug'])
-        return self.plugin
 
 
 class SubPluginUpdateView(UpdateView):
@@ -202,14 +203,26 @@ class SubPluginUpdateView(UpdateView):
     form_class = SubPluginUpdateForm
     template_name = 'sub_plugins/update.html'
     slug_url_kwarg = 'sub_plugin_slug'
-    plugin = None
+    _plugin = None
+
+    @property
+    def plugin(self):
+        if self._plugin is None:
+            self._plugin = Plugin.objects.get(slug=self.kwargs['slug'])
+        return self._plugin
 
     def get_context_data(self, **kwargs):
         context = super(SubPluginUpdateView, self).get_context_data(**kwargs)
+        sub_plugin = SubPlugin.objects.get(
+            slug=context['view'].kwargs['sub_plugin_slug']
+        )
+        current_release = SubPluginRelease.objects.filter(
+            sub_plugin=sub_plugin,
+        ).order_by('-created')[0]
         context.update({
             'plugin': self.plugin,
-            'sub_plugin': SubPlugin.objects.get(
-                slug=context['view'].kwargs['sub_plugin_slug']),
+            'sub_plugin': sub_plugin,
+            'current_release': current_release,
             'paths': self.plugin.paths.all(),
         })
         return context
@@ -217,17 +230,12 @@ class SubPluginUpdateView(UpdateView):
     def get_initial(self):
         initial = super(SubPluginUpdateView, self).get_initial()
         initial.update({
-            'plugin': self.get_plugin(),
+            'plugin': self.plugin,
             'version': '',
             'version_notes': '',
             'zip_file': '',
         })
         return initial
-
-    def get_plugin(self):
-        if self.plugin is None:
-            self.plugin = Plugin.objects.get(slug=self.kwargs['slug'])
-        return self.plugin
 
 
 class SubPluginView(DetailView):
@@ -237,11 +245,58 @@ class SubPluginView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super(SubPluginView, self).get_context_data(**kwargs)
+        sub_plugin = context['subplugin']
+        current_release = SubPluginRelease.objects.filter(
+            sub_plugin=sub_plugin,
+        ).order_by('-created')[0]
         context.update({
-            'sub_plugin': context['subplugin'],
+            'sub_plugin': sub_plugin,
+            'current_release': current_release,
             'contributors': self.object.contributors.all(),
             'package_requirements': self.object.package_requirements.all(),
             'pypi_requirements': self.object.pypi_requirements.all(),
             'supported_games': self.object.supported_games.all(),
         })
         return context
+
+
+class SubPluginReleaseView(View):
+    model = SubPluginRelease
+    full_path = None
+
+    def dispatch(self, request, *args, **kwargs):
+        self.full_path = (
+            settings.MEDIA_ROOT / SUB_PLUGIN_RELEASE_URL / kwargs['slug'] /
+            kwargs['sub_plugin_slug'] / kwargs['zip_file']
+        )
+        if not self.full_path.isfile():
+            raise Http404
+        return super(SubPluginReleaseView, self).dispatch(request, *args, **kwargs)
+
+    def get(self, request, *args, **kwargs):
+        zip_file = kwargs['zip_file']
+        with self.full_path.open('rb') as open_file:
+            response = HttpResponse(
+                content=open_file.read(),
+                content_type='application/force-download',
+            )
+        response['Content-Disposition'] = (
+            'attachment: filename={filename}'.format(
+                filename=zip_file,
+            )
+        )
+        plugin = Plugin.objects.get(slug=kwargs['slug'])
+        sub_plugin = SubPlugin.objects.get(
+            plugin=plugin,
+            slug=kwargs['sub_plugin_slug'],
+        )
+        version = zip_file.split(
+            '{slug}-v'.format(slug=sub_plugin.slug), 1
+        )[1].rsplit('.', 1)[0]
+        SubPluginRelease.objects.filter(
+            sub_plugin=sub_plugin,
+            version=version
+        ).update(
+            download_count=F('download_count') + 1
+        )
+        return response

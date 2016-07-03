@@ -11,18 +11,13 @@ from path import Path
 from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.db import models
-from django.utils.timezone import now
-
-# 3rd-Party Django
-from model_utils import FieldTracker
-from precise_bbcode.fields import BBCodeTextField
 
 # App
-from .constants import PACKAGE_LOGO_URL, PACKAGE_RELEASE_URL
+from .constants import PACKAGE_LOGO_URL
 from .helpers import handle_package_image_upload
 from .helpers import handle_package_logo_upload
 from .helpers import handle_package_zip_upload
-from ..common.models import CommonBase, DownloadStatistics
+from ..common.models import CommonBase, Release
 from ..users.models import ForumUser
 
 
@@ -30,9 +25,8 @@ from ..users.models import ForumUser
 # >> ALL DECLARATION
 # =============================================================================
 __all__ = (
-    'OldPackageRelease',
+    'PackageRelease',
     'Package',
-    'PackageDownloadStatistics',
     'PackageImage',
 )
 
@@ -57,9 +51,6 @@ class Package(CommonBase):
         to='plugin_manager.PyPiRequirement',
         related_name='required_in_packages',
     )
-    zip_file = models.FileField(
-        upload_to=handle_package_zip_upload,
-    )
     logo = models.ImageField(
         upload_to=handle_package_logo_upload,
         blank=True,
@@ -69,8 +60,6 @@ class Package(CommonBase):
         to='plugin_manager.Game',
         related_name='packages',
     )
-
-    field_tracker = FieldTracker(['version', 'version_notes', 'zip_file'])
 
     def get_absolute_url(self):
         return reverse(
@@ -87,21 +76,9 @@ class Package(CommonBase):
         if self.logo and PACKAGE_LOGO_URL not in str(self.logo):
             path = Path(settings.MEDIA_ROOT) / PACKAGE_LOGO_URL
             if path.isdir():
-                logo = [x for x in path.files() if x.namebase == self.basename]
+                logo = [x for x in path.files() if x.namebase == self.slug]
                 if logo:
                     logo[0].remove()
-
-        tracker = self.field_tracker
-        release = None
-        version = tracker.saved_data.get('version', None)
-        if tracker.has_changed('version') and version:
-            release = OldPackageRelease(
-                version=version,
-                version_notes=tracker.saved_data['version_notes'],
-                zip_file=tracker.saved_data['zip_file'],
-                plugin=self,
-            )
-            self.date_last_updated = now()
 
         # TODO: Set the owner based on the user that is logged in
         if not self.owner_id:
@@ -111,30 +88,20 @@ class Package(CommonBase):
         super(Package, self).save(
             force_insert, force_update, using, update_fields)
 
-        if release is not None:
-            release.save()
-            self.previous_releases.add(release)
 
-
-class OldPackageRelease(models.Model):
+class PackageRelease(Release):
     """Store the information for """
-    version = models.CharField(
-        max_length=8,
-    )
-    version_notes = BBCodeTextField(
-        max_length=512,
-        blank=True,
-        null=True,
-    )
-    zip_file = models.FileField()
     package = models.ForeignKey(
         to='plugin_manager.Package',
-        related_name='previous_releases',
+        related_name='releases',
+    )
+    zip_file = models.FileField(
+        upload_to=handle_package_zip_upload,
     )
 
     class Meta:
-        verbose_name = 'Old Release (Package)'
-        verbose_name_plural = 'Old Releases (Package)'
+        verbose_name = 'Release (Package)'
+        verbose_name_plural = 'Releases (Package)'
 
 
 class PackageImage(models.Model):
@@ -149,10 +116,3 @@ class PackageImage(models.Model):
     class Meta:
         verbose_name = 'Image (Package)'
         verbose_name_plural = 'Images (Package)'
-
-
-class PackageDownloadStatistics(DownloadStatistics):
-
-    @property
-    def full_url(self):
-        return PACKAGE_RELEASE_URL + self.download_url

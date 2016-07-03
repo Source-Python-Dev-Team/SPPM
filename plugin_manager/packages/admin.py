@@ -5,7 +5,7 @@
 from django.contrib import admin
 
 # App
-from .models import OldPackageRelease
+from .models import PackageRelease
 from .models import Package
 from .models import PackageImage
 
@@ -14,7 +14,7 @@ from .models import PackageImage
 # >> ALL DECLARATION
 # =============================================================================
 __all__ = (
-    'OldPackageReleaseAdmin',
+    'PackageReleaseAdmin',
     'PackageAdmin',
     'PackageImageAdmin',
 )
@@ -23,17 +23,13 @@ __all__ = (
 # =============================================================================
 # >> ADMIN CLASSES
 # =============================================================================
-@admin.register(OldPackageRelease)
-class OldPackageReleaseAdmin(admin.ModelAdmin):
+@admin.register(PackageRelease)
+class PackageReleaseAdmin(admin.ModelAdmin):
     list_display = (
         'package',
-        'version',
     )
     readonly_fields = (
         'package',
-        'version',
-        'version_notes',
-        'zip_file',
     )
     search_fields = (
         'package__name',
@@ -46,8 +42,6 @@ class OldPackageReleaseAdmin(admin.ModelAdmin):
 @admin.register(Package)
 class PackageAdmin(admin.ModelAdmin):
     exclude = (
-        'zip_file',
-        'version',
         'slug',
     )
     list_display = (
@@ -63,8 +57,6 @@ class PackageAdmin(admin.ModelAdmin):
     )
     readonly_fields = (
         'basename',
-        'date_created',
-        'date_last_updated',
     )
     search_fields = (
         'name',

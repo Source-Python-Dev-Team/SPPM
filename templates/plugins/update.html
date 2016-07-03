@@ -8,7 +8,7 @@
 <body>
     <div class="container">
         <h1>Update {{ plugin }}</h1>
-        <ul><b>Current Version: {{ plugin.current_version }}</b></ul><br />
+        <ul><b>Current Version: {{ current_release.version }}</b></ul><br />
         {% crispy form %}
     </div>
 </body>
