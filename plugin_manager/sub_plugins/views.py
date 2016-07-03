@@ -313,7 +313,6 @@ class SubPluginReleaseListView(ListView):
     @property
     def sub_plugin(self):
         if self._sub_plugin is None:
-            print self.kwargs
             plugin = Plugin.objects.get(
                 slug=self.kwargs['slug'],
             )
