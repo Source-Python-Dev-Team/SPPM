@@ -8,7 +8,7 @@ from django.test import TestCase
 from ..views import (
     SubPluginAddContributorConfirmationView, SubPluginAddContributorView,
     SubPluginCreateView, SubPluginListView, SubPluginEditView,
-    SubPluginReleaseView, SubPluginUpdateView, SubPluginView,
+    SubPluginReleaseDownloadView, SubPluginUpdateView, SubPluginView,
 )
 
 
@@ -43,5 +43,5 @@ class TestSubPluginView(TestCase):
     pass
 
 
-class TestSubPluginReleaseView(TestCase):
+class TestSubPluginReleaseDownloadView(TestCase):
     pass

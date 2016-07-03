@@ -35,7 +35,7 @@ __all__ = (
     'SubPluginCreateView',
     'SubPluginListView',
     'SubPluginEditView',
-    'SubPluginReleaseView',
+    'SubPluginReleaseDownloadView',
     'SubPluginUpdateView',
     'SubPluginView',
 )
@@ -260,7 +260,7 @@ class SubPluginView(DetailView):
         return context
 
 
-class SubPluginReleaseView(View):
+class SubPluginReleaseDownloadView(View):
     model = SubPluginRelease
     full_path = None
 
@@ -271,7 +271,10 @@ class SubPluginReleaseView(View):
         )
         if not self.full_path.isfile():
             raise Http404
-        return super(SubPluginReleaseView, self).dispatch(request, *args, **kwargs)
+        return super(
+            SubPluginReleaseDownloadView,
+            self
+        ).dispatch(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):
         zip_file = kwargs['zip_file']

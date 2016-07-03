@@ -35,7 +35,7 @@ __all__ = (
     'PackageCreateView',
     'PackageEditView',
     'PackageListView',
-    'PackageReleaseView',
+    'PackageReleaseDownloadView',
     'PackageUpdateView',
     'PackageView',
 )
@@ -192,7 +192,7 @@ class PackageView(DetailView):
         return context
 
 
-class PackageReleaseView(View):
+class PackageReleaseDownloadView(View):
     model = PackageRelease
     full_path = None
 
@@ -203,7 +203,10 @@ class PackageReleaseView(View):
         )
         if not self.full_path.isfile():
             raise Http404
-        return super(PackageReleaseView, self).dispatch(request, *args, **kwargs)
+        return super(
+            PackageReleaseDownloadView,
+            self
+        ).dispatch(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):
         zip_file = kwargs['zip_file']

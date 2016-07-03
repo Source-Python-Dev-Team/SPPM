@@ -34,7 +34,7 @@ __all__ = (
     'PluginCreateView',
     'PluginEditView',
     'PluginListView',
-    'PluginReleaseView',
+    'PluginReleaseDownloadView',
     'PluginUpdateView',
     'PluginView',
 )
@@ -186,7 +186,7 @@ class PluginView(DetailView):
         return context
 
 
-class PluginReleaseView(View):
+class PluginReleaseDownloadView(View):
     model = PluginRelease
     full_path = None
 
@@ -197,7 +197,10 @@ class PluginReleaseView(View):
         )
         if not self.full_path.isfile():
             raise Http404
-        return super(PluginReleaseView, self).dispatch(request, *args, **kwargs)
+        return super(
+            PluginReleaseDownloadView,
+            self
+        ).dispatch(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):
         zip_file = kwargs['zip_file']
