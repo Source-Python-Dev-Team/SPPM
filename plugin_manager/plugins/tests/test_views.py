@@ -6,13 +6,9 @@ from django.test import TestCase
 
 # App
 from ..views import (
-    PluginAddContributorConfirmationView,
-    PluginAddContributorView,
-    PluginCreateView,
-    PluginEditView,
-    PluginListView,
-    PluginUpdateView,
-    PluginView,
+    PluginAddContributorConfirmationView, PluginAddContributorView,
+    PluginCreateView, PluginEditView, PluginListView, PluginReleaseView,
+    PluginUpdateView, PluginView,
 )
 
 
@@ -44,4 +40,8 @@ class TestPluginUpdateView(TestCase):
 
 
 class TestPluginView(TestCase):
+    pass
+
+
+class TestPluginReleaseView(TestCase):
     pass

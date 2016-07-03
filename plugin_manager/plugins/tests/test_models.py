@@ -7,26 +7,21 @@ from django.test import TestCase
 
 # App
 from ...users.models import ForumUser
-from ..models import (
-    OldPluginRelease,
-    Plugin,
-    PluginImage,
-    SubPluginPath,
-)
+from ..models import PluginRelease, Plugin, PluginImage, SubPluginPath
 
 
 # =============================================================================
 # >> TEST CLASSES
 # =============================================================================
-class TestOldPluginRelease(TestCase):
+class TestPluginRelease(TestCase):
     def test_plugin_is_required(self):
         self.assertRaisesMessage(
             IntegrityError,
             (
                 'NOT NULL constraint failed: '
-                'plugin_manager_oldpluginrelease.plugin_id'
+                'plugin_manager_pluginrelease.plugin_id'
             ),
-            OldPluginRelease.objects.create,
+            PluginRelease.objects.create,
         )
 
 

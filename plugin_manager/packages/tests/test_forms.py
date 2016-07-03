@@ -10,10 +10,8 @@ from django.test import TestCase
 
 # App
 from ..forms import (
-    PackageAddContributorConfirmationForm,
-    PackageCreateForm,
-    PackageEditForm,
-    PackageUpdateForm
+    PackageAddContributorConfirmationForm, PackageCreateForm, PackageEditForm,
+    PackageUpdateForm,
 )
 
 

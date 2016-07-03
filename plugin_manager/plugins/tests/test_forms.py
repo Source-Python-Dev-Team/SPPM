@@ -10,9 +10,7 @@ from django.test import TestCase
 
 # App
 from ..forms import (
-    PluginAddContributorConfirmationForm,
-    PluginCreateForm,
-    PluginEditForm,
+    PluginAddContributorConfirmationForm, PluginCreateForm, PluginEditForm,
     PluginUpdateForm,
 )
 
