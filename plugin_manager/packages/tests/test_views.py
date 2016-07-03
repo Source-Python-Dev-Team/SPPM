@@ -8,7 +8,8 @@ from django.test import TestCase
 from ..views import (
     PackageAddContributorConfirmationView, PackageAddContributorView,
     PackageCreateView, PackageEditView, PackageListView,
-    PackageReleaseDownloadView, PackageUpdateView, PackageView,
+    PackageReleaseDownloadView, PackageReleaseListView, PackageUpdateView,
+    PackageView,
 )
 
 
@@ -44,4 +45,8 @@ class TestPackageView(TestCase):
 
 
 class TestPackageReleaseDownloadView(TestCase):
+    pass
+
+
+class TestPackageReleaseListView(TestCase):
     pass
