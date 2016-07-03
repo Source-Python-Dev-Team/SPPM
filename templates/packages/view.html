@@ -4,7 +4,7 @@
 {% bbcode entry.bbcode_content %}
 
 {% block title %}
-    {{ package.name }} - version {{ package.version }}
+    {{ package.name }} - version {{ current_release.version }}
 {% endblock title %}
 
 {% block content %}
@@ -14,7 +14,8 @@
         {% if package.logo %}
             <img src="{{ MEDIA_URL }}{{ package.logo }}" height="135" width="135" alt="{{ package }} Logo"/>
         {% endif %}
-        <h1>{{ package.name }} - version {{ package.version }}</h1>
+        <h1>{{ package.name }} - version {{ current_release.version }}</h1>
+        <h4>Download current version: <a href="{% url 'package-download' slug=package.slug zip_file=current_release.file_name %}">Version {{ current_release.version }}</a></h4>
 
         {% if package.synopsis %}
             <br />

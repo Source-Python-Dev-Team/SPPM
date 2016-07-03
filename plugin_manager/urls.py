@@ -95,7 +95,7 @@ urlpatterns = [
     url(
         regex=r'^media/releases/packages/(?P<slug>[\w-]+)/(?P<zip_file>.+)',
         view=PackageReleaseView.as_view(),
-        name='plugin-download',
+        name='package-download',
     ),
     url(
         regex=r'^media/releases/plugins/(?P<slug>[\w-]+)/(?P<zip_file>.+)',
