@@ -6,12 +6,8 @@ from django.conf.urls import url
 
 # App
 from .views import (
-    PackageAddContributorConfirmationView,
-    PackageAddContributorView,
-    PackageCreateView,
-    PackageEditView,
-    PackageListView,
-    PackageUpdateView,
+    PackageAddContributorConfirmationView, PackageAddContributorView,
+    PackageCreateView, PackageEditView, PackageListView, PackageUpdateView,
     PackageView,
 )
 

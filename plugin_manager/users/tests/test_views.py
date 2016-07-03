@@ -5,10 +5,7 @@
 from django.test import TestCase
 
 # App
-from ..views import (
-    UserListView,
-    UserView,
-)
+from ..views import UserListView, UserView
 
 
 # =============================================================================

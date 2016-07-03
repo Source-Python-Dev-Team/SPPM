@@ -6,13 +6,9 @@ from django.conf.urls import url
 
 # App
 from .views import (
-    SubPluginAddContributorConfirmationView,
-    SubPluginAddContributorView,
-    SubPluginCreateView,
-    SubPluginEditView,
-    SubPluginListView,
-    SubPluginUpdateView,
-    SubPluginView,
+    SubPluginAddContributorConfirmationView, SubPluginAddContributorView,
+    SubPluginCreateView, SubPluginEditView, SubPluginListView,
+    SubPluginUpdateView, SubPluginView,
 )
 
 

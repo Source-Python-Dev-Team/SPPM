@@ -6,12 +6,8 @@ from django.conf.urls import include, url
 
 # App
 from .views import (
-    PluginAddContributorConfirmationView,
-    PluginAddContributorView,
-    PluginCreateView,
-    PluginEditView,
-    PluginListView,
-    PluginUpdateView,
+    PluginAddContributorConfirmationView, PluginAddContributorView,
+    PluginCreateView, PluginEditView, PluginListView, PluginUpdateView,
     PluginView,
 )
 

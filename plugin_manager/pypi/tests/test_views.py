@@ -5,10 +5,7 @@
 from django.test import TestCase
 
 # App
-from ..views import (
-    PyPiListView,
-    PyPiView,
-)
+from ..views import PyPiListView, PyPiView
 
 
 # =============================================================================
