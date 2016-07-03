@@ -16,6 +16,7 @@
         {% endif %}
         <h1>{{ package }} - version {{ current_release.version }}</h1>
         <h4>Download current version: <a href="{{ current_release.get_absolute_url }}">Version {{ current_release.version }}</a></h4>
+        <h5><a href="{% url 'packages:releases' slug=package.slug %}"><u>View all releases</u></a></h5>
 
         {% if package.synopsis %}
             <br />

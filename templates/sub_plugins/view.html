@@ -16,6 +16,8 @@
         {% endif %}
         <h1>{{ sub_plugin }} - version {{ current_release.version }}</h1>
         <h4>Download current version: <a href="{{ current_release.get_absolute_url }}">Version {{ current_release.version }}</a></h4>
+        <h5><a href="{% url 'plugins:sub_plugins:releases' slug=sub_plugin.plugin.slug sub_plugin_slug=sub_plugin.slug %}"><u>View all releases</u></a></h5>
+
         <p>Sub-Plugin for <a href="{{ sub_plugin.plugin.get_absolute_url }}">{{ sub_plugin.plugin }}</a></p>
 
         {% if package.synopsis %}
