@@ -36,6 +36,7 @@ __all__ = (
     'PluginListView',
     'PluginReleaseDownloadView',
     'PluginReleaseListView',
+    'PluginSelectGamesView',
     'PluginUpdateView',
     'PluginView',
 )
