@@ -138,12 +138,12 @@ class SubPluginAddContributorView(FilterView):
             SubPluginAddContributorView,
             self
         ).get_context_data(**kwargs)
+        plugin = self.plugin
+        sub_plugin = SubPlugin.objects.get(
+            plugin=plugin, slug=self.kwargs['sub_plugin_slug'])
         message = ''
         user = None
         if 'username' in self.request.GET:
-            plugin = self.plugin
-            sub_plugin = SubPlugin.objects.get(
-                plugin=plugin, slug=self.kwargs['sub_plugin_slug'])
             try:
                 user = ForumUser.objects.get(
                     username=self.request.GET['username'])
@@ -156,6 +156,8 @@ class SubPluginAddContributorView(FilterView):
                 elif user in sub_plugin.contributors.all():
                     message = 'is already a contributor.'
         context.update({
+            'plugin': plugin,
+            'sub_plugin': sub_plugin,
             'message': message,
             'user': user,
         })
@@ -182,6 +184,10 @@ class SubPluginAddContributorConfirmationView(FormView):
         return initial
 
     def get_context_data(self, **kwargs):
+        context = super(
+            SubPluginAddContributorConfirmationView,
+            self
+        ).get_context_data(**kwargs)
         plugin = self.plugin
         sub_plugin = SubPlugin.objects.get(
             plugin=plugin, slug=self.kwargs['sub_plugin_slug'])
@@ -191,10 +197,8 @@ class SubPluginAddContributorConfirmationView(FormView):
             message = 'is the owner and cannot be added as a contributor.'
         elif user in sub_plugin.contributors.all():
             message = 'is already a contributor.'
-        context = super(
-            SubPluginAddContributorConfirmationView,
-            self).get_context_data(**kwargs)
         context.update({
+            'sub_plugin': sub_plugin,
             'username': ForumUser.objects.get(id=self.kwargs['id']).username,
             'message': message,
         })

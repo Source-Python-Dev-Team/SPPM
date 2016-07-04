@@ -84,10 +84,10 @@ class PackageAddContributorView(FilterView):
     def get_context_data(self, **kwargs):
         context = super(
             PackageAddContributorView, self).get_context_data(**kwargs)
+        package = Package.objects.get(slug=self.kwargs['slug'])
         message = ''
         user = None
         if 'username' in self.request.GET:
-            package = Package.objects.get(slug=self.kwargs['slug'])
             try:
                 user = ForumUser.objects.get(
                     username=self.request.GET['username'])
@@ -100,6 +100,7 @@ class PackageAddContributorView(FilterView):
                 elif user in package.contributors.all():
                     message = 'is already a contributor.'
         context.update({
+            'package': package,
             'message': message,
             'user': user,
         })
@@ -119,6 +120,10 @@ class PackageAddContributorConfirmationView(FormView):
         return initial
 
     def get_context_data(self, **kwargs):
+        context = super(
+            PackageAddContributorConfirmationView,
+            self,
+        ).get_context_data(**kwargs)
         package = Package.objects.get(slug=self.kwargs['slug'])
         user = ForumUser.objects.get(id=self.kwargs['id'])
         message = None
@@ -126,11 +131,8 @@ class PackageAddContributorConfirmationView(FormView):
             message = 'is the owner and cannot be added as a contributor.'
         elif user in package.contributors.all():
             message = 'is already a contributor.'
-        context = super(
-            PackageAddContributorConfirmationView,
-            self,
-        ).get_context_data(**kwargs)
         context.update({
+            'package': package,
             'username': ForumUser.objects.get(id=self.kwargs['id']).username,
             'message': message,
         })

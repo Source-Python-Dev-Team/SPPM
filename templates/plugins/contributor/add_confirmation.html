@@ -1,6 +1,15 @@
 {% extends "common/base.html" %}
+{% load i18n %}
+
+{% block title %}
+    Add contributor for {{ plugin }}
+{% endblock title %}
 
 {% block content %}
+    <h1>Add contributor for {{ plugin }}</h1>
+
+    <br />
+
     {% if message %}
 
         <b><span style="color: #ff8a37">{{ username }}</span></b> {{ message }}

@@ -1,6 +1,15 @@
 {% extends "common/base.html" %}
+{% load i18n %}
+
+{% block title %}
+    Add contributor for {{ plugin }}
+{% endblock title %}
 
 {% block content %}
+
+    <h1>Add contributor for {{ plugin }}</h1>
+
+    <br />
 
     <form action="" method="get">
         {{ filter.form.as_p }}
@@ -14,7 +23,7 @@
             <br />
             Select the username to go to the confirmation page.
             <br />
-            <a href="{% url 'plugins:confirm_add_contributor' slug=view.kwargs.slug id=user.id %}">{{ user.username }}</a>
+            <a href="{% url 'plugins:confirm_add_contributor' slug=plugin.slug id=user.id %}">{{ user.username }}</a>
             <br />
         {% else %}
             <b>No user <span style="color: red">{{ request.GET.username }}</span> found.</b>
