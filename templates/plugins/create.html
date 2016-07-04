@@ -1,15 +1,17 @@
 {% extends "common/base.html" %}
 {% load crispy_forms_tags %}
 
-{% block title %}Create Plugin{% endblock title %}
+{% block title %}
+    Create Plugin
+{% endblock title %}
 
 {% block content %}
 
-<body>
-    <div class="container">
-        <h1>Create Plugin</h1>
-        {% crispy form %}
-    </div>
-</body>
+    <body>
+        <div class="container">
+            <h1>Create Plugin</h1>
+            {% crispy form %}
+        </div>
+    </body>
 
 {% endblock content %}
