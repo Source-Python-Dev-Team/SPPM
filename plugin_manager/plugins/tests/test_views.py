@@ -10,22 +10,11 @@ from plugin_manager.plugins.views import (
     PluginReleaseDownloadView, PluginReleaseListView, PluginSelectGamesView,
     PluginUpdateView, PluginView,
 )
-from plugin_manager.plugins.contributors.views import (
-    PluginAddContributorConfirmationView, PluginAddContributorView,
-)
 
 
 # =============================================================================
 # >> TESTS
 # =============================================================================
-class TestPluginAddContributorConfirmationView(TestCase):
-    pass
-
-
-class TestPluginAddContributorView(TestCase):
-    pass
-
-
 class TestPluginCreateView(TestCase):
     pass
 

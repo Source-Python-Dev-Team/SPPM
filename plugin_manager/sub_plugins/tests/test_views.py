@@ -10,22 +10,11 @@ from plugin_manager.sub_plugins.views import (
     SubPluginReleaseDownloadView, SubPluginReleaseListView,
     SubPluginSelectGamesView, SubPluginUpdateView, SubPluginView,
 )
-from plugin_manager.sub_plugins.contributors.views import (
-    SubPluginAddContributorConfirmationView, SubPluginAddContributorView,
-)
 
 
 # =============================================================================
 # >> TESTS
 # =============================================================================
-class TestSubPluginAddContributorConfirmationView(TestCase):
-    pass
-
-
-class TestSubPluginAddContributorView(TestCase):
-    pass
-
-
 class TestSubPluginCreateView(TestCase):
     pass
 
