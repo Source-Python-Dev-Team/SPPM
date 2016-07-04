@@ -5,16 +5,18 @@
 from django.test import TestCase
 
 # App
-from ..views import (
-    PackageAddContributorConfirmationView, PackageAddContributorView,
+from plugin_manager.packages.views import (
     PackageCreateView, PackageEditView, PackageListView,
     PackageReleaseDownloadView, PackageReleaseListView, PackageSelectGamesView,
     PackageUpdateView, PackageView,
 )
+from plugin_manager.packages.contributors.views import (
+    PackageAddContributorConfirmationView, PackageAddContributorView,
+)
 
 
 # =============================================================================
-# >> TEST CLASSES
+# >> TESTS
 # =============================================================================
 class TestPackageAddContributorConfirmationView(TestCase):
     pass

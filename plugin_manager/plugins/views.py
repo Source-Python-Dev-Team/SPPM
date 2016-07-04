@@ -5,32 +5,23 @@
 from django.conf import settings
 from django.db.models import F
 from django.http import Http404, HttpResponse
-from django.shortcuts import HttpResponseRedirect
 from django.views.generic import (
-    CreateView, DetailView, FormView, ListView, UpdateView, View,
+    CreateView, DetailView, ListView, UpdateView, View,
 )
-
-# 3rd-Party Django
-from django_filters.views import FilterView
 
 # App
 from .constants import PLUGIN_RELEASE_URL
 from .forms import (
-    PluginAddContributorConfirmationForm, PluginCreateForm, PluginEditForm,
-    PluginSelectGamesForm, PluginUpdateForm,
+    PluginCreateForm, PluginEditForm, PluginSelectGamesForm, PluginUpdateForm,
 )
 from .models import Plugin, PluginRelease
-from ..common.views import OrderablePaginatedListView
-from ..users.filtersets import ForumUserFilterSet
-from ..users.models import ForumUser
+from plugin_manager.common.views import OrderablePaginatedListView
 
 
 # =============================================================================
 # >> ALL DECLARATION
 # =============================================================================
 __all__ = (
-    'PluginAddContributorConfirmationView',
-    'PluginAddContributorView',
     'PluginCreateView',
     'PluginEditView',
     'PluginListView',
@@ -43,7 +34,7 @@ __all__ = (
 
 
 # =============================================================================
-# >> VIEW CLASSES
+# >> VIEWS
 # =============================================================================
 class PluginListView(OrderablePaginatedListView):
     model = Plugin
@@ -73,74 +64,6 @@ class PluginEditView(UpdateView):
             'logo': '',
         })
         return initial
-
-
-class PluginAddContributorView(FilterView):
-    model = ForumUser
-    template_name = 'plugins/contributor/add.html'
-    filterset_class = ForumUserFilterSet
-
-    def get_context_data(self, **kwargs):
-        context = super(
-            PluginAddContributorView, self).get_context_data(**kwargs)
-        plugin = Plugin.objects.get(slug=self.kwargs['slug'])
-        message = ''
-        user = None
-        if 'username' in self.request.GET:
-            try:
-                user = ForumUser.objects.get(
-                    username=self.request.GET['username'])
-            except ForumUser.DoesNotExist:
-                pass
-            else:
-                if user == plugin.owner:
-                    message = (
-                        'is the owner and cannot be added as a contributor.')
-                elif user in plugin.contributors.all():
-                    message = 'is already a contributor.'
-        context.update({
-            'plugin': plugin,
-            'message': message,
-            'user': user,
-        })
-        return context
-
-
-class PluginAddContributorConfirmationView(FormView):
-    form_class = PluginAddContributorConfirmationForm
-    template_name = 'plugins/contributor/add_confirmation.html'
-
-    def get_initial(self):
-        initial = super(
-            PluginAddContributorConfirmationView, self).get_initial()
-        initial.update({
-            'id': self.kwargs['id']
-        })
-        return initial
-
-    def get_context_data(self, **kwargs):
-        context = super(
-            PluginAddContributorConfirmationView,
-            self
-        ).get_context_data(**kwargs)
-        plugin = Plugin.objects.get(slug=self.kwargs['slug'])
-        user = ForumUser.objects.get(id=self.kwargs['id'])
-        message = None
-        if plugin.owner == user:
-            message = 'is the owner and cannot be added as a contributor.'
-        elif user in plugin.contributors.all():
-            message = 'is already a contributor.'
-        context.update({
-            'plugin': plugin,
-            'username': ForumUser.objects.get(id=self.kwargs['id']).username,
-            'message': message,
-        })
-        return context
-
-    def form_valid(self, form):
-        plugin = Plugin.objects.get(slug=self.kwargs['slug'])
-        plugin.contributors.add(form.cleaned_data['id'])
-        return HttpResponseRedirect(plugin.get_absolute_url())
 
 
 class PluginUpdateView(UpdateView):

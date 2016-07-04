@@ -17,14 +17,12 @@ from crispy_forms.layout import Submit
 from .constants import PACKAGE_PATH
 from .helpers import get_package_basename
 from .models import Package, PackageRelease
-from ..users.models import ForumUser
 
 
 # =============================================================================
 # >> ALL DECLARATION
 # =============================================================================
 __all__ = (
-    'PackageAddContributorConfirmationForm',
     'PackageCreateForm',
     'PackageEditForm',
     'PackageSelectGamesForm',
@@ -33,7 +31,7 @@ __all__ = (
 
 
 # =============================================================================
-# >> FORM CLASSES
+# >> FORMS
 # =============================================================================
 class PackageCreateForm(forms.ModelForm):
     version = forms.CharField(
@@ -171,20 +169,6 @@ class PackageSelectGamesForm(forms.ModelForm):
         super(PackageSelectGamesForm, self).__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.add_input(Submit('submit', 'Submit'))
-
-
-class PackageAddContributorConfirmationForm(forms.ModelForm):
-    class Meta:
-        model = ForumUser
-        fields = (
-            "id",
-        )
-        widgets = {
-            "id": forms.HiddenInput(),
-        }
-
-    def validate_unique(self):
-        pass
 
 
 class PackageUpdateForm(forms.ModelForm):

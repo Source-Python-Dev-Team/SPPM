@@ -21,7 +21,7 @@ __all__ = (
 
 
 # =============================================================================
-# >> ADMIN CLASSES
+# >> ADMINS
 # =============================================================================
 @admin.register(SubPluginRelease)
 class SubPluginReleaseAdmin(admin.ModelAdmin):

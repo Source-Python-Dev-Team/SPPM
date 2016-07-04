@@ -6,12 +6,14 @@ from django.db import IntegrityError
 from django.test import TestCase
 
 # App
-from ...users.models import ForumUser
-from ..models import PackageRelease, Package, PackageImage
+from plugin_manager.users.models import ForumUser
+from plugin_manager.packages.models import (
+    PackageRelease, Package, PackageImage,
+)
 
 
 # =============================================================================
-# >> TEST CLASSES
+# >> TESTS
 # =============================================================================
 class TestPackageRelease(TestCase):
     def test_plugin_is_required(self):

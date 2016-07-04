@@ -15,11 +15,12 @@
             <img src="{{ MEDIA_URL }}{{ plugin.logo }}" height="135" width="135" alt="{{ plugin }} Logo"/>
         {% endif %}
         <h1>{{ plugin }} - version {{ current_release.version }}</h1>
-        {# TODO: only show this if the logged in user is the owner or a contributor #}
+        {# TODO: only show this if the logged in user is the owner or a contributors #}
         <ul>
             <b><a href="{% url 'plugins:edit' slug=plugin.slug %}">Edit Page</a></b> |
             <b><a href="{% url 'plugins:update' slug=plugin.slug %}">Update Plugin</a></b> |
-            <b><a href="{% url 'plugins:select-games' slug=plugin.slug %}">Select games</a></b>
+            <b><a href="{% url 'plugins:select-games' slug=plugin.slug %}">Select games</a></b> |
+            <b><a href="{% url 'plugins:paths:list' slug=plugin.slug %}">Sub-Plugin Paths</a></b>
         </ul>
 
         <h4><a href="{{ current_release.get_absolute_url }}"><u>Download current version</u></a> &nbsp; <span style="font-size: small;">( <a href="{% url 'plugins:releases' slug=plugin.slug %}"><u>View all releases</u></a> )</span> &nbsp; Total downloads: {{ plugin.total_downloads }}</h4>
@@ -36,7 +37,7 @@
             <p>Last updated on {{ plugin.datetime_last_updated }}</p>
         {% endif %}
         {% if paths %}
-            <h><a href="{% url 'plugins:sub_plugins:list' slug=plugin.slug %}">{{ plugin }} sub-plugins</a></h>
+            <h><a href="{% url 'plugins:sub-plugins:list' slug=plugin.slug %}">{{ plugin }} sub-plugins</a></h>
             <br />
         {% endif %}
 
@@ -67,7 +68,7 @@
                             <h3 class="panel-title">Contributors</h3>
                             {#  TODO: only show this if the user is logged in and is the owner #}
                             <span class="pull-right" style="margin-top: -20px">
-                                <a href="{% url 'plugins:add_contributor' slug=plugin.slug %}">
+                                <a href="{% url 'plugins:contributors:add' slug=plugin.slug %}">
                                     <button type="button" class="btn btn-xs btn-default">Add Contributor</button>
                                 </a>
                             </span>

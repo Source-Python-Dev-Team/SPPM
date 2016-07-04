@@ -5,11 +5,11 @@
 from django.test import TestCase
 
 # App
-from ..views import GameListView, GameView
+from plugin_manager.games.views import GameListView, GameView
 
 
 # =============================================================================
-# >> TEST CLASSES
+# >> TESTS
 # =============================================================================
 class TestGameListView(TestCase):
     pass

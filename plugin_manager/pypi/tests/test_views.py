@@ -5,11 +5,11 @@
 from django.test import TestCase
 
 # App
-from ..views import PyPiListView, PyPiView
+from plugin_manager.pypi.views import PyPiListView, PyPiView
 
 
 # =============================================================================
-# >> TEST CLASSES
+# >> TESTS
 # =============================================================================
 class TestPyPiListView(TestCase):
     pass

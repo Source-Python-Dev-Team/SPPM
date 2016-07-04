@@ -17,14 +17,13 @@ from crispy_forms.layout import Submit
 from .constants import PLUGIN_PATH
 from .helpers import get_plugin_basename
 from .models import Plugin, PluginRelease
-from ..users.models import ForumUser
+from .paths.models import SubPluginPath
 
 
 # =============================================================================
 # >> ALL DECLARATION
 # =============================================================================
 __all__ = (
-    'PluginAddContributorConfirmationForm',
     'PluginCreateForm',
     'PluginEditForm',
     'PluginSelectGamesForm',
@@ -33,7 +32,7 @@ __all__ = (
 
 
 # =============================================================================
-# >> FORM CLASSES
+# >> FORMS
 # =============================================================================
 class PluginCreateForm(forms.ModelForm):
     version = forms.CharField(
@@ -171,20 +170,6 @@ class PluginSelectGamesForm(forms.ModelForm):
         super(PluginSelectGamesForm, self).__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.add_input(Submit('submit', 'Submit'))
-
-
-class PluginAddContributorConfirmationForm(forms.ModelForm):
-    class Meta:
-        model = ForumUser
-        fields = (
-            "id",
-        )
-        widgets = {
-            "id": forms.HiddenInput(),
-        }
-
-    def validate_unique(self):
-        pass
 
 
 class PluginUpdateForm(forms.ModelForm):

@@ -55,7 +55,7 @@
                                             <tr>
                                                 {% for sub_plugin in group %}
                                                     {% if sub_plugin %}
-                                                        <td><a href="{% url 'plugins:sub_plugins:detail' slug=sub_plugin.plugin.slug sub_plugin_slug=sub_plugin.slug %}">{{ sub_plugin }}</a></td>
+                                                        <td><a href="{% url 'plugins:sub-plugins:detail' slug=sub_plugin.plugin.slug sub_plugin_slug=sub_plugin.slug %}">{{ sub_plugin }}</a></td>
                                                     {% endif %}
                                                 {% endfor %}
                                             </tr>

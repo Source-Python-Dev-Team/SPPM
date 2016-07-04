@@ -5,33 +5,25 @@
 from django.conf import settings
 from django.db.models import F
 from django.http import Http404, HttpResponse
-from django.shortcuts import HttpResponseRedirect
 from django.views.generic import (
-    CreateView, DetailView, FormView, ListView, UpdateView, View,
+    CreateView, DetailView, ListView, UpdateView, View,
 )
-
-# 3rd-Party Django
-from django_filters.views import FilterView
 
 # App
 from .constants import SUB_PLUGIN_RELEASE_URL
 from .forms import (
-    SubPluginAddContributorConfirmationForm, SubPluginCreateForm,
-    SubPluginEditForm, SubPluginSelectGamesForm, SubPluginUpdateForm,
+    SubPluginCreateForm, SubPluginEditForm, SubPluginSelectGamesForm,
+    SubPluginUpdateForm,
 )
 from .models import SubPlugin, SubPluginRelease
-from ..common.views import OrderablePaginatedListView
-from ..plugins.models import Plugin
-from ..users.filtersets import ForumUserFilterSet
-from ..users.models import ForumUser
+from plugin_manager.common.views import OrderablePaginatedListView
+from plugin_manager.plugins.models import Plugin
 
 
 # =============================================================================
 # >> ALL DECLARATION
 # =============================================================================
 __all__ = (
-    'SubPluginAddContributorConfirmationView',
-    'SubPluginAddContributorView',
     'SubPluginCreateView',
     'SubPluginListView',
     'SubPluginEditView',
@@ -44,7 +36,7 @@ __all__ = (
 
 
 # =============================================================================
-# >> VIEW CLASSES
+# >> VIEWS
 # =============================================================================
 class SubPluginListView(OrderablePaginatedListView):
     model = SubPlugin
@@ -119,96 +111,6 @@ class SubPluginEditView(UpdateView):
             'sub_plugin': context['subplugin']
         })
         return context
-
-
-class SubPluginAddContributorView(FilterView):
-    model = ForumUser
-    template_name = 'sub_plugins/contributor/add.html'
-    filterset_class = ForumUserFilterSet
-    _plugin = None
-
-    @property
-    def plugin(self):
-        if self._plugin is None:
-            self._plugin = Plugin.objects.get(slug=self.kwargs['slug'])
-        return self._plugin
-
-    def get_context_data(self, **kwargs):
-        context = super(
-            SubPluginAddContributorView,
-            self
-        ).get_context_data(**kwargs)
-        plugin = self.plugin
-        sub_plugin = SubPlugin.objects.get(
-            plugin=plugin, slug=self.kwargs['sub_plugin_slug'])
-        message = ''
-        user = None
-        if 'username' in self.request.GET:
-            try:
-                user = ForumUser.objects.get(
-                    username=self.request.GET['username'])
-            except ForumUser.DoesNotExist:
-                pass
-            else:
-                if user == sub_plugin.owner:
-                    message = (
-                        'is the owner and cannot be added as a contributor.')
-                elif user in sub_plugin.contributors.all():
-                    message = 'is already a contributor.'
-        context.update({
-            'plugin': plugin,
-            'sub_plugin': sub_plugin,
-            'message': message,
-            'user': user,
-        })
-        return context
-
-
-class SubPluginAddContributorConfirmationView(FormView):
-    form_class = SubPluginAddContributorConfirmationForm
-    template_name = 'sub_plugins/contributor/add_confirmation.html'
-    _plugin = None
-
-    @property
-    def plugin(self):
-        if self._plugin is None:
-            self._plugin = Plugin.objects.get(slug=self.kwargs['slug'])
-        return self._plugin
-
-    def get_initial(self):
-        initial = super(
-            SubPluginAddContributorConfirmationView, self).get_initial()
-        initial.update({
-            'id': self.kwargs['id']
-        })
-        return initial
-
-    def get_context_data(self, **kwargs):
-        context = super(
-            SubPluginAddContributorConfirmationView,
-            self
-        ).get_context_data(**kwargs)
-        plugin = self.plugin
-        sub_plugin = SubPlugin.objects.get(
-            plugin=plugin, slug=self.kwargs['sub_plugin_slug'])
-        user = ForumUser.objects.get(id=self.kwargs['id'])
-        message = None
-        if sub_plugin.owner == user:
-            message = 'is the owner and cannot be added as a contributor.'
-        elif user in sub_plugin.contributors.all():
-            message = 'is already a contributor.'
-        context.update({
-            'sub_plugin': sub_plugin,
-            'username': ForumUser.objects.get(id=self.kwargs['id']).username,
-            'message': message,
-        })
-        return context
-
-    def form_valid(self, form):
-        sub_plugin = SubPlugin.objects.get(
-            plugin=self.plugin, slug=self.kwargs['sub_plugin_slug'])
-        sub_plugin.contributors.add(form.cleaned_data['id'])
-        return HttpResponseRedirect(sub_plugin.get_absolute_url())
 
 
 class SubPluginUpdateView(UpdateView):

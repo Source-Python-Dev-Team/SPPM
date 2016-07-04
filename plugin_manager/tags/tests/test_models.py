@@ -6,11 +6,11 @@ from django.db import IntegrityError
 from django.test import TestCase
 
 # App
-from ..models import Tag
+from plugin_manager.tags.models import Tag
 
 
 # =============================================================================
-# >> TEST CLASSES
+# >> TESTS
 # =============================================================================
 class TestTag(TestCase):
     def test_name_must_be_unique(self):

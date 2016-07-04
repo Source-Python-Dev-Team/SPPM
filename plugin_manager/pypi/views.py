@@ -6,8 +6,8 @@ from django.views.generic import DetailView
 
 # App
 from .models import PyPiRequirement
-from ..common.helpers import get_groups
-from ..common.views import PaginatedListView
+from plugin_manager.common.helpers import get_groups
+from plugin_manager.common.views import PaginatedListView
 
 
 # =============================================================================
@@ -20,7 +20,7 @@ __all__ = (
 
 
 # =============================================================================
-# >> VIEW CLASSES
+# >> VIEWS
 # =============================================================================
 class PyPiListView(PaginatedListView):
     model = PyPiRequirement

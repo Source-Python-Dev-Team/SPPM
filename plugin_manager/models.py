@@ -3,7 +3,8 @@
 # =============================================================================
 from .games.models import Game
 from .packages.models import Package, PackageImage, PackageRelease
-from .plugins.models import Plugin, PluginImage, PluginRelease, SubPluginPath
+from .plugins.models import Plugin, PluginImage, PluginRelease
+from .plugins.paths.models import SubPluginPath
 from .pypi.models import PyPiRequirement
 from .sub_plugins.models import SubPlugin, SubPluginImage, SubPluginRelease
 from .tags.models import Tag

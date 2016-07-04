@@ -5,16 +5,18 @@
 from django.test import TestCase
 
 # App
-from ..views import (
-    SubPluginAddContributorConfirmationView, SubPluginAddContributorView,
+from plugin_manager.sub_plugins.views import (
     SubPluginCreateView, SubPluginListView, SubPluginEditView,
     SubPluginReleaseDownloadView, SubPluginReleaseListView,
     SubPluginSelectGamesView, SubPluginUpdateView, SubPluginView,
 )
+from plugin_manager.sub_plugins.contributors.views import (
+    SubPluginAddContributorConfirmationView, SubPluginAddContributorView,
+)
 
 
 # =============================================================================
-# >> TEST CLASSES
+# >> TESTS
 # =============================================================================
 class TestSubPluginAddContributorConfirmationView(TestCase):
     pass

@@ -9,14 +9,19 @@ from django import forms
 from django.test import TestCase
 
 # App
-from ..forms import (
-    PackageAddContributorConfirmationForm, PackageCreateForm, PackageEditForm,
-    PackageSelectGamesForm, PackageUpdateForm,
+from plugin_manager.users.models import ForumUser
+from plugin_manager.packages.forms import (
+    PackageCreateForm, PackageEditForm, PackageSelectGamesForm,
+    PackageUpdateForm,
+)
+from plugin_manager.packages.models import Package, PackageRelease
+from plugin_manager.packages.contributors.forms import (
+    PackageAddContributorConfirmationForm,
 )
 
 
 # =============================================================================
-# >> TEST CLASSES
+# >> TESTS
 # =============================================================================
 class TestPackageAddContributorConfirmationForm(TestCase):
     def test_id_is_required(self):
@@ -127,7 +132,9 @@ class TestPackageCreateForm(TestCase):
 
 
 class TestPackageEditForm(TestCase):
-    pass
+    def test_nothing_is_required(self):
+        form = PackageEditForm(data={})
+        self.assertTrue(form.is_valid())
 
 
 class TestPackageUpdateForm(TestCase):
@@ -171,6 +178,42 @@ class TestPackageUpdateForm(TestCase):
                 form.errors.as_data()['zip_file'],
             ),
             msg='zip_file should be required.'
+        )
+
+    def test_version_must_be_unique_for_package(self):
+        user = ForumUser.objects.create(
+            username='test',
+            id=1,
+        )
+        package = Package.objects.create(
+            name='Test',
+            basename='test',
+            owner=user,
+        )
+        PackageRelease.objects.create(
+            package=package,
+            version='1.0',
+            zip_file='{slug}/{slug}-v1.0.zip'.format(slug=package.slug)
+        )
+        form = PackageUpdateForm(data={
+            'version': '1.0',
+        })
+        form.instance = package
+        self.assertFalse(
+            form.is_valid(),
+            msg='Form should not be valid because version must be unique.',
+        )
+        self.assertIn(
+            member='version',
+            container=form.errors.as_data(),
+        )
+        self.assertIn(
+            member='duplicate',
+            container=map(
+                attrgetter('code'),
+                form.errors.as_data()['version'],
+            ),
+            msg='version should be unique for package.'
         )
 
 

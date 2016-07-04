@@ -45,7 +45,7 @@ urlpatterns = [
     ),
     url(
         # http://plugins.sourcepython.com/statistics/
-        regex=r'^statistics',
+        regex=r'^statistics/',
         view=StatisticsView.as_view(),
         name='statistics',
     ),

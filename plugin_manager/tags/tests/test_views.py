@@ -5,11 +5,11 @@
 from django.test import TestCase
 
 # App
-from ..views import TagListView
+from plugin_manager.tags.views import TagListView
 
 
 # =============================================================================
-# >> TEST CLASSES
+# >> TESTS
 # =============================================================================
 class TestTagListView(TestCase):
     pass

@@ -5,10 +5,8 @@
 from django.contrib import admin
 
 # App
-from .models import PluginRelease
-from .models import Plugin
-from .models import PluginImage
-from .models import SubPluginPath
+from .models import Plugin, PluginImage, PluginRelease
+from .paths.models import SubPluginPath
 
 
 # =============================================================================
@@ -23,7 +21,7 @@ __all__ = (
 
 
 # =============================================================================
-# >> ADMIN CLASSES
+# >> ADMINS
 # =============================================================================
 @admin.register(PluginRelease)
 class PluginReleaseAdmin(admin.ModelAdmin):

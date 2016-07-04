@@ -8,9 +8,9 @@ from django.core.exceptions import ValidationError
 from .constants import (
     SUB_PLUGIN_IMAGE_URL, SUB_PLUGIN_LOGO_URL, SUB_PLUGIN_RELEASE_URL,
 )
-from ..plugins.constants import PLUGIN_PATH
-from ..common.constants import CANNOT_BE_NAMED, CANNOT_START_WITH
-from ..common.helpers import find_image_number
+from plugin_manager.plugins.constants import PLUGIN_PATH
+from plugin_manager.common.constants import CANNOT_BE_NAMED, CANNOT_START_WITH
+from plugin_manager.common.helpers import find_image_number
 
 
 # =============================================================================

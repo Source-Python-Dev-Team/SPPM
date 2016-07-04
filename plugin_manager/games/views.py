@@ -6,7 +6,7 @@ from django.views.generic import DetailView, ListView
 
 # App
 from .models import Game
-from ..common.helpers import get_groups
+from plugin_manager.common.helpers import get_groups
 
 
 # =============================================================================
@@ -19,7 +19,7 @@ __all__ = (
 
 
 # =============================================================================
-# >> VIEW CLASSES
+# >> VIEWS
 # =============================================================================
 class GameListView(ListView):
     model = Game

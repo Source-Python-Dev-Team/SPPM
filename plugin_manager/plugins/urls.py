@@ -6,7 +6,6 @@ from django.conf.urls import include, url
 
 # App
 from .views import (
-    PluginAddContributorConfirmationView, PluginAddContributorView,
     PluginCreateView, PluginEditView, PluginListView, PluginReleaseListView,
     PluginSelectGamesView, PluginUpdateView, PluginView,
 )
@@ -59,23 +58,27 @@ urlpatterns = [
         name='update',
     ),
     url(
-        # http://plugins.sourcepython.com/plugins/<slug>/add-contributor/
-        regex=r'^(?P<slug>[\w-]+)/add-contributor/$',
-        view=PluginAddContributorView.as_view(),
-        name='add_contributor',
+        # http://plugins.sourcepython.com/plugins/<slug>/contributors/
+        regex=r'^(?P<slug>[\w-]+)/contributors/',
+        view=include(
+            'plugin_manager.plugins.contributors.urls',
+            namespace='contributors',
+        ),
     ),
     url(
-        # http://plugins.sourcepython.com/plugins/<slug>/add-contributor/<id>/
-        regex=r'^(?P<slug>[\w-]+)/add-contributor/(?P<id>\d+)/$',
-        view=PluginAddContributorConfirmationView.as_view(),
-        name='confirm_add_contributor',
+        # http://plugins.sourcepython.com/plugins/<slug>/paths/
+        regex=r'^(?P<slug>[\w-]+)/paths/',
+        view=include(
+            'plugin_manager.plugins.paths.urls',
+            namespace='paths',
+        ),
     ),
     url(
         # http://plugins.sourcepython.com/plugins/<slug>/sub-plugins/
         regex=r'^(?P<slug>[\w-]+)/sub-plugins/',
         view=include(
             'plugin_manager.sub_plugins.urls',
-            namespace='sub_plugins',
+            namespace='sub-plugins',
         ),
     ),
 ]

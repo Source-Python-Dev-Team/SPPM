@@ -19,7 +19,7 @@ __all__ = (
 
 
 # =============================================================================
-# HELPER CLASSES
+# >> HELPERS
 # =============================================================================
 class _PageObject(object):
     def __init__(self, display, url):
@@ -31,7 +31,7 @@ class _PageObject(object):
 
 
 # =============================================================================
-# >> VIEW CLASSES
+# >> VIEWS
 # =============================================================================
 class OrderableListView(OrderableListMixin, ListView):
     def get_context_data(self, **kwargs):

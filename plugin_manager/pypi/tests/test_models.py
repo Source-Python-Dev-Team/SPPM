@@ -6,11 +6,11 @@ from django.db import IntegrityError
 from django.test import TestCase
 
 # App
-from ..models import PyPiRequirement
+from plugin_manager.pypi.models import PyPiRequirement
 
 
 # =============================================================================
-# >> TEST CLASSES
+# >> TESTS
 # =============================================================================
 class TestPyPiRequirement(TestCase):
     def test_name_must_be_unique(self):

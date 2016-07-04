@@ -6,11 +6,11 @@ from django.db import IntegrityError
 from django.test import TestCase
 
 # App
-from ..models import ForumUser
+from plugin_manager.users.models import ForumUser
 
 
 # =============================================================================
-# >> TEST CLASSES
+# >> TESTS
 # =============================================================================
 class TestForumUser(TestCase):
     def setUp(self):

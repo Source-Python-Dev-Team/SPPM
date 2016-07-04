@@ -21,7 +21,7 @@ __all__ = (
 
 
 # =============================================================================
-# >> ADMIN CLASSES
+# >> ADMINS
 # =============================================================================
 @admin.register(PackageRelease)
 class PackageReleaseAdmin(admin.ModelAdmin):

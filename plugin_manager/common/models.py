@@ -29,7 +29,7 @@ __all__ = (
 
 
 # =============================================================================
-# >> MODEL CLASSES
+# >> MODELS
 # =============================================================================
 class CommonBase(models.Model):
     """Base model for upload content."""
@@ -67,6 +67,21 @@ class CommonBase(models.Model):
     def __str__(self):
         """Return the object's name when str cast."""
         return self.name
+
+    @property
+    def logo(self):
+        raise NotImplementedError(
+            'Class "{class_name}" must implement "logo" field.'.format(
+                class_name=self.__class__.__name__,
+            )
+        )
+
+    @property
+    def releases(self):
+        raise NotImplementedError(
+            'Class "{class_name}" must implement "releases" field from '
+            'ForeignKey.'.format(class_name=self.__class__.__name__)
+        )
 
     @property
     def datetime_created(self):
@@ -153,3 +168,11 @@ class Release(TimeStampedModel):
     @property
     def file_name(self):
         return self.zip_file.name.rsplit('/', 1)[1]
+
+    @property
+    def zip_file(self):
+        raise NotImplementedError(
+            'Class "{class_name}" must implement "zip_file" field.'.format(
+                class_name=self.__class__.__name__,
+            )
+        )

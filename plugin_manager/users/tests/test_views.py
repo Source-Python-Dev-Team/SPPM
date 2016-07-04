@@ -5,11 +5,11 @@
 from django.test import TestCase
 
 # App
-from ..views import UserListView, UserView
+from plugin_manager.users.views import UserListView, UserView
 
 
 # =============================================================================
-# >> TEST CLASSES
+# >> TESTS
 # =============================================================================
 class TestUserListView(TestCase):
     pass

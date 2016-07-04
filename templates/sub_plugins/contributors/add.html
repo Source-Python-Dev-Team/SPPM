@@ -4,12 +4,12 @@
 {# TODO: Only owner should have access to this page #}
 
 {% block title %}
-    Add contributor for {{ package }}
+    Add contributor for {{ sub_plugin }}
 {% endblock title %}
 
 {% block content %}
 
-    <h1>Add contributor for {{ package }}</h1>
+    <h1>Add contributor for {{ sub_plugin }}</h1>
 
     <br />
 
@@ -25,7 +25,7 @@
             <br />
             Select the username to go to the confirmation page.
             <br />
-            <a href="{% url 'packages:confirm_add_contributor' slug=package.slug id=user.id %}">{{ user.username }}</a>
+            <a href="{% url 'plugins:sub-plugins:contributors:confirm-add' slug=plugin.slug sub_plugin_slug=sub_plugin.slug id=user.id %}">{{ user.username }}</a>
             <br />
         {% else %}
             <b>No user <span style="color: red">{{ request.GET.username }}</span> found.</b>

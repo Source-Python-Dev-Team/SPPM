@@ -17,9 +17,8 @@ from .constants import PLUGIN_LOGO_URL
 from .helpers import handle_plugin_image_upload
 from .helpers import handle_plugin_logo_upload
 from .helpers import handle_plugin_zip_upload
-from ..common.models import CommonBase, Release
-from ..common.validators import sub_plugin_path_validator
-from ..users.models import ForumUser
+from plugin_manager.common.models import CommonBase, Release
+from plugin_manager.users.models import ForumUser
 
 
 # =============================================================================
@@ -29,12 +28,11 @@ __all__ = (
     'PluginRelease',
     'Plugin',
     'PluginImage',
-    'SubPluginPath',
 )
 
 
 # =============================================================================
-# >> MODEL CLASSES
+# >> MODELS
 # =============================================================================
 class Plugin(CommonBase):
     owner = models.ForeignKey(
@@ -126,18 +124,3 @@ class PluginImage(models.Model):
     class Meta:
         verbose_name = 'Image (Plugin)'
         verbose_name_plural = 'Images (Plugin)'
-
-
-class SubPluginPath(models.Model):
-    plugin = models.ForeignKey(
-        to='plugin_manager.Plugin',
-        related_name='paths',
-    )
-    path = models.CharField(
-        max_length=256,
-        validators=[sub_plugin_path_validator],
-    )
-
-    class Meta:
-        verbose_name = 'SubPlugin path (Plugin)'
-        verbose_name_plural = 'SubPlugin paths (Plugin)'

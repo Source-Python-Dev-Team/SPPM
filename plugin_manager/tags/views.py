@@ -3,7 +3,7 @@
 # =============================================================================
 # App
 from .models import Tag
-from ..common.views import PaginatedListView
+from plugin_manager.common.views import PaginatedListView
 
 
 # =============================================================================
@@ -15,7 +15,7 @@ __all__ = (
 
 
 # =============================================================================
-# >> VIEW CLASSES
+# >> VIEWS
 # =============================================================================
 class TagListView(PaginatedListView):
     model = Tag

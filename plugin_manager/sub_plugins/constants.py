@@ -2,11 +2,11 @@
 # >> IMPORTS
 # =============================================================================
 # App
-from ..common.constants import (
+from plugin_manager.common.constants import (
     ALLOWED_FILE_TYPES, IMAGE_URL, LOGO_URL, READABLE_DATA_FILE_TYPES,
     RELEASE_URL,
 )
-from ..plugins.constants import PLUGIN_PATH
+from plugin_manager.plugins.constants import PLUGIN_PATH
 
 
 # =============================================================================

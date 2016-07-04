@@ -2,11 +2,10 @@
 # >> IMPORTS
 # =============================================================================
 # Django
-from django.conf.urls import url
+from django.conf.urls import include, url
 
 # App
 from .views import (
-    PackageAddContributorConfirmationView, PackageAddContributorView,
     PackageCreateView, PackageEditView, PackageListView,
     PackageReleaseListView, PackageSelectGamesView, PackageUpdateView,
     PackageView,
@@ -60,15 +59,11 @@ urlpatterns = [
         name='update',
     ),
     url(
-        # http://plugins.sourcepython.com/packages/<slug>/add-contributor/
-        regex=r'^(?P<slug>[\w-]+)/add-contributor/$',
-        view=PackageAddContributorView.as_view(),
-        name='add_contributor',
-    ),
-    url(
-        # http://plugins.sourcepython.com/packages/<slug>/add-contributor/<id>/
-        regex=r'^(?P<slug>[\w-]+)/add-contributor/(?P<id>\d+)/$',
-        view=PackageAddContributorConfirmationView.as_view(),
-        name='confirm_add_contributor',
+        # http://plugins.sourcepython.com/packages/<slug>/contributors/
+        regex=r'^(?P<slug>[\w-]+)/contributors/',
+        view=include(
+            'plugin_manager.packages.contributors.urls',
+            namespace='contributors',
+        ),
     ),
 ]

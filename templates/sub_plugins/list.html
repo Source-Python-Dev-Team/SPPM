@@ -19,11 +19,11 @@
                 {% else %}
                     <h1>No sub-plugins are registered for {{ plugin }}.</h1>
                 {% endif %}
-                <a href="{% url 'plugins:sub_plugins:create' slug=plugin.slug %}">Create Sub-Plugin?</a>
+                <a href="{% url 'plugins:sub-plugins:create' slug=plugin.slug %}">Create Sub-Plugin?</a>
                 <br />
                 {% for page_url in page_url_list %}
                     {% if page_url.url %}
-                        <a href="{% url 'plugins:sub_plugins:list' slug=plugin.slug %}{{ page_url.url }}">{{ page_url }}</a>
+                        <a href="{% url 'plugins:sub-plugins:list' slug=plugin.slug %}{{ page_url.url }}">{{ page_url }}</a>
                     {% else %}
                         {{ page_url }}
                     {% endif %}

@@ -17,8 +17,8 @@ from .constants import SUB_PLUGIN_LOGO_URL
 from .helpers import handle_sub_plugin_image_upload
 from .helpers import handle_sub_plugin_logo_upload
 from .helpers import handle_sub_plugin_zip_upload
-from ..common.models import CommonBase, Release
-from ..users.models import ForumUser
+from plugin_manager.common.models import CommonBase, Release
+from plugin_manager.users.models import ForumUser
 
 
 # =============================================================================
@@ -32,7 +32,7 @@ __all__ = (
 
 
 # =============================================================================
-# >> MODEL CLASSES
+# >> MODELS
 # =============================================================================
 class SubPlugin(CommonBase):
     owner = models.ForeignKey(
@@ -71,7 +71,7 @@ class SubPlugin(CommonBase):
 
     def get_absolute_url(self):
         return reverse(
-            viewname='plugins:sub_plugins:detail',
+            viewname='plugins:sub-plugins:detail',
             kwargs={
                 'slug': self.plugin.slug,
                 'sub_plugin_slug': self.slug,

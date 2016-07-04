@@ -16,15 +16,13 @@ from crispy_forms.layout import Submit
 # App
 from .helpers import get_sub_plugin_basename
 from .models import SubPlugin, SubPluginRelease
-from ..plugins.constants import PLUGIN_PATH
-from ..users.models import ForumUser
+from plugin_manager.plugins.constants import PLUGIN_PATH
 
 
 # =============================================================================
 # >> ALL DECLARATION
 # =============================================================================
 __all__ = (
-    'SubPluginAddContributorConfirmationForm',
     'SubPluginCreateForm',
     'SubPluginEditForm',
     'SubPluginSelectGamesForm',
@@ -33,7 +31,7 @@ __all__ = (
 
 
 # =============================================================================
-# >> FORM CLASSES
+# >> FORMS
 # =============================================================================
 class SubPluginCreateForm(forms.ModelForm):
     version = forms.CharField(
@@ -190,20 +188,6 @@ class SubPluginSelectGamesForm(forms.ModelForm):
         super(SubPluginSelectGamesForm, self).__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.add_input(Submit('submit', 'Submit'))
-
-
-class SubPluginAddContributorConfirmationForm(forms.ModelForm):
-    class Meta:
-        model = ForumUser
-        fields = (
-            "id",
-        )
-        widgets = {
-            "id": forms.HiddenInput(),
-        }
-
-    def validate_unique(self):
-        pass
 
 
 class SubPluginUpdateForm(forms.ModelForm):

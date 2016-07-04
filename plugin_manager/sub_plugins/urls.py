@@ -2,11 +2,10 @@
 # >> IMPORTS
 # =============================================================================
 # Django
-from django.conf.urls import url
+from django.conf.urls import include, url
 
 # App
 from .views import (
-    SubPluginAddContributorConfirmationView, SubPluginAddContributorView,
     SubPluginCreateView, SubPluginEditView, SubPluginListView,
     SubPluginReleaseListView, SubPluginSelectGamesView, SubPluginUpdateView,
     SubPluginView,
@@ -60,15 +59,11 @@ urlpatterns = [
         name='update',
     ),
     url(
-        # http://plugins.sourcepython.com/plugins/<slug>/sub-plugins/<sub_plugin_slug>/add-contributor/
-        regex=r'^(?P<sub_plugin_slug>[\w-]+)/add-contributor/$',
-        view=SubPluginAddContributorView.as_view(),
-        name='add_contributor',
-    ),
-    url(
-        # http://plugins.sourcepython.com/plugins/<slug>/sub-plugins/<sub_plugin_slug>/add-contributor/<id>/
-        regex=r'^(?P<sub_plugin_slug>[\w-]+)/add-contributor/(?P<id>\d+)/$',
-        view=SubPluginAddContributorConfirmationView.as_view(),
-        name='confirm_add_contributor',
+        # http://plugins.sourcepython.com/plugins/<slug>/contributors/
+        regex=r'^(?P<sub_plugin_slug>[\w-]+)/contributors/',
+        view=include(
+            'plugin_manager.sub_plugins.contributors.urls',
+            namespace='contributors',
+        ),
     ),
 ]

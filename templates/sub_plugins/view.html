@@ -15,14 +15,14 @@
             <img src="{{ MEDIA_URL }}{{ sub_plugin.logo }}" height="135" width="135" alt="{{ sub_plugin }} Logo"/>
         {% endif %}
         <h1>{{ sub_plugin }} - version {{ current_release.version }}</h1>
-        {# TODO: only show this if the logged in user is the owner or a contributor #}
+        {# TODO: only show this if the logged in user is the owner or a contributors #}
         <ul>
-            <b><a href="{% url 'plugins:sub_plugins:edit' slug=sub_plugin.plugin.slug sub_plugin_slug=sub_plugin.slug %}">Edit Page</a></b> |
-            <b><a href="{% url 'plugins:sub_plugins:update' slug=sub_plugin.plugin.slug sub_plugin_slug=sub_plugin.slug %}">Update Sub-Plugin</a></b> |
-            <b><a href="{% url 'plugins:sub_plugins:select-games' slug=sub_plugin.plugin.slug sub_plugin_slug=sub_plugin.slug %}">Select games</a></b>
+            <b><a href="{% url 'plugins:sub-plugins:edit' slug=sub_plugin.plugin.slug sub_plugin_slug=sub_plugin.slug %}">Edit Page</a></b> |
+            <b><a href="{% url 'plugins:sub-plugins:update' slug=sub_plugin.plugin.slug sub_plugin_slug=sub_plugin.slug %}">Update Sub-Plugin</a></b> |
+            <b><a href="{% url 'plugins:sub-plugins:select-games' slug=sub_plugin.plugin.slug sub_plugin_slug=sub_plugin.slug %}">Select games</a></b>
         </ul>
 
-        <h4><a href="{{ current_release.get_absolute_url }}"><u>Download current version</u></a> &nbsp; <span style="font-size: small;">( <a href="{% url 'plugins:sub_plugins:releases' slug=sub_plugin.plugin.slug sub_plugin_slug=sub_plugin.slug %}"><u>View all releases</u></a> )</span> &nbsp; Total downloads: {{ sub_plugin.total_downloads }}</h4>
+        <h4><a href="{{ current_release.get_absolute_url }}"><u>Download current version</u></a> &nbsp; <span style="font-size: small;">( <a href="{% url 'plugins:sub-plugins:releases' slug=sub_plugin.plugin.slug sub_plugin_slug=sub_plugin.slug %}"><u>View all releases</u></a> )</span> &nbsp; Total downloads: {{ sub_plugin.total_downloads }}</h4>
 
         <p>Sub-Plugin for <a href="{{ sub_plugin.plugin.get_absolute_url }}">{{ sub_plugin.plugin }}</a></p>
 
@@ -65,7 +65,7 @@
                             <h3 class="panel-title">Contributors</h3>
                             {#  TODO: only show this if the user is logged in and is the owner #}
                             <span class="pull-right" style="margin-top: -20px">
-                                <a href="{% url 'plugins:sub_plugins:add_contributor' slug=sub_plugin.plugin.slug sub_plugin_slug=sub_plugin.slug %}">
+                                <a href="{% url 'plugins:sub-plugins:contributors:add' slug=sub_plugin.plugin.slug sub_plugin_slug=sub_plugin.slug %}">
                                     <button type="button" class="btn btn-xs btn-default">Add Contributor</button>
                                 </a>
                             </span>

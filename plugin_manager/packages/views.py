@@ -5,33 +5,25 @@
 from django.conf import settings
 from django.db.models import F
 from django.http import Http404, HttpResponse
-from django.shortcuts import HttpResponseRedirect
 from django.views.generic import (
-    CreateView, DetailView, FormView, ListView, UpdateView, View,
+    CreateView, DetailView, ListView, UpdateView, View,
 )
-
-# 3rd-Party Django
-from django_filters.views import FilterView
 
 # App
 from .constants import PACKAGE_RELEASE_URL
 from .forms import (
-    PackageAddContributorConfirmationForm, PackageCreateForm, PackageEditForm,
-    PackageSelectGamesForm, PackageUpdateForm,
+    PackageCreateForm, PackageEditForm, PackageSelectGamesForm,
+    PackageUpdateForm,
 )
 from .models import Package, PackageRelease
-from ..common.helpers import get_groups
-from ..common.views import OrderablePaginatedListView
-from ..users.filtersets import ForumUserFilterSet
-from ..users.models import ForumUser
+from plugin_manager.common.helpers import get_groups
+from plugin_manager.common.views import OrderablePaginatedListView
 
 
 # =============================================================================
 # >> ALL DECLARATION
 # =============================================================================
 __all__ = (
-    'PackageAddContributorConfirmationView',
-    'PackageAddContributorView',
     'PackageCreateView',
     'PackageEditView',
     'PackageListView',
@@ -44,7 +36,7 @@ __all__ = (
 
 
 # =============================================================================
-# >> VIEW CLASSES
+# >> VIEWS
 # =============================================================================
 class PackageListView(OrderablePaginatedListView):
     model = Package
@@ -74,74 +66,6 @@ class PackageEditView(UpdateView):
             'logo': '',
         })
         return initial
-
-
-class PackageAddContributorView(FilterView):
-    model = ForumUser
-    template_name = 'packages/contributor/add.html'
-    filterset_class = ForumUserFilterSet
-
-    def get_context_data(self, **kwargs):
-        context = super(
-            PackageAddContributorView, self).get_context_data(**kwargs)
-        package = Package.objects.get(slug=self.kwargs['slug'])
-        message = ''
-        user = None
-        if 'username' in self.request.GET:
-            try:
-                user = ForumUser.objects.get(
-                    username=self.request.GET['username'])
-            except ForumUser.DoesNotExist:
-                pass
-            else:
-                if user == package.owner:
-                    message = (
-                        'is the owner and cannot be added as a contributor.')
-                elif user in package.contributors.all():
-                    message = 'is already a contributor.'
-        context.update({
-            'package': package,
-            'message': message,
-            'user': user,
-        })
-        return context
-
-
-class PackageAddContributorConfirmationView(FormView):
-    form_class = PackageAddContributorConfirmationForm
-    template_name = 'packages/contributor/add_confirmation.html'
-
-    def get_initial(self):
-        initial = super(
-            PackageAddContributorConfirmationView, self).get_initial()
-        initial.update({
-            'id': self.kwargs['id']
-        })
-        return initial
-
-    def get_context_data(self, **kwargs):
-        context = super(
-            PackageAddContributorConfirmationView,
-            self,
-        ).get_context_data(**kwargs)
-        package = Package.objects.get(slug=self.kwargs['slug'])
-        user = ForumUser.objects.get(id=self.kwargs['id'])
-        message = None
-        if package.owner == user:
-            message = 'is the owner and cannot be added as a contributor.'
-        elif user in package.contributors.all():
-            message = 'is already a contributor.'
-        context.update({
-            'package': package,
-            'username': ForumUser.objects.get(id=self.kwargs['id']).username,
-            'message': message,
-        })
-        return context
-
-    def form_valid(self, form):
-        package = Package.objects.get(slug=self.kwargs['slug'])
-        package.contributors.add(form.cleaned_data['id'])
-        return HttpResponseRedirect(package.get_absolute_url())
 
 
 class PackageUpdateView(UpdateView):

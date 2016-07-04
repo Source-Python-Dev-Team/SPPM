@@ -9,14 +9,16 @@ from django import forms
 from django.test import TestCase
 
 # App
-from ..forms import (
-    PluginAddContributorConfirmationForm, PluginCreateForm, PluginEditForm,
-    PluginSelectGamesForm, PluginUpdateForm,
+from plugin_manager.plugins.forms import (
+    PluginCreateForm, PluginEditForm, PluginSelectGamesForm, PluginUpdateForm,
+)
+from plugin_manager.plugins.contributors.forms import (
+    PluginAddContributorConfirmationForm
 )
 
 
 # =============================================================================
-# >> TEST CLASSES
+# >> TESTS
 # =============================================================================
 class TestPluginAddContributorConfirmationForm(TestCase):
     def test_id_is_required(self):
