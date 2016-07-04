@@ -22,7 +22,7 @@
                                 <tr>
                                     {% for plugin in group %}
                                         {% if plugin %}
-                                            <td><a href="{% url 'plugins:detail' slug=plugin.slug %}">{{ plugin }}</a></td>
+                                            <td><a href="{{ plugin.get_absolute_url }}">{{ plugin }}</a></td>
                                         {% else %}
                                             <td></td>
                                         {% endif %}
@@ -52,7 +52,7 @@
                                 <tr>
                                     {% for package in group %}
                                         {% if package %}
-                                            <td><a href="{% url 'packages:detail' slug=package.slug %}">{{ package }}</a></td>
+                                            <td><a href="{{ package.get_absolute_url }}">{{ package }}</a></td>
                                         {% endif %}
                                     {% endfor %}
                                 </tr>
@@ -80,7 +80,7 @@
                                 <tr>
                                     {% for sub_plugin in group %}
                                         {% if sub_plugin %}
-                                            <td><a href="{% url 'plugins:sub-plugins:detail' slug=sub_plugin.plugin.slug sub_plugin_slug=sub_plugin.slug %}">{{ sub_plugin }} ({{ sub_plugin.plugin }})</a></td>
+                                            <td><a href="{{ sub_plugin.get_absolute_url }}">{{ sub_plugin }} ({{ sub_plugin.plugin }})</a></td>
                                         {% endif %}
                                     {% endfor %}
                                 </tr>

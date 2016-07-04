@@ -77,7 +77,7 @@
             </div>
         </div>
 
-    <h4><a href="{% url 'plugins:detail' slug=plugin.slug %}">Back to {{ plugin }}</a></h4>
+    <h4><a href="{{ plugin.get_absolute_url }}">Back to {{ plugin }}</a></h4>
 
     </body>
 

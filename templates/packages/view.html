@@ -95,7 +95,7 @@
             <h3>Supported Games</h3>
             <ul>
                 {% for game in supported_games %}
-                    <a href="{% url 'games:detail' slug=game.slug %}"><img src="{{ MEDIA_URL }}{{ game.icon }}" style="margin-right: -14px;" alt="{{ game }} Icon"/></a> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <a href="{{ game.get_absolute_url }}"><img src="{{ MEDIA_URL }}{{ game.icon }}" style="margin-right: -14px;" alt="{{ game }} Icon"/></a> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                 {% endfor %}
             </ul>
         {% endif %}
@@ -141,7 +141,7 @@
                                     <tbody>
                                         {% for package_requirement in package_requirements %}
                                             <tr>
-                                                <td><a href="{% url 'packages:detail' slug=package_requirement.slug %}">{{ package_requirement }}</a></td>
+                                                <td><a href="{{ package_requirement.get_absolute_url }}">{{ package_requirement }}</a></td>
                                             </tr>
                                         {% endfor %}
                                     </tbody>
@@ -163,7 +163,7 @@
                                     <tbody>
                                         {% for pypi_requirement in pypi_requirements %}
                                             <tr>
-                                                <td><a href="{% url 'pypi:detail' slug=pypi_requirement.slug %}">{{ pypi_requirement }}</a></td>
+                                                <td><a href="{{ pypi_requirement.get_absolute_url }}">{{ pypi_requirement }}</a></td>
                                             </tr>
                                         {% endfor %}
                                     </tbody>
@@ -192,7 +192,7 @@
                                             <tr>
                                                 {% for plugin in group %}
                                                     {% if plugin %}
-                                                        <td><a href="{% url 'plugins:detail' slug=plugin.slug %}">{{ plugin }}</a></td>
+                                                        <td><a href="{{ plugin.get_absolute_url }}">{{ plugin }}</a></td>
                                                     {% endif %}
                                                 {% endfor %}
                                             </tr>
@@ -218,7 +218,7 @@
                                             <tr>
                                                 {% for sub_plugin in group %}
                                                     {% if sub_plugin %}
-                                                        <td><a href="{% url 'plugins:sub-plugins:detail' slug=sub_plugin.plugin.slug sub_plugin_slug=sub_plugin.slug %}">{{ sub_plugin }}</a></td>
+                                                        <td><a href="{{ sub_plugin.get_absolute_url }}">{{ sub_plugin }}</a></td>
                                                     {% endif %}
                                                 {% endfor %}
                                             </tr>
@@ -244,7 +244,7 @@
                                             <tr>
                                                 {% for other in group %}
                                                     {% if other %}
-                                                        <td><a href="{% url 'packages:detail' slug=other.slug %}">{{ other }}</a></td>
+                                                        <td><a href="{{ other.get_absolute_url }}">{{ other }}</a></td>
                                                     {% endif %}
                                                 {% endfor %}
                                             </tr>

@@ -97,7 +97,7 @@
             <h3>Supported Games</h3>
             <ul>
                 {% for game in supported_games %}
-                    <a href="{% url 'games:detail' slug=game.slug %}"><img src="{{ MEDIA_URL }}{{ game.icon }}" style="margin-right: -14px;" alt="{{ game }} Icon"/></a> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <a href="{{ game.get_absolute_url }}"><img src="{{ MEDIA_URL }}{{ game.icon }}" style="margin-right: -14px;" alt="{{ game }} Icon"/></a> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                 {% endfor %}
             </ul>
         {% endif %}
@@ -143,7 +143,7 @@
                                     <tbody>
                                         {% for package_requirement in package_requirements %}
                                             <tr>
-                                                <td><a href="{% url 'packages:detail' slug=package_requirement.slug %}">{{ package_requirement }}</a></td>
+                                                <td><a href="{{ package_requirement.get_absolute_url }}">{{ package_requirement }}</a></td>
                                             </tr>
                                         {% endfor %}
                                     </tbody>
@@ -165,7 +165,7 @@
                                     <tbody>
                                         {% for pypi_requirement in pypi_requirements %}
                                             <tr>
-                                                <td><a href="{% url 'pypi:detail' slug=pypi_requirement.slug %}">{{ pypi_requirement }}</a></td>
+                                                <td><a href="{{ pypi_requirement.get_absolute_url }}">{{ pypi_requirement }}</a></td>
                                             </tr>
                                         {% endfor %}
                                     </tbody>
