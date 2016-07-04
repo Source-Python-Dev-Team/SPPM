@@ -123,7 +123,9 @@ class SubPluginCreateForm(forms.ModelForm):
         ):
             raise ValidationError(
                 'No primary file found in zip.  ' +
-                'Perhaps you are attempting to upload a sub-plugin.')
+                'Perhaps you are attempting to upload a sub-plugin.',
+                code='not-found',
+            )
         current = SubPlugin.objects.filter(plugin=plugin, basename=basename)
         if current:
             raise ValidationError(
@@ -131,7 +133,8 @@ class SubPluginCreateForm(forms.ModelForm):
                 'plugin {plugin_name}.'.format(
                     basename=basename,
                     plugin_name=plugin.name
-                )
+                ),
+                code='duplicate',
             )
         self.instance.basename = basename
         return self.cleaned_data['zip_file']
@@ -244,7 +247,8 @@ class SubPluginUpdateForm(forms.ModelForm):
             raise ValidationError(
                 'Release version "{version}" already exists.'.format(
                     version=self.cleaned_data['version']
-                )
+                ),
+                code='duplicate'
             )
         return self.cleaned_data['version']
 
@@ -265,8 +269,12 @@ class SubPluginUpdateForm(forms.ModelForm):
         ):
             raise ValidationError(
                 'No primary file found in zip.  ' +
-                'Perhaps you are attempting to upload a sub-plugin.')
+                'Perhaps you are attempting to upload a sub-plugin.',
+                code='not-found',
+            )
         if basename != self.instance.basename:
             raise ValidationError(
-                'Uploaded sub-plugin does not match current sub-plugin.')
+                'Uploaded sub-plugin does not match current sub-plugin.',
+                code='mismatch',
+            )
         return self.cleaned_data['zip_file']

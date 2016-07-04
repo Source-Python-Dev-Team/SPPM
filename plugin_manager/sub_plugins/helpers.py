@@ -31,19 +31,24 @@ def get_sub_plugin_basename(file_list, plugin):
     """Return the sub-plugin's basename."""
     basename, path = _find_basename_and_path(file_list, plugin)
     if basename is None:
-        raise ValidationError('No sub-plugin base directory found in zip.')
+        raise ValidationError(
+            'No sub-plugin base directory found in zip.',
+            code='not-found',
+        )
     if basename in CANNOT_BE_NAMED:
         raise ValidationError(
             'Sub-plugin basename cannot be "{basename}".'.format(
                 basename=basename,
-            )
+            ),
+            code='invalid',
         )
     for start in CANNOT_START_WITH:
         if basename.startswith(start):
             raise ValidationError(
                 'Sub-plugin basename cannot start with "{start}".'.format(
                     start=start,
-                )
+                ),
+                code='invalid',
             )
     return basename, path
 
@@ -108,11 +113,20 @@ def _validate_plugin_name(file_list, plugin):
         if plugin_name is None:
             plugin_name = current
         elif plugin_name != current:
-            raise ValidationError('Multiple plugins found in zip.')
+            raise ValidationError(
+                'Multiple plugins found in zip.',
+                code='multiple',
+            )
     if plugin_name is None:
-        raise ValidationError('No plugin base directory found in zip.')
+        raise ValidationError(
+            'No plugin base directory found in zip.',
+            code='not-found',
+        )
     if plugin_name != plugin.basename:
-        raise ValidationError('Wrong plugin base directory found in zip.')
+        raise ValidationError(
+            'Wrong plugin base directory found in zip.',
+            code='invalid',
+        )
     return plugin_name
 
 
@@ -146,5 +160,8 @@ def _find_basename_and_path(file_list, plugin):
                 basename = current
                 path = current_path
             elif basename != current:
-                raise ValidationError('Multiple sub-plugins found in zip.')
+                raise ValidationError(
+                    'Multiple sub-plugins found in zip.',
+                    code='multiple',
+                )
     return basename, path

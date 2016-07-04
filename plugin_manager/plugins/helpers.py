@@ -42,21 +42,28 @@ def get_plugin_basename(file_list):
             basename = current
         elif basename != current:
             raise ValidationError(
-                'Multiple base directories found for plugin')
+                'Multiple base directories found for plugin',
+                code='multiple',
+            )
     if basename is None:
-        raise ValidationError('No base directory found for plugin.')
+        raise ValidationError(
+            'No base directory found for plugin.',
+            code='not-found',
+        )
     if basename in CANNOT_BE_NAMED:
         raise ValidationError(
             'Plugin basename cannot be "{basename}".'.format(
                 basename=basename
-            )
+            ),
+            code='invalid',
         )
     for start in CANNOT_START_WITH:
         if basename.startswith(start):
             raise ValidationError(
                 'Plugin basename cannot start with "{start}".'.format(
                     start=start,
-                )
+                ),
+                code='invalid',
             )
     return basename
 

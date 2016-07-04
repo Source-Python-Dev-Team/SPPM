@@ -114,7 +114,8 @@ class PackageCreateForm(forms.ModelForm):
             raise ValidationError(
                 'Package {basename} is already registered.'.format(
                     basename=basename
-                )
+                ),
+                code='duplicate',
             )
         self.instance.basename = basename
         return self.cleaned_data['zip_file']
@@ -227,7 +228,8 @@ class PackageUpdateForm(forms.ModelForm):
             raise ValidationError(
                 'Release version "{version}" already exists.'.format(
                     version=self.cleaned_data['version']
-                )
+                ),
+                code='duplicate',
             )
         return self.cleaned_data['version']
 
@@ -240,8 +242,13 @@ class PackageUpdateForm(forms.ModelForm):
                 package_path=PACKAGE_PATH,
                 basename=basename,
         ) in file_list:
-            raise ValidationError('No primary file found in zip.')
+            raise ValidationError(
+                'No primary file found in zip.',
+                code='not-found',
+            )
         if basename != self.instance.basename:
             raise ValidationError(
-                'Uploaded package does not match current package.')
+                'Uploaded package does not match current package.',
+                code='mismatch',
+            )
         return self.cleaned_data['zip_file']

@@ -114,7 +114,8 @@ class PluginCreateForm(forms.ModelForm):
             raise ValidationError(
                 'Plugin {basename} already registered.'.format(
                     basename=basename
-                )
+                ),
+                code='duplicate',
             )
         self.instance.basename = basename
         return self.cleaned_data['zip_file']
@@ -227,7 +228,8 @@ class PluginUpdateForm(forms.ModelForm):
             raise ValidationError(
                 'Release version "{version}" already exists.'.format(
                     version=self.cleaned_data['version']
-                )
+                ),
+                code='duplicate',
             )
         return self.cleaned_data['version']
 
@@ -242,8 +244,12 @@ class PluginUpdateForm(forms.ModelForm):
         ) in file_list:
             raise ValidationError(
                 'No primary file found in zip.  ' +
-                'Perhaps you are attempting to upload a sub-plugin.')
+                'Perhaps you are attempting to upload a sub-plugin.',
+                code='not-found',
+            )
         if basename != self.instance.basename:
             raise ValidationError(
-                'Uploaded plugin does not match current plugin.')
+                'Uploaded plugin does not match current plugin.',
+                code='mismatch',
+            )
         return self.cleaned_data['zip_file']

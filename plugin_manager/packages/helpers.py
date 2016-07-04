@@ -47,21 +47,28 @@ def get_package_basename(file_list):
             basename = current
         elif basename != current:
             raise ValidationError(
-                'Multiple base directories found for package.')
+                'Multiple base directories found for package.',
+                code='multiple',
+            )
     if basename is None:
-        raise ValidationError('No base directory or file found for package.')
+        raise ValidationError(
+            'No base directory or file found for package.',
+            code='not-found',
+        )
     if basename in CANNOT_BE_NAMED:
         raise ValidationError(
             'Package basename cannot be "{basename}".'.format(
                 basename=basename
-            )
+            ),
+            code='invalid',
         )
     for start in CANNOT_START_WITH:
         if basename.startswith(start):
             raise ValidationError(
                 'Package basename cannot start with "{start}".'.format(
                     start=start,
-                )
+                ),
+                code='invalid',
             )
     return basename, is_module
 
