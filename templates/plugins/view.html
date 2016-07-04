@@ -22,7 +22,7 @@
             <b><a href="{% url 'plugins:select-games' slug=plugin.slug %}">Select games</a></b>
         </ul>
 
-        <h4><a href="{{ current_release.get_absolute_url }}"><u>Download current version</u></a> &nbsp; <span style="font-size: small;">( <a href="{% url 'plugins:releases' slug=plugin.slug %}"><u>View all releases</u></a> )</span></h4>
+        <h4><a href="{{ current_release.get_absolute_url }}"><u>Download current version</u></a> &nbsp; <span style="font-size: small;">( <a href="{% url 'plugins:releases' slug=plugin.slug %}"><u>View all releases</u></a> )</span> &nbsp; Total downloads: {{ plugin.total_downloads }}</h4>
 
         {% if plugin.synopsis %}
             <br />

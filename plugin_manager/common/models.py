@@ -85,6 +85,10 @@ class CommonBase(models.Model):
             return None
         return release_datetimes[0]
 
+    @property
+    def total_downloads(self):
+        return sum(self.releases.values_list('download_count', flat=True))
+
     def clean(self):
         """Clean all attributes and raise any errors that occur."""
         errors = dict()
