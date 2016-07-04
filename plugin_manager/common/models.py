@@ -48,15 +48,6 @@ class CommonBase(models.Model):
         unique=True,
         blank=True,
     )
-    date_created = models.DateTimeField(
-        verbose_name='date created',
-        auto_now_add=True,
-    )
-    date_last_updated = models.DateTimeField(
-        verbose_name='date last updated',
-        blank=True,
-        null=True,
-    )
     synopsis = models.CharField(
         max_length=128,
         blank=True,
@@ -76,6 +67,23 @@ class CommonBase(models.Model):
     def __str__(self):
         """Return the object's name when str cast."""
         return self.name
+
+    @property
+    def datetime_created(self):
+        return self.releases.values_list(
+            'created',
+            flat=True
+        ).order_by('created')[0]
+
+    @property
+    def datetime_last_updated(self):
+        release_datetimes = self.releases.values_list(
+            'created',
+            flat=True,
+        ).order_by('-created')
+        if len(release_datetimes) == 1:
+            return None
+        return release_datetimes[0]
 
     def clean(self):
         """Clean all attributes and raise any errors that occur."""

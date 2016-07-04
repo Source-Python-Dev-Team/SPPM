@@ -31,9 +31,9 @@
         {% endif %}
 
         <br />
-        <p>Created on {{ plugin.date_created }}</p>
-        {% if plugin.date_last_updated %}
-            <p>Last updated on {{ plugin.date_last_updated }}</p>
+        <p>Created on {{ plugin.datetime_created }}</p>
+        {% if plugin.datetime_last_updated %}
+            <p>Last updated on {{ plugin.datetime_last_updated }}</p>
         {% endif %}
         {% if paths %}
             <h><a href="{% url 'plugins:sub_plugins:list' slug=plugin.slug %}">{{ plugin }} sub-plugins</a></h>
