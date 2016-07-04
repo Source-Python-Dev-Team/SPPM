@@ -6,7 +6,6 @@ from django.contrib import admin
 
 # App
 from .models import Plugin, PluginImage, PluginRelease
-from .paths.models import SubPluginPath
 
 
 # =============================================================================
@@ -16,7 +15,6 @@ __all__ = (
     'PluginReleaseAdmin',
     'PluginAdmin',
     'PluginImageAdmin',
-    'SubPluginPathAdmin',
 )
 
 
@@ -76,22 +74,6 @@ class PluginImageAdmin(admin.ModelAdmin):
         'plugin',
     )
     search_fields = (
-        'plugin__name',
-        'plugin__basename',
-    )
-
-
-@admin.register(SubPluginPath)
-class SubPluginPathAdmin(admin.ModelAdmin):
-    list_display = (
-        'path',
-        'plugin',
-    )
-    readonly_fields = (
-        'plugin',
-    )
-    search_fields = (
-        'path',
         'plugin__name',
         'plugin__basename',
     )
