@@ -1,15 +1,17 @@
 {% extends "common/base.html" %}
 {% load crispy_forms_tags %}
 
+{# TODO: Only owner and contributors should have access to this page #}
+
 {% block title %}Edit {{ package }}{% endblock title %}
 
 {% block content %}
 
-<body>
-    <div class="container">
-        <h1>Edit {{ package }}</h1>
-        {% crispy form %}
-    </div>
-</body>
+    <body>
+        <div class="container">
+            <h1>Edit {{ package }}</h1>
+            {% crispy form %}
+        </div>
+    </body>
 
 {% endblock content %}

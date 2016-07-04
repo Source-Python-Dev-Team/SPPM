@@ -1,16 +1,20 @@
 {% extends "common/base.html" %}
 {% load crispy_forms_tags %}
 
-{% block title %}Update {{ plugin }}{% endblock title %}
+{# TODO: Only owner and contributors should have access to this page #}
+
+{% block title %}
+    Update {{ plugin }}
+{% endblock title %}
 
 {% block content %}
 
-<body>
-    <div class="container">
-        <h1>Update {{ plugin }}</h1>
-        <ul><b>Current Version: {{ current_release.version }}</b></ul><br />
-        {% crispy form %}
-    </div>
-</body>
+    <body>
+        <div class="container">
+            <h1>Update {{ plugin }}</h1>
+            <ul><b>Current Version: {{ current_release.version }}</b></ul><br />
+            {% crispy form %}
+        </div>
+    </body>
 
 {% endblock content %}

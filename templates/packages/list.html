@@ -4,26 +4,26 @@
 
 {% block content %}
 
-<body>
-    <div class="container">
-        {% if package_list %}
-            <h1>Recent Packages</h1>
-            <ul>
-                {% for package in package_list %}
-                    <li><a href="{{ package.get_absolute_url }}">{{ package }}</a></li>
+    <body>
+        <div class="container">
+            {% if package_list %}
+                <h1>Recent Packages</h1>
+                <ul>
+                    {% for package in package_list %}
+                        <li><a href="{{ package.get_absolute_url }}">{{ package }}</a></li>
+                    {% endfor %}
+                </ul>
+                {% for page_url in page_url_list %}
+                    {% if page_url.url %}
+                        <a href="{% url 'packages:list' %}{{ page_url.url }}">{{ page_url.display }}</a>
+                    {% else %}
+                        {{ page_url.display }}
+                    {% endif %}
                 {% endfor %}
-            </ul>
-            {% for page_url in page_url_list %}
-                {% if page_url.url %}
-                    <a href="{% url 'packages:list' %}{{ page_url.url }}">{{ page_url.display }}</a>
-                {% else %}
-                    {{ page_url.display }}
-                {% endif %}
-            {% endfor %}
-        {% else %}
-            <h1>No packages are registered.</h1>
-        {% endif %}
-    </div>
-</body>
+            {% else %}
+                <h1>No packages are registered.</h1>
+            {% endif %}
+        </div>
+    </body>
 
 {% endblock content %}

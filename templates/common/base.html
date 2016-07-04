@@ -46,7 +46,10 @@
                 &nbsp;<a href="{{ GITHUB_URL }}"><b>Source Code</b></a>&nbsp;<br />
                 &nbsp;<a href="{{ GITHUB_URL }}/issues"><b>Issues List</b></a>&nbsp;<br />
             </sidebar>
-            <content>{% block content %}{% endblock content %}</content>
+            <content>
+                {% block content %}
+                {% endblock content %}
+            </content>
         </inner>
     </outer>
 </html>
