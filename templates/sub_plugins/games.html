@@ -1,0 +1,16 @@
+{% extends "common/base.html" %}
+{% load i18n %}
+{% load crispy_forms_tags %}
+
+{% block title %}
+    {{ sub_plugin }} - Supported Games
+{% endblock title %}
+
+{% block content %}
+    <body>
+        <div class="container">
+            <h1>{{ sub_plugin }} Supported Games</h1>
+            {% crispy form %}
+        </div>
+    </body>
+{% endblock content %}

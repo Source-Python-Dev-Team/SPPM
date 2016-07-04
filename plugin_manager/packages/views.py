@@ -17,7 +17,7 @@ from django_filters.views import FilterView
 from .constants import PACKAGE_RELEASE_URL
 from .forms import (
     PackageAddContributorConfirmationForm, PackageCreateForm, PackageEditForm,
-    PackageUpdateForm,
+    PackageSelectGamesForm, PackageUpdateForm,
 )
 from .models import Package, PackageRelease
 from ..common.helpers import get_groups
@@ -37,6 +37,7 @@ __all__ = (
     'PackageListView',
     'PackageReleaseDownloadView',
     'PackageReleaseListView',
+    'PackageSelectGamesView',
     'PackageUpdateView',
     'PackageView',
 )
@@ -166,6 +167,12 @@ class PackageUpdateView(UpdateView):
             'zip_file': '',
         })
         return initial
+
+
+class PackageSelectGamesView(UpdateView):
+    model = Package
+    form_class = PackageSelectGamesForm
+    template_name = 'packages/games.html'
 
 
 class PackageView(DetailView):

@@ -8,7 +8,8 @@ from django.conf.urls import url
 from .views import (
     PackageAddContributorConfirmationView, PackageAddContributorView,
     PackageCreateView, PackageEditView, PackageListView,
-    PackageReleaseListView, PackageUpdateView, PackageView,
+    PackageReleaseListView, PackageSelectGamesView, PackageUpdateView,
+    PackageView,
 )
 
 
@@ -29,28 +30,34 @@ urlpatterns = [
         name='create',
     ),
     url(
-        # http://plugins.sourcepython.com/packages/edit/<slug>/
-        regex=r'^edit/(?P<slug>[\w-]+)/',
-        view=PackageEditView.as_view(),
-        name='edit',
-    ),
-    url(
-        # http://plugins.sourcepython.com/packages/update/<slug>/
-        regex=r'^update/(?P<slug>[\w-]+)/',
-        view=PackageUpdateView.as_view(),
-        name='update',
-    ),
-    url(
         # http://plugins.sourcepython.com/packages/<slug>/
         regex=r'^(?P<slug>[\w-]+)/$',
         view=PackageView.as_view(),
         name='detail',
     ),
     url(
+        # http://plugins.sourcepython.com/packages/<slug>/edit/
+        regex=r'^(?P<slug>[\w-]+)/edit/',
+        view=PackageEditView.as_view(),
+        name='edit',
+    ),
+    url(
+        # http://plugins.sourcepython.com/packages/<slug>/games/
+        regex=r'^(?P<slug>[\w-]+)/games/',
+        view=PackageSelectGamesView.as_view(),
+        name='select-games',
+    ),
+    url(
         # http://plugins.sourcepython.com/packages/<slug>/releases/
         regex=r'^(?P<slug>[\w-]+)/releases/',
         view=PackageReleaseListView.as_view(),
         name='releases',
+    ),
+    url(
+        # http://plugins.sourcepython.com/packages/<slug>/update/
+        regex=r'^(?P<slug>[\w-]+)/update/',
+        view=PackageUpdateView.as_view(),
+        name='update',
     ),
     url(
         # http://plugins.sourcepython.com/packages/<slug>/add-contributor/

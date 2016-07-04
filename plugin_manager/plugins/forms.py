@@ -27,6 +27,7 @@ __all__ = (
     'PluginAddContributorConfirmationForm',
     'PluginCreateForm',
     'PluginEditForm',
+    'PluginSelectGamesForm',
     'PluginUpdateForm',
 )
 
@@ -151,6 +152,22 @@ class PluginEditForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(PluginEditForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.add_input(Submit('submit', 'Submit'))
+
+
+class PluginSelectGamesForm(forms.ModelForm):
+    class Meta:
+        model = Plugin
+        fields = (
+            'supported_games',
+        )
+        widgets = {
+            'supported_games': forms.CheckboxSelectMultiple()
+        }
+
+    def __init__(self, *args, **kwargs):
+        super(PluginSelectGamesForm, self).__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.add_input(Submit('submit', 'Submit'))
 

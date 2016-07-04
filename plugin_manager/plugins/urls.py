@@ -8,7 +8,7 @@ from django.conf.urls import include, url
 from .views import (
     PluginAddContributorConfirmationView, PluginAddContributorView,
     PluginCreateView, PluginEditView, PluginListView, PluginReleaseListView,
-    PluginUpdateView, PluginView,
+    PluginSelectGamesView, PluginUpdateView, PluginView,
 )
 
 
@@ -29,22 +29,22 @@ urlpatterns = [
         name='create',
     ),
     url(
-        # http://plugins.sourcepython.com/plugins/edit/<slug>/
-        regex=r'^edit/(?P<slug>[\w-]+)/',
-        view=PluginEditView.as_view(),
-        name='edit',
-    ),
-    url(
-        # http://plugins.sourcepython.com/plugins/update/<slug>/
-        regex=r'^update/(?P<slug>[\w-]+)/',
-        view=PluginUpdateView.as_view(),
-        name='update',
-    ),
-    url(
         # http://plugins.sourcepython.com/plugins/<slug>/
         regex=r'^(?P<slug>[\w-]+)/$',
         view=PluginView.as_view(),
         name='detail',
+    ),
+    url(
+        # http://plugins.sourcepython.com/plugins/<slug>/edit/
+        regex=r'^(?P<slug>[\w-]+)/edit/',
+        view=PluginEditView.as_view(),
+        name='edit',
+    ),
+    url(
+        # http://plugins.sourcepython.com/plugins/<slug>/games/
+        regex=r'^(?P<slug>[\w-]+)/games/$',
+        view=PluginSelectGamesView.as_view(),
+        name='select-games',
     ),
     url(
         # http://plugins.sourcepython.com/plugins/<slug>/releases/
@@ -53,12 +53,10 @@ urlpatterns = [
         name='releases',
     ),
     url(
-        # http://plugins.sourcepython.com/plugins/<slug>/sub-plugins/
-        regex=r'^(?P<slug>[\w-]+)/sub-plugins/',
-        view=include(
-            'plugin_manager.sub_plugins.urls',
-            namespace='sub_plugins',
-        ),
+        # http://plugins.sourcepython.com/plugins/<slug>/update/
+        regex=r'^(?P<slug>[\w-]+)/update/',
+        view=PluginUpdateView.as_view(),
+        name='update',
     ),
     url(
         # http://plugins.sourcepython.com/plugins/<slug>/add-contributor/
@@ -71,5 +69,13 @@ urlpatterns = [
         regex=r'^(?P<slug>[\w-]+)/add-contributor/(?P<id>\d+)/$',
         view=PluginAddContributorConfirmationView.as_view(),
         name='confirm_add_contributor',
+    ),
+    url(
+        # http://plugins.sourcepython.com/plugins/<slug>/sub-plugins/
+        regex=r'^(?P<slug>[\w-]+)/sub-plugins/',
+        view=include(
+            'plugin_manager.sub_plugins.urls',
+            namespace='sub_plugins',
+        ),
     ),
 ]

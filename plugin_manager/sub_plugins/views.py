@@ -17,7 +17,7 @@ from django_filters.views import FilterView
 from .constants import SUB_PLUGIN_RELEASE_URL
 from .forms import (
     SubPluginAddContributorConfirmationForm, SubPluginCreateForm,
-    SubPluginEditForm, SubPluginUpdateForm,
+    SubPluginEditForm, SubPluginSelectGamesForm, SubPluginUpdateForm,
 )
 from .models import SubPlugin, SubPluginRelease
 from ..common.views import OrderablePaginatedListView
@@ -37,6 +37,7 @@ __all__ = (
     'SubPluginEditView',
     'SubPluginReleaseDownloadView',
     'SubPluginReleaseListView',
+    'SubPluginSelectGamesView',
     'SubPluginUpdateView',
     'SubPluginView',
 )
@@ -111,6 +112,13 @@ class SubPluginEditView(UpdateView):
             'logo': '',
         })
         return initial
+
+    def get_context_data(self, **kwargs):
+        context = super(SubPluginEditView, self).get_context_data(**kwargs)
+        context.update({
+            'sub_plugin': context['subplugin']
+        })
+        return context
 
 
 class SubPluginAddContributorView(FilterView):
@@ -214,9 +222,7 @@ class SubPluginUpdateView(UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super(SubPluginUpdateView, self).get_context_data(**kwargs)
-        sub_plugin = SubPlugin.objects.get(
-            slug=context['view'].kwargs['sub_plugin_slug']
-        )
+        sub_plugin = context['subplugin']
         current_release = SubPluginRelease.objects.filter(
             sub_plugin=sub_plugin,
         ).order_by('-created')[0]
@@ -237,6 +243,23 @@ class SubPluginUpdateView(UpdateView):
             'zip_file': '',
         })
         return initial
+
+
+class SubPluginSelectGamesView(UpdateView):
+    model = SubPlugin
+    form_class = SubPluginSelectGamesForm
+    template_name = 'sub_plugins/games.html'
+    slug_url_kwarg = 'sub_plugin_slug'
+
+    def get_context_data(self, **kwargs):
+        context = super(
+            SubPluginSelectGamesView,
+            self
+        ).get_context_data(**kwargs)
+        context.update({
+            'sub_plugin': context['subplugin']
+        })
+        return context
 
 
 class SubPluginView(DetailView):

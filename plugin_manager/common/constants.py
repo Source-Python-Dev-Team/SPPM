@@ -37,8 +37,6 @@ RELEASE_URL = 'releases/'
 # Current values are due to the url setup for creating, editing, and updating
 CANNOT_BE_NAMED = (
     'create',
-    'edit',
-    'update',
 )
 
 # Values that packages, plugins, and sub-plugins cannot start with

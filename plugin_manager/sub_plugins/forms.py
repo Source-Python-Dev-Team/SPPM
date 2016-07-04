@@ -27,6 +27,7 @@ __all__ = (
     'SubPluginAddContributorConfirmationForm',
     'SubPluginCreateForm',
     'SubPluginEditForm',
+    'SubPluginSelectGamesForm',
     'SubPluginUpdateForm',
 )
 
@@ -168,6 +169,22 @@ class SubPluginEditForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(SubPluginEditForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.add_input(Submit('submit', 'Submit'))
+
+
+class SubPluginSelectGamesForm(forms.ModelForm):
+    class Meta:
+        model = SubPlugin
+        fields = (
+            'supported_games',
+        )
+        widgets = {
+            'supported_games': forms.CheckboxSelectMultiple()
+        }
+
+    def __init__(self, *args, **kwargs):
+        super(SubPluginSelectGamesForm, self).__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.add_input(Submit('submit', 'Submit'))
 

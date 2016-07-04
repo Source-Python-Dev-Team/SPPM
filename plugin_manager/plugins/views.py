@@ -17,7 +17,7 @@ from django_filters.views import FilterView
 from .constants import PLUGIN_RELEASE_URL
 from .forms import (
     PluginAddContributorConfirmationForm, PluginCreateForm, PluginEditForm,
-    PluginUpdateForm,
+    PluginSelectGamesForm, PluginUpdateForm,
 )
 from .models import Plugin, PluginRelease
 from ..common.views import OrderablePaginatedListView
@@ -165,6 +165,12 @@ class PluginUpdateView(UpdateView):
             'zip_file': '',
         })
         return initial
+
+
+class PluginSelectGamesView(UpdateView):
+    model = Plugin
+    form_class = PluginSelectGamesForm
+    template_name = 'plugins/games.html'
 
 
 class PluginView(DetailView):

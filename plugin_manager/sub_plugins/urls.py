@@ -8,7 +8,8 @@ from django.conf.urls import url
 from .views import (
     SubPluginAddContributorConfirmationView, SubPluginAddContributorView,
     SubPluginCreateView, SubPluginEditView, SubPluginListView,
-    SubPluginReleaseListView, SubPluginUpdateView, SubPluginView,
+    SubPluginReleaseListView, SubPluginSelectGamesView, SubPluginUpdateView,
+    SubPluginView,
 )
 
 
@@ -29,28 +30,34 @@ urlpatterns = [
         name='create',
     ),
     url(
-        # http://plugins.sourcepython.com/plugins/<slug>/sub-plugins/edit/<sub_plugin_slug>/
-        regex=r'^edit/(?P<sub_plugin_slug>[\w-]+)/',
-        view=SubPluginEditView.as_view(),
-        name='edit',
-    ),
-    url(
-        # http://plugins.sourcepython.com/plugins/<slug>/sub-plugins/update/<sub_plugin_slug>/
-        regex=r'^update/(?P<sub_plugin_slug>[\w-]+)/',
-        view=SubPluginUpdateView.as_view(),
-        name='update',
-    ),
-    url(
         # http://plugins.sourcepython.com/plugins/<slug>/sub-plugins/<sub_plugin_slug>/
         regex=r'^(?P<sub_plugin_slug>[\w-]+)/$',
         view=SubPluginView.as_view(),
         name='detail',
     ),
     url(
+        # http://plugins.sourcepython.com/plugins/<slug>/sub-plugins/<sub_plugin_slug>/edit/
+        regex=r'^(?P<sub_plugin_slug>[\w-]+)/edit/',
+        view=SubPluginEditView.as_view(),
+        name='edit',
+    ),
+    url(
+        # http://plugins.sourcepython.com/plugins/<slug>/sub-plugins/<sub_plugin_slug>/games/
+        regex=r'^(?P<sub_plugin_slug>[\w-]+)/games/',
+        view=SubPluginSelectGamesView.as_view(),
+        name='select-games',
+    ),
+    url(
         # http://plugins.sourcepython.com/plugins/<slug>/sub-plugins/<sub_plugin_slug>/releases/
         regex=r'^(?P<sub_plugin_slug>[\w-]+)/releases/',
         view=SubPluginReleaseListView.as_view(),
         name='releases',
+    ),
+    url(
+        # http://plugins.sourcepython.com/plugins/<slug>/sub-plugins/<sub_plugin_slug>/update/
+        regex=r'^(?P<sub_plugin_slug>[\w-]+)/update/',
+        view=SubPluginUpdateView.as_view(),
+        name='update',
     ),
     url(
         # http://plugins.sourcepython.com/plugins/<slug>/sub-plugins/<sub_plugin_slug>/add-contributor/
