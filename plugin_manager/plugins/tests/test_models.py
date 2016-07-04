@@ -8,7 +8,6 @@ from django.test import TestCase
 # App
 from ...models import ForumUser
 from ..models import PluginRelease, Plugin, PluginImage
-from ..paths.models import SubPluginPath
 
 
 # =============================================================================
@@ -57,16 +56,4 @@ class TestPluginImage(TestCase):
                 'plugin_manager_pluginimage.plugin_id'
             ),
             PluginImage.objects.create,
-        )
-
-
-class TestSubPluginPath(TestCase):
-    def test_plugin_is_required(self):
-        self.assertRaisesMessage(
-            IntegrityError,
-            (
-                'NOT NULL constraint failed: '
-                'plugin_manager_subpluginpath.plugin_id'
-            ),
-            SubPluginPath.objects.create,
         )
