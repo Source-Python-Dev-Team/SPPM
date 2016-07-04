@@ -11,7 +11,7 @@ from django.test import TestCase
 # App
 from ..forms import (
     PluginAddContributorConfirmationForm, PluginCreateForm, PluginEditForm,
-    PluginUpdateForm,
+    PluginSelectGamesForm, PluginUpdateForm,
 )
 
 
@@ -172,3 +172,7 @@ class TestPluginUpdateForm(TestCase):
             ),
             msg='zip_file should be required.'
         )
+
+
+class TestPluginSelectGamesForm(TestCase):
+    pass

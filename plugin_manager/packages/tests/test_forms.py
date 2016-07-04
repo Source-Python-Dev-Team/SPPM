@@ -11,7 +11,7 @@ from django.test import TestCase
 # App
 from ..forms import (
     PackageAddContributorConfirmationForm, PackageCreateForm, PackageEditForm,
-    PackageUpdateForm,
+    PackageSelectGamesForm, PackageUpdateForm,
 )
 
 
@@ -172,3 +172,7 @@ class TestPackageUpdateForm(TestCase):
             ),
             msg='zip_file should be required.'
         )
+
+
+class TestPackageSelectGamesForm(TestCase):
+    pass

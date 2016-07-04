@@ -9,7 +9,7 @@ from ..views import (
     SubPluginAddContributorConfirmationView, SubPluginAddContributorView,
     SubPluginCreateView, SubPluginListView, SubPluginEditView,
     SubPluginReleaseDownloadView, SubPluginReleaseListView,
-    SubPluginUpdateView, SubPluginView,
+    SubPluginSelectGamesView, SubPluginUpdateView, SubPluginView,
 )
 
 
@@ -49,4 +49,8 @@ class TestSubPluginReleaseDownloadView(TestCase):
 
 
 class TestSubPluginReleaseListView(TestCase):
+    pass
+
+
+class TestSubPluginSelectGamesView(TestCase):
     pass
