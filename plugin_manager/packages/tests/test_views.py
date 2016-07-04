@@ -5,7 +5,7 @@
 from django.test import TestCase
 
 # App
-from plugin_manager.packages.views import (
+from ..views import (
     PackageCreateView, PackageEditView, PackageListView,
     PackageReleaseDownloadView, PackageReleaseListView, PackageSelectGamesView,
     PackageUpdateView, PackageView,

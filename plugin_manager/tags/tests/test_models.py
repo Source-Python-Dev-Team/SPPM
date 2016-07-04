@@ -6,7 +6,7 @@ from django.db import IntegrityError
 from django.test import TestCase
 
 # App
-from plugin_manager.tags.models import Tag
+from ..models import Tag
 
 
 # =============================================================================

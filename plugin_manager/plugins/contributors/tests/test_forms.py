@@ -9,9 +9,7 @@ from django import forms
 from django.test import TestCase
 
 # App
-from plugin_manager.plugins.contributors.forms import (
-    PluginAddContributorConfirmationForm
-)
+from ..forms import PluginAddContributorConfirmationForm
 
 
 # =============================================================================

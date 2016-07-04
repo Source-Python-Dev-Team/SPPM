@@ -6,7 +6,7 @@ from django.db import IntegrityError
 from django.test import TestCase
 
 # App
-from plugin_manager.pypi.models import PyPiRequirement
+from ..models import PyPiRequirement
 
 
 # =============================================================================

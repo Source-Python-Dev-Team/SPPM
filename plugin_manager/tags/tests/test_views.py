@@ -5,7 +5,7 @@
 from django.test import TestCase
 
 # App
-from plugin_manager.tags.views import TagListView
+from ..views import TagListView
 
 
 # =============================================================================

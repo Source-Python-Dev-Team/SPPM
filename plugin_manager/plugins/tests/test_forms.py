@@ -9,7 +9,7 @@ from django import forms
 from django.test import TestCase
 
 # App
-from plugin_manager.plugins.forms import (
+from ..forms import (
     PluginCreateForm, PluginEditForm, PluginSelectGamesForm, PluginUpdateForm,
 )
 

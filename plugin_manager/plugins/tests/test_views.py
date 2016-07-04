@@ -5,7 +5,7 @@
 from django.test import TestCase
 
 # App
-from plugin_manager.plugins.views import (
+from ..views import (
     PluginCreateView, PluginEditView, PluginListView,
     PluginReleaseDownloadView, PluginReleaseListView, PluginSelectGamesView,
     PluginUpdateView, PluginView,

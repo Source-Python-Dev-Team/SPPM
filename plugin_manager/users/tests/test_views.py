@@ -5,7 +5,7 @@
 from django.test import TestCase
 
 # App
-from plugin_manager.users.views import UserListView, UserView
+from ..views import UserListView, UserView
 
 
 # =============================================================================

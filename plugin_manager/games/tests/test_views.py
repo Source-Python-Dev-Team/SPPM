@@ -5,7 +5,7 @@
 from django.test import TestCase
 
 # App
-from plugin_manager.games.views import GameListView, GameView
+from ..views import GameListView, GameView
 
 
 # =============================================================================

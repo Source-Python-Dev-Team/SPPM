@@ -6,11 +6,9 @@ from django.db import IntegrityError
 from django.test import TestCase
 
 # App
-from plugin_manager.plugins.models import Plugin
-from plugin_manager.users.models import ForumUser
-from plugin_manager.sub_plugins.models import (
-    SubPluginRelease, SubPlugin, SubPluginImage,
-)
+from ...plugins.models import Plugin
+from ...users.models import ForumUser
+from ..models import SubPluginRelease, SubPlugin, SubPluginImage
 
 
 # =============================================================================

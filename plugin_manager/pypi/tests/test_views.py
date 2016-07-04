@@ -5,7 +5,7 @@
 from django.test import TestCase
 
 # App
-from plugin_manager.pypi.views import PyPiListView, PyPiView
+from ..views import PyPiListView, PyPiView
 
 
 # =============================================================================

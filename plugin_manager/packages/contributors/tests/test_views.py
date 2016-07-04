@@ -5,7 +5,7 @@
 from django.test import TestCase
 
 # App
-from plugin_manager.packages.contributors.views import (
+from ..views import (
     PackageAddContributorConfirmationView, PackageAddContributorView,
 )
 

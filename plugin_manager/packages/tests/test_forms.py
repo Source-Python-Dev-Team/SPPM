@@ -9,12 +9,12 @@ from django import forms
 from django.test import TestCase
 
 # App
-from plugin_manager.users.models import ForumUser
-from plugin_manager.packages.forms import (
+from ...models import ForumUser
+from ..forms import (
     PackageCreateForm, PackageEditForm, PackageSelectGamesForm,
     PackageUpdateForm,
 )
-from plugin_manager.packages.models import Package, PackageRelease
+from ..models import Package, PackageRelease
 
 
 # =============================================================================
