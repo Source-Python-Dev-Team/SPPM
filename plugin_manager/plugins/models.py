@@ -13,12 +13,13 @@ from django.core.urlresolvers import reverse
 from django.db import models
 
 # App
+from plugin_manager.common.models import CommonBase, Release
+from plugin_manager.common.validators import basename_validator
+from plugin_manager.users.models import ForumUser
 from .constants import PLUGIN_LOGO_URL
 from .helpers import handle_plugin_image_upload
 from .helpers import handle_plugin_logo_upload
 from .helpers import handle_plugin_zip_upload
-from plugin_manager.common.models import CommonBase, Release
-from plugin_manager.users.models import ForumUser
 
 
 # =============================================================================
@@ -35,6 +36,21 @@ __all__ = (
 # >> MODELS
 # =============================================================================
 class Plugin(CommonBase):
+    name = models.CharField(
+        max_length=64,
+        unique=True,
+    )
+    basename = models.CharField(
+        max_length=32,
+        validators=[basename_validator],
+        unique=True,
+        blank=True,
+    )
+    slug = models.SlugField(
+        max_length=32,
+        unique=True,
+        blank=True,
+    )
     owner = models.ForeignKey(
         to='plugin_manager.ForumUser',
         related_name='plugins',

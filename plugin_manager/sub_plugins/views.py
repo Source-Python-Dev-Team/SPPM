@@ -246,6 +246,17 @@ class SubPluginView(DetailView):
     template_name = 'sub_plugins/view.html'
     slug_url_kwarg = 'sub_plugin_slug'
 
+    def get_queryset(self):
+        """This is to fix a MultipleObjectsReturned error."""
+        plugin = Plugin.objects.get(
+            slug=self.kwargs['slug'],
+        )
+        queryset = SubPlugin.objects.filter(
+            plugin=plugin,
+            slug=self.kwargs['sub_plugin_slug'],
+        )
+        return queryset
+
     def get_context_data(self, **kwargs):
         context = super(SubPluginView, self).get_context_data(**kwargs)
         sub_plugin = context['subplugin']

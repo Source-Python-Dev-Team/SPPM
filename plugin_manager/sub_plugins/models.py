@@ -13,12 +13,13 @@ from django.core.urlresolvers import reverse
 from django.db import models
 
 # App
+from plugin_manager.common.models import CommonBase, Release
+from plugin_manager.common.validators import basename_validator
+from plugin_manager.users.models import ForumUser
 from .constants import SUB_PLUGIN_LOGO_URL
 from .helpers import handle_sub_plugin_image_upload
 from .helpers import handle_sub_plugin_logo_upload
 from .helpers import handle_sub_plugin_zip_upload
-from plugin_manager.common.models import CommonBase, Release
-from plugin_manager.users.models import ForumUser
 
 
 # =============================================================================
@@ -35,6 +36,18 @@ __all__ = (
 # >> MODELS
 # =============================================================================
 class SubPlugin(CommonBase):
+    name = models.CharField(
+        max_length=64,
+    )
+    basename = models.CharField(
+        max_length=32,
+        validators=[basename_validator],
+        blank=True,
+    )
+    slug = models.SlugField(
+        max_length=32,
+        blank=True,
+    )
     owner = models.ForeignKey(
         to='plugin_manager.ForumUser',
         related_name='sub_plugins',
@@ -76,8 +89,12 @@ class SubPlugin(CommonBase):
     class Meta:
         verbose_name = 'SubPlugin'
         verbose_name_plural = 'SubPlugins'
+        unique_together = (
+            'plugin', 'basename', 'name', 'slug',
+        )
 
     def get_absolute_url(self):
+        print 'Get Absolute URL'
         return reverse(
             viewname='plugins:sub-plugins:detail',
             kwargs={

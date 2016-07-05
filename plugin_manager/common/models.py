@@ -35,21 +35,6 @@ __all__ = (
 # =============================================================================
 class CommonBase(models.Model):
     """Base model for upload content."""
-    name = models.CharField(
-        max_length=64,
-        unique=True,
-    )
-    basename = models.CharField(
-        max_length=32,
-        validators=[basename_validator],
-        unique=True,
-        blank=True,
-    )
-    slug = models.SlugField(
-        max_length=32,
-        unique=True,
-        blank=True,
-    )
     synopsis = models.CharField(
         max_length=128,
         blank=True,
