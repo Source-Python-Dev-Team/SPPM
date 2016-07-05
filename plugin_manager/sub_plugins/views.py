@@ -11,9 +11,7 @@ from configobj import Section
 from django.conf import settings
 from django.db.models import F
 from django.http import Http404, HttpResponse
-from django.views.generic import (
-    CreateView, DetailView, ListView, UpdateView, View,
-)
+from django.views.generic import CreateView, DetailView, ListView, UpdateView
 
 # App
 from plugin_manager.common.helpers import (
@@ -21,6 +19,7 @@ from plugin_manager.common.helpers import (
     add_vcs_requirement, flush_requirements, get_requirements,
     reset_requirements,
 )
+from plugin_manager.common.mixins import DownloadMixin
 from plugin_manager.common.views import OrderablePaginatedListView
 from plugin_manager.plugins.constants import PLUGIN_PATH
 from plugin_manager.plugins.models import Plugin
@@ -277,49 +276,14 @@ class SubPluginView(DetailView):
         return context
 
 
-class SubPluginReleaseDownloadView(View):
+class SubPluginReleaseDownloadView(DownloadMixin):
     model = SubPluginRelease
-    full_path = None
-
-    def dispatch(self, request, *args, **kwargs):
-        self.full_path = (
-            settings.MEDIA_ROOT / SUB_PLUGIN_RELEASE_URL / kwargs['slug'] /
-            kwargs['sub_plugin_slug'] / kwargs['zip_file']
-        )
-        if not self.full_path.isfile():
-            raise Http404
-        return super(
-            SubPluginReleaseDownloadView,
-            self
-        ).dispatch(request, *args, **kwargs)
-
-    def get(self, request, *args, **kwargs):
-        zip_file = kwargs['zip_file']
-        with self.full_path.open('rb') as open_file:
-            response = HttpResponse(
-                content=open_file.read(),
-                content_type='application/force-download',
-            )
-        response['Content-Disposition'] = (
-            'attachment: filename={filename}'.format(
-                filename=zip_file,
-            )
-        )
-        plugin = Plugin.objects.get(slug=kwargs['slug'])
-        sub_plugin = SubPlugin.objects.get(
-            plugin=plugin,
-            slug=kwargs['sub_plugin_slug'],
-        )
-        version = zip_file.split(
-            '{slug}-v'.format(slug=sub_plugin.slug), 1
-        )[1].rsplit('.', 1)[0]
-        SubPluginRelease.objects.filter(
-            sub_plugin=sub_plugin,
-            version=version
-        ).update(
-            download_count=F('download_count') + 1
-        )
-        return response
+    super_model = Plugin
+    sub_model = SubPlugin
+    slug_url_kwarg = 'sub_plugin_slug'
+    super_kwarg = 'plugin'
+    sub_kwarg = 'sub_plugin'
+    base_url = SUB_PLUGIN_RELEASE_URL
 
 
 class SubPluginReleaseListView(ListView):

@@ -196,43 +196,9 @@ class PackageView(DetailView):
 
 class PackageReleaseDownloadView(View):
     model = PackageRelease
-    full_path = None
-
-    def dispatch(self, request, *args, **kwargs):
-        self.full_path = (
-            settings.MEDIA_ROOT / PACKAGE_RELEASE_URL / kwargs['slug'] /
-            kwargs['zip_file']
-        )
-        if not self.full_path.isfile():
-            raise Http404
-        return super(
-            PackageReleaseDownloadView,
-            self
-        ).dispatch(request, *args, **kwargs)
-
-    def get(self, request, *args, **kwargs):
-        zip_file = kwargs['zip_file']
-        with self.full_path.open('rb') as open_file:
-            response = HttpResponse(
-                content=open_file.read(),
-                content_type='application/force-download',
-            )
-        response['Content-Disposition'] = (
-            'attachment: filename={filename}'.format(
-                filename=zip_file,
-            )
-        )
-        package = Package.objects.get(slug=kwargs['slug'])
-        version = zip_file.split(
-            '{slug}-v'.format(slug=package.slug), 1
-        )[1].rsplit('.', 1)[0]
-        PackageRelease.objects.filter(
-            package=package,
-            version=version
-        ).update(
-            download_count=F('download_count') + 1
-        )
-        return response
+    super_model = Package
+    super_kwarg = 'package'
+    base_url = PACKAGE_RELEASE_URL
 
 
 class PackageReleaseListView(ListView):
