@@ -24,7 +24,9 @@ from .validators import basename_validator, version_validator
 # =============================================================================
 __all__ = (
     'CommonBase',
+    'DownloadRequirement',
     'Release',
+    'VersionControlRequirement',
 )
 
 

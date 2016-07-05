@@ -17,9 +17,14 @@ from .models import DownloadRequirement, VersionControlRequirement
 # >> ALL DECLARATION
 # =============================================================================
 __all__ = (
+    'add_download_requirement',
+    'add_package_requirement',
+    'add_pypi_requirement',
+    'add_vcs_requirement',
     'find_image_number',
     'get_groups',
     'get_requirements',
+    'reset_requirements',
 )
 
 
