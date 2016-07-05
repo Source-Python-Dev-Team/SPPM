@@ -8,9 +8,6 @@ from zipfile import ZipFile
 from configobj import Section
 
 # Django
-from django.conf import settings
-from django.db.models import F
-from django.http import Http404, HttpResponse
 from django.views.generic import (
     CreateView, DetailView, ListView, UpdateView, View,
 )

@@ -22,6 +22,7 @@ __all__ = (
     'add_pypi_requirement',
     'add_vcs_requirement',
     'find_image_number',
+    'flush_requirements',
     'get_groups',
     'get_requirements',
     'reset_requirements',

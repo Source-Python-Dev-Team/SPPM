@@ -9,6 +9,14 @@ from django.views.generic import View
 
 
 # =============================================================================
+# >> ALL DECLARATION
+# =============================================================================
+__all__ = (
+    'DownloadMixin',
+)
+
+
+# =============================================================================
 # >> MIX-INS
 # =============================================================================
 class DownloadMixin(View):
@@ -97,8 +105,7 @@ class DownloadMixin(View):
         self.model.objects.filter(**{
             object_kwarg: instance,
             'version': version,
-        }
-        ).update(
+        }).update(
             download_count=F('download_count') + 1
         )
         return response
