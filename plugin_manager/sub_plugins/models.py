@@ -94,7 +94,6 @@ class SubPlugin(CommonBase):
         )
 
     def get_absolute_url(self):
-        print 'Get Absolute URL'
         return reverse(
             viewname='plugins:sub-plugins:detail',
             kwargs={
