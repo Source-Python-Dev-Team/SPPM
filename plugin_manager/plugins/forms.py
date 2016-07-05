@@ -17,7 +17,6 @@ from crispy_forms.layout import Submit
 from .constants import PLUGIN_PATH
 from .helpers import get_plugin_basename
 from .models import Plugin, PluginRelease
-from .paths.models import SubPluginPath
 
 
 # =============================================================================

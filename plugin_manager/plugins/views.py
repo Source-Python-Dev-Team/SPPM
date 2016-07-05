@@ -1,6 +1,12 @@
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
+# Python
+from zipfile import ZipFile
+
+# 3rd-Party Python
+from configobj import Section
+
 # Django
 from django.conf import settings
 from django.db.models import F
@@ -10,12 +16,16 @@ from django.views.generic import (
 )
 
 # App
-from .constants import PLUGIN_RELEASE_URL
+from plugin_manager.common.helpers import (
+    add_download_requirement, add_package_requirement, add_pypi_requirement,
+    add_vcs_requirement, get_requirements, reset_requirements,
+)
+from plugin_manager.common.views import OrderablePaginatedListView
+from .constants import PLUGIN_PATH, PLUGIN_RELEASE_URL
 from .forms import (
     PluginCreateForm, PluginEditForm, PluginSelectGamesForm, PluginUpdateForm,
 )
 from .models import Plugin, PluginRelease
-from plugin_manager.common.views import OrderablePaginatedListView
 
 
 # =============================================================================
@@ -91,6 +101,34 @@ class PluginUpdateView(UpdateView):
             'zip_file': '',
         })
         return initial
+
+    def form_valid(self, form):
+        response = super(PluginUpdateView, self).form_valid(form)
+        zip_file = ZipFile(form.cleaned_data['zip_file'])
+        instance = form.instance
+        requirements = get_requirements(
+            zip_file,
+            '{package_path}{basename}/requirements.ini'.format(
+                package_path=PLUGIN_PATH,
+                basename=instance.basename,
+            )
+        )
+        reset_requirements(instance)
+        for basename in requirements.get('custom', {}):
+            add_package_requirement(basename, instance)
+        for basename in requirements.get('pypi', {}):
+            add_pypi_requirement(basename, instance)
+        for basename, url in requirements.get('vcs', {}).items():
+            add_vcs_requirement(basename, url, instance)
+        for basename, value in requirements.get('downloads', {}).items():
+            if isinstance(value, Section):
+                url = value.get('url')
+                desc = value.get('desc')
+            else:
+                url = str(value)
+                desc = ''
+            add_download_requirement(basename, url, desc, instance)
+        return response
 
 
 class PluginSelectGamesView(UpdateView):
