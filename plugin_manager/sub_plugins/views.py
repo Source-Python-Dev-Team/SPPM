@@ -102,6 +102,37 @@ class SubPluginCreateView(CreateView):
         })
         return initial
 
+    def form_valid(self, form):
+        response = super(SubPluginCreateView, self).form_valid(form)
+        zip_file = ZipFile(form.cleaned_data['zip_file'])
+        instance = form.instance
+        requirements = get_requirements(
+            zip_file,
+            '{plugin_path}{plugin_basename}/{path}/{basename}/'
+            'requirements.ini'.format(
+                plugin_path=PLUGIN_PATH,
+                plugin_basename=instance.plugin.basename,
+                basename=instance.basename,
+                path=form.cleaned_data['path'],
+            )
+        )
+        reset_requirements(instance)
+        for basename in requirements.get('custom', {}):
+            add_package_requirement(basename, instance)
+        for basename in requirements.get('pypi', {}):
+            add_pypi_requirement(basename, instance)
+        for basename, url in requirements.get('vcs', {}).items():
+            add_vcs_requirement(basename, url, instance)
+        for basename, value in requirements.get('downloads', {}).items():
+            if isinstance(value, Section):
+                url = value.get('url')
+                desc = value.get('desc')
+            else:
+                url = str(value)
+                desc = ''
+            add_download_requirement(basename, url, desc, instance)
+        return response
+
 
 class SubPluginEditView(UpdateView):
     model = SubPlugin

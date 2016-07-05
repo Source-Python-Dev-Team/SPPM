@@ -135,6 +135,7 @@ class SubPluginCreateForm(forms.ModelForm):
                 code='duplicate',
             )
         self.instance.basename = basename
+        self.cleaned_data['path'] = path
         return self.cleaned_data['zip_file']
 
 
