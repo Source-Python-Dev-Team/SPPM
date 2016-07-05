@@ -2,10 +2,15 @@
 # >> IMPORTS
 # =============================================================================
 # 3rd-Party Python
+from configobj import ConfigObj
 from path import Path
 
 # Django
 from django.conf import settings
+
+# App
+from plugin_manager.pypi.models import PyPiRequirement
+from .models import DownloadRequirement, VersionControlRequirement
 
 
 # =============================================================================
@@ -14,6 +19,7 @@ from django.conf import settings
 __all__ = (
     'find_image_number',
     'get_groups',
+    'get_requirements',
 )
 
 
@@ -34,3 +40,52 @@ def get_groups(iterable, count=3):
     remainder = len(iterable) % count
     iterable.extend([''] * (count - remainder))
     return zip(*(iter(iterable), ) * count)
+
+
+def get_requirements(zip_file, requirement_path):
+    for zipped_file in zip_file.filelist:
+        if zipped_file.filename == requirement_path:
+            break
+    else:
+        return {}
+    ini = zip_file.open(zipped_file)
+    return ConfigObj(ini)
+
+
+def add_package_requirement(package_basename, project):
+    from plugin_manager.packages.models import Package
+    try:
+        package = Package.objects.get(basename=package_basename)
+    except Package.DoesNotExist:
+        return False
+    project.package_requirements.add(package)
+    return True
+
+
+def add_pypi_requirement(package_basename, project):
+    package, created = PyPiRequirement.objects.get_or_create(name=package_basename)
+    project.pypi_requirements.add(package)
+
+
+def add_vcs_requirement(name, url, project):
+    package, created = VersionControlRequirement.objects.get_or_create(
+        name=name,
+        url=url,
+    )
+    project.vcs_requirements.add(package)
+
+
+def add_download_requirement(name, url, desc, project):
+    package, created = DownloadRequirement.objects.get_or_create(
+        name=name,
+        url=url,
+        desc=desc,
+    )
+    project.download_requirements.add(package)
+
+
+def reset_requirements(project):
+    project.package_requirements.clear()
+    project.pypi_requirements.clear()
+    project.vcs_requirements.clear()
+    project.download_requirements.clear()
