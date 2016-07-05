@@ -8,9 +8,6 @@ from zipfile import ZipFile
 from configobj import Section
 
 # Django
-from django.conf import settings
-from django.db.models import F
-from django.http import Http404, HttpResponse
 from django.views.generic import CreateView, DetailView, ListView, UpdateView
 
 # App
@@ -22,6 +19,7 @@ from plugin_manager.common.helpers import (
 from plugin_manager.common.mixins import DownloadMixin
 from plugin_manager.common.views import OrderablePaginatedListView
 from plugin_manager.plugins.constants import PLUGIN_PATH
+from plugin_manager.plugins.mixins import RetrievePluginMixin
 from plugin_manager.plugins.models import Plugin
 from .constants import SUB_PLUGIN_RELEASE_URL
 from .forms import (
@@ -49,7 +47,7 @@ __all__ = (
 # =============================================================================
 # >> VIEWS
 # =============================================================================
-class SubPluginListView(OrderablePaginatedListView):
+class SubPluginListView(RetrievePluginMixin, OrderablePaginatedListView):
     model = SubPlugin
     orderable_columns = (
         'name',
@@ -66,26 +64,18 @@ class SubPluginListView(OrderablePaginatedListView):
 
     def get_context_data(self, **kwargs):
         context = super(SubPluginListView, self).get_context_data(**kwargs)
-        plugin = Plugin.objects.get(slug=self.kwargs['slug'])
         context.update({
-            'plugin': plugin,
-            'paths': plugin.paths.all(),
+            'plugin': self.plugin,
+            'paths': self.plugin.paths.all(),
             'sub_plugin_list': context['subplugin_list'],
         })
         return context
 
 
-class SubPluginCreateView(CreateView):
+class SubPluginCreateView(RetrievePluginMixin, CreateView):
     model = SubPlugin
     form_class = SubPluginCreateForm
     template_name = 'sub_plugins/create.html'
-    _plugin = None
-
-    @property
-    def plugin(self):
-        if self._plugin is None:
-            self._plugin = Plugin.objects.get(slug=self.kwargs['slug'])
-        return self._plugin
 
     def get_context_data(self, **kwargs):
         context = super(SubPluginCreateView, self).get_context_data(**kwargs)
@@ -156,18 +146,11 @@ class SubPluginEditView(UpdateView):
         return context
 
 
-class SubPluginUpdateView(UpdateView):
+class SubPluginUpdateView(RetrievePluginMixin, UpdateView):
     model = SubPlugin
     form_class = SubPluginUpdateForm
     template_name = 'sub_plugins/update.html'
     slug_url_kwarg = 'sub_plugin_slug'
-    _plugin = None
-
-    @property
-    def plugin(self):
-        if self._plugin is None:
-            self._plugin = Plugin.objects.get(slug=self.kwargs['slug'])
-        return self._plugin
 
     def get_context_data(self, **kwargs):
         context = super(SubPluginUpdateView, self).get_context_data(**kwargs)
@@ -243,18 +226,15 @@ class SubPluginSelectGamesView(UpdateView):
         return context
 
 
-class SubPluginView(DetailView):
+class SubPluginView(RetrievePluginMixin, DetailView):
     model = SubPlugin
     template_name = 'sub_plugins/view.html'
     slug_url_kwarg = 'sub_plugin_slug'
 
     def get_queryset(self):
         """This is to fix a MultipleObjectsReturned error."""
-        plugin = Plugin.objects.get(
-            slug=self.kwargs['slug'],
-        )
         queryset = SubPlugin.objects.filter(
-            plugin=plugin,
+            plugin=self.plugin,
             slug=self.kwargs['sub_plugin_slug'],
         )
         return queryset
@@ -286,7 +266,7 @@ class SubPluginReleaseDownloadView(DownloadMixin):
     base_url = SUB_PLUGIN_RELEASE_URL
 
 
-class SubPluginReleaseListView(ListView):
+class SubPluginReleaseListView(RetrievePluginMixin, ListView):
     model = SubPluginRelease
     template_name = 'sub_plugins/releases.html'
     _sub_plugin = None
@@ -294,11 +274,8 @@ class SubPluginReleaseListView(ListView):
     @property
     def sub_plugin(self):
         if self._sub_plugin is None:
-            plugin = Plugin.objects.get(
-                slug=self.kwargs['slug'],
-            )
             self._sub_plugin = SubPlugin.objects.get(
-                plugin=plugin,
+                plugin=self.plugin,
                 slug=self.kwargs['sub_plugin_slug'],
             )
         return self._sub_plugin

@@ -22,6 +22,7 @@ from .constants import PLUGIN_PATH, PLUGIN_RELEASE_URL
 from .forms import (
     PluginCreateForm, PluginEditForm, PluginSelectGamesForm, PluginUpdateForm,
 )
+from .mixins import RetrievePluginMixin
 from .models import Plugin, PluginRelease
 
 
@@ -102,19 +103,18 @@ class PluginEditView(UpdateView):
         return initial
 
 
-class PluginUpdateView(UpdateView):
+class PluginUpdateView(RetrievePluginMixin, UpdateView):
     model = Plugin
     form_class = PluginUpdateForm
     template_name = 'plugins/update.html'
 
     def get_context_data(self, **kwargs):
         context = super(PluginUpdateView, self).get_context_data(**kwargs)
-        plugin = Plugin.objects.get(slug=context['view'].kwargs['slug'])
         current_release = PluginRelease.objects.filter(
-            plugin=plugin,
+            plugin=self.plugin,
         ).order_by('-created')[0]
         context.update({
-            'plugin': plugin,
+            'plugin': self.plugin,
             'current_release': current_release,
         })
         return context
@@ -191,18 +191,9 @@ class PluginReleaseDownloadView(DownloadMixin):
     base_url = PLUGIN_RELEASE_URL
 
 
-class PluginReleaseListView(ListView):
+class PluginReleaseListView(RetrievePluginMixin, ListView):
     model = PluginRelease
     template_name = 'plugins/releases.html'
-    _plugin = None
-
-    @property
-    def plugin(self):
-        if self._plugin is None:
-            self._plugin = Plugin.objects.get(
-                slug=self.kwargs['slug'],
-            )
-        return self._plugin
 
     def get_context_data(self, **kwargs):
         context = super(PluginReleaseListView, self).get_context_data(**kwargs)

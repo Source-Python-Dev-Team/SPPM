@@ -10,7 +10,7 @@ from django_filters.views import FilterView
 
 # App
 from .forms import SubPluginAddContributorConfirmationForm
-from plugin_manager.plugins.models import Plugin
+from plugin_manager.plugins.mixins import RetrievePluginMixin
 from plugin_manager.sub_plugins.models import SubPlugin
 from plugin_manager.users.filtersets import ForumUserFilterSet
 from plugin_manager.users.models import ForumUser
@@ -28,17 +28,10 @@ __all__ = (
 # =============================================================================
 # >> VIEWS
 # =============================================================================
-class SubPluginAddContributorView(FilterView):
+class SubPluginAddContributorView(RetrievePluginMixin, FilterView):
     model = ForumUser
     template_name = 'sub_plugins/contributors/add.html'
     filterset_class = ForumUserFilterSet
-    _plugin = None
-
-    @property
-    def plugin(self):
-        if self._plugin is None:
-            self._plugin = Plugin.objects.get(slug=self.kwargs['slug'])
-        return self._plugin
 
     def get_context_data(self, **kwargs):
         context = super(
@@ -71,16 +64,9 @@ class SubPluginAddContributorView(FilterView):
         return context
 
 
-class SubPluginAddContributorConfirmationView(FormView):
+class SubPluginAddContributorConfirmationView(RetrievePluginMixin, FormView):
     form_class = SubPluginAddContributorConfirmationForm
     template_name = 'sub_plugins/contributors/add_confirmation.html'
-    _plugin = None
-
-    @property
-    def plugin(self):
-        if self._plugin is None:
-            self._plugin = Plugin.objects.get(slug=self.kwargs['slug'])
-        return self._plugin
 
     def get_initial(self):
         initial = super(
