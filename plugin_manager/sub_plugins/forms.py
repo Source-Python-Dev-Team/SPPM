@@ -261,4 +261,5 @@ class SubPluginUpdateForm(forms.ModelForm):
                 'Uploaded sub-plugin does not match current sub-plugin.',
                 code='mismatch',
             )
+        self.cleaned_data['path'] = path
         return self.cleaned_data['zip_file']
