@@ -1,4 +1,5 @@
 -e git://github.com/ZombieToof/django-phpbb.git
+configobj
 django-braces
 django-crispy-forms
 django-debug-toolbar
