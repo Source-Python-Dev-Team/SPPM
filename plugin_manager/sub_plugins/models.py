@@ -64,6 +64,14 @@ class SubPlugin(CommonBase):
         to='plugin_manager.Game',
         related_name='sub_plugins',
     )
+    vcs_requirements = models.ManyToManyField(
+        to='plugin_manager.VersionControlRequirement',
+        related_name='sub_plugins',
+    )
+    download_requirements = models.ManyToManyField(
+        to='plugin_manager.DownloadRequirement',
+        related_name='sub_plugins',
+    )
 
     class Meta:
         verbose_name = 'SubPlugin'

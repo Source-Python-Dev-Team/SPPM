@@ -176,3 +176,26 @@ class Release(TimeStampedModel):
                 class_name=self.__class__.__name__,
             )
         )
+
+
+class VersionControlRequirement(models.Model):
+    name = models.CharField(
+        max_length=64,
+    )
+    url = models.CharField(
+        max_length=128,
+    )
+
+
+class DownloadRequirement(models.Model):
+    name = models.CharField(
+        max_length=64,
+    )
+    url = models.CharField(
+        max_length=128,
+    )
+    description = models.CharField(
+        max_length=256,
+        blank=True,
+        null=True,
+    )

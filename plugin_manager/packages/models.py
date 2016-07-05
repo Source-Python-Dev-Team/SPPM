@@ -60,6 +60,14 @@ class Package(CommonBase):
         to='plugin_manager.Game',
         related_name='packages',
     )
+    vcs_requirements = models.ManyToManyField(
+        to='plugin_manager.VersionControlRequirement',
+        related_name='packages',
+    )
+    download_requirements = models.ManyToManyField(
+        to='plugin_manager.DownloadRequirement',
+        related_name='packages',
+    )
 
     def get_absolute_url(self):
         return reverse(
