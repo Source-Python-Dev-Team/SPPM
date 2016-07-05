@@ -1,6 +1,7 @@
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
+from .common.models import DownloadRequirement, VersionControlRequirement
 from .games.models import Game
 from .packages.models import Package, PackageImage, PackageRelease
 from .plugins.models import Plugin, PluginImage, PluginRelease
@@ -11,7 +12,8 @@ from .tags.models import Tag
 from .users.models import ForumUser
 
 _all_models = (
-    ForumUser, Game, Package, PackageImage, PackageRelease, Plugin,
-    PluginImage, PluginRelease, PyPiRequirement, SubPlugin, SubPluginImage,
-    SubPluginPath, SubPluginRelease, Tag,
+    DownloadRequirement, ForumUser, Game, Package, PackageImage,
+    PackageRelease, Plugin, PluginImage, PluginRelease, PyPiRequirement,
+    SubPlugin, SubPluginImage, SubPluginPath, SubPluginRelease, Tag,
+    VersionControlRequirement,
 )
