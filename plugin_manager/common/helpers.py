@@ -84,7 +84,7 @@ def add_download_requirement(name, url, desc, project):
     package, created = DownloadRequirement.objects.get_or_create(
         name=name,
         url=url,
-        desc=desc,
+        description=desc,
     )
     project.download_requirements.add(package)
 
