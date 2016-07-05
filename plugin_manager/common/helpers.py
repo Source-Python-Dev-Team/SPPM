@@ -94,3 +94,21 @@ def reset_requirements(project):
     project.pypi_requirements.clear()
     project.vcs_requirements.clear()
     project.download_requirements.clear()
+
+
+def flush_requirements():
+    PyPiRequirement.objects.filter(
+        required_in_packages__isnull=True,
+        required_in_plugins__isnull=True,
+        required_in_sub_plugins__isnull=True,
+    ).delete()
+    VersionControlRequirement.objects.filter(
+        packages__isnull=True,
+        plugins__isnull=True,
+        sub_plugins__isnull=True,
+    ).delete()
+    DownloadRequirement.objects.filter(
+        packages__isnull=True,
+        plugins__isnull=True,
+        sub_plugins__isnull=True,
+    ).delete()

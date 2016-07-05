@@ -18,7 +18,8 @@ from django.views.generic import (
 # App
 from plugin_manager.common.helpers import (
     add_download_requirement, add_package_requirement, add_pypi_requirement,
-    add_vcs_requirement, get_groups, get_requirements, reset_requirements,
+    add_vcs_requirement, flush_requirements, get_groups, get_requirements,
+    reset_requirements,
 )
 from plugin_manager.common.views import OrderablePaginatedListView
 from .constants import PACKAGE_PATH, PACKAGE_RELEASE_URL
@@ -89,6 +90,7 @@ class PackageCreateView(CreateView):
                 url = str(value)
                 desc = ''
             add_download_requirement(basename, url, desc, instance)
+        flush_requirements()
         return response
 
 
@@ -157,6 +159,7 @@ class PackageUpdateView(UpdateView):
                 url = str(value)
                 desc = ''
             add_download_requirement(basename, url, desc, instance)
+        flush_requirements()
         return response
 
 
