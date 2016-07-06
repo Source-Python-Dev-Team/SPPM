@@ -1,22 +1,11 @@
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
-# Python
-from zipfile import ZipFile
-
-# 3rd-Party Python
-from configobj import Section
-
 # Django
 from django.views.generic import CreateView, DetailView, ListView, UpdateView
 
 # App
-from plugin_manager.common.helpers import (
-    add_download_requirement, add_package_requirement, add_pypi_requirement,
-    add_vcs_requirement, flush_requirements, get_requirements,
-    reset_requirements,
-)
-from plugin_manager.common.mixins import DownloadMixin
+from plugin_manager.common.mixins import DownloadMixin, RequirementsParserMixin
 from plugin_manager.common.views import OrderablePaginatedListView
 from plugin_manager.plugins.constants import PLUGIN_PATH
 from plugin_manager.plugins.models import Plugin
@@ -72,10 +61,24 @@ class SubPluginListView(RetrieveSubPluginMixin, OrderablePaginatedListView):
         return context
 
 
-class SubPluginCreateView(RetrieveSubPluginMixin, CreateView):
+class SubPluginCreateView(
+    RequirementsParserMixin, RetrieveSubPluginMixin, CreateView
+):
     model = SubPlugin
     form_class = SubPluginCreateForm
     template_name = 'sub_plugins/create.html'
+
+    @staticmethod
+    def get_requirements_path(form):
+        return (
+            '{plugin_path}{plugin_basename}/{path}/{basename}/'
+            'requirements.ini'.format(
+                plugin_path=PLUGIN_PATH,
+                plugin_basename=form.instance.plugin.basename,
+                basename=form.instance.basename,
+                path=form.cleaned_data['path'],
+            )
+        )
 
     def get_context_data(self, **kwargs):
         context = super(SubPluginCreateView, self).get_context_data(**kwargs)
@@ -91,38 +94,6 @@ class SubPluginCreateView(RetrieveSubPluginMixin, CreateView):
             'plugin': self.plugin,
         })
         return initial
-
-    def form_valid(self, form):
-        response = super(SubPluginCreateView, self).form_valid(form)
-        zip_file = ZipFile(form.cleaned_data['zip_file'])
-        instance = form.instance
-        requirements = get_requirements(
-            zip_file,
-            '{plugin_path}{plugin_basename}/{path}/{basename}/'
-            'requirements.ini'.format(
-                plugin_path=PLUGIN_PATH,
-                plugin_basename=instance.plugin.basename,
-                basename=instance.basename,
-                path=form.cleaned_data['path'],
-            )
-        )
-        reset_requirements(instance)
-        for basename in requirements.get('custom', {}):
-            add_package_requirement(basename, instance)
-        for basename in requirements.get('pypi', {}):
-            add_pypi_requirement(basename, instance)
-        for basename, url in requirements.get('vcs', {}).items():
-            add_vcs_requirement(basename, url, instance)
-        for basename, value in requirements.get('downloads', {}).items():
-            if isinstance(value, Section):
-                url = value.get('url')
-                desc = value.get('desc')
-            else:
-                url = str(value)
-                desc = ''
-            add_download_requirement(basename, url, desc, instance)
-        flush_requirements()
-        return response
 
 
 class SubPluginEditView(UpdateView):
@@ -146,11 +117,32 @@ class SubPluginEditView(UpdateView):
         return context
 
 
-class SubPluginUpdateView(RetrieveSubPluginMixin, UpdateView):
+class SubPluginUpdateView(
+    RequirementsParserMixin, RetrieveSubPluginMixin, UpdateView
+):
     model = SubPlugin
     form_class = SubPluginUpdateForm
     template_name = 'sub_plugins/update.html'
     slug_url_kwarg = 'sub_plugin_slug'
+
+    @staticmethod
+    def get_requirements_path(form):
+        return (
+            '{plugin_path}{plugin_basename}/{path}/{basename}/'
+            'requirements.ini'.format(
+                plugin_path=PLUGIN_PATH,
+                plugin_basename=form.instance.plugin.basename,
+                basename=form.instance.basename,
+                path=form.cleaned_data['path'],
+            )
+        )
+
+    def get_queryset(self):
+        """This is to fix a MultipleObjectsReturned error."""
+        queryset = SubPlugin.objects.filter(
+            pk=self.sub_plugin.pk,
+        )
+        return queryset
 
     def get_context_data(self, **kwargs):
         context = super(SubPluginUpdateView, self).get_context_data(**kwargs)
@@ -175,38 +167,6 @@ class SubPluginUpdateView(RetrieveSubPluginMixin, UpdateView):
             'zip_file': '',
         })
         return initial
-
-    def form_valid(self, form):
-        response = super(SubPluginUpdateView, self).form_valid(form)
-        zip_file = ZipFile(form.cleaned_data['zip_file'])
-        instance = form.instance
-        requirements = get_requirements(
-            zip_file,
-            '{plugin_path}{plugin_basename}/{path}/{basename}/'
-            'requirements.ini'.format(
-                plugin_path=PLUGIN_PATH,
-                plugin_basename=instance.plugin.basename,
-                basename=instance.basename,
-                path=form.cleaned_data['path'],
-            )
-        )
-        reset_requirements(instance)
-        for basename in requirements.get('custom', {}):
-            add_package_requirement(basename, instance)
-        for basename in requirements.get('pypi', {}):
-            add_pypi_requirement(basename, instance)
-        for basename, url in requirements.get('vcs', {}).items():
-            add_vcs_requirement(basename, url, instance)
-        for basename, value in requirements.get('downloads', {}).items():
-            if isinstance(value, Section):
-                url = value.get('url')
-                desc = value.get('desc')
-            else:
-                url = str(value)
-                desc = ''
-            add_download_requirement(basename, url, desc, instance)
-        flush_requirements()
-        return response
 
 
 class SubPluginSelectGamesView(UpdateView):

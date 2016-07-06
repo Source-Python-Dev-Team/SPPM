@@ -1,23 +1,13 @@
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
-# Python
-from zipfile import ZipFile
-
-# 3rd-Party Python
-from configobj import Section
-
 # Django
 from django.views.generic import (
     CreateView, DetailView, ListView, UpdateView, View,
 )
 
 # App
-from plugin_manager.common.helpers import (
-    add_download_requirement, add_package_requirement, add_pypi_requirement,
-    add_vcs_requirement, flush_requirements, get_groups, get_requirements,
-    reset_requirements,
-)
+from plugin_manager.common.helpers import get_groups
 from plugin_manager.common.views import OrderablePaginatedListView
 from .constants import PACKAGE_PATH, PACKAGE_RELEASE_URL
 from .forms import (
@@ -61,34 +51,12 @@ class PackageCreateView(CreateView):
     form_class = PackageCreateForm
     template_name = 'packages/create.html'
 
-    def form_valid(self, form):
-        response = super(PackageCreateView, self).form_valid(form)
-        zip_file = ZipFile(form.cleaned_data['zip_file'])
-        instance = form.instance
-        requirements = get_requirements(
-            zip_file,
-            '{package_path}{basename}/requirements.ini'.format(
-                package_path=PACKAGE_PATH,
-                basename=instance.basename,
-            )
+    @staticmethod
+    def get_requirements_path(form):
+        return '{package_path}{basename}/requirements.ini'.format(
+            package_path=PACKAGE_PATH,
+            basename=form.instance.basename,
         )
-        reset_requirements(instance)
-        for basename in requirements.get('custom', {}):
-            add_package_requirement(basename, instance)
-        for basename in requirements.get('pypi', {}):
-            add_pypi_requirement(basename, instance)
-        for basename, url in requirements.get('vcs', {}).items():
-            add_vcs_requirement(basename, url, instance)
-        for basename, value in requirements.get('downloads', {}).items():
-            if isinstance(value, Section):
-                url = value.get('url')
-                desc = value.get('desc')
-            else:
-                url = str(value)
-                desc = ''
-            add_download_requirement(basename, url, desc, instance)
-        flush_requirements()
-        return response
 
 
 class PackageEditView(UpdateView):
@@ -108,6 +76,13 @@ class PackageUpdateView(UpdateView):
     model = Package
     form_class = PackageUpdateForm
     template_name = 'packages/update.html'
+
+    @staticmethod
+    def get_requirements_path(form):
+        return '{package_path}{basename}/requirements.ini'.format(
+            package_path=PACKAGE_PATH,
+            basename=form.instance.basename,
+        )
 
     def get_context_data(self, **kwargs):
         context = super(PackageUpdateView, self).get_context_data(**kwargs)
@@ -129,35 +104,6 @@ class PackageUpdateView(UpdateView):
             'zip_file': '',
         })
         return initial
-
-    def form_valid(self, form):
-        response = super(PackageUpdateView, self).form_valid(form)
-        zip_file = ZipFile(form.cleaned_data['zip_file'])
-        instance = form.instance
-        requirements = get_requirements(
-            zip_file,
-            '{package_path}{basename}/requirements.ini'.format(
-                package_path=PACKAGE_PATH,
-                basename=instance.basename,
-            )
-        )
-        reset_requirements(instance)
-        for basename in requirements.get('custom', {}):
-            add_package_requirement(basename, instance)
-        for basename in requirements.get('pypi', {}):
-            add_pypi_requirement(basename, instance)
-        for basename, url in requirements.get('vcs', {}).items():
-            add_vcs_requirement(basename, url, instance)
-        for basename, value in requirements.get('downloads', {}).items():
-            if isinstance(value, Section):
-                url = value.get('url')
-                desc = value.get('desc')
-            else:
-                url = str(value)
-                desc = ''
-            add_download_requirement(basename, url, desc, instance)
-        flush_requirements()
-        return response
 
 
 class PackageSelectGamesView(UpdateView):
