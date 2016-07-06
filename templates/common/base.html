@@ -49,8 +49,19 @@
                 &nbsp;<a href="{{ GITHUB_URL }}/issues"><b>Issues List</b></a>&nbsp;<br />
             </sidebar>
             <content>
-                {% block content %}
-                {% endblock content %}
+                <body>
+                    {% if messages %}
+                        <ul class="messages">
+                            {% for message in messages %}
+                                <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>
+                                    <span style="color: #ff4444;font-weight: 400;">{{ message }}</span>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                    {% block content %}
+                    {% endblock content %}
+                </body>
             </content>
         </inner>
     </outer>

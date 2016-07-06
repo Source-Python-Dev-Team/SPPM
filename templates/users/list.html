@@ -5,20 +5,16 @@
 {% endblock title %}
 
 {% block content %}
-
-    <body>
-        <div class="container">
-            {% if forumuser_list %}
-                <h1>User List</h1>
-                <ul>
-                    {% for user in forumuser_list %}
-                        <li><a href="{{ user.get_absolute_url }}">{{ user }}</a></li>
-                    {% endfor %}
-                </ul>
-            {% else %}
-                <h1>There are no users that have registered plugins or packages.</h1>
-            {% endif %}
-        </div>
-    </body>
-
+    <div class="container">
+        {% if forumuser_list %}
+            <h1>User List</h1>
+            <ul>
+                {% for user in forumuser_list %}
+                    <li><a href="{{ user.get_absolute_url }}">{{ user }}</a></li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <h1>There are no users that have registered plugins or packages.</h1>
+        {% endif %}
+    </div>
 {% endblock content %}

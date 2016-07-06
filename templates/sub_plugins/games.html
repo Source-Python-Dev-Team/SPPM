@@ -9,10 +9,8 @@
 {% endblock title %}
 
 {% block content %}
-    <body>
-        <div class="container">
-            <h1>{{ sub_plugin }} Supported Games</h1>
-            {% crispy form %}
-        </div>
-    </body>
+    <div class="container">
+        <h1>{{ sub_plugin }} Supported Games</h1>
+        {% crispy form %}
+    </div>
 {% endblock content %}

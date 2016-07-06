@@ -8,13 +8,9 @@
 {% endblock title %}
 
 {% block content %}
-
-    <body>
-        <div class="container">
-            <h1>Update {{ sub_plugin }}</h1>
-            <ul><b>Current Version: {{ sub_plugin.current_version }}</b></ul><br />
-            {% crispy form %}
-        </div>
-    </body>
-
+    <div class="container">
+        <h1>Update {{ sub_plugin }}</h1>
+        <ul><b>Current Version: {{ sub_plugin.current_version }}</b></ul><br />
+        {% crispy form %}
+    </div>
 {% endblock content %}

@@ -6,16 +6,12 @@
 {% endblock title %}
 
 {% block content %}
-
-    <body>
-        <div class="container">
-            {% if paths %}
-                <h1>Create {{ plugin }} Sub-Plugin</h1>
-                {% crispy form %}
-            {% else %}
-                <h1>{{ plugin }} does not support sub-plugins.</h1>
-            {% endif %}
-        </div>
-    </body>
-
+    <div class="container">
+        {% if paths %}
+            <h1>Create {{ plugin }} Sub-Plugin</h1>
+            {% crispy form %}
+        {% else %}
+            <h1>{{ plugin }} does not support sub-plugins.</h1>
+        {% endif %}
+    </div>
 {% endblock content %}

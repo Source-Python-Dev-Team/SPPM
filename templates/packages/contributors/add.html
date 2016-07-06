@@ -8,7 +8,6 @@
 {% endblock title %}
 
 {% block content %}
-
     <h1>Add contributor for {{ package }}</h1>
 
     <br />
@@ -19,7 +18,7 @@
     </form>
 
     {% if request.GET %}
-        {% if message %}
+        {% if warning_message %}
             <b><span style="color: red">{{ user.username }}</span></b> {{ message }}
         {% elif user %}
             <br />
@@ -31,5 +30,4 @@
             <b>No user <span style="color: red">{{ request.GET.username }}</span> found.</b>
         {% endif %}
     {% endif %}
-
 {% endblock content %}

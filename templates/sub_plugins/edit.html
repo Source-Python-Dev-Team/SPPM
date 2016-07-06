@@ -8,12 +8,8 @@
 {% endblock title %}
 
 {% block content %}
-
-    <body>
-        <div class="container">
-            <h1>Edit {{ sub_plugin }}</h1>
-            {% crispy form %}
-        </div>
-    </body>
-
+    <div class="container">
+        <h1>Edit {{ sub_plugin }}</h1>
+        {% crispy form %}
+    </div>
 {% endblock content %}
