@@ -51,7 +51,7 @@ class PluginAddContributorView(RetrievePluginMixin, FilterView):
                     message = 'is already a contributor.'
         context.update({
             'plugin': self.plugin,
-            'message': message,
+            'warning_message': message,
             'user': user,
         })
         return context
@@ -83,7 +83,7 @@ class PluginAddContributorConfirmationView(RetrievePluginMixin, FormView):
         context.update({
             'plugin': self.plugin,
             'username': user.username,
-            'message': message,
+            'warning_message': message,
         })
         return context
 

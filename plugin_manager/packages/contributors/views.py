@@ -52,7 +52,7 @@ class PackageAddContributorView(RetrievePackageMixin, FilterView):
                     message = 'is already a contributor.'
         context.update({
             'package': self.package,
-            'message': message,
+            'warning_message': message,
             'user': user,
         })
         return context
@@ -84,7 +84,7 @@ class PackageAddContributorConfirmationView(RetrievePackageMixin, FormView):
         context.update({
             'package': self.package,
             'username': ForumUser.objects.get(id=self.kwargs['id']).username,
-            'message': message,
+            'warning_message': message,
         })
         return context
 

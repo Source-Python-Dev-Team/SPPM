@@ -55,7 +55,7 @@ class SubPluginAddContributorView(RetrieveSubPluginMixin, FilterView):
         context.update({
             'plugin': self.plugin,
             'sub_plugin': self.sub_plugin,
-            'message': message,
+            'warning_message': message,
             'user': user,
         })
         return context
@@ -87,7 +87,7 @@ class SubPluginAddContributorConfirmationView(RetrieveSubPluginMixin, FormView):
         context.update({
             'sub_plugin': self.sub_plugin,
             'username': ForumUser.objects.get(id=self.kwargs['id']).username,
-            'message': message,
+            'warning_message': message,
         })
         return context
 
