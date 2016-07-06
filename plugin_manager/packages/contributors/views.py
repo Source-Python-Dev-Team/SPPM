@@ -10,6 +10,7 @@ from django_filters.views import FilterView
 
 # App
 from .forms import PackageAddContributorConfirmationForm
+from plugin_manager.packages.mixins import RetrievePackageMixin
 from plugin_manager.packages.models import Package
 from plugin_manager.users.filtersets import ForumUserFilterSet
 from plugin_manager.users.models import ForumUser
@@ -27,7 +28,7 @@ __all__ = (
 # =============================================================================
 # >> VIEWS
 # =============================================================================
-class PackageAddContributorView(FilterView):
+class PackageAddContributorView(RetrievePackageMixin, FilterView):
     model = ForumUser
     template_name = 'packages/contributors/add.html'
     filterset_class = ForumUserFilterSet
@@ -35,7 +36,6 @@ class PackageAddContributorView(FilterView):
     def get_context_data(self, **kwargs):
         context = super(
             PackageAddContributorView, self).get_context_data(**kwargs)
-        package = Package.objects.get(slug=self.kwargs['slug'])
         message = ''
         user = None
         if 'username' in self.request.GET:
@@ -45,20 +45,20 @@ class PackageAddContributorView(FilterView):
             except ForumUser.DoesNotExist:
                 pass
             else:
-                if user == package.owner:
+                if user == self.package.owner:
                     message = (
                         'is the owner and cannot be added as a contributor.')
-                elif user in package.contributors.all():
+                elif user in self.package.contributors.all():
                     message = 'is already a contributor.'
         context.update({
-            'package': package,
+            'package': self.package,
             'message': message,
             'user': user,
         })
         return context
 
 
-class PackageAddContributorConfirmationView(FormView):
+class PackageAddContributorConfirmationView(RetrievePackageMixin, FormView):
     form_class = PackageAddContributorConfirmationForm
     template_name = 'packages/contributors/add_confirmation.html'
 
@@ -75,21 +75,19 @@ class PackageAddContributorConfirmationView(FormView):
             PackageAddContributorConfirmationView,
             self,
         ).get_context_data(**kwargs)
-        package = Package.objects.get(slug=self.kwargs['slug'])
         user = ForumUser.objects.get(id=self.kwargs['id'])
         message = None
-        if package.owner == user:
+        if self.package.owner == user:
             message = 'is the owner and cannot be added as a contributor.'
-        elif user in package.contributors.all():
+        elif user in self.package.contributors.all():
             message = 'is already a contributor.'
         context.update({
-            'package': package,
+            'package': self.package,
             'username': ForumUser.objects.get(id=self.kwargs['id']).username,
             'message': message,
         })
         return context
 
     def form_valid(self, form):
-        package = Package.objects.get(slug=self.kwargs['slug'])
-        package.contributors.add(form.cleaned_data['id'])
-        return HttpResponseRedirect(package.get_absolute_url())
+        self.package.contributors.add(form.cleaned_data['id'])
+        return HttpResponseRedirect(self.package.get_absolute_url())
