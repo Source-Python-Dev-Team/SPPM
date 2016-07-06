@@ -90,7 +90,9 @@ class SubPlugin(CommonBase):
         verbose_name = 'SubPlugin'
         verbose_name_plural = 'SubPlugins'
         unique_together = (
-            'plugin', 'basename', 'name', 'slug',
+            ('plugin', 'basename'),
+            ('plugin', 'name'),
+            ('plugin', 'slug'),
         )
 
     def get_absolute_url(self):

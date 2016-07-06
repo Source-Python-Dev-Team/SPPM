@@ -36,7 +36,7 @@ class TestSubPlugin(TestCase):
             plugin=self.plugin,
         )
 
-    def test_name_must_be_unique(self):
+    def test_name_must_be_unique_for_plugin(self):
         self.assertRaises(
             IntegrityError,
             SubPlugin.objects.create,
@@ -45,7 +45,7 @@ class TestSubPlugin(TestCase):
             plugin=self.plugin,
         )
 
-    def test_basename_must_be_unique(self):
+    def test_basename_must_be_unique_for_plugin(self):
         self.assertRaises(
             IntegrityError,
             SubPlugin.objects.create,
