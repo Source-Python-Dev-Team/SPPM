@@ -10,7 +10,7 @@ from django_filters.views import FilterView
 
 # App
 from .forms import SubPluginAddContributorConfirmationForm
-from plugin_manager.plugins.mixins import RetrievePluginMixin
+from ..mixins import RetrieveSubPluginMixin
 from plugin_manager.sub_plugins.models import SubPlugin
 from plugin_manager.users.filtersets import ForumUserFilterSet
 from plugin_manager.users.models import ForumUser
@@ -28,7 +28,7 @@ __all__ = (
 # =============================================================================
 # >> VIEWS
 # =============================================================================
-class SubPluginAddContributorView(RetrievePluginMixin, FilterView):
+class SubPluginAddContributorView(RetrieveSubPluginMixin, FilterView):
     model = ForumUser
     template_name = 'sub_plugins/contributors/add.html'
     filterset_class = ForumUserFilterSet
@@ -38,9 +38,6 @@ class SubPluginAddContributorView(RetrievePluginMixin, FilterView):
             SubPluginAddContributorView,
             self
         ).get_context_data(**kwargs)
-        plugin = self.plugin
-        sub_plugin = SubPlugin.objects.get(
-            plugin=plugin, slug=self.kwargs['sub_plugin_slug'])
         message = ''
         user = None
         if 'username' in self.request.GET:
@@ -50,21 +47,21 @@ class SubPluginAddContributorView(RetrievePluginMixin, FilterView):
             except ForumUser.DoesNotExist:
                 pass
             else:
-                if user == sub_plugin.owner:
+                if user == self.sub_plugin.owner:
                     message = (
                         'is the owner and cannot be added as a contributor.')
-                elif user in sub_plugin.contributors.all():
+                elif user in self.sub_plugin.contributors.all():
                     message = 'is already a contributor.'
         context.update({
-            'plugin': plugin,
-            'sub_plugin': sub_plugin,
+            'plugin': self.plugin,
+            'sub_plugin': self.sub_plugin,
             'message': message,
             'user': user,
         })
         return context
 
 
-class SubPluginAddContributorConfirmationView(RetrievePluginMixin, FormView):
+class SubPluginAddContributorConfirmationView(RetrieveSubPluginMixin, FormView):
     form_class = SubPluginAddContributorConfirmationForm
     template_name = 'sub_plugins/contributors/add_confirmation.html'
 
@@ -81,24 +78,19 @@ class SubPluginAddContributorConfirmationView(RetrievePluginMixin, FormView):
             SubPluginAddContributorConfirmationView,
             self
         ).get_context_data(**kwargs)
-        plugin = self.plugin
-        sub_plugin = SubPlugin.objects.get(
-            plugin=plugin, slug=self.kwargs['sub_plugin_slug'])
         user = ForumUser.objects.get(id=self.kwargs['id'])
         message = None
-        if sub_plugin.owner == user:
+        if self.sub_plugin.owner == user:
             message = 'is the owner and cannot be added as a contributor.'
-        elif user in sub_plugin.contributors.all():
+        elif user in self.sub_plugin.contributors.all():
             message = 'is already a contributor.'
         context.update({
-            'sub_plugin': sub_plugin,
+            'sub_plugin': self.sub_plugin,
             'username': ForumUser.objects.get(id=self.kwargs['id']).username,
             'message': message,
         })
         return context
 
     def form_valid(self, form):
-        sub_plugin = SubPlugin.objects.get(
-            plugin=self.plugin, slug=self.kwargs['sub_plugin_slug'])
-        sub_plugin.contributors.add(form.cleaned_data['id'])
-        return HttpResponseRedirect(sub_plugin.get_absolute_url())
+        self.sub_plugin.contributors.add(form.cleaned_data['id'])
+        return HttpResponseRedirect(self.sub_plugin.get_absolute_url())

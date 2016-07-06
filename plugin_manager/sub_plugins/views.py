@@ -19,13 +19,13 @@ from plugin_manager.common.helpers import (
 from plugin_manager.common.mixins import DownloadMixin
 from plugin_manager.common.views import OrderablePaginatedListView
 from plugin_manager.plugins.constants import PLUGIN_PATH
-from plugin_manager.plugins.mixins import RetrievePluginMixin
 from plugin_manager.plugins.models import Plugin
 from .constants import SUB_PLUGIN_RELEASE_URL
 from .forms import (
     SubPluginCreateForm, SubPluginEditForm, SubPluginSelectGamesForm,
     SubPluginUpdateForm,
 )
+from .mixins import RetrieveSubPluginMixin
 from .models import SubPlugin, SubPluginRelease
 
 
@@ -47,7 +47,7 @@ __all__ = (
 # =============================================================================
 # >> VIEWS
 # =============================================================================
-class SubPluginListView(RetrievePluginMixin, OrderablePaginatedListView):
+class SubPluginListView(RetrieveSubPluginMixin, OrderablePaginatedListView):
     model = SubPlugin
     orderable_columns = (
         'name',
@@ -59,7 +59,7 @@ class SubPluginListView(RetrievePluginMixin, OrderablePaginatedListView):
 
     def get_queryset(self):
         return super(SubPluginListView, self).get_queryset().filter(
-            plugin__slug=self.kwargs['slug']
+            plugin=self.plugin,
         )
 
     def get_context_data(self, **kwargs):
@@ -72,7 +72,7 @@ class SubPluginListView(RetrievePluginMixin, OrderablePaginatedListView):
         return context
 
 
-class SubPluginCreateView(RetrievePluginMixin, CreateView):
+class SubPluginCreateView(RetrieveSubPluginMixin, CreateView):
     model = SubPlugin
     form_class = SubPluginCreateForm
     template_name = 'sub_plugins/create.html'
@@ -146,7 +146,7 @@ class SubPluginEditView(UpdateView):
         return context
 
 
-class SubPluginUpdateView(RetrievePluginMixin, UpdateView):
+class SubPluginUpdateView(RetrieveSubPluginMixin, UpdateView):
     model = SubPlugin
     form_class = SubPluginUpdateForm
     template_name = 'sub_plugins/update.html'
@@ -226,7 +226,7 @@ class SubPluginSelectGamesView(UpdateView):
         return context
 
 
-class SubPluginView(RetrievePluginMixin, DetailView):
+class SubPluginView(RetrieveSubPluginMixin, DetailView):
     model = SubPlugin
     template_name = 'sub_plugins/view.html'
     slug_url_kwarg = 'sub_plugin_slug'
@@ -234,8 +234,7 @@ class SubPluginView(RetrievePluginMixin, DetailView):
     def get_queryset(self):
         """This is to fix a MultipleObjectsReturned error."""
         queryset = SubPlugin.objects.filter(
-            plugin=self.plugin,
-            slug=self.kwargs['sub_plugin_slug'],
+            pk=self.sub_plugin.pk,
         )
         return queryset
 
@@ -266,19 +265,9 @@ class SubPluginReleaseDownloadView(DownloadMixin):
     base_url = SUB_PLUGIN_RELEASE_URL
 
 
-class SubPluginReleaseListView(RetrievePluginMixin, ListView):
+class SubPluginReleaseListView(RetrieveSubPluginMixin, ListView):
     model = SubPluginRelease
     template_name = 'sub_plugins/releases.html'
-    _sub_plugin = None
-
-    @property
-    def sub_plugin(self):
-        if self._sub_plugin is None:
-            self._sub_plugin = SubPlugin.objects.get(
-                plugin=self.plugin,
-                slug=self.kwargs['sub_plugin_slug'],
-            )
-        return self._sub_plugin
 
     def get_context_data(self, **kwargs):
         context = super(
