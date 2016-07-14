@@ -55,8 +55,8 @@ class UserView(DetailView):
         try:
             forum_user = super(UserView, self).get_object(queryset)
         except Http404:
-            # TODO: Get user from forum
 
+            # TODO: Get user from forum
             from random import choice, randint
             import string
             all_chars = string.ascii_letters + string.digits + '-._'
