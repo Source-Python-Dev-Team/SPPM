@@ -35,7 +35,7 @@ __all__ = (
 # =============================================================================
 class CommonBase(models.Model):
     """Base model for upload content."""
-    synopsis = models.CharField(
+    synopsis = BBCodeTextField(
         max_length=128,
         blank=True,
         null=True,
