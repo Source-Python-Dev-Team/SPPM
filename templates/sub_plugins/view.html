@@ -23,9 +23,9 @@
 
     <p>Sub-Plugin for <a href="{{ sub_plugin.plugin.get_absolute_url }}">{{ sub_plugin.plugin }}</a></p>
 
-    {% if sub_plugin.synopsis %}
+    {% if sub_plugin.synopsis.rendered %}
         <br />
-        {{ sub_plugin.synopsis }}
+        {{ sub_plugin.synopsis.rendered }}
         <br />
     {% endif %}
 

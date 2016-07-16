@@ -22,9 +22,9 @@
 
     <h4><a href="{{ current_release.get_absolute_url }}"><u>Download current version</u></a> &nbsp; <span style="font-size: small;">( <a href="{% url 'plugins:releases' slug=plugin.slug %}"><u>View all releases</u></a> )</span> &nbsp; Total downloads: {{ plugin.total_downloads }}</h4>
 
-    {% if plugin.synopsis %}
+    {% if plugin.synopsis.rendered %}
         <br />
-        {{ plugin.synopsis }}
+        {{ plugin.synopsis.rendered }}
         <br />
     {% endif %}
 
