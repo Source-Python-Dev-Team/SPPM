@@ -2,18 +2,18 @@
 # >> IMPORTS
 # =============================================================================
 # Django
-from django.views.generic import (
-    CreateView, DetailView, ListView, UpdateView, View,
-)
+from django.views.generic import CreateView, DetailView, ListView, UpdateView
 
 # App
 from plugin_manager.common.helpers import get_groups
+from plugin_manager.common.mixins import DownloadMixin, RequirementsParserMixin
 from plugin_manager.common.views import OrderablePaginatedListView
 from .constants import PACKAGE_PATH, PACKAGE_RELEASE_URL
 from .forms import (
     PackageCreateForm, PackageEditForm, PackageSelectGamesForm,
     PackageUpdateForm,
 )
+from .mixins import RetrievePackageMixin
 from .models import Package, PackageRelease
 
 
@@ -46,7 +46,7 @@ class PackageListView(OrderablePaginatedListView):
     template_name = 'packages/list.html'
 
 
-class PackageCreateView(CreateView):
+class PackageCreateView(RequirementsParserMixin, CreateView):
     model = Package
     form_class = PackageCreateForm
     template_name = 'packages/create.html'
@@ -72,7 +72,9 @@ class PackageEditView(UpdateView):
         return initial
 
 
-class PackageUpdateView(UpdateView):
+class PackageUpdateView(
+    RequirementsParserMixin, RetrievePackageMixin, UpdateView
+):
     model = Package
     form_class = PackageUpdateForm
     template_name = 'packages/update.html'
@@ -86,12 +88,11 @@ class PackageUpdateView(UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super(PackageUpdateView, self).get_context_data(**kwargs)
-        package = Package.objects.get(slug=context['view'].kwargs['slug'])
         current_release = PackageRelease.objects.filter(
-            package=package,
+            package=self.package,
         ).order_by('-created')[0]
         context.update({
-            'package': package,
+            'package': self.package,
             'current_release': current_release,
         })
         return context
@@ -137,25 +138,16 @@ class PackageView(DetailView):
         return context
 
 
-class PackageReleaseDownloadView(View):
+class PackageReleaseDownloadView(DownloadMixin):
     model = PackageRelease
     super_model = Package
     super_kwarg = 'package'
     base_url = PACKAGE_RELEASE_URL
 
 
-class PackageReleaseListView(ListView):
+class PackageReleaseListView(RetrievePackageMixin, ListView):
     model = PackageRelease
     template_name = 'packages/releases.html'
-    _package = None
-
-    @property
-    def package(self):
-        if self._package is None:
-            self._package = Package.objects.get(
-                slug=self.kwargs['slug'],
-            )
-        return self._package
 
     def get_context_data(self, **kwargs):
         context = super(
