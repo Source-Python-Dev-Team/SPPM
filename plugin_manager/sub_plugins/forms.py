@@ -9,11 +9,8 @@ from zipfile import ZipFile
 from django import forms
 from django.core.exceptions import ValidationError
 
-# 3rd-Party Django
-from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Submit
-
 # App
+from plugin_manager.common.mixins import SubmitButtonMixin
 from .helpers import get_sub_plugin_basename
 from .models import SubPlugin, SubPluginRelease
 from plugin_manager.plugins.constants import PLUGIN_PATH
@@ -33,7 +30,7 @@ __all__ = (
 # =============================================================================
 # >> FORMS
 # =============================================================================
-class SubPluginCreateForm(forms.ModelForm):
+class SubPluginCreateForm(SubmitButtonMixin):
     version = forms.CharField(
         max_length=8,
         help_text=SubPluginRelease._meta.get_field('version').help_text,
@@ -95,8 +92,6 @@ class SubPluginCreateForm(forms.ModelForm):
             'description', 'configuration', 'logo',
         ])
         self.fields.update(old_fields)
-        self.helper = FormHelper()
-        self.helper.add_input(Submit('submit', 'Submit'))
 
     def save(self, commit=True):
         instance = super(SubPluginCreateForm, self).save(commit)
@@ -143,7 +138,7 @@ class SubPluginCreateForm(forms.ModelForm):
         return self.cleaned_data['zip_file']
 
 
-class SubPluginEditForm(forms.ModelForm):
+class SubPluginEditForm(SubmitButtonMixin):
     class Meta:
         model = SubPlugin
         fields = (
@@ -173,13 +168,8 @@ class SubPluginEditForm(forms.ModelForm):
             ),
         }
 
-    def __init__(self, *args, **kwargs):
-        super(SubPluginEditForm, self).__init__(*args, **kwargs)
-        self.helper = FormHelper()
-        self.helper.add_input(Submit('submit', 'Submit'))
 
-
-class SubPluginSelectGamesForm(forms.ModelForm):
+class SubPluginSelectGamesForm(SubmitButtonMixin):
     class Meta:
         model = SubPlugin
         fields = (
@@ -189,13 +179,8 @@ class SubPluginSelectGamesForm(forms.ModelForm):
             'supported_games': forms.CheckboxSelectMultiple()
         }
 
-    def __init__(self, *args, **kwargs):
-        super(SubPluginSelectGamesForm, self).__init__(*args, **kwargs)
-        self.helper = FormHelper()
-        self.helper.add_input(Submit('submit', 'Submit'))
 
-
-class SubPluginUpdateForm(forms.ModelForm):
+class SubPluginUpdateForm(SubmitButtonMixin):
     class Meta:
         model = SubPluginRelease
         fields = (
@@ -211,11 +196,6 @@ class SubPluginUpdateForm(forms.ModelForm):
                 }
             )
         }
-
-    def __init__(self, *args, **kwargs):
-        super(SubPluginUpdateForm, self).__init__(*args, **kwargs)
-        self.helper = FormHelper()
-        self.helper.add_input(Submit('submit', 'Submit'))
 
     def save(self, commit=True):
         instance = super(SubPluginUpdateForm, self).save(commit)

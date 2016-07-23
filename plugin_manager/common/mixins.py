@@ -8,12 +8,17 @@ from zipfile import ZipFile
 from configobj import Section
 
 # Django
+from django import forms
 from django.conf import settings
 from django.contrib import messages
 from django.db.models import F
 from django.http import Http404, HttpResponse
 from django.views.generic import View
 from django.views.generic.edit import ModelFormMixin
+
+# 3rd-Party Django
+from crispy_forms.helper import FormHelper
+from crispy_forms.layout import Submit
 
 # App
 from .helpers import (
@@ -171,3 +176,12 @@ class RequirementsParserMixin(ModelFormMixin, View):
                 ),
             )
         return response
+
+
+class SubmitButtonMixin(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(SubmitButtonMixin, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        submit = Submit('submit', 'Submit')
+        submit.field_classes = 'btn btn-submit'
+        self.helper.add_input(submit)

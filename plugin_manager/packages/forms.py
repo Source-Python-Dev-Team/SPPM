@@ -9,11 +9,8 @@ from zipfile import ZipFile
 from django import forms
 from django.core.exceptions import ValidationError
 
-# 3rd-Party Django
-from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Submit
-
 # App
+from plugin_manager.common.mixins import SubmitButtonMixin
 from .constants import PACKAGE_PATH
 from .helpers import get_package_basename
 from .models import Package, PackageRelease
@@ -33,7 +30,7 @@ __all__ = (
 # =============================================================================
 # >> FORMS
 # =============================================================================
-class PackageCreateForm(forms.ModelForm):
+class PackageCreateForm(SubmitButtonMixin):
     version = forms.CharField(
         max_length=8,
         help_text=PackageRelease._meta.get_field('version').help_text,
@@ -93,8 +90,6 @@ class PackageCreateForm(forms.ModelForm):
             'description', 'configuration', 'logo',
         ])
         self.fields.update(old_fields)
-        self.helper = FormHelper()
-        self.helper.add_input(Submit('submit', 'Submit'))
 
     def save(self, commit=True):
         instance = super(PackageCreateForm, self).save(commit)
@@ -123,7 +118,7 @@ class PackageCreateForm(forms.ModelForm):
         return self.cleaned_data['zip_file']
 
 
-class PackageEditForm(forms.ModelForm):
+class PackageEditForm(SubmitButtonMixin):
     class Meta:
         model = Package
         fields = (
@@ -153,13 +148,8 @@ class PackageEditForm(forms.ModelForm):
             ),
         }
 
-    def __init__(self, *args, **kwargs):
-        super(PackageEditForm, self).__init__(*args, **kwargs)
-        self.helper = FormHelper()
-        self.helper.add_input(Submit('submit', 'Submit'))
 
-
-class PackageSelectGamesForm(forms.ModelForm):
+class PackageSelectGamesForm(SubmitButtonMixin):
     class Meta:
         model = Package
         fields = (
@@ -169,13 +159,8 @@ class PackageSelectGamesForm(forms.ModelForm):
             'supported_games': forms.CheckboxSelectMultiple()
         }
 
-    def __init__(self, *args, **kwargs):
-        super(PackageSelectGamesForm, self).__init__(*args, **kwargs)
-        self.helper = FormHelper()
-        self.helper.add_input(Submit('submit', 'Submit'))
 
-
-class PackageUpdateForm(forms.ModelForm):
+class PackageUpdateForm(SubmitButtonMixin):
     class Meta:
         model = PackageRelease
         fields = (
@@ -191,11 +176,6 @@ class PackageUpdateForm(forms.ModelForm):
                 }
             )
         }
-
-    def __init__(self, *args, **kwargs):
-        super(PackageUpdateForm, self).__init__(*args, **kwargs)
-        self.helper = FormHelper()
-        self.helper.add_input(Submit('submit', 'Submit'))
 
     def save(self, commit=True):
         instance = super(PackageUpdateForm, self).save(commit)
