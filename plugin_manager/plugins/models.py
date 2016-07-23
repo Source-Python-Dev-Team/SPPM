@@ -12,9 +12,14 @@ from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.db import models
 
+# 3rd-Party Django
+from precise_bbcode.fields import BBCodeTextField
+
 # App
 from plugin_manager.common.models import CommonBase, Release
-from plugin_manager.common.validators import basename_validator
+from plugin_manager.common.validators import (
+    basename_validator, version_validator,
+)
 from plugin_manager.users.models import ForumUser
 from .constants import PLUGIN_LOGO_URL
 from .helpers import handle_plugin_image_upload
@@ -122,6 +127,17 @@ class PluginRelease(Release):
     plugin = models.ForeignKey(
         to='plugin_manager.Plugin',
         related_name='releases',
+    )
+    version = models.CharField(
+        max_length=8,
+        validators=[version_validator],
+        help_text='The version for this release of the plugin.',
+    )
+    notes = BBCodeTextField(
+        max_length=512,
+        blank=True,
+        null=True,
+        help_text='The notes for this particular release of the plugin.',
     )
     zip_file = models.FileField(
         upload_to=handle_plugin_zip_upload,

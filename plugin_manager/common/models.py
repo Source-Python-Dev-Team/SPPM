@@ -16,7 +16,6 @@ from precise_bbcode.fields import BBCodeTextField
 
 # App
 from .constants import LOGO_MAX_HEIGHT, LOGO_MAX_WIDTH
-from .validators import version_validator
 
 
 # =============================================================================
@@ -148,21 +147,6 @@ class CommonBase(models.Model):
 
 
 class Release(TimeStampedModel):
-    version = models.CharField(
-        max_length=8,
-        validators=[version_validator],
-        help_text=(
-            'The version for this release of the project.'
-        )
-    )
-    notes = BBCodeTextField(
-        max_length=512,
-        blank=True,
-        null=True,
-        help_text=(
-            'The notes for this particular release of the project.'
-        ),
-    )
     download_count = models.PositiveIntegerField(
         default=0,
     )
