@@ -36,10 +36,12 @@ __all__ = (
 class SubPluginCreateForm(forms.ModelForm):
     version = forms.CharField(
         max_length=8,
+        help_text=SubPluginRelease._meta.get_field('version').help_text,
     )
     version_notes = forms.CharField(
         max_length=512,
         required=False,
+        help_text=SubPluginRelease._meta.get_field('notes').help_text,
         widget=forms.Textarea(
             attrs={
                 'cols': '64',
@@ -47,7 +49,9 @@ class SubPluginCreateForm(forms.ModelForm):
             }
         )
     )
-    zip_file = forms.FileField()
+    zip_file = forms.FileField(
+        help_text=SubPluginRelease._meta.get_field('zip_file').help_text,
+    )
 
     class Meta:
         model = SubPlugin

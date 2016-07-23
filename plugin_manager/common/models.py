@@ -39,16 +39,28 @@ class CommonBase(models.Model):
         max_length=128,
         blank=True,
         null=True,
+        help_text=(
+            'A brief description of the project. BBCode is allowed. '
+            '128 char limit.'
+        )
     )
     description = BBCodeTextField(
         max_length=1024,
         blank=True,
         null=True,
+        help_text=(
+            'The full description of the project. BBCode is allowed. '
+            '1024 char limit.'
+        )
     )
     configuration = BBCodeTextField(
         max_length=1024,
         blank=True,
         null=True,
+        help_text=(
+            'The configuration of the project. If too long, post on the forum '
+            'and provide the link here. BBCode is allowed. 1024 char limit.'
+        )
     )
 
     def __str__(self):
@@ -138,12 +150,18 @@ class CommonBase(models.Model):
 class Release(TimeStampedModel):
     version = models.CharField(
         max_length=8,
-        validators=[version_validator]
+        validators=[version_validator],
+        help_text=(
+            'The version for this release of the project.'
+        )
     )
     notes = BBCodeTextField(
         max_length=512,
         blank=True,
         null=True,
+        help_text=(
+            'The notes for this particular release of the project.'
+        ),
     )
     download_count = models.PositiveIntegerField(
         default=0,

@@ -39,6 +39,10 @@ class Plugin(CommonBase):
     name = models.CharField(
         max_length=64,
         unique=True,
+        help_text=(
+            "The name of the plugin. Do not include the version, as that is "
+            "added dynamically to the plugin's page."
+        ),
     )
     basename = models.CharField(
         max_length=32,
@@ -71,6 +75,7 @@ class Plugin(CommonBase):
         upload_to=handle_plugin_logo_upload,
         blank=True,
         null=True,
+        help_text="The plugin's logo image.",
     )
     supported_games = models.ManyToManyField(
         to='plugin_manager.Game',

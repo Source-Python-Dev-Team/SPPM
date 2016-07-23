@@ -38,6 +38,10 @@ __all__ = (
 class SubPlugin(CommonBase):
     name = models.CharField(
         max_length=64,
+        help_text=(
+            "The name of the sub-plugin. Do not include the version, as that "
+            "is added dynamically to the sub-plugin's page."
+        ),
     )
     basename = models.CharField(
         max_length=32,
@@ -72,6 +76,7 @@ class SubPlugin(CommonBase):
         upload_to=handle_sub_plugin_logo_upload,
         blank=True,
         null=True,
+        help_text="The sub-plugin's logo image.",
     )
     supported_games = models.ManyToManyField(
         to='plugin_manager.Game',

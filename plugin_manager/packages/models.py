@@ -39,6 +39,10 @@ class Package(CommonBase):
     name = models.CharField(
         max_length=64,
         unique=True,
+        help_text=(
+            "The name of the package. Do not include the version, as that is "
+            "added dynamically to the package's page."
+        ),
     )
     basename = models.CharField(
         max_length=32,
@@ -71,6 +75,7 @@ class Package(CommonBase):
         upload_to=handle_package_logo_upload,
         blank=True,
         null=True,
+        help_text="The package's logo image.",
     )
     supported_games = models.ManyToManyField(
         to='plugin_manager.Game',
