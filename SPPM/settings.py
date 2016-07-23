@@ -158,4 +158,4 @@ PYPI_URL = 'https://pypi.python.org/pypi'
 
 # PHPBB_TABLE_PREFIX = 'phpbb_'
 
-CRISPY_TEMPLATE_PACK = 'bootstrap3'
+CRISPY_TEMPLATE_PACK = 'bootstrap'
