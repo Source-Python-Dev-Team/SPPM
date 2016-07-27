@@ -13,13 +13,13 @@ from .views import GameListView, GameView
 # =============================================================================
 urlpatterns = [
     url(
-        # http://plugins.sourcepython.com/games/
+        # /games/
         regex=r'^$',
         view=GameListView.as_view(),
         name='list',
     ),
     url(
-        # http://plugins.sourcepython.com/games/<slug>/
+        # /games/<slug>/
         regex=r'^(?P<slug>[\w-]+)/$',
         view=GameView.as_view(),
         name='detail',

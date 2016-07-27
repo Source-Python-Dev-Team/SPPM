@@ -16,49 +16,49 @@ from .views import (
 # =============================================================================
 urlpatterns = [
     url(
-        # http://plugins.sourcepython.com/plugins/
+        # /plugins/
         regex=r'^$',
         view=PluginListView.as_view(),
         name='list',
     ),
     url(
-        # http://plugins.sourcepython.com/plugins/create/
+        # /plugins/create/
         regex=r'^create/',
         view=PluginCreateView.as_view(),
         name='create',
     ),
     url(
-        # http://plugins.sourcepython.com/plugins/<slug>/
+        # /plugins/<slug>/
         regex=r'^(?P<slug>[\w-]+)/$',
         view=PluginView.as_view(),
         name='detail',
     ),
     url(
-        # http://plugins.sourcepython.com/plugins/<slug>/edit/
+        # /plugins/<slug>/edit/
         regex=r'^(?P<slug>[\w-]+)/edit/',
         view=PluginEditView.as_view(),
         name='edit',
     ),
     url(
-        # http://plugins.sourcepython.com/plugins/<slug>/games/
+        # /plugins/<slug>/games/
         regex=r'^(?P<slug>[\w-]+)/games/$',
         view=PluginSelectGamesView.as_view(),
         name='select-games',
     ),
     url(
-        # http://plugins.sourcepython.com/plugins/<slug>/releases/
+        # /plugins/<slug>/releases/
         regex=r'^(?P<slug>[\w-]+)/releases/',
         view=PluginReleaseListView.as_view(),
         name='releases',
     ),
     url(
-        # http://plugins.sourcepython.com/plugins/<slug>/update/
+        # /plugins/<slug>/update/
         regex=r'^(?P<slug>[\w-]+)/update/',
         view=PluginUpdateView.as_view(),
         name='update',
     ),
     url(
-        # http://plugins.sourcepython.com/plugins/<slug>/contributors/
+        # /plugins/<slug>/contributors/
         regex=r'^(?P<slug>[\w-]+)/contributors/',
         view=include(
             'plugin_manager.plugins.contributors.urls',
@@ -66,7 +66,7 @@ urlpatterns = [
         ),
     ),
     url(
-        # http://plugins.sourcepython.com/plugins/<slug>/paths/
+        # /plugins/<slug>/paths/
         regex=r'^(?P<slug>[\w-]+)/paths/',
         view=include(
             'plugin_manager.plugins.paths.urls',
@@ -74,7 +74,7 @@ urlpatterns = [
         ),
     ),
     url(
-        # http://plugins.sourcepython.com/plugins/<slug>/sub-plugins/
+        # /plugins/<slug>/sub-plugins/
         regex=r'^(?P<slug>[\w-]+)/sub-plugins/',
         view=include(
             'plugin_manager.sub_plugins.urls',

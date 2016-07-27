@@ -13,7 +13,7 @@ from .views import TagListView
 # =============================================================================
 urlpatterns = [
     url(
-        # http://plugins.sourcepython.com/tags/
+        # /tags/
         regex=r'^$',
         view=TagListView.as_view(),
         name='list',

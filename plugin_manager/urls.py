@@ -35,7 +35,7 @@ from .sub_plugins.views import SubPluginReleaseDownloadView
 # =============================================================================
 urlpatterns = [
     url(
-        # http://plugins.sourcepython.com/
+        # /
         regex=r'^$',
         view=RedirectView.as_view(
             url='plugins',
@@ -44,18 +44,18 @@ urlpatterns = [
         name='index',
     ),
     url(
-        # http://plugins.sourcepython.com/statistics/
+        # /statistics/
         regex=r'^statistics/',
         view=StatisticsView.as_view(),
         name='statistics',
     ),
     url(
-        # http://plugins.sourcepython.com/admin/
+        # /admin/
         regex=r'^admin/',
         view=admin.site.urls,
     ),
     url(
-        # http://plugins.sourcepython.com/games/
+        # /games/
         regex=r'^games/',
         view=include(
             'plugin_manager.games.urls',
@@ -63,7 +63,7 @@ urlpatterns = [
         ),
     ),
     url(
-        # http://plugins.sourcepython.com/packages/
+        # /packages/
         regex=r'^packages/',
         view=include(
             'plugin_manager.packages.urls',
@@ -71,7 +71,7 @@ urlpatterns = [
         ),
     ),
     url(
-        # http://plugins.sourcepython.com/plugins/
+        # /plugins/
         regex=r'^plugins/',
         view=include(
             'plugin_manager.plugins.urls',
@@ -79,7 +79,7 @@ urlpatterns = [
         ),
     ),
     url(
-        # http://plugins.sourcepython.com/pypi/
+        # /pypi/
         regex=r'^pypi/',
         view=include(
             'plugin_manager.pypi.urls',
@@ -87,7 +87,7 @@ urlpatterns = [
         ),
     ),
     url(
-        # http://plugins.sourcepython.com/tags/
+        # /tags/
         regex=r'^tags/',
         view=include(
             'plugin_manager.tags.urls',
@@ -95,7 +95,7 @@ urlpatterns = [
         ),
     ),
     url(
-        # http://plugins.sourcepython.com/users/
+        # /users/
         regex=r'^users/',
         view=include(
             'plugin_manager.users.urls',
@@ -103,19 +103,19 @@ urlpatterns = [
         ),
     ),
     url(
-        # http://plugins.sourcepython.com/media/releases/packages/<slug>/<zip_file>
+        # /media/releases/packages/<slug>/<zip_file>
         regex=r'^media/releases/packages/(?P<slug>[\w-]+)/(?P<zip_file>.+)',
         view=PackageReleaseDownloadView.as_view(),
         name='package-download',
     ),
     url(
-        # http://plugins.sourcepython.com/media/releases/plugins/<slug>/<zip_file>
+        # /media/releases/plugins/<slug>/<zip_file>
         regex=r'^media/releases/plugins/(?P<slug>[\w-]+)/(?P<zip_file>.+)',
         view=PluginReleaseDownloadView.as_view(),
         name='plugin-download',
     ),
     url(
-        # http://plugins.sourcepython.com/media/releases/sub-plugins/<slug>/<sub_plugin_slug>/<zip_file>
+        # /media/releases/sub-plugins/<slug>/<sub_plugin_slug>/<zip_file>
         regex=r'^media/releases/sub-plugins/(?P<slug>[\w-]+)/'
               r'(?P<sub_plugin_slug>[\w-]+)/(?P<zip_file>.+)',
         view=SubPluginReleaseDownloadView.as_view(),
