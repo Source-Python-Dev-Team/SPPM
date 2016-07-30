@@ -49,7 +49,7 @@ class SubPluginListView(RetrieveSubPluginMixin, OrderablePaginatedListView):
     def get_queryset(self):
         return super(SubPluginListView, self).get_queryset().filter(
             plugin=self.plugin,
-        )
+        ).select_related('plugin')
 
     def get_context_data(self, **kwargs):
         context = super(SubPluginListView, self).get_context_data(**kwargs)
@@ -139,10 +139,9 @@ class SubPluginUpdateView(
 
     def get_queryset(self):
         """This is to fix a MultipleObjectsReturned error."""
-        queryset = SubPlugin.objects.filter(
+        return SubPlugin.objects.filter(
             pk=self.sub_plugin.pk,
         )
-        return queryset
 
     def get_context_data(self, **kwargs):
         context = super(SubPluginUpdateView, self).get_context_data(**kwargs)
@@ -193,10 +192,9 @@ class SubPluginView(RetrieveSubPluginMixin, DetailView):
 
     def get_queryset(self):
         """This is to fix a MultipleObjectsReturned error."""
-        queryset = SubPlugin.objects.filter(
+        return SubPlugin.objects.filter(
             pk=self.sub_plugin.pk,
-        )
-        return queryset
+        ).select_related('plugin')
 
     def get_context_data(self, **kwargs):
         context = super(SubPluginView, self).get_context_data(**kwargs)

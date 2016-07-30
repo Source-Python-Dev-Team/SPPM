@@ -35,6 +35,10 @@ class GameView(DetailView):
         context.update({
             'plugins': get_groups(self.object.plugins.all()),
             'packages': get_groups(self.object.packages.all()),
-            'sub_plugins': get_groups(self.object.sub_plugins.all()),
+            'sub_plugins': get_groups(
+                self.object.sub_plugins.all().select_related(
+                    'plugin',
+                )
+            ),
         })
         return context

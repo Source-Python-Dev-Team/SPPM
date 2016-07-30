@@ -41,11 +41,17 @@ class UserView(DetailView):
         context = super(UserView, self).get_context_data(**kwargs)
         context.update({
             'plugins': self.object.plugins.all(),
-            'sub_plugins': self.object.sub_plugins.all(),
+            'sub_plugins': (
+                self.object.sub_plugins.all().select_related(
+                    'plugin',
+                )
+            ),
             'packages': self.object.packages.all(),
             'plugin_contributions': self.object.plugin_contributions.all(),
             'sub_plugin_contributions': (
-                self.object.sub_plugin_contributions.all()
+                self.object.sub_plugin_contributions.all().select_related(
+                    'plugin',
+                )
             ),
             'package_contributions': self.object.package_contributions.all(),
         })
