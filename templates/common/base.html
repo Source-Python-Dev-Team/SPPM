@@ -9,16 +9,16 @@
         <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
     	<link rel="stylesheet" media="all" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
 {#        <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css">#}
-        <link rel="shortcut icon" type="image/png" href="{% static "common/sp_icon_plugins.png" %}"/>
-        <link rel="stylesheet" href="{% static 'common/base.css' %}">
-        <link rel="stylesheet" href="{% static 'common/buttons.css' %}">
+        <link rel="shortcut icon" type="image/png" href="{% static "plugin_manager/sp_icon_plugins.png" %}"/>
+        <link rel="stylesheet" href="{% static 'plugin_manager/base.css' %}">
+        <link rel="stylesheet" href="{% static 'plugin_manager/buttons.css' %}">
         <meta charset="UTF-8">
     </head>
 
     <outer>
         <inner>
             <sidebar>
-                <p><img src="{% static "common/sp_logo_plugins.png" %}" height="135" width="135" alt="SP Plugin Logo"></p>
+                <p><img src="{% static "plugin_manager/sp_logo_plugins.png" %}" height="135" width="135" alt="SP Plugin Logo"></p>
                 <b>&nbsp;Plugin Menu&nbsp;</b><br />
                 &nbsp;<a href="{% url 'plugins:list' %}"><b>Latest Plugins</b></a>&nbsp;<br />
                 {# TODO: Add in sorting by other types #}
