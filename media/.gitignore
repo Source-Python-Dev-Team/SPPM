@@ -3,3 +3,6 @@
 
 # Except this file
 !.gitignore
+
+# And, except the games directory (to add new games or update logos)
+!games/*
