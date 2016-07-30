@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Recent Sub-Plugins for {{ plugin }}
+{% endblock title %}
+
+{% block content %}
+    <div class="container">
+        {% if paths %}
+            {% if sub_plugin_list %}
+                <h1>Recent Sub-Plugins for {{ plugin }}</h1>
+                <ul>
+                    {% for sub_plugin in sub_plugin_list %}
+                        <li><a href="{{ sub_plugin.get_absolute_url }}">{{ sub_plugin }}</a></li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <h1>No sub-plugins are registered for {{ plugin }}.</h1>
+            {% endif %}
+            <a href="{% url 'plugins:sub-plugins:create' slug=plugin.slug %}">Create Sub-Plugin?</a>
+            <br />
+            {% for page_url in page_url_list %}
+                {% if page_url.url %}
+                    <a href="{% url 'plugins:sub-plugins:list' slug=plugin.slug %}{{ page_url.url }}">{{ page_url }}</a>
+                {% else %}
+                    {{ page_url }}
+                {% endif %}
+            {% endfor %}
+        {% else %}
+            <h1>{{ plugin }} does not support sub-plugins.</h1>
+        {% endif %}
+    </div>
+{% endblock content %}

@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+
+{# TODO: Only owner and contributors should have access to this page #}
+
+{% block title %}
+    Sub-Plugin Paths for {{ plugin }}
+{% endblock title %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="panel panel-primary panel-primary-custom">
+                <div class="panel-heading panel-heading-custom">
+                    <h3 class="panel-title">Sub-Plugin Paths for {{ plugin }}</h3>
+                    <span class="pull-right" style="margin-top: -20px">
+                        <a href="{% url 'plugins:paths:create' slug=plugin.slug %}">
+                            <button type="button" class="btn btn-xs btn-default">Add Path</button>
+                        </a>
+                    </span>
+                </div>
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Path</th>
+                            <th class="text-right">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for path in object_list %}
+                            <tr>
+                                <td>{{ path }}</td>
+                                {# TODO: add the delete button. #}
+
+                                <td class="text-right">
+                                    <a href="{% url 'plugins:paths:edit' slug=plugin.slug path_pk=path.pk %}">
+                                        <button class="btn btn-primary btn-xs" data-toggle="tooltip" title="Edit Path: {{ path }}">
+                                            <i class="fa fa-pencil-square-o fa-lg fa-fw"></i>
+                                        </button>
+                                    </a>
+                                    <a data-toggle="modal" href="#{{ path.pk }}">
+                                        <button class="btn btn-danger btn-xs" data-toggle="tooltip" title="Delete Path: {{ path }}">
+                                            <i class="fa fa-trash-o fa-lg fa-fw"></i>
+                                        </button>
+                                    </a>
+                                </td>
+                            </tr>
+                            <div class="modal fade" id="{{ path.pk }}">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                            <h4 class="modal-title">Delete Path: {{ path }}</h4>
+                                        </div>
+                                        <div class="modal-body">
+                                            Please Confirm.
+                                        </div>
+                                        <div class="modal-footer">
+                                            <form action="{% url 'plugins:paths:delete' slug=plugin.slug path_pk=path.pk %}" method="post">
+                                                {% csrf_token %}
+                                                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                                                <button type="submit" class="btn btn-danger"><i class="fa fa-trash-o fa-lg"></i>Delete</button>
+                                            </form>
+                                        </div>
+                                    </div><!-- /.modal-content -->
+                                </div><!-- /.modal-dialog -->
+                            </div><!-- /.modal -->
+                        {% empty %}
+                            <tr>
+                                <td colspan="2" class="text-center">Plugin has no paths</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <h4><a href="{{ plugin.get_absolute_url }}">Back to {{ plugin }}</a></h4>
+{% endblock content %}

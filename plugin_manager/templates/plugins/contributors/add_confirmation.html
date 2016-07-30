@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{# TODO: Only owner should have access to this page #}
+
+{% block title %}
+    Add contributor for {{ plugin }}
+{% endblock title %}
+
+{% block content %}
+    <h1>Add contributor for {{ plugin }}</h1>
+
+    <br />
+
+    {% if warning_message %}
+
+        <b><span style="color: #ff8a37">{{ username }}</span></b> {{ message }}
+
+    {% else %}
+
+        <p>Are you sure you want to add <b><span style="color: #ff8a37">{{ username }}</span></b> as a contributor?</p>
+        <form method="post">{% csrf_token %}
+            {{ form.as_p }}
+        <input type="submit" name="Yes" />
+        </form>
+
+    {% endif %}
+{% endblock content %}
