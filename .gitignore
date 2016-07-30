@@ -17,7 +17,10 @@
 *.pyc
 
 # Local database populating directory
-/populate
+/populate/
 
 # Mac files
 .DS_Store
+
+# Static files (collect location)
+/static/
