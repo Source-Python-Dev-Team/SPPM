@@ -51,8 +51,8 @@ class PluginCreateView(RequirementsParserMixin, CreateView):
 
     @staticmethod
     def get_requirements_path(form):
-        return '{package_path}{basename}/requirements.ini'.format(
-            package_path=PLUGIN_PATH,
+        return '{plugin_path}{basename}/requirements.ini'.format(
+            plugin_path=PLUGIN_PATH,
             basename=form.instance.basename,
         )
 
@@ -79,8 +79,8 @@ class PluginUpdateView(
 
     @staticmethod
     def get_requirements_path(form):
-        return '{package_path}{basename}/requirements.ini'.format(
-            package_path=PLUGIN_PATH,
+        return '{plugin_path}{basename}/requirements.ini'.format(
+            plugin_path=PLUGIN_PATH,
             basename=form.instance.basename,
         )
 
