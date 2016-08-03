@@ -1,23 +1,26 @@
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
-# Python
-from importlib import import_module
+from .common.admin import (
+    DownloadRequirementAdmin, VersionControlRequirementAdmin,
+)
+from .games.admin import GameAdmin
+from .packages.admin import (
+    PackageAdmin, PackageImageAdmin, PackageReleaseAdmin,
+)
+from .plugins.admin import PluginAdmin, PluginImageAdmin, PluginReleaseAdmin
+from .plugins.paths.admin import SubPluginPathAdmin
+from .pypi.admin import PyPiRequirementAdmin
+from .sub_plugins.admin import (
+    SubPluginAdmin, SubPluginImageAdmin, SubPluginReleaseAdmin,
+)
+from .tags.admin import TagAdmin
+from .users.admin import ForumUserAdmin
 
-# 3rd-Party Python
-from path import Path
-
-# Django
-from django.conf import settings
-
-
-# =============================================================================
-# >> IMPORT ADMIN MODULES
-# =============================================================================
-for _file in Path(__file__).parent.walkfiles('admin.py'):
-    import_module(
-        _file.replace(
-            settings.BASE_DIR,
-            ''
-        )[1:~2].replace('/', '.').replace('\\', '.')
-    )
+_all_admins = (
+    DownloadRequirementAdmin, ForumUserAdmin, GameAdmin, PackageAdmin,
+    PackageImageAdmin, PackageReleaseAdmin, PluginAdmin, PluginImageAdmin,
+    PluginReleaseAdmin, PyPiRequirementAdmin, SubPluginAdmin,
+    SubPluginImageAdmin, SubPluginPathAdmin, SubPluginReleaseAdmin, TagAdmin,
+    VersionControlRequirementAdmin,
+)
