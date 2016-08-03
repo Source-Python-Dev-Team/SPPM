@@ -4,9 +4,6 @@
 # Python
 from __future__ import unicode_literals
 
-# 3rd-Party Python
-from path import Path
-
 # Django
 from django.conf import settings
 from django.core.urlresolvers import reverse
@@ -119,7 +116,7 @@ class SubPlugin(CommonBase):
             using=None, update_fields=None):
         """Remove the old logo before storing the new one."""
         if self.logo and SUB_PLUGIN_LOGO_URL not in str(self.logo):
-            path = Path(settings.MEDIA_ROOT) / SUB_PLUGIN_LOGO_URL
+            path = settings.MEDIA_ROOT / SUB_PLUGIN_LOGO_URL
             if path.isdir():
                 logo = [x for x in path.files() if x.namebase == self.slug]
                 if logo:

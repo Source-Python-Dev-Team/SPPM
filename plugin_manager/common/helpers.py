@@ -3,7 +3,6 @@
 # =============================================================================
 # 3rd-Party Python
 from configobj import ConfigObj
-from path import Path
 
 # Django
 from django.conf import settings
@@ -34,7 +33,7 @@ __all__ = (
 # =============================================================================
 def find_image_number(directory, slug):
     """Return the next available image number."""
-    path = Path(settings.MEDIA_ROOT) / 'images' / directory / slug
+    path = settings.MEDIA_ROOT / 'images' / directory / slug
     current_files = [x.namebase for x in path.files()] if path.isdir() else []
     return '%04d' % (max(map(int, current_files or [0])) + 1)
 
