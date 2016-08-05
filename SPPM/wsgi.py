@@ -1,5 +1,5 @@
 """
-WSGI config for plugin_manager project.
+WSGI config for SPPM project.
 
 It exposes the WSGI callable as a module-level variable named ``application``.
 
