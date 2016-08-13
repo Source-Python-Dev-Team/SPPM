@@ -3,7 +3,6 @@
 # =============================================================================
 # Python
 from __future__ import unicode_literals
-from PIL import Image
 
 # Django
 from django.core.exceptions import ValidationError
@@ -12,10 +11,11 @@ from django.utils.text import slugify
 
 # 3rd-Party Django
 from model_utils.models import TimeStampedModel
+from PIL import Image
 from precise_bbcode.fields import BBCodeTextField
 
 # App
-from .constants import LOGO_MAX_HEIGHT, LOGO_MAX_WIDTH
+from .constants import FORUM_THREAD_URL, LOGO_MAX_HEIGHT, LOGO_MAX_WIDTH
 
 
 # =============================================================================
@@ -61,6 +61,14 @@ class CommonBase(models.Model):
             'and provide the link here. BBCode is allowed. 1024 char limit.'
         )
     )
+    topic = models.IntegerField(
+        unique=True,
+        blank=True,
+        null=True,
+    )
+
+    class Meta:
+        abstract = True
 
     def __str__(self):
         """Return the object's name when str cast."""
@@ -142,8 +150,10 @@ class CommonBase(models.Model):
             force_insert, force_update, using, update_fields
         )
 
-    class Meta:
-        abstract = True
+    def get_forum_url(self):
+        if self.topic is not None:
+            return FORUM_THREAD_URL.format(topic=self.topic)
+        return None
 
 
 class Release(TimeStampedModel):
