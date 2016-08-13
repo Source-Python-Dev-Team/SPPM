@@ -5,23 +5,83 @@
 {% endblock title %}
 
 {% block content %}
-    <div class="container">
-        {% if package_list %}
-            <h1>Recent Packages</h1>
-            <ul>
-                {% for package in package_list %}
-                    <li><a href="{{ package.get_absolute_url }}">{{ package }}</a></li>
-                {% endfor %}
-            </ul>
-            {% for page_url in page_url_list %}
-                {% if page_url.url %}
-                    <a href="{% url 'packages:list' %}{{ page_url.url }}">{{ page_url.display }}</a>
-                {% else %}
-                    {{ page_url.display }}
-                {% endif %}
-            {% endfor %}
-        {% else %}
-            <h1>No packages are registered.</h1>
-        {% endif %}
+    <div class="block">
+        <h1>Packages</h1>
+        <div class="section">
+            <div class="sectiontop">
+                <div class="sectionsort">
+                    <div class="dropdown dropleft">
+                        <div class="sectionsortoption">
+                            <p>Game:</p>
+                            <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                Any <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                                <li><a href="#" data-value="1">Any</a></li>
+                                <li><a href="#" data-value="2">Blade Symphony</a></li>
+                                <li><a href="#" data-value="3">Black Mesa</a></li>
+                                <li><a href="#" data-value="4">Counter-Strike: Global Offensive</a></li>
+                                <li><a href="#" data-value="5">Counter-Strike: Source</a></li>
+                                <li><a href="#" data-value="6">Day of Defeat: Source</a></li>
+                                <li><a href="#" data-value="7">Half-Life 2: Deathmatch</a></li>
+                                <li><a href="#" data-value="8">Left for Dead 2</a></li>
+                                <li><a href="#" data-value="9">Team Fortress 2</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="dropdown dropright">
+                        <div class="sectionsortoption">
+                            <p>Sort by:</p>
+                            <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                Latest Update <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                                <li><a href="#" data-value="Sort by: Latest Update">Latest Update</a></li>
+                                <li><a href="#" data-value="Sort by: Submission Date">Submission Date</a></li>
+                                <li><a href="#" data-value="Sort by: Rating">Rating</a></li>
+                                <li><a href="#" data-value="Sort by: Downloads">Downloads</a></li>
+                                <li><a href="#" data-value="Sort by: Title">Title</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="sectioncontent">
+                <div class="sectionentry">
+                    {% if package_list %}
+                        {% for package in package_list %}
+                            <div class="entryleft">
+                                <div class="entryimg">
+                                    <a href="#"><img src="images/default.png"/></a>
+                                </div>
+                            </div>
+                            <div class="entryright">
+                                <div class="entrytitle">
+                                    <a href="{{ package.get_absolute_url }}">{{ package }}</a> -
+                                    <div class="entryversion">
+                                        <a  href="#">5.4.1</a></h4>
+                                    </div>
+                                </div>
+                                <div class="entrydescription">"Lorem ipsum"</div>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <h2>No packages are registered.</h2>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="sectionfooter">
+                <div class="pagenumbers">
+                    {% for page_url in page_url_list %}
+                        {% if page_url.url %}
+                            <a href="{% url 'packages:list' %}{{ page_url.url }}">{{ page_url.display }}</a>
+                        {% else %}
+                            {{ page_url.display }}
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
     </div>
-{% endblock content %}
+
+{% endblock content %} 

@@ -1,20 +1,46 @@
 {% extends "base.html" %}
 
 {% block title %}
-    User List
+    Contributors List
 {% endblock title %}
 
 {% block content %}
-    <div class="container">
-        {% if forumuser_list %}
-            <h1>User List</h1>
-            <ul>
-                {% for user in forumuser_list %}
-                    <li><a href="{{ user.get_absolute_url }}">{{ user }}</a></li>
-                {% endfor %}
-            </ul>
-        {% else %}
-            <h1>There are no users that have registered plugins or packages.</h1>
-        {% endif %}
+    <div class="block">
+        <h1>Contributors</h1>
+        <div class="section">
+            <div class="sectiontop">
+            </div>
+            <div class="sectioncontent">
+                <div class="sectionentry">
+                    {% if forumuser_list %}
+                        {% for user in forumuser_list %}
+                            <div class="entryleft">
+                                <div class="userlistimg">
+                                    <a href="#"><img src="images/default.png"/></a>
+                                </div>
+                            </div>
+                            <div class="entryright">
+                                <div class="userlisttitle">
+                                    <a href="{{ user.get_absolute_url }}">{{ user }}</a>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <h2>There are no users that have registered plugins or packages.</h2>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="sectionfooter">
+                <div class="pagenumbers">
+                    {% for page_url in page_url_list %}
+                        {% if page_url.url %}
+                            <a href="{% url 'users:list' %}{{ page_url.url }}">{{ page_url.display }}</a>
+                        {% else %}
+                            {{ page_url.display }}
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
     </div>
 {% endblock content %}

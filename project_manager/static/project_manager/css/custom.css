@@ -34,6 +34,9 @@ h1 {
    text-transform: uppercase;
    font-size: 20px;
 }
+h2 {
+   font-size: 18px;
+}
 
 
 /**************/
@@ -144,7 +147,7 @@ ul.nav.navbar-nav.navbar-right {
     text-decoration: none;
     color: #ffffff;
     border: solid 1px darkred; border-right:0px;
-    background: #a9431f;
+    background: #A94F22;
     border-top-right-radius: 5px 5px;
     border-bottom-right-radius: 5px 5px;
     vertical-align: top;
@@ -173,7 +176,7 @@ ul.nav.navbar-nav.navbar-right {
     top: 0;
 }
 .sidebar-nav {
-    background: #A9402A;
+    background: #A94F22;
     margin-left: -15px;
     padding-left: 15px;
     height: 100%;
@@ -205,6 +208,9 @@ ul.nav.navbar-nav.navbar-right {
 
 main {
     margin-top: 20px;
+}
+.block {
+    margin-bottom: 10px;
 }
 .row {
     background: white;
