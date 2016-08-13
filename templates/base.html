@@ -1,3 +1,4 @@
+ 
 {% load staticfiles %}
 {% load static %}
 
@@ -7,63 +8,130 @@
         <title>{% block title %}{% endblock title %}</title>
         <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
         <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
-    	<link rel="stylesheet" media="all" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+        <link rel="stylesheet" media="all" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
 {#        <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css">#}
         <link rel="shortcut icon" type="image/png" href="{% static "project_manager/img/sp_icon_plugins.png" %}"/>
-        <link rel="stylesheet" href="{% static 'project_manager/css/base.css' %}">
+        {# <link rel="stylesheet" href="{% static 'project_manager/css/base.css' %}"> #}
         <link rel="stylesheet" href="{% static 'project_manager/css/buttons.css' %}">
+        <link rel="stylesheet" href="{% static 'project_manager/css/custom.css' %}">
         <meta charset="UTF-8">
     </head>
+    
+    <body>
+        <header>
+            <div class="container">
+                <div class="navbar navbar-default navbar-top" role="navigation">
+                    <a href="{% url 'plugins:list' %}" class="navbar-brand" id="logo"><img src="{% static "project_manager/img/sp_banner_plugins.png" %}" alt="SPPM"/></a>
+                    <div class="topright">
+                        <div class="topbar">
+                            <ul class="nav">
+                                <li><a href="#">Login</a></li>
+                                <li><a href="#">Register</a></li>
+                            </ul>  
+                        </div>
+                        <div class="searchbar">
+                            <!-- <form id="search" method="get" action="http://www.google.com"> -->
+                            <form id="search">
+                                <input type="text" class="searchtextinput" name="q" size="21" maxlength="120"><input type="submit" value="search" class="searchbutton">
+                            </form>
+                            <div class="clear"></div> 
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+        <main>
+            <div class="container"> 
+                <content>
+                    <div class="row">
+                        <div class="col-sm-3" id="panel-left">
+                            <div class="sidebar-nav">
+                                <div class="navbar navbar-default" id="sidebar" role="navigation">
+                                    <div class="navbar-header">
+                                        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".sidebar-navbar-collapse">
+                                            <span class="sr-only">Toggle navigation</span>
+                                            <span class="icon-bar"></span>
+                                            <span class="icon-bar"></span>
+                                            <span class="icon-bar"></span>
+                                        </button>
+                                    </div>
+                                    <div class="navbar-collapse collapse sidebar-navbar-collapse">
+                                        <ul class="nav navbar-nav">
+                                            <li>
+                                                <h1>Main Menu</h1>
+                                                <ul>
+                                                    <li><a href="{% url 'plugins:list' %}">Browse Plugins</a></li>
+                                                    <li><a href="{% url 'packages:list' %}">Browse Packages</a></li>
+                                                    <li><a href="{% url 'pypi:list' %}">Browse PyPi List</a></li>
+                                                </ul>
+                                            </li>
+                                             <li>
+                                                <h1>User Menu</h1>
+                                                <ul>
+                                                    <li><a href="{% url 'plugins:create' %}">Upload a Plugin</a></li>
+                                                    <li><a href="{% url 'packages:list' %}">Upload a Package</a></li>
+                                                    <li><a href="#">View Contributions</a></li>
+                                                    <li><a href="#">View Favorites</a></li>
+                                                </ul>
+                                            <li>
+                                            <li class="recenttagsmenu">
+                                                <h1>Recent Tags</h1>
+                                                <ul>
+                                                    <div class="recenttags">
+                                                        <a href="#">Money</a>
+                                                        <a href="#">Starter</a>
+                                                        <a href="#">Round</a>
+                                                        <a href="#">Gungame</a>
+                                                        <a href="#">WCS</a>
+                                                        <a href="#" title="more">...</a>
+                                                    </div>
+                                                </ul>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-9" id="panel-right">
+                                        
+                            {% if messages %}
+                            <ul class="messages">
+                                {% for message in messages %}
+                                    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>
+                                        <span style="color: #ff4444;font-weight: 400;">{{ message }}</span>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                            {% endif %}
+                            {% block content %}
+                            {% endblock content %}
+                                        
+                        </div>
+                    </div>
+                </content>
+            </div>
+        </main>
+        
+        <footer>
+            <div class="container">
+                <div class="center">
+                    <ul>
+		        <li><a href="{% url 'statistics' %}"><b>Statistics</b></a></li>
+                        <li><a href="{{ FORUM_URL }}"><b>Forums</b></a></li>
+                        <li><a href="{{ WIKI_URL }}"><b>Wiki</b></a></li>
+                        <li><a href="{{ GITHUB_URL }}"><b>Source Code</b></a></li>
+                        <li><a href="{{ GITHUB_URL }}/issues"><b>Issues List</b></a></li>
+                    </ul>
+                </div>
+            </div>
+        </footer>
+        
 
-    <outer>
-        <inner>
-            <sidebar>
-                <p><img src="{% static "project_manager/img/sp_logo_plugins.png" %}" height="135" width="135" alt="SP Plugin Logo"></p>
-                <b>&nbsp;Plugin Menu&nbsp;</b><br />
-                &nbsp;<a href="{% url 'plugins:list' %}"><b>Latest Plugins</b></a>&nbsp;<br />
-                {# TODO: Add in sorting by other types #}
-                {#<a href="{% url 'plugins:list' %}">Top Plugins</a><br />#}
-                {#<a href="{% url 'plugins:list' %}">By Game</a><br />#}
-                {#<a href="{% url 'plugins:list' %}">By Tag</a><br />#}
-                {#<a href="{% url 'plugins:list' %}">By Author</a><br />#}
-                &nbsp;<a href="{% url 'plugins:create' %}"><b>Create New Plugin</b></a>&nbsp;<br />
-                <br />
-                <b>&nbsp;Package Menu&nbsp;</b><br />
-                &nbsp;<a href="{% url 'packages:list' %}"><b>Latest Packages</b></a>&nbsp;<br />
-                &nbsp;<a href="{% url 'packages:create' %}"><b>Create New Package</b></a>&nbsp;<br />
-                <br />
-                <b>&nbsp;PyPi Menu&nbsp;</b><br />
-                &nbsp;<a href="{% url 'pypi:list' %}"><b>PyPi List</b></a>&nbsp;<br />
-                <br />
-                <b>&nbsp;User Menu&nbsp;</b><br />
-                &nbsp;<a href="{% url 'users:list' %}"><b>User List</b></a>&nbsp;<br />
-                <br />
-                <b>&nbsp;Other&nbsp;</b><br />
-                &nbsp;<a href="{% url 'statistics' %}"><b>Statistics</b></a><br />
-                &nbsp;<a href="{% url 'games:list' %}"><b>Supported Games</b></a>&nbsp;<br />
-                &nbsp;<a href="{% url 'tags:list' %}"><b>Tags</b></a>&nbsp;<br />
-                <br />
-                <b>&nbsp;Source.Python Links&nbsp;</b><br />
-                &nbsp;<a href="{{ FORUM_URL }}"><b>Forums</b></a>&nbsp;<br />
-                &nbsp;<a href="{{ WIKI_URL }}"><b>Wiki</b></a>&nbsp;<br />
-                &nbsp;<a href="{{ GITHUB_URL }}"><b>Source Code</b></a>&nbsp;<br />
-                &nbsp;<a href="{{ GITHUB_URL }}/issues"><b>Issues List</b></a>&nbsp;<br />
-            </sidebar>
-            <content>
-                <body>
-                    {% if messages %}
-                        <ul class="messages">
-                            {% for message in messages %}
-                                <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>
-                                    <span style="color: #ff4444;font-weight: 400;">{{ message }}</span>
-                                </li>
-                            {% endfor %}
-                        </ul>
-                    {% endif %}
-                    {% block content %}
-                    {% endblock content %}
-                </body>
-            </content>
-        </inner>
-    </outer>
+        <script src="{% static "project_manager/js/jquery.min.js" %}"></script>
+        <script src="{% static "project_manager/js/bootstrap.js" %}"></script>
+        <script src="{% static "project_manager/js/custom.js" %}"></script>
+    </body>
+
+    
 </html>
+
