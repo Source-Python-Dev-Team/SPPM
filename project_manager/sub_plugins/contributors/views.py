@@ -3,6 +3,7 @@
 # =============================================================================
 # Django
 from django.shortcuts import HttpResponseRedirect
+from django.core.urlresolvers import reverse
 from django.views.generic import FormView
 
 # 3rd-Party Django
@@ -11,7 +12,6 @@ from django_filters.views import FilterView
 # App
 from .forms import SubPluginAddContributorConfirmationForm
 from ..mixins import RetrieveSubPluginMixin
-from project_manager.sub_plugins.models import SubPlugin
 from project_manager.users.filtersets import ForumUserFilterSet
 from project_manager.users.models import ForumUser
 
@@ -32,6 +32,24 @@ class SubPluginAddContributorView(RetrieveSubPluginMixin, FilterView):
     model = ForumUser
     template_name = 'sub_plugins/contributors/add.html'
     filterset_class = ForumUserFilterSet
+
+    def get(self, request, *args, **kwargs):
+        value = super(SubPluginAddContributorView, self).get(
+            request, *args, **kwargs
+        )
+        user = value.context_data['user']
+        if user is not None and not value.context_data['warning_message']:
+            return HttpResponseRedirect(
+                reverse(
+                    viewname='plugins:sub-plugins:contributors:confirm-add',
+                    kwargs={
+                        'slug': self.plugin.slug,
+                        'sub_plugin_slug': self.sub_plugin.slug,
+                        'id': user.id,
+                    }
+                )
+            )
+        return value
 
     def get_context_data(self, **kwargs):
         context = super(
