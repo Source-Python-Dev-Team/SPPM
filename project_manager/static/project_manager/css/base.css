@@ -15,19 +15,19 @@ content {
 
 sidebar {
     margin: 10px;
-    border: solid #ff8a37;
+    border: solid #A94F22;
     width: auto;
     float: left;
     background: #cccccc;
 }
 
 .panel-heading.panel-heading-custom {
-    background: #ff8a37;
+    background: #A94F22;
     color: white;
-    border-color: #ff8a37;
+    border-color: #A94F22;
 }
 
 .panel-primary.panel-primary-custom {
-    border-color: #ff8a37;
+    border-color: #A94F22;
     width: 600px;
 }
