@@ -19,7 +19,7 @@
 
     {% if request.GET %}
         {% if warning_message %}
-            <b><span style="color: red">{{ user.username }}</span></b> {{ message }}
+            <b><span style="color: red">{{ user.username }}</span></b> {{ warning_message }}
         {% elif user %}
             <br />
             Select the username to go to the confirmation page.
