@@ -9,7 +9,7 @@ from django.core.urlresolvers import reverse
 from django.db import models
 
 # App
-from project_manager.common.validators import sub_plugin_path_validator
+from .validators import sub_plugin_path_validator
 
 
 # =============================================================================
