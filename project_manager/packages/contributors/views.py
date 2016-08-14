@@ -100,7 +100,7 @@ class PackageAddContributorConfirmationView(RetrievePackageMixin, FormView):
             message = 'is already a contributor.'
         context.update({
             'package': self.package,
-            'username': ForumUser.objects.get(id=self.kwargs['id']).username,
+            'username': user.username,
             'warning_message': message,
         })
         return context

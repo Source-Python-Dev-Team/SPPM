@@ -104,7 +104,7 @@ class SubPluginAddContributorConfirmationView(RetrieveSubPluginMixin, FormView):
             message = 'is already a contributor.'
         context.update({
             'sub_plugin': self.sub_plugin,
-            'username': ForumUser.objects.get(id=self.kwargs['id']).username,
+            'username': user.username,
             'warning_message': message,
         })
         return context
