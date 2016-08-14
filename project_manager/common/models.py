@@ -34,14 +34,18 @@ __all__ = (
 # =============================================================================
 class CommonBase(models.Model):
     """Base model for upload content."""
-    synopsis = BBCodeTextField(
-        max_length=128,
+    configuration = BBCodeTextField(
+        max_length=1024,
         blank=True,
         null=True,
         help_text=(
-            'A brief description of the project. BBCode is allowed. '
-            '128 char limit.'
+            'The configuration of the project. If too long, post on the forum '
+            'and provide the link here. BBCode is allowed. 1024 char limit.'
         )
+    )
+    contributors = models.ManyToManyField(
+        to='project_manager.ForumUser',
+        related_name='%(class)s_contributions',
     )
     description = BBCodeTextField(
         max_length=1024,
@@ -52,19 +56,47 @@ class CommonBase(models.Model):
             '1024 char limit.'
         )
     )
-    configuration = BBCodeTextField(
-        max_length=1024,
+    download_requirements = models.ManyToManyField(
+        to='project_manager.DownloadRequirement',
+        related_name='%(class)ss',
+    )
+    owner = models.ForeignKey(
+        to='project_manager.ForumUser',
+        related_name='%(class)ss',
+    )
+    package_requirements = models.ManyToManyField(
+        to='project_manager.Package',
+        related_name='required_in_%(class)ss',
+    )
+    pypi_requirements = models.ManyToManyField(
+        to='project_manager.PyPiRequirement',
+        related_name='required_in_%(class)ss',
+    )
+    supported_games = models.ManyToManyField(
+        to='project_manager.Game',
+        related_name='%(class)ss',
+    )
+    synopsis = BBCodeTextField(
+        max_length=128,
         blank=True,
         null=True,
         help_text=(
-            'The configuration of the project. If too long, post on the forum '
-            'and provide the link here. BBCode is allowed. 1024 char limit.'
+            'A brief description of the project. BBCode is allowed. '
+            '128 char limit.'
         )
+    )
+    tags = models.ManyToManyField(
+        to='project_manager.Tag',
+        related_name='%(class)ss',
     )
     topic = models.IntegerField(
         unique=True,
         blank=True,
         null=True,
+    )
+    vcs_requirements = models.ManyToManyField(
+        to='project_manager.VersionControlRequirement',
+        related_name='%(class)ss',
     )
 
     class Meta:

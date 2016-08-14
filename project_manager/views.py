@@ -47,7 +47,7 @@ class StatisticsView(TemplateView):
         )
         users = ForumUser.objects.exclude(
             plugins__isnull=True, plugin_contributions__isnull=True,
-            sub_plugins__isnull=True, sub_plugin_contributions__isnull=True,
+            subplugins__isnull=True, subplugin_contributions__isnull=True,
             packages__isnull=True, package_contributions__isnull=True,
         ).count()
         packages = Package.objects.count()

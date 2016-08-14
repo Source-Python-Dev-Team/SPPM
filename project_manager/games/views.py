@@ -36,7 +36,7 @@ class GameView(DetailView):
             'plugins': get_groups(self.object.plugins.all()),
             'packages': get_groups(self.object.packages.all()),
             'sub_plugins': get_groups(
-                self.object.sub_plugins.all().select_related(
+                self.object.subplugins.all().select_related(
                     'plugin',
                 )
             ),

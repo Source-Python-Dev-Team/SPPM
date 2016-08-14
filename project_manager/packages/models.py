@@ -57,39 +57,11 @@ class Package(CommonBase):
         unique=True,
         blank=True,
     )
-    owner = models.ForeignKey(
-        to='project_manager.ForumUser',
-        related_name='packages',
-    )
-    contributors = models.ManyToManyField(
-        to='project_manager.ForumUser',
-        related_name='package_contributions',
-    )
-    package_requirements = models.ManyToManyField(
-        to='project_manager.Package',
-        related_name='required_in_packages',
-    )
-    pypi_requirements = models.ManyToManyField(
-        to='project_manager.PyPiRequirement',
-        related_name='required_in_packages',
-    )
     logo = models.ImageField(
         upload_to=handle_package_logo_upload,
         blank=True,
         null=True,
         help_text="The package's logo image.",
-    )
-    supported_games = models.ManyToManyField(
-        to='project_manager.Game',
-        related_name='packages',
-    )
-    vcs_requirements = models.ManyToManyField(
-        to='project_manager.VersionControlRequirement',
-        related_name='packages',
-    )
-    download_requirements = models.ManyToManyField(
-        to='project_manager.DownloadRequirement',
-        related_name='packages',
     )
 
     def get_absolute_url(self):

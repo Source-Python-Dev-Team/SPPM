@@ -57,39 +57,11 @@ class Plugin(CommonBase):
         unique=True,
         blank=True,
     )
-    owner = models.ForeignKey(
-        to='project_manager.ForumUser',
-        related_name='plugins',
-    )
-    contributors = models.ManyToManyField(
-        to='project_manager.ForumUser',
-        related_name='plugin_contributions',
-    )
-    package_requirements = models.ManyToManyField(
-        to='project_manager.Package',
-        related_name='required_in_plugins',
-    )
-    pypi_requirements = models.ManyToManyField(
-        to='project_manager.PyPiRequirement',
-        related_name='required_in_plugins',
-    )
     logo = models.ImageField(
         upload_to=handle_plugin_logo_upload,
         blank=True,
         null=True,
         help_text="The plugin's logo image.",
-    )
-    supported_games = models.ManyToManyField(
-        to='project_manager.Game',
-        related_name='plugins',
-    )
-    vcs_requirements = models.ManyToManyField(
-        to='project_manager.VersionControlRequirement',
-        related_name='plugins',
-    )
-    download_requirements = models.ManyToManyField(
-        to='project_manager.DownloadRequirement',
-        related_name='plugins',
     )
 
     def get_absolute_url(self):

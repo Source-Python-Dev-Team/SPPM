@@ -30,7 +30,7 @@ class UserListView(PaginatedListView):
     def get_queryset(self):
         return ForumUser.objects.exclude(
             plugins__isnull=True, plugin_contributions__isnull=True,
-            sub_plugins__isnull=True, sub_plugin_contributions__isnull=True,
+            subplugins__isnull=True, subplugin_contributions__isnull=True,
             packages__isnull=True, package_contributions__isnull=True,
         )
 
@@ -44,14 +44,14 @@ class UserView(DetailView):
         context.update({
             'plugins': self.object.plugins.all(),
             'sub_plugins': (
-                self.object.sub_plugins.all().select_related(
+                self.object.subplugins.all().select_related(
                     'plugin',
                 )
             ),
             'packages': self.object.packages.all(),
             'plugin_contributions': self.object.plugin_contributions.all(),
             'sub_plugin_contributions': (
-                self.object.sub_plugin_contributions.all().select_related(
+                self.object.subplugin_contributions.all().select_related(
                     'plugin',
                 )
             ),

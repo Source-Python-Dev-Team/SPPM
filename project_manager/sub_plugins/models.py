@@ -54,43 +54,15 @@ class SubPlugin(CommonBase):
         max_length=32,
         blank=True,
     )
-    owner = models.ForeignKey(
-        to='project_manager.ForumUser',
-        related_name='sub_plugins',
-    )
-    contributors = models.ManyToManyField(
-        to='project_manager.ForumUser',
-        related_name='sub_plugin_contributions',
-    )
     plugin = models.ForeignKey(
         to='project_manager.Plugin',
         related_name='sub_plugins',
-    )
-    package_requirements = models.ManyToManyField(
-        to='project_manager.Package',
-        related_name='required_in_sub_plugins',
-    )
-    pypi_requirements = models.ManyToManyField(
-        to='project_manager.PyPiRequirement',
-        related_name='required_in_sub_plugins',
     )
     logo = models.ImageField(
         upload_to=handle_sub_plugin_logo_upload,
         blank=True,
         null=True,
         help_text="The sub-plugin's logo image.",
-    )
-    supported_games = models.ManyToManyField(
-        to='project_manager.Game',
-        related_name='sub_plugins',
-    )
-    vcs_requirements = models.ManyToManyField(
-        to='project_manager.VersionControlRequirement',
-        related_name='sub_plugins',
-    )
-    download_requirements = models.ManyToManyField(
-        to='project_manager.DownloadRequirement',
-        related_name='sub_plugins',
     )
 
     class Meta:
