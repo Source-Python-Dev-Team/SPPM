@@ -26,9 +26,7 @@ __all__ = (
 # >> GLOBAL VARIABLES
 # =============================================================================
 # Base URL for project thread
-FORUM_THREAD_URL = (
-    settings.FORUM_URL + 'viewtopic.php?t={topic}'
-)
+FORUM_THREAD_URL = settings.FORUM_URL + 'viewtopic.php?t={topic}'
 
 # Maximum allowed width and height for all logo files
 LOGO_MAX_WIDTH = 200

@@ -3,9 +3,10 @@
 # =============================================================================
 # Django
 from django.http.response import Http404
-from django.views.generic import DetailView, ListView
+from django.views.generic import DetailView
 
 # App
+from project_manager.common.views import PaginatedListView
 from .models import ForumUser
 
 
@@ -21,8 +22,9 @@ __all__ = (
 # =============================================================================
 # >> VIEWS
 # =============================================================================
-class UserListView(ListView):
+class UserListView(PaginatedListView):
     model = ForumUser
+    paginate_by = 40
     template_name = 'users/list.html'
 
     def get_queryset(self):
