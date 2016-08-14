@@ -1,10 +1,10 @@
 .panel-heading.panel-heading-custom {
     background: #A94F22;
     color: white;
-    border-color: #A94F22;
+    border-color: darkred;
 }
 
 .panel-primary.panel-primary-custom {
-    border-color: #A94F22;
+    border-color: darkred;
     width: 600px;
 }
