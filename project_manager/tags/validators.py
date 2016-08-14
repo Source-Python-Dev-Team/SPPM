@@ -1,33 +1,21 @@
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
-# Python
-from __future__ import unicode_literals
-
 # Django
-from django.db import models
-
-# App
-from .validators import tag_name_validator
+from django.core.validators import RegexValidator
 
 
 # =============================================================================
 # >> ALL DECLARATION
 # =============================================================================
 __all__ = (
-    'Tag',
+    'tag_name_validator',
 )
 
 
 # =============================================================================
-# >> MODELS
+# >> GLOBAL VARIABLES
 # =============================================================================
-class Tag(models.Model):
-    name = models.CharField(
-        max_length=16,
-        unique=True,
-        validators=[tag_name_validator],
-    )
-
-    def __str__(self):
-        return self.name
+# Tags should:
+#   Contain only lower-case characters.
+tag_name_validator = RegexValidator(r'^[a-z]*')
