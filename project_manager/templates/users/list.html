@@ -5,6 +5,7 @@
 {% endblock title %}
 
 {% block content %}
+    {% load static %}
     <div class="block contributorslist">
         <h1>Contributors</h1>
         <div class="section">
@@ -16,7 +17,13 @@
                         {% for user in forumuser_list %}
                             <div class="entryleft">
                                 <div class="userlistimg">
-                                    <a href="{{ user.get_absolute_url }}"><img src="images/default.png"/></a>
+                                    <a href="{{ user.get_absolute_url }}">
+                                    {% if user.logo %}
+                                        <img src="{{ MEDIA_URL }}{{ user.logo }}" alt="{{ user }} Logo"/>
+                                    {% else %}
+                                        <img src="{% static "project_manager/img/default.png" %}" alt="{{ user }} Logo"/>
+                                    {% endif %}
+                                    </a>
                                 </div>
                             </div>
                             <div class="entryright">

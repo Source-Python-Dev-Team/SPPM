@@ -5,6 +5,7 @@
 {% endblock title %}
 
 {% block content %}
+    {% load static %}
     <div class="block packageslist">
         <h1>Packages</h1>
         <div class="section">
@@ -52,7 +53,13 @@
                         {% for package in package_list %}
                             <div class="entryleft">
                                 <div class="entryimg">
-                                    <a href="{{ package.get_absolute_url }}"><img src="images/default.png"/></a>
+                                    <a href="{{ package.get_absolute_url }}">
+				    {% if package.logo %}
+				        <img src="{{ MEDIA_URL }}{{ package.logo }}" alt="{{ package }} Logo"/>
+				    {% else %}
+					<img src="{% static "project_manager/img/default.png" %}" alt="{{ package }} Logo"/>
+				    {% endif %}
+				    </a>
                                 </div>
                             </div>
                             <div class="entryright">

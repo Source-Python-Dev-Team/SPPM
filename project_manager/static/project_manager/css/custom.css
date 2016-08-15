@@ -298,7 +298,7 @@ main {
     width: 25px;
     height: 25px;
     margin: 5px;
-    border: 1px solid #A44E25;
+    border: 1px solid lightgray;
 }
 .contributorslist .entryleft {
     width: 35px;

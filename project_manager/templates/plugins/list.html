@@ -5,6 +5,8 @@
 {% endblock title %}
 
 {% block content %}
+
+    {% load static %}
     <div class="block pluginslist">
         <h1>Plugins</h1>
         <div class="section">
@@ -52,7 +54,13 @@
                         {% for plugin in plugin_list %}
                             <div class="entryleft">
                                 <div class="entryimg">
-                                    <a href="{{ plugin.get_absolute_url }}"><img src="images/default.png"/></a>
+                                    <a href="{{ plugin.get_absolute_url }}">
+                                    {% if plugin.logo %}
+                                        <img src="{{ MEDIA_URL }}{{ plugin.logo }}" alt="{{ plugin }} Logo"/>
+                                    {% else %}
+                                        <img src="{% static "project_manager/img/default.png" %}" alt="{{ plugin }} Logo"/>
+                                    {% endif %}
+                                    </a>
                                 </div>
                             </div>
                             <div class="entryright">
