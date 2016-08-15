@@ -52,17 +52,17 @@
                         {% for plugin in plugin_list %}
                             <div class="entryleft">
                                 <div class="entryimg">
-                                    <a href="#"><img src="images/default.png"/></a>
+                                    <a href="{{ plugin.get_absolute_url }}"><img src="images/default.png"/></a>
                                 </div>
                             </div>
                             <div class="entryright">
                                 <div class="entrytitle">
                                     <a href="{{ plugin.get_absolute_url }}">{{ plugin }}</a> -
                                     <div class="entryversion">
-                                        <a  href="#">5.4.1</a></h4>
+                                        <a  href="{% url 'plugins:releases' slug=plugin.slug %}">v{{ current_release.version }}</a></h4>
                                     </div>
                                 </div>
-                                <div class="entrydescription">"Lorem ipsum"</div>
+                                <div class="entrydescription">{{ plugin.description.rendered }} </div>
                             </div>
                         {% endfor %}
                     {% else %}

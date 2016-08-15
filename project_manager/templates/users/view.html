@@ -5,6 +5,7 @@
 {% endblock title %}
 
 {% block content %}
+    <div class="block viewcontributor">
     <h1>{{ forumuser }}</h1>
     <ul><a href="{{ forumuser.get_forum_url }}">Forum Account</a></ul>
     {% if plugins or sub_plugins or packages or plugin_contributions or sub_plugin_contributions or package_contributions %}
@@ -74,4 +75,5 @@
     {% else %}
         User does not have any plugins, sub-plugins, packages, or contributions.
     {% endif %}
+    </div>
 {% endblock content %}

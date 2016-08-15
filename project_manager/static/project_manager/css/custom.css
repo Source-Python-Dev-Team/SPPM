@@ -289,8 +289,10 @@ main {
 .pluginslist .entryright, .packageslist .entryright {
     margin-top: 3px;
     min-height: 120px;
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+    border-bottom: 1px solid lightgray;
 }
-
 
 .contributorslist img {
     width: 25px;
@@ -343,7 +345,7 @@ a.previous:hover, a.next:hover {
 .panel-primary {
     border-color: brown;
 }
-#panel-right ol {
+#panel-right ol, #panel-right ol, .viewcontributor ul * ul {
     border-top: 1px solid darkgray;
     background: white;
     background: -webkit-linear-gradient(top left, white , ghostwhite);
@@ -351,6 +353,7 @@ a.previous:hover, a.next:hover {
     background: -moz-linear-gradient(bottom right, white , ghostwhite);
     background: linear-gradient(to bottom right, white , ghostwhite);
 }
+
 /**************/
 /*** Footer ***/
 /**************/

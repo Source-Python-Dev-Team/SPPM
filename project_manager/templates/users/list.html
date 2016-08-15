@@ -16,7 +16,7 @@
                         {% for user in forumuser_list %}
                             <div class="entryleft">
                                 <div class="userlistimg">
-                                    <a href="#"><img src="images/default.png"/></a>
+                                    <a href="{{ user.get_absolute_url }}"><img src="images/default.png"/></a>
                                 </div>
                             </div>
                             <div class="entryright">

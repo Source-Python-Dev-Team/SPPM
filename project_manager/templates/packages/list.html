@@ -52,17 +52,17 @@
                         {% for package in package_list %}
                             <div class="entryleft">
                                 <div class="entryimg">
-                                    <a href="#"><img src="images/default.png"/></a>
+                                    <a href="{{ package.get_absolute_url }}"><img src="images/default.png"/></a>
                                 </div>
                             </div>
                             <div class="entryright">
                                 <div class="entrytitle">
                                     <a href="{{ package.get_absolute_url }}">{{ package }}</a> -
                                     <div class="entryversion">
-                                        <a  href="#">5.4.1</a></h4>
+                                        <a  href="{% url 'packages:releases' slug=package.slug %}">v</a></h4>
                                     </div>
                                 </div>
-                                <div class="entrydescription">"Lorem ipsum"</div>
+                                <div class="entrydescription">{{ package.description.rendered }}</div>
                             </div>
                         {% endfor %}
                     {% else %}
