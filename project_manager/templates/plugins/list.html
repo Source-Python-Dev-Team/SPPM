@@ -55,18 +55,13 @@
                             <div class="entryleft">
                                 <div class="entryimg">
                                     <a href="{{ plugin.get_absolute_url }}">
-                                    {% if plugin.logo %}
-                                        <img src="{{ MEDIA_URL }}{{ plugin.logo }}" alt="{{ plugin }} Logo"/>
-                                    {% else %}
-                                        <img src="{% static "project_manager/img/default.png" %}" alt="{{ plugin }} Logo"/>
-                                    {% endif %}
+                                        {% if plugin.logo %}
+                                            <img src="{{ MEDIA_URL }}{{ plugin.logo }}" alt="{{ plugin }} Logo"/>
+                                        {% else %}
+                                            <img src="{% static "project_manager/img/default.png" %}" alt="{{ plugin }} Logo"/>
+                                        {% endif %}
                                     </a>
                                 </div>
-                                {% if plugin.logo %}
-                                    <div class="entryimg">
-                                        <a href="{{ plugin.get_absolute_url }}"><img src={{ plugin.logo }}/></a>
-                                    </div>
-                                {% endif %}
                             </div>
                             <div class="entryright">
                                 <div class="entrytitle">

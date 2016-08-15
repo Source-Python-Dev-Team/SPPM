@@ -54,18 +54,13 @@
                             <div class="entryleft">
                                 <div class="entryimg">
                                     <a href="{{ package.get_absolute_url }}">
-				    {% if package.logo %}
-				        <img src="{{ MEDIA_URL }}{{ package.logo }}" alt="{{ package }} Logo"/>
-				    {% else %}
-					<img src="{% static "project_manager/img/default.png" %}" alt="{{ package }} Logo"/>
-				    {% endif %}
-				    </a>
+                                        {% if package.logo %}
+                                            <img src="{{ MEDIA_URL }}{{ package.logo }}" alt="{{ package }} Logo"/>
+                                        {% else %}
+                                            <img src="{% static "project_manager/img/default.png" %}" alt="{{ package }} Logo"/>
+                                        {% endif %}
+                                    </a>
                                 </div>
-                                {% if package.logo %}
-                                    <div class="entryimg">
-                                        <a href="{{ package.get_absolute_url }}"><img src={{ package.logo }}/></a>
-                                    </div>
-                                {% endif %}
                             </div>
                             <div class="entryright">
                                 <div class="entrytitle">
