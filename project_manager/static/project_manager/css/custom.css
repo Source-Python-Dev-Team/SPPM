@@ -37,7 +37,19 @@ h1 {
 h2 {
    font-size: 18px;
 }
-
+input, textarea {
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    max-width: 100%;
+}
+input:focus, textarea:focus {
+    outline: none !important;
+    border: 1px solid white;
+    box-shadow: 0 0 4px #A94F22;
+}
+input#id_zip_file {
+    margin-bottom: 15px;
+}
 
 /**************/
 /*** Header ***/
@@ -263,20 +275,41 @@ main {
     border: none;
     border-radius: 10px;
 }
-.entryimg img {
+.pluginslist .entryimg img, .packageslist .entryimg img {
     width: 100px;
     height: 100px;
     margin: 5px;
     border: 1px solid #A44E25;
 }
-.entryleft {
+.pluginslist .entryleft, .packageslist .entryleft {
     width: 120px;
     height: 120px;
     float: left;
 }
-.entryright {
+.pluginslist .entryright, .packageslist .entryright {
     margin-top: 3px;
     min-height: 120px;
+}
+
+
+.contributorslist img {
+    width: 25px;
+    height: 25px;
+    margin: 5px;
+    border: 1px solid #A44E25;
+}
+.contributorslist .entryleft {
+    width: 35px;
+    height: 30px;
+    float: left;
+}
+.contributorslist .entryright {
+    margin-top: 3px;
+    min-height: 30px;
+}
+.contributorslist img {
+    height: 25px;
+    width: 25px;
 }
 .entrytitle, .entryversion {
     display: inline;
@@ -302,8 +335,22 @@ a.previous, a.next {
 a.previous:hover, a.next:hover {
     text-decoration: none;
 }
-
-
+.panel-heading.panel-heading-custom {
+    background-color: #A94F22;
+    background-image: none;
+    border-color: brown;
+}
+.panel-primary {
+    border-color: brown;
+}
+#panel-right ol {
+    border-top: 1px solid darkgray;
+    background: white;
+    background: -webkit-linear-gradient(top left, white , ghostwhite);
+    background: -o-linear-gradient(bottom right, white , ghostwhite);
+    background: -moz-linear-gradient(bottom right, white , ghostwhite);
+    background: linear-gradient(to bottom right, white , ghostwhite);
+}
 /**************/
 /*** Footer ***/
 /**************/
