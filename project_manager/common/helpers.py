@@ -100,7 +100,7 @@ def flush_requirements():
     PyPiRequirement.objects.filter(
         required_in_packages__isnull=True,
         required_in_plugins__isnull=True,
-        required_in_sub_plugins__isnull=True,
+        required_in_subplugins__isnull=True,
     ).delete()
     VersionControlRequirement.objects.filter(
         packages__isnull=True,

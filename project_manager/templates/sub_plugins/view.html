@@ -4,14 +4,14 @@
 {% bbcode entry.bbcode_content %}
 
 {% block title %}
-    {{ sub_plugin }} - version {{ current_release.version }}
+    {{ sub_plugin }} - version {{ current_version }}
 {% endblock title %}
 
 {% block content %}
     {% if sub_plugin.logo %}
         <img src="{{ MEDIA_URL }}{{ sub_plugin.logo }}" height="135" width="135" alt="{{ sub_plugin }} Logo"/>
     {% endif %}
-    <h1>{{ sub_plugin }} - version {{ current_release.version }}</h1>
+    <h1>{{ sub_plugin }} - version {{ current_version }}</h1>
     {# TODO: only show this if the logged in user is the owner or a contributors #}
     <ul>
         <b><a href="{% url 'plugins:sub-plugins:edit' slug=sub_plugin.plugin.slug sub_plugin_slug=sub_plugin.slug %}">Edit Page</a></b> |

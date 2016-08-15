@@ -146,13 +146,10 @@ class SubPluginUpdateView(
     def get_context_data(self, **kwargs):
         context = super(SubPluginUpdateView, self).get_context_data(**kwargs)
         sub_plugin = context['subplugin']
-        current_release = SubPluginRelease.objects.filter(
-            sub_plugin=sub_plugin,
-        ).order_by('-created')[0]
         context.update({
             'plugin': self.plugin,
             'sub_plugin': sub_plugin,
-            'current_release': current_release,
+            'current_version': self.object.current_version,
             'paths': self.plugin.paths.all(),
         })
         return context
@@ -199,12 +196,9 @@ class SubPluginView(RetrieveSubPluginMixin, DetailView):
     def get_context_data(self, **kwargs):
         context = super(SubPluginView, self).get_context_data(**kwargs)
         sub_plugin = context['subplugin']
-        current_release = SubPluginRelease.objects.filter(
-            sub_plugin=sub_plugin,
-        ).order_by('-created')[0]
         context.update({
             'sub_plugin': sub_plugin,
-            'current_release': current_release,
+            'current_version': self.object.current_version,
             'contributors': self.object.contributors.all(),
             'package_requirements': self.object.package_requirements.all(),
             'pypi_requirements': self.object.pypi_requirements.all(),

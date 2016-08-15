@@ -11,7 +11,7 @@
                 <h1>Recent Sub-Plugins for {{ plugin }}</h1>
                 <ul>
                     {% for sub_plugin in sub_plugin_list %}
-                        <li><a href="{{ sub_plugin.get_absolute_url }}">{{ sub_plugin }}</a></li>
+                        <li><a href="{{ sub_plugin.get_absolute_url }}">{{ sub_plugin }} v{{ sub_plugin.current_version }}</a></li>
                     {% endfor %}
                 </ul>
             {% else %}

@@ -53,6 +53,7 @@
                     {% if plugin_list %}
                         {% for plugin in plugin_list %}
                             <div class="entryleft">
+<<<<<<< HEAD
                                 <div class="entryimg">
                                     <a href="{{ plugin.get_absolute_url }}">
                                     {% if plugin.logo %}
@@ -62,12 +63,19 @@
                                     {% endif %}
                                     </a>
                                 </div>
+=======
+                                {% if plugin.logo %}
+                                    <div class="entryimg">
+                                        <a href="{{ plugin.get_absolute_url }}"><img src={{ plugin.logo }}/></a>
+                                    </div>
+                                {% endif %}
+>>>>>>> 816873b7893d22852669e2e1ba0ca52563339880
                             </div>
                             <div class="entryright">
                                 <div class="entrytitle">
                                     <a href="{{ plugin.get_absolute_url }}">{{ plugin }}</a> -
                                     <div class="entryversion">
-                                        <a  href="{% url 'plugins:releases' slug=plugin.slug %}">v{{ current_release.version }}</a></h4>
+                                        <a  href="{% url 'plugins:releases' slug=plugin.slug %}">v{{ plugin.current_version }}</a></h4>
                                     </div>
                                 </div>
                                 <div class="entrydescription">{{ plugin.description.rendered }} </div>

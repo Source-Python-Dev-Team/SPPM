@@ -4,14 +4,14 @@
 {% bbcode entry.bbcode_content %}
 
 {% block title %}
-    {{ package }} - version {{ current_release.version }}
+    {{ package }} - version {{ current_version }}
 {% endblock title %}
 
 {% block content %}
     {% if package.logo %}
         <img src="{{ MEDIA_URL }}{{ package.logo }}" height="135" width="135" alt="{{ package }} Logo"/>
     {% endif %}
-    <h1>{{ package }} - version {{ current_release.version }}</h1>
+    <h1>{{ package }} - version {{ current_version }}</h1>
     {# TODO: only show this if the logged in user is the owner or a contributors #}
     <ul>
         <b><a href="{% url 'packages:edit' slug=package.slug %}">Edit Page</a></b> |
