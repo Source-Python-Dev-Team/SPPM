@@ -86,12 +86,9 @@ class PluginUpdateView(
 
     def get_context_data(self, **kwargs):
         context = super(PluginUpdateView, self).get_context_data(**kwargs)
-        current_release = PluginRelease.objects.filter(
-            plugin=self.plugin,
-        ).order_by('-created')[0]
         context.update({
             'plugin': self.plugin,
-            'current_release': current_release,
+            'current_version': self.plugin.current_version,
         })
         return context
 
@@ -117,11 +114,8 @@ class PluginView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super(PluginView, self).get_context_data(**kwargs)
-        current_release = PluginRelease.objects.filter(
-            plugin=self.object,
-        ).order_by('-created')[0]
         context.update({
-            'current_release': current_release,
+            'current_version': self.object.current_version,
             'contributors': self.object.contributors.all(),
             'paths': self.object.paths.all(),
             'package_requirements': self.object.package_requirements.all(),

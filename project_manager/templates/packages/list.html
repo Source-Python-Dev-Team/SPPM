@@ -51,15 +51,17 @@
                     {% if package_list %}
                         {% for package in package_list %}
                             <div class="entryleft">
-                                <div class="entryimg">
-                                    <a href="{{ package.get_absolute_url }}"><img src="images/default.png"/></a>
-                                </div>
+                                {% if package.logo %}
+                                    <div class="entryimg">
+                                        <a href="{{ package.get_absolute_url }}"><img src={{ package.logo }}/></a>
+                                    </div>
+                                {% endif %}
                             </div>
                             <div class="entryright">
                                 <div class="entrytitle">
                                     <a href="{{ package.get_absolute_url }}">{{ package }}</a> -
                                     <div class="entryversion">
-                                        <a  href="{% url 'packages:releases' slug=package.slug %}">v</a></h4>
+                                        <a  href="{% url 'packages:releases' slug=package.slug %}">v{{ package.current_version }}</a></h4>
                                     </div>
                                 </div>
                                 <div class="entrydescription">{{ package.description.rendered }}</div>

@@ -38,7 +38,7 @@ class PyPiView(DetailView):
             'required_in_plugins': get_groups(
                 self.object.required_in_plugins.all()),
             'required_in_sub_plugins': get_groups(
-                self.object.required_in_sub_plugins.all().select_related(
+                self.object.required_in_subplugins.all().select_related(
                     'plugin',
                 )
             ),

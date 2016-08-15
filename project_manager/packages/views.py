@@ -88,12 +88,9 @@ class PackageUpdateView(
 
     def get_context_data(self, **kwargs):
         context = super(PackageUpdateView, self).get_context_data(**kwargs)
-        current_release = PackageRelease.objects.filter(
-            package=self.package,
-        ).order_by('-created')[0]
         context.update({
             'package': self.package,
-            'current_release': current_release,
+            'current_version': self.package.current_version,
         })
         return context
 
@@ -119,11 +116,8 @@ class PackageView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super(PackageView, self).get_context_data(**kwargs)
-        current_release = PackageRelease.objects.filter(
-            package=context['package'],
-        ).order_by('-created')[0]
         context.update({
-            'current_release': current_release,
+            'current_version': self.object.current_version,
             'contributors': self.object.contributors.all(),
             'package_requirements': self.object.package_requirements.all(),
             'pypi_requirements': self.object.pypi_requirements.all(),
@@ -131,7 +125,7 @@ class PackageView(DetailView):
             'required_in_plugins': get_groups(
                 self.object.required_in_plugins.all()),
             'required_in_sub_plugins': get_groups(
-                self.object.required_in_sub_plugins.all().select_related(
+                self.object.required_in_subplugins.all().select_related(
                     'plugin',
                 )
             ),

@@ -122,6 +122,15 @@ class CommonBase(models.Model):
         )
 
     @property
+    def current_version(self):
+        return self.releases.values_list(
+            'version',
+            flat=True,
+        ).order_by(
+            '-created'
+        )[0]
+
+    @property
     def datetime_created(self):
         return self.releases.values_list(
             'created',
