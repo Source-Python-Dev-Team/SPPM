@@ -52,7 +52,6 @@
                     {% if package_list %}
                         {% for package in package_list %}
                             <div class="entryleft">
-<<<<<<< HEAD
                                 <div class="entryimg">
                                     <a href="{{ package.get_absolute_url }}">
 				    {% if package.logo %}
@@ -62,13 +61,11 @@
 				    {% endif %}
 				    </a>
                                 </div>
-=======
                                 {% if package.logo %}
                                     <div class="entryimg">
                                         <a href="{{ package.get_absolute_url }}"><img src={{ package.logo }}/></a>
                                     </div>
                                 {% endif %}
->>>>>>> 816873b7893d22852669e2e1ba0ca52563339880
                             </div>
                             <div class="entryright">
                                 <div class="entrytitle">
