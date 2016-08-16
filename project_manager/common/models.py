@@ -1,9 +1,6 @@
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
-# Python
-from __future__ import unicode_literals
-
 # Django
 from django.core.exceptions import ValidationError
 from django.db import models
