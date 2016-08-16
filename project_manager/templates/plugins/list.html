@@ -73,7 +73,7 @@
                                         <a  href="{% url 'plugins:releases' slug=plugin.slug %}">v{{ plugin.current_version }}</a></h4>
                                     </div>
                                 </div>
-                                <div class="entrydescription">{{ plugin.description.rendered }} </div>
+                                <div class="entrydescription">{{ plugin.synopsis.rendered }} </div>
                             </div>
                         {% endfor %}
                     {% else %}

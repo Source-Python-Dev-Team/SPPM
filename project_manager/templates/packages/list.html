@@ -72,7 +72,7 @@
                                         <a  href="{% url 'packages:releases' slug=package.slug %}">v{{ package.current_version }}</a></h4>
                                     </div>
                                 </div>
-                                <div class="entrydescription">{{ package.description.rendered }}</div>
+                                <div class="entrydescription">{{ package.synopsis.rendered }}</div>
                             </div>
                         {% endfor %}
                     {% else %}
