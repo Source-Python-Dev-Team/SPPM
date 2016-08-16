@@ -5,8 +5,12 @@
 from django.views.generic import CreateView, DetailView, ListView, UpdateView
 
 # App
-from project_manager.common.mixins import DownloadMixin, RequirementsParserMixin
+from project_manager.common.mixins import (
+    DownloadMixin,
+    RequirementsParserMixin,
+)
 from project_manager.common.views import OrderablePaginatedListView
+from project_manager.games.mixins import GameSpecificOrderablePaginatedListView
 from project_manager.plugins.constants import PLUGIN_PATH
 from project_manager.plugins.models import Plugin
 from .constants import SUB_PLUGIN_RELEASE_URL
@@ -36,7 +40,10 @@ __all__ = (
 # =============================================================================
 # >> VIEWS
 # =============================================================================
-class SubPluginListView(RetrieveSubPluginMixin, OrderablePaginatedListView):
+class SubPluginListView(
+    RetrieveSubPluginMixin,
+    GameSpecificOrderablePaginatedListView
+):
     model = SubPlugin
     orderable_columns = (
         'name',

@@ -16,18 +16,21 @@
                         <div class="sectionsortoption">
                             <p>Game:</p>
                             <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                                Any <span class="caret"></span>
+                                {% if game_name %}
+                                    {{ game_name }} <span class="caret"></span>
+                                {% else %}
+                                    Any <span class="caret"></span>
+                                {% endif %}
                             </button>
                             <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
-                                <li><a href="#" data-value="1">Any</a></li>
-                                <li><a href="#" data-value="2">Blade Symphony</a></li>
-                                <li><a href="#" data-value="3">Black Mesa</a></li>
-                                <li><a href="#" data-value="4">Counter-Strike: Global Offensive</a></li>
-                                <li><a href="#" data-value="5">Counter-Strike: Source</a></li>
-                                <li><a href="#" data-value="6">Day of Defeat: Source</a></li>
-                                <li><a href="#" data-value="7">Half-Life 2: Deathmatch</a></li>
-                                <li><a href="#" data-value="8">Left for Dead 2</a></li>
-                                <li><a href="#" data-value="9">Team Fortress 2</a></li>
+                                <li><a href="{% url 'plugins:list' %}?{{ order_url }}">Any</a></li>
+                                {% for game in games %}
+                                    {% if order_url %}
+                                        <li><a href="{% url 'plugins:list' %}?{{ order_url }}&game={{ game.slug }}">{{ game.name }}</a></li>
+                                    {% else %}
+                                        <li><a href="{% url 'plugins:list' %}?game={{ game.slug }}">{{ game.name }}</a></li>
+                                    {% endif %}
+                                {% endfor %}
                             </ul>
                         </div>
                     </div>
@@ -74,7 +77,13 @@
                             </div>
                         {% endfor %}
                     {% else %}
-                        <h2>No plugins are registered.</h2>
+                        {% if game_name %}
+                            <h2>No plugins currently support {{ game_name }}.</h2>
+                        {% elif game_slug %}
+                            <h2>Invalid game {{ game_slug }}.</h2>
+                        {% else %}
+                            <h2>No plugins are registered.</h2>
+                        {% endif %}
                     {% endif %}
                 </div>
             </div>

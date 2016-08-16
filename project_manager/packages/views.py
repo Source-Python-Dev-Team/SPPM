@@ -6,8 +6,12 @@ from django.views.generic import CreateView, DetailView, ListView, UpdateView
 
 # App
 from project_manager.common.helpers import get_groups
-from project_manager.common.mixins import DownloadMixin, RequirementsParserMixin
+from project_manager.common.mixins import (
+    DownloadMixin,
+    RequirementsParserMixin,
+)
 from project_manager.common.views import OrderablePaginatedListView
+from project_manager.games.mixins import GameSpecificOrderablePaginatedListView
 from .constants import PACKAGE_PATH, PACKAGE_RELEASE_URL
 from .forms import (
     PackageCreateForm, PackageEditForm, PackageSelectGamesForm,
@@ -35,7 +39,7 @@ __all__ = (
 # =============================================================================
 # >> VIEWS
 # =============================================================================
-class PackageListView(OrderablePaginatedListView):
+class PackageListView(GameSpecificOrderablePaginatedListView):
     model = Package
     orderable_columns = (
         'name',
