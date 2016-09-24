@@ -116,22 +116,21 @@
             <div class="container">
                 <div class="center">
                     <ul>
-		        <li><a href="{% url 'statistics' %}"><b>Statistics</b></a></li>
+		                <li><a href="{% url 'statistics' %}"><b>Statistics</b></a></li>
                         <li><a href="{{ FORUM_URL }}"><b>Forums</b></a></li>
                         <li><a href="{{ WIKI_URL }}"><b>Wiki</b></a></li>
                         <li><a href="{{ GITHUB_URL }}"><b>Source Code</b></a></li>
                         <li><a href="{{ GITHUB_URL }}/issues"><b>Issues List</b></a></li>
+                        <li><a href="{{ BUILD_URL }}"><b>Builds</b></a></li>
                     </ul>
                 </div>
             </div>
         </footer>
-        
+
 
         <script src="{% static "project_manager/js/jquery.min.js" %}"></script>
         <script src="{% static "project_manager/js/bootstrap.js" %}"></script>
         <script src="{% static "project_manager/js/custom.js" %}"></script>
     </body>
 
-    
 </html>
-

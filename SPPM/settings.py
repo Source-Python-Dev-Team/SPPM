@@ -152,6 +152,10 @@ GITHUB_URL = 'http://github.com/Source-Python-Dev-Team/Source.Python'
 
 PYPI_URL = 'https://pypi.python.org/pypi'
 
+BUILD_URL = (
+    'http://builds.sourcepython.com/job/Source.Python/lastSuccessfulBuild/'
+)
+
 # PHPBB_TABLE_PREFIX = 'phpbb_'
 
 CRISPY_TEMPLATE_PACK = 'bootstrap'
