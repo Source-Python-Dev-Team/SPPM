@@ -22,7 +22,7 @@ __all__ = (
 # =============================================================================
 class SubPluginPath(models.Model):
     plugin = models.ForeignKey(
-        to='project_manager.Plugin',
+        to='plugins.Plugin',
         related_name='paths',
     )
     path = models.CharField(
@@ -31,8 +31,8 @@ class SubPluginPath(models.Model):
     )
 
     class Meta:
-        verbose_name = 'SubPlugin path (Plugin)'
-        verbose_name_plural = 'SubPlugin paths (Plugin)'
+        verbose_name = 'SubPlugin Path'
+        verbose_name_plural = 'SubPlugin Paths'
         unique_together = (
             'path', 'plugin',
         )

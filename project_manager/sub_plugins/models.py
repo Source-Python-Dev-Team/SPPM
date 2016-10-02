@@ -52,7 +52,7 @@ class SubPlugin(CommonBase):
         blank=True,
     )
     plugin = models.ForeignKey(
-        to='project_manager.Plugin',
+        to='plugins.Plugin',
         related_name='sub_plugins',
     )
     logo = models.ImageField(
@@ -102,7 +102,7 @@ class SubPlugin(CommonBase):
 
 class SubPluginRelease(Release):
     sub_plugin = models.ForeignKey(
-        to='project_manager.SubPlugin',
+        to='sub_plugins.SubPlugin',
         related_name='releases',
     )
     version = models.CharField(
@@ -121,8 +121,8 @@ class SubPluginRelease(Release):
     )
 
     class Meta:
-        verbose_name = 'Release (SubPlugin)'
-        verbose_name_plural = 'Releases (SubPlugin)'
+        verbose_name = 'Release'
+        verbose_name_plural = 'Releases'
 
     def get_absolute_url(self):
         return reverse(
@@ -140,10 +140,10 @@ class SubPluginImage(models.Model):
         upload_to=handle_sub_plugin_image_upload,
     )
     sub_plugin = models.ForeignKey(
-        to='project_manager.SubPlugin',
+        to='sub_plugins.SubPlugin',
         related_name='images',
     )
 
     class Meta:
-        verbose_name = 'Image (SubPlugin)'
-        verbose_name_plural = 'Images (SubPlugin)'
+        verbose_name = 'Image'
+        verbose_name_plural = 'Images'

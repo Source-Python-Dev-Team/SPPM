@@ -30,6 +30,10 @@ class ForumUser(models.Model):
         unique=True,
     )
 
+    class Meta:
+        verbose_name = 'Forum User'
+        verbose_name_plural = 'Forum Users'
+
     def __str__(self):
         return self.username
 

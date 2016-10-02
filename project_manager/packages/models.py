@@ -92,7 +92,7 @@ class Package(CommonBase):
 class PackageRelease(Release):
     """Store the information for """
     package = models.ForeignKey(
-        to='project_manager.Package',
+        to='packages.Package',
         related_name='releases',
     )
     version = models.CharField(
@@ -111,8 +111,8 @@ class PackageRelease(Release):
     )
 
     class Meta:
-        verbose_name = 'Release (Package)'
-        verbose_name_plural = 'Releases (Package)'
+        verbose_name = 'Release'
+        verbose_name_plural = 'Releases'
 
     def get_absolute_url(self):
         return reverse(
@@ -129,10 +129,10 @@ class PackageImage(models.Model):
         upload_to=handle_package_image_upload,
     )
     package = models.ForeignKey(
-        to='project_manager.Package',
+        to='packages.Package',
         related_name='images',
     )
 
     class Meta:
-        verbose_name = 'Image (Package)'
-        verbose_name_plural = 'Images (Package)'
+        verbose_name = 'Image'
+        verbose_name_plural = 'Images'

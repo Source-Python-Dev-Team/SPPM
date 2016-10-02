@@ -5,6 +5,7 @@
 from django.contrib import admin
 
 # App
+from .paths.admin import SubPluginPathAdmin
 from .models import Plugin, PluginImage, PluginRelease
 
 

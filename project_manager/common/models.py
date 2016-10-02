@@ -62,7 +62,7 @@ class CommonBase(models.Model):
         related_name='%(class)ss',
     )
     package_requirements = models.ManyToManyField(
-        to='project_manager.Package',
+        to='packages.Package',
         related_name='required_in_%(class)ss',
     )
     pypi_requirements = models.ManyToManyField(
@@ -216,12 +216,35 @@ class Release(TimeStampedModel):
 
 
 class VersionControlRequirement(models.Model):
+    GIT = 0
+    MERCURIAL = 1
+    SUBVERSION = 2
+    BAZAAR = 3
+
+    SUPPORTED_VCS_TYPES = {
+        GIT: 'git',
+        MERCURIAL: 'hg',
+        SUBVERSION: 'svn',
+        BAZAAR: 'bzr',
+    }
+
     name = models.CharField(
         max_length=64,
+    )
+    vcs_type = models.PositiveSmallIntegerField(
+        choices=tuple(SUPPORTED_VCS_TYPES.items()),
+        help_text='The type of Version Control used in the url.',
+        db_index=True,
+        editable=False,
+        null=True,
     )
     url = models.CharField(
         max_length=128,
     )
+
+    class Meta:
+        verbose_name = 'Version Control Requirement'
+        verbose_name_plural = 'Version Control Requirements'
 
 
 class DownloadRequirement(models.Model):
@@ -236,3 +259,7 @@ class DownloadRequirement(models.Model):
         blank=True,
         null=True,
     )
+
+    class Meta:
+        verbose_name = 'Download Requirement'
+        verbose_name_plural = 'Download Requirements'

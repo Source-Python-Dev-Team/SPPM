@@ -91,7 +91,7 @@ class Plugin(CommonBase):
 
 class PluginRelease(Release):
     plugin = models.ForeignKey(
-        to='project_manager.Plugin',
+        to='plugins.Plugin',
         related_name='releases',
     )
     version = models.CharField(
@@ -110,8 +110,8 @@ class PluginRelease(Release):
     )
 
     class Meta:
-        verbose_name = 'Release (Plugin)'
-        verbose_name_plural = 'Releases (Plugin)'
+        verbose_name = 'Release'
+        verbose_name_plural = 'Releases'
 
     def get_absolute_url(self):
         return reverse(
@@ -128,10 +128,10 @@ class PluginImage(models.Model):
         upload_to=handle_plugin_image_upload,
     )
     plugin = models.ForeignKey(
-        to='project_manager.Plugin',
+        to='plugins.Plugin',
         related_name='images',
     )
 
     class Meta:
-        verbose_name = 'Image (Plugin)'
-        verbose_name_plural = 'Images (Plugin)'
+        verbose_name = 'Image'
+        verbose_name_plural = 'Images'
