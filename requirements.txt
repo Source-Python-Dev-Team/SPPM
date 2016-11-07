@@ -1,10 +1,10 @@
 # -e git://github.com/ZombieToof/django-phpbb.git
 configobj>=5.0.6
-django>=1.10
-django-braces
-django-crispy-forms>=1.6.0
-django-debug-toolbar>=1.5
-django-filter>=0.15.0
+django>=1.10.3
+django-braces>=1.10.0
+django-crispy-forms>=1.6.1
+django-debug-toolbar>=1.6
+django-filter>=0.15.3
 django-model-utils>=2.6
 django-precise-bbcode>=1.2.6
 path.py>=8.2.1
