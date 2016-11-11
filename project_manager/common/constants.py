@@ -44,6 +44,23 @@ IMAGE_URL = 'images/'
 LOGO_URL = 'logos/'
 RELEASE_URL = 'releases/'
 
+VCS_REQUIREMENT_TYPES = {
+    'git': (
+        '<a href="https://git-scm.com/book/en/v2/Getting-Started-'
+        'Installing-Git">Git</a>'
+    ),
+    'hg': (
+        '<a href="https://www.mercurial-scm.org/wiki/Download">Mercurial</a>'
+    ),
+    'svn': (
+        '<a href="http://subversion.apache.org/packages.html">SubVersion</a>'
+    ),
+    'bzr': (
+        '<a href="http://doc.bazaar.canonical.com/latest/en/user-guide/'
+        'installing_bazaar.html">Bazaar</a>'
+    ),
+}
+
 # Values that packages, plugins, and sub-plugins cannot be named
 # Current values are due to the url setup for creating, editing, and updating
 CANNOT_BE_NAMED = (
