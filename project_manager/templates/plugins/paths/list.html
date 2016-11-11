@@ -52,7 +52,7 @@
                                             <h4 class="modal-title">Delete Path: {{ path }}</h4>
                                         </div>
                                         <div class="modal-body">
-                                            Please Confirm.
+                                            Are you sure you want to remove the path?
                                         </div>
                                         <div class="modal-footer">
                                             <form action="{% url 'plugins:paths:delete' slug=plugin.slug path_pk=path.pk %}" method="post">
