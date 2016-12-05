@@ -55,6 +55,14 @@ urlpatterns = [
         view=admin.site.urls,
     ),
     url(
+        regex=r'^api/',
+        view=include(
+            'project_manager.api.urls',
+            namespace='api',
+        ),
+        name='api',
+    ),
+    url(
         # /games/
         regex=r'^games/',
         view=include(
