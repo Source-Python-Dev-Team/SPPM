@@ -53,6 +53,7 @@ class Package(CommonBase):
         max_length=32,
         unique=True,
         blank=True,
+        primary_key=True,
     )
     logo = models.ImageField(
         upload_to=handle_package_logo_upload,

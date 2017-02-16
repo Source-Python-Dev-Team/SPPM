@@ -14,7 +14,6 @@ from project_manager.sub_plugins.models import SubPlugin
 # VIEWS
 # =============================================================================
 class SubPluginViewSet(ModelViewSet):
-    """Displays all available versions for the CPD API."""
 
     queryset = SubPlugin.objects.all()
     serializer_class = SubPluginSerializer

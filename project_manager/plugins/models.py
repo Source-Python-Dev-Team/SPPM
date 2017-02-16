@@ -53,6 +53,7 @@ class Plugin(CommonBase):
         max_length=32,
         unique=True,
         blank=True,
+        primary_key=True,
     )
     logo = models.ImageField(
         upload_to=handle_plugin_logo_upload,
@@ -70,8 +71,9 @@ class Plugin(CommonBase):
         )
 
     def save(
-            self, force_insert=False, force_update=False,
-            using=None, update_fields=None):
+        self, force_insert=False, force_update=False,
+        using=None, update_fields=None
+    ):
         """Remove the old logo before storing the new one."""
         if self.logo and PLUGIN_LOGO_URL not in str(self.logo):
             path = settings.MEDIA_ROOT / PLUGIN_LOGO_URL
