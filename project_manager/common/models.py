@@ -182,7 +182,7 @@ class CommonBase(models.Model):
             self, force_insert=False, force_update=False,
             using=None, update_fields=None):
         """Store the slug and release data."""
-        self.slug = slugify(self.basename).replace('_', '-')
+        self.slug = slugify(self.basename)
 
         super(CommonBase, self).save(
             force_insert, force_update, using, update_fields

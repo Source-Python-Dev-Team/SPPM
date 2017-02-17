@@ -42,7 +42,7 @@ class Game(models.Model):
             self, force_insert=False, force_update=False,
             using=None, update_fields=None):
         """Store the slug."""
-        self.slug = slugify(self.basename).replace('_', '-')
+        self.slug = slugify(self.basename)
         super(Game, self).save(
             force_insert, force_update, using, update_fields)
 

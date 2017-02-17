@@ -40,7 +40,7 @@ class PyPiRequirement(models.Model):
     def save(
             self, force_insert=False, force_update=False,
             using=None, update_fields=None):
-        self.slug = slugify(self.name).replace('_', '-')
+        self.slug = slugify(self.name)
         super(PyPiRequirement, self).save(
             force_insert,
             force_update,
