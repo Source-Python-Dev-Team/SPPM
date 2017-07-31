@@ -1,7 +1,7 @@
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
-# Third Party Django
+# 3rd Party Django
 from rest_framework.serializers import ModelSerializer
 
 # App
@@ -28,7 +28,7 @@ class PackageListSerializer(ModelSerializer):
         fields = (
             'name', 'slug', 'logo', 'synopsis', 'releases',
         )
-        read_only_fields = ('slug', )
+        read_only_fields = ('slug',)
 
 
 class PackageSerializer(PackageListSerializer):

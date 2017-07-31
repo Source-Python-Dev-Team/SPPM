@@ -46,7 +46,7 @@ class PackageViewSet(ModelViewSet):
             data['link'] = request.build_absolute_uri(
                 reverse(
                     'packages:detail',
-                    args=(data['slug'], ),
+                    args=(data['slug'],),
                 )
             )
             self.get_current_release(data)

@@ -11,7 +11,6 @@ from django.core.exceptions import ValidationError
 
 # App
 from project_manager.common.mixins import SubmitButtonMixin
-from .constants import PLUGIN_PATH
 from .helpers import get_plugin_basename
 from .models import Plugin, PluginRelease
 
@@ -103,11 +102,9 @@ class PluginCreateForm(SubmitButtonMixin):
 
     def clean_zip_file(self):
         """Verify the zip file contents."""
-        file_list = [x for x in ZipFile(
-            self.cleaned_data['zip_file']).namelist() if not x.endswith('/')]
-        basename = get_plugin_basename(file_list)
-        current = Plugin.objects.filter(basename=basename)
-        if current:
+        zip_file = self.cleaned_data['zip_file']
+        basename = get_plugin_basename(zip_file)
+        if Plugin.objects.filter(basename=basename).exists():
             raise ValidationError(
                 'Plugin {basename} already registered.'.format(
                     basename=basename
@@ -115,7 +112,7 @@ class PluginCreateForm(SubmitButtonMixin):
                 code='duplicate',
             )
         self.instance.basename = basename
-        return self.cleaned_data['zip_file']
+        return zip_file
 
 
 class PluginEditForm(SubmitButtonMixin):
@@ -189,35 +186,26 @@ class PluginUpdateForm(SubmitButtonMixin):
 
     def clean_version(self):
         """Verify the version doesn't already exist."""
+        version = self.cleaned_data['version']
         all_versions = PluginRelease.objects.filter(
             plugin=self.instance
         ).values_list('version', flat=True)
-        if self.cleaned_data['version'] in all_versions:
+        if version in all_versions:
             raise ValidationError(
                 'Release version "{version}" already exists.'.format(
-                    version=self.cleaned_data['version']
+                    version=version,
                 ),
                 code='duplicate',
             )
-        return self.cleaned_data['version']
+        return version
 
     def clean_zip_file(self):
         """Verify the zip file contents."""
-        file_list = [x for x in ZipFile(
-            self.cleaned_data['zip_file']).namelist() if not x.endswith('/')]
-        basename = get_plugin_basename(file_list)
-        if not '{plugin_path}{basename}/{basename}.py'.format(
-                plugin_path=PLUGIN_PATH,
-                basename=basename,
-        ) in file_list:
-            raise ValidationError(
-                'No primary file found in zip.  ' +
-                'Perhaps you are attempting to upload a sub-plugin.',
-                code='not-found',
-            )
+        zip_file = self.cleaned_data['zip_file']
+        basename = get_plugin_basename(zip_file)
         if basename != self.instance.basename:
             raise ValidationError(
                 'Uploaded plugin does not match current plugin.',
                 code='mismatch',
             )
-        return self.cleaned_data['zip_file']
+        return zip_file

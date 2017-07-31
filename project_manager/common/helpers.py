@@ -44,7 +44,7 @@ def get_groups(iterable, count=3):
     iterable = list(iterable)
     remainder = len(iterable) % count
     iterable.extend([''] * (count - remainder))
-    return zip(*(iter(iterable), ) * count)
+    return zip(*(iter(iterable),) * count)
 
 
 def get_requirements(zip_file, requirement_path):
