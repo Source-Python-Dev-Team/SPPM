@@ -2,7 +2,6 @@
 # >> IMPORTS
 # =============================================================================
 # Django
-from django.core.exceptions import ValidationError
 from django.db.models import Prefetch
 
 # 3rd-Party Django
@@ -18,6 +17,7 @@ from .serializers import (
     PluginUpdateSerializer,
 )
 from ..models import Plugin, PluginRelease
+from project_manager.users.models import ForumUser
 
 
 # =============================================================================
@@ -33,8 +33,14 @@ class PluginViewSet(ModelViewSet):
             lookup='releases',
             queryset=PluginRelease.objects.order_by(
                 '-created',
-            )
-        )
+            ),
+        ),
+        Prefetch(
+            lookup='contributors',
+            queryset=ForumUser.objects.order_by(
+                'username',
+            ),
+        ),
     ).select_related(
         'owner',
     )

@@ -4,7 +4,7 @@
 # Django
 from django.core.exceptions import ValidationError
 
-# 3rd Party Django
+# 3rd-Party Django
 from rest_framework.fields import (
     CharField,
     FileField,
@@ -14,9 +14,13 @@ from rest_framework.reverse import reverse
 from rest_framework.serializers import ModelSerializer
 
 # App
+from ..helpers import get_plugin_basename
+from ..models import Plugin, PluginRelease
 from project_manager.common.helpers import get_date_display
-from project_manager.plugins.helpers import get_plugin_basename
-from project_manager.plugins.models import Plugin, PluginRelease
+from project_manager.requirements.api.serializers import (
+    PyPiRequirementSerializer,
+)
+from project_manager.users.api.serializers import ForumUserSerializer
 
 
 # =============================================================================
@@ -24,16 +28,18 @@ from project_manager.plugins.models import Plugin, PluginRelease
 # =============================================================================
 class PluginSerializer(ModelSerializer):
     current_release = SerializerMethodField()
-    owner = SerializerMethodField()
+    owner = ForumUserSerializer(read_only=True)
+    contributors = ForumUserSerializer(many=True, read_only=True)
+    locale_created = SerializerMethodField()
+    locale_created_short = SerializerMethodField()
+    pypi_requirements = PyPiRequirementSerializer(many=True, read_only=True)
 
     class Meta:
         model = Plugin
         """
             TODO: add the following:
 
-                contributors
-                created
-                current_release -> created
+                contributors -> ability to add/remove
                 download_requirements
                 images
                 package_requirements
@@ -49,13 +55,21 @@ class PluginSerializer(ModelSerializer):
             'basename',
             'slug',
             'current_release',
+            'created',
+            'locale_created',
+            'locale_created_short',
             'synopsis',
             'description',
             'configuration',
             'logo',
             'owner',
+            'contributors',
+            'pypi_requirements',
         )
-        read_only_fields = ('basename', 'slug')
+        read_only_fields = (
+            'basename',
+            'slug',
+        )
 
     def get_current_release(self, obj):
         try:
@@ -85,11 +99,17 @@ class PluginSerializer(ModelSerializer):
             ),
         }
 
-    def get_owner(self, obj):
-        return {
-            'userid': obj.owner.id,
-            'username': obj.owner.username,
-        }
+    def get_locale_created(self, obj):
+        return get_date_display(
+            date=obj.created,
+            date_format='DATE_FORMAT',
+        )
+
+    def get_locale_created_short(self, obj):
+        return get_date_display(
+            date=obj.created,
+            date_format='SHORT_DATE_FORMAT',
+        )
 
 
 class PluginReleaseSerializer(ModelSerializer):
