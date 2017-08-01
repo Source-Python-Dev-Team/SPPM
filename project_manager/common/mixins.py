@@ -50,35 +50,30 @@ class DownloadMixin(View):
     @property
     def model(self):
         raise NotImplementedError(
-            'Class {class_name} must implement a model attribute.'.format(
-                class_name=self.__class__.__name__,
-            ),
+            f'Class {self.__class__.__name__} must implement a '
+            'model attribute.'
         )
 
     @property
     def base_url(self):
         raise NotImplementedError(
-            'Class {class_name} must implement a base_url attribute.'.format(
-                class_name=self.__class__.__name__,
-            ),
+            f'Class {self.__class__.__name__} must implement a '
+            'base_url attribute.'
         )
 
     @property
     def super_model(self):
         raise NotImplementedError(
-            'Class {class_name} must implement a super_model attribute.'.format(
-                class_name=self.__class__.__name__,
-            ),
+            f'Class {self.__class__.__name__} must implement a '
+            'super_model attribute.'
         )
 
     @property
     def super_kwarg(self):
         if self.sub_model is not None:
             raise NotImplementedError(
-                'Class {class_name} must implement a super_kwarg '
-                'attribute.'.format(
-                    class_name=self.__class__.__name__,
-                )
+                f'Class {self.__class__.__name__} must implement a '
+                'super_kwarg attribute.'
             )
         return None
 
@@ -107,11 +102,7 @@ class DownloadMixin(View):
                 content=open_file.read(),
                 content_type='application/force-download',
             )
-        response['Content-Disposition'] = (
-            'attachment: filename={filename}'.format(
-                filename=zip_file,
-            )
-        )
+        response['Content-Disposition'] = f'attachment: filename={zip_file}'
         instance = self.super_model.objects.get(slug=kwargs['slug'])
         if self.sub_model is not None:
             instance = self.sub_model.objects.get(**{
@@ -119,7 +110,7 @@ class DownloadMixin(View):
                 'slug': self.kwargs.get(self.slug_url_kwarg),
             })
         version = zip_file.split(
-            '{slug}-v'.format(slug=instance.slug), 1
+            f'{instance.slug}-v', 1
         )[1].rsplit('.', 1)[0]
         object_kwarg = (
             self.sub_kwarg if self.sub_kwarg is not None else self.super_kwarg
@@ -137,8 +128,8 @@ class RequirementsParserMixin(ModelFormMixin, View):
 
     def get_requirements_path(self, instance):
         raise NotImplementedError(
-            'Class "{class_name}" must implement a get_requirements_path'
-            'method.'.format(class_name=self.__class__.__name__)
+            f'Class "{self.__class__.__name__}" must implement a '
+            'get_requirements_path method.'
         )
 
     def form_valid(self, form):

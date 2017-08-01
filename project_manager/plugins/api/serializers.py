@@ -135,11 +135,8 @@ class PluginReleaseSerializer(ModelSerializer):
         if basename != plugin_basename:
             raise ValidationError({
                 'zip_file': (
-                    "Basename in zip '{basename}' does not match basename for "
-                    "plugin '{plugin_basename}'".format(
-                        basename=basename,
-                        plugin_basename=plugin_basename,
-                    )
+                    f"Basename in zip '{basename}' does not match basename "
+                    f"for plugin '{plugin_basename}'"
                 )
             })
         return attrs

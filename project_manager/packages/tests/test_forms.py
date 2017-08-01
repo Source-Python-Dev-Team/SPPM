@@ -157,11 +157,13 @@ class TestPackageUpdateForm(TestCase):
         PackageRelease.objects.create(
             package=package,
             version='1.0',
-            zip_file='{slug}/{slug}-v1.0.zip'.format(slug=package.slug)
+            zip_file=f'{package.slug}/{package.slug}-v1.0.zip'
         )
-        form = PackageUpdateForm(data={
-            'version': '1.0',
-        })
+        form = PackageUpdateForm(
+            data={
+                'version': '1.0',
+            }
+        )
         form.instance = package
         self.assertFalse(
             form.is_valid(),

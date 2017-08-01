@@ -109,9 +109,7 @@ class PackageCreateForm(SubmitButtonMixin):
         current = Package.objects.filter(basename=basename)
         if current:
             raise ValidationError(
-                'Package {basename} is already registered.'.format(
-                    basename=basename
-                ),
+                f'Package {basename} is already registered.',
                 code='duplicate',
             )
         self.instance.basename = basename
@@ -192,24 +190,23 @@ class PackageUpdateForm(SubmitButtonMixin):
         all_versions = PackageRelease.objects.filter(
             package=self.instance
         ).values_list('version', flat=True)
-        if self.cleaned_data['version'] in all_versions:
+        version = self.cleaned_data['version']
+        if version in all_versions:
             raise ValidationError(
-                'Release version "{version}" already exists.'.format(
-                    version=self.cleaned_data['version']
-                ),
+                f'Release version "{version}" already exists.',
                 code='duplicate',
             )
-        return self.cleaned_data['version']
+        return version
 
     def clean_zip_file(self):
         """Verify the zip file contents."""
         file_list = [x for x in ZipFile(
             self.cleaned_data['zip_file']).namelist() if not x.endswith('/')]
         basename, is_module = get_package_basename(file_list)
-        if not is_module and '{package_path}{basename}/{basename}.py'.format(
-                package_path=PACKAGE_PATH,
-                basename=basename,
-        ) in file_list:
+        if (
+            not is_module and
+            f'{PACKAGE_PATH}{basename}/{basename}.py' in file_list
+        ):
             raise ValidationError(
                 'No primary file found in zip.',
                 code='not-found',

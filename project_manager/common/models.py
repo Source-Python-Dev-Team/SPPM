@@ -106,16 +106,14 @@ class CommonBase(models.Model):
     @property
     def logo(self):
         raise NotImplementedError(
-            'Class "{class_name}" must implement "logo" field.'.format(
-                class_name=self.__class__.__name__,
-            )
+            f'Class "{self.__class__.__name__}" must implement "logo" field.'
         )
 
     @property
     def releases(self):
         raise NotImplementedError(
-            'Class "{class_name}" must implement "releases" field from '
-            'ForeignKey.'.format(class_name=self.__class__.__name__)
+            f'Class "{self.__class__.__name__}" must implement '
+            '"releases" field from ForeignKey.'
         )
 
     @property
@@ -165,16 +163,10 @@ class CommonBase(models.Model):
             return errors
         width, height = Image.open(self.logo).size
         if width > LOGO_MAX_WIDTH:
-            errors.append(
-                'Logo width must be no more than {max_width}.'.format(
-                    max_width=LOGO_MAX_WIDTH,
-                )
-            )
+            errors.append(f'Logo width must be no more than {LOGO_MAX_WIDTH}.')
         if height > LOGO_MAX_HEIGHT:
             errors.append(
-                'Logo height must be no more than {max_height}.'.format(
-                    max_height=LOGO_MAX_HEIGHT,
-                )
+                f'Logo height must be no more than {LOGO_MAX_HEIGHT}.'
             )
         return errors
 
@@ -209,9 +201,8 @@ class Release(TimeStampedModel):
     @property
     def zip_file(self):
         raise NotImplementedError(
-            'Class "{class_name}" must implement "zip_file" field.'.format(
-                class_name=self.__class__.__name__,
-            )
+            f'Class "{self.__class__.__name__}" must implement '
+            '"zip_file" field.'
         )
 
 

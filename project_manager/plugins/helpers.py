@@ -63,23 +63,16 @@ def get_plugin_basename(zip_file):
         )
     if basename in CANNOT_BE_NAMED:
         raise ValidationError(
-            'Plugin basename cannot be "{basename}".'.format(
-                basename=basename
-            ),
+            f'Plugin basename cannot be "{basename}".',
             code='invalid',
         )
     for start in CANNOT_START_WITH:
         if basename.startswith(start):
             raise ValidationError(
-                'Plugin basename cannot start with "{start}".'.format(
-                    start=start,
-                ),
+                f'Plugin basename cannot start with "{start}".',
                 code='invalid',
             )
-    if not '{plugin_path}{basename}/{basename}.py'.format(
-            plugin_path=PLUGIN_PATH,
-            basename=basename,
-    ) in file_list:
+    if f'{PLUGIN_PATH}{basename}/{basename}.py' not in file_list:
         raise ValidationError(
             'No primary file found in zip.  ' +
             'Perhaps you are attempting to upload a sub-plugin.',
@@ -90,27 +83,21 @@ def get_plugin_basename(zip_file):
 
 def handle_plugin_zip_upload(instance, filename):
     """Return the path to store the zip for the current release."""
-    return '{release_url}{slug}/{slug}-v{version}.zip'.format(
-        release_url=PLUGIN_RELEASE_URL,
-        slug=instance.plugin.slug,
-        version=instance.version,
-    )
+    slug = instance.plugin.slug,
+    version = instance.version,
+    return f'{PLUGIN_RELEASE_URL}{slug}/{slug}-v{version}.zip'
 
 
 def handle_plugin_logo_upload(instance, filename):
     """Return the path to store the plugin's logo."""
-    return '{logo_url}{slug}.{extension}'.format(
-        logo_url=PLUGIN_LOGO_URL,
-        slug=instance.slug,
-        extension=filename.rsplit('.', 1)[1],
-    )
+    slug = instance.slug,
+    extension = filename.rsplit('.', 1)[1],
+    return f'{PLUGIN_LOGO_URL}{slug}.{extension}'
 
 
 def handle_plugin_image_upload(instance, filename):
     """Return the path to store the image."""
-    return '{image_url}{slug}/{image_number}.{extension}'.format(
-        image_url=PLUGIN_IMAGE_URL,
-        slug=instance.plugin.slug,
-        image_number=find_image_number('plugin', instance.plugin.slug),
-        extension=filename.rsplit('.', 1)[1],
-    )
+    slug = instance.plugin.slug,
+    image_number = find_image_number('plugin', instance.plugin.slug),
+    extension = filename.rsplit('.', 1)[1],
+    return f'{PLUGIN_IMAGE_URL}{slug}/{image_number}.{extension}'

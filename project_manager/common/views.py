@@ -40,7 +40,7 @@ class OrderableListView(OrderableListMixin, ListView):
         orderable_columns = sorted(self.get_orderable_columns())
         order_by = context['order_by']
         order_by_url = (
-            'order_by={order_by}'.format(order_by=order_by)
+            f'order_by={order_by}'
             if order_by in orderable_columns and
             order_by != default else None
         )
@@ -62,21 +62,16 @@ class PaginatedListView(ListView):
     def get_next_pages(self):
         if not isinstance(self.next_pages, int) or self.next_pages <= 0:
             raise AttributeError(
-                '{class_name}.next_pages not a valid value ({value}).'.format(
-                    class_name=self.__class__.__name__,
-                    value=self.next_pages,
-                )
+                f'{self.__class__.__name__}.next_pages not a valid '
+                f'value ({self.next_pages}).'
             )
         return self.next_pages
 
     def get_previous_pages(self):
         if not isinstance(self.next_pages, int) or self.previous_pages <= 0:
             raise AttributeError(
-                '{class_name}.previous_pages not a valid value '
-                '({value}).'.format(
-                    class_name=self.__class__.__name__,
-                    value=self.previous_pages,
-                )
+                f'{self.__class__.__name__}.previous_pages not a valid value '
+                f'({self.previous_pages}).'
             )
         return self.previous_pages
 
@@ -101,9 +96,7 @@ class PaginatedListView(ListView):
         if context['is_paginated']:
             if current_page != 1:
                 page_url_list.append(
-                    _PageObject('prev', '?page={page}'.format(
-                        page=current_page - 1,
-                    ))
+                    _PageObject('prev', f'?page={current_page - 1}')
                 )
             if 1 not in previous_page_list + [current_page]:
                 page_url_list.append(
@@ -115,14 +108,14 @@ class PaginatedListView(ListView):
                 )
             for item in previous_page_list:
                 page_url_list.append(
-                    _PageObject(item, '?page={page}'.format(page=item))
+                    _PageObject(item, f'?page={item}')
                 )
             page_url_list.append(
                 _PageObject(current_page, None)
             )
             for item in next_page_list:
                 page_url_list.append(
-                    _PageObject(item, '?page={page}'.format(page=item))
+                    _PageObject(item, f'?page={item}')
                 )
             if total_pages - 1 not in (
                     previous_page_list + next_page_list + [current_page]):
@@ -131,15 +124,11 @@ class PaginatedListView(ListView):
                 )
             if total_pages not in next_page_list + [current_page]:
                 page_url_list.append(
-                    _PageObject(total_pages, '?page={page}'.format(
-                        page=total_pages
-                    ))
+                    _PageObject(total_pages, f'?page={total_pages}')
                 )
             if current_page != total_pages:
                 page_url_list.append(
-                    _PageObject('next', '?page={page}'.format(
-                        page=current_page + 1
-                    ))
+                    _PageObject('next', f'?page={current_page + 1}')
                 )
         context.update({
             'page_url_list': page_url_list,

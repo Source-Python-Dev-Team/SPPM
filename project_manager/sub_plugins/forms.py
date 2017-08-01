@@ -109,15 +109,9 @@ class SubPluginCreateForm(SubmitButtonMixin):
             self.cleaned_data['zip_file']).namelist() if not x.endswith('/')]
         plugin = self.initial['plugin']
         basename, path = get_sub_plugin_basename(file_list, plugin)
-        if not (
-                '{plugin_path}{plugin_basename}/{path}/{basename}/'
-                '{basename}.py'.format(
-                    plugin_path=PLUGIN_PATH,
-                    plugin_basename=plugin.basename,
-                    path=path,
-                    basename=basename
-                ) in file_list
-        ):
+        if (
+            f'{PLUGIN_PATH}{plugin.basename}/{path}/{basename}/'
+        ) not in file_list:
             raise ValidationError(
                 'No primary file found in zip.  ' +
                 'Perhaps you are attempting to upload a sub-plugin.',
@@ -126,11 +120,8 @@ class SubPluginCreateForm(SubmitButtonMixin):
         current = SubPlugin.objects.filter(plugin=plugin, basename=basename)
         if current:
             raise ValidationError(
-                'Sub-plugin {basename} has already been uploaded for '
-                'plugin {plugin_name}.'.format(
-                    basename=basename,
-                    plugin_name=plugin.name
-                ),
+                f'Sub-plugin {basename} has already been uploaded for '
+                f'plugin {plugin.name}.',
                 code='duplicate',
             )
         self.instance.basename = basename
@@ -212,14 +203,13 @@ class SubPluginUpdateForm(SubmitButtonMixin):
         all_versions = SubPluginRelease.objects.filter(
             sub_plugin=self.instance
         ).values_list('version', flat=True)
-        if self.cleaned_data['version'] in all_versions:
+        version = self.cleaned_data['version']
+        if version in all_versions:
             raise ValidationError(
-                'Release version "{version}" already exists.'.format(
-                    version=self.cleaned_data['version']
-                ),
-                code='duplicate'
+                f'Release version "{version}" already exists.',
+                code='duplicate',
             )
-        return self.cleaned_data['version']
+        return version
 
     def clean_zip_file(self):
         """Verify the zip file contents."""
@@ -228,14 +218,8 @@ class SubPluginUpdateForm(SubmitButtonMixin):
         plugin = self.instance.plugin
         basename, path = get_sub_plugin_basename(file_list, plugin)
         if not (
-                '{plugin_path}{plugin_basename}/{path}/{basename}/'
-                '{basename}.py'.format(
-                    plugin_path=PLUGIN_PATH,
-                    plugin_basename=plugin.basename,
-                    path=path,
-                    basename=basename
-                ) in file_list
-        ):
+            f'{PLUGIN_PATH}{plugin.basename}/{path}/{basename}/{basename}.py'
+        ) in file_list:
             raise ValidationError(
                 'No primary file found in zip.  ' +
                 'Perhaps you are attempting to upload a sub-plugin.',

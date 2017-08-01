@@ -37,17 +37,13 @@ def get_sub_plugin_basename(file_list, plugin):
         )
     if basename in CANNOT_BE_NAMED:
         raise ValidationError(
-            'Sub-plugin basename cannot be "{basename}".'.format(
-                basename=basename,
-            ),
+            f'Sub-plugin basename cannot be "{basename}".',
             code='invalid',
         )
     for start in CANNOT_START_WITH:
         if basename.startswith(start):
             raise ValidationError(
-                'Sub-plugin basename cannot start with "{start}".'.format(
-                    start=start,
-                ),
+                f'Sub-plugin basename cannot start with "{start}".',
                 code='invalid',
             )
     return basename, path
@@ -55,43 +51,34 @@ def get_sub_plugin_basename(file_list, plugin):
 
 def handle_sub_plugin_zip_upload(instance, filename):
     """Return the path to store the zip for the current release."""
+    plugin_slug = instance.sub_plugin.plugin.slug
+    slug = instance.sub_plugin.slug
+    version = instance.version
     return (
-        '{release_url}{plugin_slug}/{slug}/'
-        '{slug}-v{version}.zip'.format(
-            release_url=SUB_PLUGIN_RELEASE_URL,
-            plugin_slug=instance.sub_plugin.plugin.slug,
-            slug=instance.sub_plugin.slug,
-            version=instance.version,
-        )
+        f'{SUB_PLUGIN_RELEASE_URL}{plugin_slug}/{slug}/{slug}-v{version}.zip'
     )
 
 
 def handle_sub_plugin_logo_upload(instance, filename):
     """Return the path to store the sub-plugin's logo."""
-    return '{logo_url}{plugin_slug}/{slug}.{extension}'.format(
-        logo_url=SUB_PLUGIN_LOGO_URL,
-        plugin_slug=instance.plugin.slug,
-        slug=instance.slug,
-        extension=filename.rsplit('.', 1)[1],
-    )
+    plugin_slug = instance.plugin.slug,
+    slug = instance.slug,
+    extension = filename.rsplit('.', 1)[1],
+    return f'{SUB_PLUGIN_LOGO_URL}{plugin_slug}/{slug}.{extension}'
 
 
 def handle_sub_plugin_image_upload(instance, filename):
     """Return the path to store the image."""
+    plugin_slug = instance.sub_plugin.plugin.slug
+    slug = instance.sub_plugin.slug
+    image_number = find_image_number(
+        f'sub_plugins/{plugin_slug}',
+        instance.sub_plugin.slug,
+    )
+    extension = filename.rsplit('.', 1)[1]
     return (
-        '{image_url}{plugin_slug}/{slug}/'
-        '{image_number}.{extension}'.format(
-            image_url=SUB_PLUGIN_IMAGE_URL,
-            plugin_slug=instance.sub_plugin.plugin.slug,
-            slug=instance.sub_plugin.slug,
-            image_number=find_image_number(
-                'sub_plugins/{plugin_basename}'.format(
-                    plugin_basename=instance.sub_plugin.plugin.slug,
-                ),
-                instance.sub_plugin.slug,
-            ),
-            extension=filename.rsplit('.', 1)[1],
-        )
+        f'{SUB_PLUGIN_IMAGE_URL}{plugin_slug}/{slug}/'
+        f'{image_number}.{extension}'
     )
 
 
@@ -138,10 +125,7 @@ def _find_basename_and_path(file_list, plugin):
     for file_path in file_list:
         if not file_path.endswith('.py'):
             continue
-        file_path_start = '{plugin_path}{plugin_name}/'.format(
-            plugin_path=PLUGIN_PATH,
-            plugin_name=plugin_name,
-        )
+        file_path_start = f'{PLUGIN_PATH}{plugin_name}/'
         if not file_path.startswith(file_path_start):
             continue
         current = file_path.split(file_path_start, 1)[1]

@@ -57,17 +57,13 @@ def get_package_basename(file_list):
         )
     if basename in CANNOT_BE_NAMED:
         raise ValidationError(
-            'Package basename cannot be "{basename}".'.format(
-                basename=basename
-            ),
+            f'Package basename cannot be "{basename}".',
             code='invalid',
         )
     for start in CANNOT_START_WITH:
         if basename.startswith(start):
             raise ValidationError(
-                'Package basename cannot start with "{start}".'.format(
-                    start=start,
-                ),
+                f'Package basename cannot start with "{start}".',
                 code='invalid',
             )
     return basename, is_module
@@ -75,27 +71,20 @@ def get_package_basename(file_list):
 
 def handle_package_zip_upload(instance, filename):
     """Return the path to store the zip for the current release."""
-    return '{release_url}{slug}/{slug}-v{version}.zip'.format(
-        release_url=PACKAGE_RELEASE_URL,
-        slug=instance.package.slug,
-        version=instance.version,
-    )
+    slug = instance.package.slug,
+    version = instance.version,
+    return f'{PACKAGE_RELEASE_URL}{slug}/{slug}-v{version}.zip'
 
 
 def handle_package_logo_upload(instance, filename):
     """Return the path to store the package's logo."""
-    return '{logo_url}{slug}.{extension}'.format(
-        logo_url=PACKAGE_LOGO_URL,
-        slug=instance.slug,
-        extension=filename.rsplit('.', 1)[1],
-    )
+    extension = filename.rsplit('.', 1)[1],
+    return f'{PACKAGE_LOGO_URL}{instance.slug}.{extension}'
 
 
 def handle_package_image_upload(instance, filename):
     """Return the path to store the image."""
-    return '{image_url}{slug}/{image_number}.{extension}'.format(
-        image_url=PACKAGE_IMAGE_URL,
-        slug=instance.package.slug,
-        image_number=find_image_number('packages', instance.package.slug),
-        extension=filename.rsplit('.', 1)[1],
-    )
+    slug = instance.package.slug,
+    image_number = find_image_number('packages', instance.package.slug),
+    extension = filename.rsplit('.', 1)[1],
+    return f'{PACKAGE_IMAGE_URL}{slug}/{image_number}.{extension}'

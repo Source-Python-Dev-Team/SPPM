@@ -57,10 +57,7 @@ class PackageCreateView(RequirementsParserMixin, CreateView):
 
     @staticmethod
     def get_requirements_path(form):
-        return '{package_path}{basename}/requirements.ini'.format(
-            package_path=PACKAGE_PATH,
-            basename=form.instance.basename,
-        )
+        return f'{PACKAGE_PATH}{form.instance.basename}/requirements.ini'
 
 
 class PackageEditView(UpdateView):
@@ -85,10 +82,7 @@ class PackageUpdateView(
 
     @staticmethod
     def get_requirements_path(form):
-        return '{package_path}{basename}/requirements.ini'.format(
-            package_path=PACKAGE_PATH,
-            basename=form.instance.basename,
-        )
+        return f'{PACKAGE_PATH}{form.instance.basename}/requirements.ini'
 
     def get_context_data(self, **kwargs):
         context = super(PackageUpdateView, self).get_context_data(**kwargs)

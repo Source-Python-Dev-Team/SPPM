@@ -77,14 +77,12 @@ class SubPluginCreateView(
 
     @staticmethod
     def get_requirements_path(form):
+        plugin_basename = form.instance.plugin.basename
+        path = form.cleaned_data['path']
+        basename = form.instance.basename
         return (
-            '{plugin_path}{plugin_basename}/{path}/{basename}/'
-            'requirements.ini'.format(
-                plugin_path=PLUGIN_PATH,
-                plugin_basename=form.instance.plugin.basename,
-                basename=form.instance.basename,
-                path=form.cleaned_data['path'],
-            )
+            f'{PLUGIN_PATH}{plugin_basename}/{path}/{basename}/'
+            'requirements.ini'
         )
 
     def get_context_data(self, **kwargs):
@@ -134,14 +132,12 @@ class SubPluginUpdateView(
 
     @staticmethod
     def get_requirements_path(form):
+        plugin_basename = form.instance.plugin.basename
+        path = form.cleaned_data['path']
+        basename = form.instance.basename
         return (
-            '{plugin_path}{plugin_basename}/{path}/{basename}/'
-            'requirements.ini'.format(
-                plugin_path=PLUGIN_PATH,
-                plugin_basename=form.instance.plugin.basename,
-                basename=form.instance.basename,
-                path=form.cleaned_data['path'],
-            )
+            f'{PLUGIN_PATH}{plugin_basename}/{path}/{basename}/'
+            'requirements.ini'
         )
 
     def get_queryset(self):

@@ -54,10 +54,7 @@ class PluginCreateView(RequirementsParserMixin, CreateView):
 
     @staticmethod
     def get_requirements_path(form):
-        return '{plugin_path}{basename}/requirements.ini'.format(
-            plugin_path=PLUGIN_PATH,
-            basename=form.instance.basename,
-        )
+        return f'{PLUGIN_PATH}{form.instance.basename}/requirements.ini'
 
 
 class PluginEditView(UpdateView):
@@ -82,10 +79,7 @@ class PluginUpdateView(
 
     @staticmethod
     def get_requirements_path(form):
-        return '{plugin_path}{basename}/requirements.ini'.format(
-            plugin_path=PLUGIN_PATH,
-            basename=form.instance.basename,
-        )
+        return f'{PLUGIN_PATH}{form.instance.basename}/requirements.ini'
 
     def get_context_data(self, **kwargs):
         context = super(PluginUpdateView, self).get_context_data(**kwargs)

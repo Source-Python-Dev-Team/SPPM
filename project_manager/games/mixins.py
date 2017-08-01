@@ -47,5 +47,5 @@ class GameSpecificOrderablePaginatedListView(OrderablePaginatedListView):
                     continue
                 context['page_url_list'][num].url = context[
                     'page_url_list'
-                ][num].url + '&game={slug}'.format(slug=game_slug)
+                ][num].url + f'&game={game_slug}'
         return context
