@@ -35,6 +35,8 @@ class PluginViewSet(ModelViewSet):
                 '-created',
             )
         )
+    ).select_related(
+        'owner',
     )
     serializer_class = PluginSerializer
 

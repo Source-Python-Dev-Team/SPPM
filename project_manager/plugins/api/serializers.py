@@ -1,9 +1,6 @@
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
-# Python
-from contextlib import suppress
-
 # Django
 from django.core.exceptions import ValidationError
 
@@ -13,9 +10,11 @@ from rest_framework.fields import (
     FileField,
     SerializerMethodField,
 )
+from rest_framework.reverse import reverse
 from rest_framework.serializers import ModelSerializer
 
 # App
+from project_manager.common.helpers import get_date_display
 from project_manager.plugins.helpers import get_plugin_basename
 from project_manager.plugins.models import Plugin, PluginRelease
 
@@ -29,15 +28,32 @@ class PluginSerializer(ModelSerializer):
 
     class Meta:
         model = Plugin
+        """
+            TODO: add the following:
+
+                contributors
+                created
+                current_release -> created
+                download_requirements
+                images
+                package_requirements
+                paths
+                pypi_requirements
+                supported_games
+                tags
+                total_downloads
+                vcs_requirements
+        """
         fields = (
             'name',
             'basename',
+            'slug',
             'current_release',
-            'description',
             'synopsis',
+            'description',
+            'configuration',
             'logo',
             'owner',
-            'slug',
         )
         read_only_fields = ('basename', 'slug')
 
@@ -46,10 +62,27 @@ class PluginSerializer(ModelSerializer):
             release = obj.releases.all()[0]
         except IndexError:
             return {}
+        zip_url = reverse(
+            viewname='plugin-download',
+            kwargs={
+                'slug': obj.slug,
+                'zip_file': release.file_name,
+            },
+            request=self.context['request']
+        )
         return {
             'version': release.version,
             'notes': str(release.notes) if release.notes else release.notes,
-            'zip_file': release.get_absolute_url(),
+            'zip_file': zip_url,
+            'created': release.created,
+            'locale_created': get_date_display(
+                date=release.created,
+                date_format='DATE_FORMAT',
+            ),
+            'locale_created_short': get_date_display(
+                date=release.created,
+                date_format='SHORT_DATE_FORMAT',
+            ),
         }
 
     def get_owner(self, obj):

@@ -6,6 +6,7 @@ from configobj import ConfigObj
 
 # Django
 from django.conf import settings
+from django.utils import formats
 
 # App
 from project_manager.pypi.models import PyPiRequirement
@@ -22,6 +23,7 @@ __all__ = (
     'add_vcs_requirement',
     'find_image_number',
     'flush_requirements',
+    'get_date_display',
     'get_groups',
     'get_requirements',
     'reset_requirements',
@@ -112,3 +114,10 @@ def flush_requirements():
         plugins__isnull=True,
         sub_plugins__isnull=True,
     ).delete()
+
+
+def get_date_display(date, date_format):
+    return formats.date_format(
+        value=date,
+        format=date_format,
+    ) if date else date
