@@ -20,16 +20,14 @@ from .constants import FORUM_THREAD_URL, LOGO_MAX_HEIGHT, LOGO_MAX_WIDTH
 # =============================================================================
 __all__ = (
     'CommonBase',
-    'DownloadRequirement',
     'Release',
-    'VersionControlRequirement',
 )
 
 
 # =============================================================================
 # >> MODELS
 # =============================================================================
-class CommonBase(models.Model):
+class CommonBase(TimeStampedModel):
     """Base model for upload content."""
     configuration = BBCodeTextField(
         max_length=1024,
@@ -41,7 +39,7 @@ class CommonBase(models.Model):
         )
     )
     contributors = models.ManyToManyField(
-        to='project_manager.ForumUser',
+        to='users.ForumUser',
         related_name='%(class)s_contributions',
     )
     description = BBCodeTextField(
@@ -54,11 +52,11 @@ class CommonBase(models.Model):
         )
     )
     download_requirements = models.ManyToManyField(
-        to='project_manager.DownloadRequirement',
+        to='requirements.DownloadRequirement',
         related_name='%(class)ss',
     )
     owner = models.ForeignKey(
-        to='project_manager.ForumUser',
+        to='users.ForumUser',
         related_name='%(class)ss',
     )
     package_requirements = models.ManyToManyField(
@@ -66,11 +64,11 @@ class CommonBase(models.Model):
         related_name='required_in_%(class)ss',
     )
     pypi_requirements = models.ManyToManyField(
-        to='project_manager.PyPiRequirement',
+        to='requirements.PyPiRequirement',
         related_name='required_in_%(class)ss',
     )
     supported_games = models.ManyToManyField(
-        to='project_manager.Game',
+        to='games.Game',
         related_name='%(class)ss',
     )
     synopsis = BBCodeTextField(
@@ -83,7 +81,7 @@ class CommonBase(models.Model):
         )
     )
     tags = models.ManyToManyField(
-        to='project_manager.Tag',
+        to='tags.Tag',
         related_name='%(class)ss',
     )
     topic = models.IntegerField(
@@ -92,7 +90,7 @@ class CommonBase(models.Model):
         null=True,
     )
     vcs_requirements = models.ManyToManyField(
-        to='project_manager.VersionControlRequirement',
+        to='requirements.VersionControlRequirement',
         related_name='%(class)ss',
     )
 
@@ -204,53 +202,3 @@ class Release(TimeStampedModel):
             f'Class "{self.__class__.__name__}" must implement '
             '"zip_file" field.'
         )
-
-
-class VersionControlRequirement(models.Model):
-    GIT = 0
-    MERCURIAL = 1
-    SUBVERSION = 2
-    BAZAAR = 3
-
-    SUPPORTED_VCS_TYPES = {
-        GIT: 'git',
-        MERCURIAL: 'hg',
-        SUBVERSION: 'svn',
-        BAZAAR: 'bzr',
-    }
-
-    name = models.CharField(
-        max_length=64,
-    )
-    vcs_type = models.PositiveSmallIntegerField(
-        choices=tuple(SUPPORTED_VCS_TYPES.items()),
-        help_text='The type of Version Control used in the url.',
-        db_index=True,
-        editable=False,
-        null=True,
-    )
-    url = models.CharField(
-        max_length=128,
-    )
-
-    class Meta:
-        verbose_name = 'Version Control Requirement'
-        verbose_name_plural = 'Version Control Requirements'
-
-
-class DownloadRequirement(models.Model):
-    name = models.CharField(
-        max_length=64,
-    )
-    url = models.CharField(
-        max_length=128,
-    )
-    description = models.CharField(
-        max_length=256,
-        blank=True,
-        null=True,
-    )
-
-    class Meta:
-        verbose_name = 'Download Requirement'
-        verbose_name_plural = 'Download Requirements'

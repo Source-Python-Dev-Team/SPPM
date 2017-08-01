@@ -90,7 +90,7 @@ urlpatterns = [
         # /pypi/
         regex=r'^pypi/',
         view=include(
-            'project_manager.pypi.urls',
+            'project_manager.requirements.urls',
             namespace='pypi',
         ),
     ),

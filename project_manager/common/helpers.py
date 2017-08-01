@@ -9,8 +9,11 @@ from django.conf import settings
 from django.utils import formats
 
 # App
-from project_manager.pypi.models import PyPiRequirement
-from .models import DownloadRequirement, VersionControlRequirement
+from project_manager.requirements.models import (
+    DownloadRequirement,
+    PyPiRequirement,
+    VersionControlRequirement,
+)
 
 
 # =============================================================================
@@ -70,7 +73,9 @@ def add_package_requirement(package_basename, project):
 
 
 def add_pypi_requirement(package_basename, project):
-    package, created = PyPiRequirement.objects.get_or_create(name=package_basename)
+    package, created = PyPiRequirement.objects.get_or_create(
+        name=package_basename,
+    )
     project.pypi_requirements.add(package)
 
 

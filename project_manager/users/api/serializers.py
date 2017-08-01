@@ -1,19 +1,20 @@
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
-# Django
-from django.test import TestCase
+# 3rd-Party Django
+from rest_framework.serializers import ModelSerializer
 
 # App
-from ..models import DownloadRequirement, VersionControlRequirement
+from ..models import ForumUser
 
 
 # =============================================================================
-# >> TESTS
+# >> SERIALIZERS
 # =============================================================================
-class TestDownloadRequirement(TestCase):
-    pass
-
-
-class TestVersionControlRequirement(TestCase):
-    pass
+class ForumUserSerializer(ModelSerializer):
+    class Meta:
+        model = ForumUser
+        fields = (
+            'id',
+            'username',
+        )

@@ -1,12 +1,15 @@
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
-from .common.models import DownloadRequirement, VersionControlRequirement
 from .games.models import Game
 from .packages.models import Package, PackageImage, PackageRelease
 from .plugins.models import Plugin, PluginImage, PluginRelease
 from .plugins.paths.models import SubPluginPath
-from .pypi.models import PyPiRequirement
+from .requirements.models import (
+    DownloadRequirement,
+    PyPiRequirement,
+    VersionControlRequirement,
+)
 from .sub_plugins.models import SubPlugin, SubPluginImage, SubPluginRelease
 from .tags.models import Tag
 from .users.models import ForumUser

@@ -1,11 +1,12 @@
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
-from .common.admin import (
-    DownloadRequirementAdmin, VersionControlRequirementAdmin,
-)
 from .games.admin import GameAdmin
-from .pypi.admin import PyPiRequirementAdmin
+from .requirements.admin import (
+    DownloadRequirementAdmin,
+    PyPiRequirementAdmin,
+    VersionControlRequirementAdmin,
+)
 from .sub_plugins.admin import (
     SubPluginAdmin, SubPluginImageAdmin, SubPluginReleaseAdmin,
 )

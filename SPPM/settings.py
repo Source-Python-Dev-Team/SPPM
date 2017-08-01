@@ -51,9 +51,13 @@ INSTALLED_APPS = [
     'crispy_forms',
     'django_filters',
     'project_manager',
+    'project_manager.games',
     'project_manager.packages',
     'project_manager.plugins',
+    'project_manager.requirements',
     'project_manager.sub_plugins',
+    'project_manager.tags',
+    'project_manager.users',
 ]
 
 MIDDLEWARE_CLASSES = [
