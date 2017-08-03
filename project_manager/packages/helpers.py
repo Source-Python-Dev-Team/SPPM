@@ -1,6 +1,9 @@
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
+# Python
+from zipfile import ZipFile, BadZipfile
+
 # Django
 from django.core.exceptions import ValidationError
 
@@ -26,8 +29,16 @@ __all__ = (
 # =============================================================================
 # >> FUNCTIONS
 # =============================================================================
-def get_package_basename(file_list):
+def get_package_basename(zip_file):
     """Return the package's basename."""
+    try:
+        file_list = [
+            x for x in ZipFile(zip_file).namelist() if not x.endswith('/')
+        ]
+    except BadZipfile:
+        raise ValidationError({
+            'zip_file': 'Given file is not a valid zip file.'
+        })
     basename = None
     is_module = False
     for file_path in file_list:

@@ -1,68 +1,45 @@
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
-# Django
-from django.core.urlresolvers import reverse
-
 # 3rd-Party Django
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.filters import OrderingFilter
 from rest_framework.viewsets import ModelViewSet
 
 # App
-from .serializers import PackageListSerializer, PackageSerializer
-from project_manager.packages.models import Package
+from .filters import PackageFilter
+from .serializers import (
+    PackageSerializer,
+    PackageCreateSerializer,
+    PackageUpdateSerializer,
+)
+from ..models import Package, PackageImage, PackageRelease
+from project_manager.common.api.helpers import get_prefetch
 
 
 # =============================================================================
 # VIEWS
 # =============================================================================
 class PackageViewSet(ModelViewSet):
-
-    queryset = Package.objects.all()
+    filter_backends = (OrderingFilter, DjangoFilterBackend)
+    filter_class = PackageFilter
+    ordering = ('-releases__created', )
+    ordering_fields = ('name', 'basename', 'modified')
+    queryset = Package.objects.prefetch_related(
+        *get_prefetch(
+            release_class=PackageRelease,
+            image_class=PackageImage,
+        )
+    ).select_related(
+        'owner',
+    )
     serializer_class = PackageSerializer
 
-    def get_queryset(self):
-        queryset = super().get_queryset().prefetch_related('releases')
-        if self.action == 'list' and 'game' in self.request.query_params:
-            queryset = queryset.filter(
-                supported_games__basename__exact=(
-                    self.request.query_params['game']
-                )
-            )
-        return queryset
-
     def get_serializer_class(self):
+        if self.action == 'update':
+            return PackageUpdateSerializer
+        if self.action == 'create':
+            return PackageCreateSerializer
         if self.action == 'list':
-            return PackageListSerializer
-        return super().get_serializer_class()
-
-    def retrieve(self, request, *args, **kwargs):
-        response = super().retrieve(request, *args, **kwargs)
-        self.get_current_release(response.data)
-        return response
-
-    def list(self, request, *args, **kwargs):
-        response = super().list(request, *args, **kwargs)
-        for data in response.data['results']:
-            data['link'] = request.build_absolute_uri(
-                reverse(
-                    'packages:detail',
-                    args=(data['slug'],),
-                )
-            )
-            self.get_current_release(data)
-        return response
-
-    @staticmethod
-    def get_current_release(data):
-        count = len(data.get('releases', {}))
-        if not count:
-            data['current_release'] = None
-            return
-        if count == 1:
-            data['current_release'] = data['releases'][0]
-        else:
-            newest_datetime = max([y['created'] for y in data['releases']])
-            data['current_release'] = {
-                y['created']: y for y in data['releases']
-            }.get(newest_datetime)
-        del data['releases']
+            return self.serializer_class
+        return self.serializer_class

@@ -9,9 +9,13 @@ from rest_framework.fields import CharField, FileField
 from rest_framework.serializers import ModelSerializer
 
 # App
-from ..helpers import get_plugin_basename
-from ..models import Plugin, PluginImage, PluginRelease
 from project_manager.common.api.mixins import ProjectSerializer
+from project_manager.packages.helpers import get_package_basename
+from project_manager.packages.models import (
+    Package,
+    PackageImage,
+    PackageRelease,
+)
 
 
 # =============================================================================
@@ -23,36 +27,36 @@ from project_manager.common.api.mixins import ProjectSerializer
 # TODO:     paths
 # TODO:     supported_games
 # TODO:     tags
-class PluginImageSerializer(ModelSerializer):
+class PackageImageSerializer(ModelSerializer):
     class Meta:
-        model = PluginImage
+        model = PackageImage
         fields = (
             'image',
         )
 
 
-class PluginSerializer(ProjectSerializer):
-    reverse_path = 'plugin'
+class PackageSerializer(ProjectSerializer):
+    reverse_path = 'package'
 
-    images = PluginImageSerializer(
+    images = PackageImageSerializer(
         many=True,
         read_only=True,
     )
 
     class Meta(ProjectSerializer.Meta):
-        model = Plugin
+        model = Package
         fields = ProjectSerializer.Meta.fields + (
             'images',
         )
 
 
-class PluginReleaseSerializer(ModelSerializer):
+class PackageReleaseSerializer(ModelSerializer):
     notes = CharField(max_length=512, allow_blank=True)
     version = CharField(max_length=8, allow_blank=True)
     zip_file = FileField(allow_null=True)
 
     class Meta:
-        model = PluginRelease
+        model = PackageRelease
         fields = (
             'notes',
             'zip_file',
@@ -70,38 +74,38 @@ class PluginReleaseSerializer(ModelSerializer):
                 )
             })
 
-        # Validate the version is new for the plugin
+        # Validate the version is new for the package
         try:
-            plugin = Plugin.objects.get(pk=self.context['view'].kwargs['pk'])
-            plugin_basename = plugin.basename
-        except Plugin.DoesNotExist:
-            plugin_basename = None
+            package = Package.objects.get(pk=self.context['view'].kwargs['pk'])
+            package_basename = package.basename
+        except Package.DoesNotExist:
+            package_basename = None
         else:
-            if PluginRelease.objects.filter(
-                plugin=plugin,
+            if PackageRelease.objects.filter(
+                package=package,
                 version=version,
             ).exists():
                 raise ValidationError({
                     'version': 'Given version matches existing version.',
                 })
 
-        basename = get_plugin_basename(zip_file)
-        if basename != plugin_basename:
+        basename = get_package_basename(zip_file)
+        if basename != package_basename:
             raise ValidationError({
                 'zip_file': (
                     f"Basename in zip '{basename}' does not match basename "
-                    f"for plugin '{plugin_basename}'"
+                    f"for package '{package_basename}'"
                 )
             })
         return attrs
 
 
-class PluginCreateSerializer(PluginSerializer):
-    releases = PluginReleaseSerializer(write_only=True)
+class PackageCreateSerializer(PackageSerializer):
+    releases = PackageReleaseSerializer(write_only=True)
 
-    class Meta(PluginSerializer.Meta):
-        fields = PluginSerializer.Meta.fields + ('releases', )
-        read_only_fields = PluginSerializer.Meta.read_only_fields
+    class Meta(PackageSerializer.Meta):
+        fields = PackageSerializer.Meta.fields + ('releases', )
+        read_only_fields = PackageSerializer.Meta.read_only_fields
 
     def validate(self, attrs):
         release_dict = attrs.get('releases', {})
@@ -110,7 +114,8 @@ class PluginCreateSerializer(PluginSerializer):
         if not all([version, zip_file]):
             raise ValidationError({
                 'releases': (
-                    'Version and Zip File are required when creating a plugin.'
+                    'Version and Zip File are required when creating '
+                    'a package.'
                 )
             })
 
@@ -120,8 +125,8 @@ class PluginCreateSerializer(PluginSerializer):
         zip_file = release_dict['zip_file']
         notes = release_dict['notes']
         instance = super().create(validated_data)
-        PluginRelease.objects.create(
-            plugin=instance,
+        PackageRelease.objects.create(
+            package=instance,
             notes=notes,
             version=version,
             zip_file=zip_file,
@@ -129,10 +134,10 @@ class PluginCreateSerializer(PluginSerializer):
         return instance
 
 
-class PluginUpdateSerializer(PluginCreateSerializer):
+class PackageUpdateSerializer(PackageCreateSerializer):
 
-    class Meta(PluginCreateSerializer.Meta):
-        read_only_fields = PluginCreateSerializer.Meta.read_only_fields + (
+    class Meta(PackageCreateSerializer.Meta):
+        read_only_fields = PackageCreateSerializer.Meta.read_only_fields + (
             'name',
         )
 
@@ -142,8 +147,8 @@ class PluginUpdateSerializer(PluginCreateSerializer):
         zip_file = release_dict.get('zip_file')
         if all([version, zip_file]):
             notes = release_dict.get('notes', '')
-            PluginRelease.objects.create(
-                plugin=instance,
+            PackageRelease.objects.create(
+                package=instance,
                 notes=notes,
                 version=version,
                 zip_file=zip_file,
