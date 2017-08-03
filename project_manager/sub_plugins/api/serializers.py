@@ -16,8 +16,16 @@ class SubPluginSerializer(ModelSerializer):
     class Meta:
         model = SubPlugin
         fields = (
-            'name', 'logo', 'description', 'configuration', 'owner',
-            'contributors', 'download_requirements', 'package_requirements',
-            'pypi_requirements', 'supported_games', 'synopsis',
+            'name',
+            'logo',
+            'description',
+            'configuration',
+            'owner',
+            # 'contributors',
+            # 'download_requirements',
+            # 'package_requirements',
+            # 'pypi_requirements',
+            # 'supported_games',
+            'synopsis',
             'get_forum_url',
         )

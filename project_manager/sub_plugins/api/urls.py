@@ -16,7 +16,7 @@ from .views import SubPluginViewSet
 # =============================================================================
 router = routers.SimpleRouter()
 router.register(
-    prefix=r'',
+    prefix=r'^(?P<plugin_slug>[\w-]+)',
     viewset=SubPluginViewSet,
     base_name='sub-plugins'
 )

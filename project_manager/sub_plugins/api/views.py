@@ -2,6 +2,7 @@
 # >> IMPORTS
 # =============================================================================
 # 3rd-Party Django
+from rest_framework.exceptions import ParseError
 from rest_framework.viewsets import ModelViewSet
 
 # App
@@ -21,12 +22,9 @@ class SubPluginViewSet(ModelViewSet):
 
     def get_queryset(self):
         queryset = super().get_queryset()
-        slug = self.request.query_params.get('plugin')
-        if slug is None:
-            return queryset
+        plugin_slug = self.kwargs.get('plugin_slug')
         try:
-            plugin = Plugin.objects.get(slug=slug)
+            plugin = Plugin.objects.get(slug=plugin_slug)
+            return queryset.filter(plugin=plugin)
         except Plugin.DoesNotExist:
-            # TODO: Raise an error here
-            return queryset
-        return queryset.filter(plugin=plugin)
+            raise ParseError('Invalid plugin_slug')
