@@ -1,6 +1,9 @@
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
+# Python
+from operator import attrgetter
+
 # Django
 from django.core.exceptions import ValidationError
 from django.db import models
@@ -142,7 +145,12 @@ class CommonBase(TimeStampedModel):
 
     @property
     def total_downloads(self):
-        return sum(self.releases.values_list('download_count', flat=True))
+        return sum(
+            map(
+                attrgetter('download_count'),
+                self.releases.all()
+            )
+        )
 
     def clean(self):
         """Clean all attributes and raise any errors that occur."""
