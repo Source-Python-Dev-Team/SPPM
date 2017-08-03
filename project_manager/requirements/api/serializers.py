@@ -2,22 +2,42 @@
 # >> IMPORTS
 # =============================================================================
 # 3rd-Party Django
-from rest_framework.fields import SerializerMethodField
 from rest_framework.serializers import ModelSerializer
 
 # App
-from ..models import PyPiRequirement
+from ..models import (
+    DownloadRequirement,
+    PyPiRequirement,
+    VersionControlRequirement,
+)
 
 
 # =============================================================================
 # >> SERIALIZERS
 # =============================================================================
-class PyPiRequirementSerializer(ModelSerializer):
-    # pypi_url = SerializerMethodField()
+class DownloadRequirementSerializer(ModelSerializer):
+    class Meta:
+        model = DownloadRequirement
+        fields = (
+            'name',
+            'description',
+            'url',
+        )
 
+
+class PyPiRequirementSerializer(ModelSerializer):
     class Meta:
         model = PyPiRequirement
         fields = (
             'name',
-            # 'pypi_url',
+        )
+
+
+class VersionControlRequirementSerializer(ModelSerializer):
+    class Meta:
+        model = VersionControlRequirement
+        fields = (
+            'name',
+            'vcs_type',
+            'url'
         )

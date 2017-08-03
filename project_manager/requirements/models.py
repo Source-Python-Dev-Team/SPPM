@@ -21,6 +21,24 @@ __all__ = (
 # =============================================================================
 # >> MODELS
 # =============================================================================
+class DownloadRequirement(models.Model):
+    name = models.CharField(
+        max_length=64,
+    )
+    url = models.CharField(
+        max_length=128,
+    )
+    description = models.CharField(
+        max_length=256,
+        blank=True,
+        null=True,
+    )
+
+    class Meta:
+        verbose_name = 'Download Requirement'
+        verbose_name_plural = 'Download Requirements'
+
+
 class PyPiRequirement(models.Model):
     name = models.CharField(
         max_length=32,
@@ -92,21 +110,3 @@ class VersionControlRequirement(models.Model):
     class Meta:
         verbose_name = 'Version Control Requirement'
         verbose_name_plural = 'Version Control Requirements'
-
-
-class DownloadRequirement(models.Model):
-    name = models.CharField(
-        max_length=64,
-    )
-    url = models.CharField(
-        max_length=128,
-    )
-    description = models.CharField(
-        max_length=256,
-        blank=True,
-        null=True,
-    )
-
-    class Meta:
-        verbose_name = 'Download Requirement'
-        verbose_name_plural = 'Download Requirements'

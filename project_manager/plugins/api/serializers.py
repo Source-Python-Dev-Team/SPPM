@@ -15,59 +15,107 @@ from rest_framework.serializers import ModelSerializer
 
 # App
 from ..helpers import get_plugin_basename
-from ..models import Plugin, PluginRelease
+from ..models import Plugin, PluginImage, PluginRelease
 from project_manager.common.helpers import get_date_display
-from project_manager.requirements.api.serializers import (
-    PyPiRequirementSerializer,
+from project_manager.games.api.serializers import GameSerializer
+from project_manager.packages.api.serializers import (
+    PackageRequirementSerializer,
 )
+from project_manager.requirements.api.serializers import (
+    DownloadRequirementSerializer,
+    PyPiRequirementSerializer,
+    VersionControlRequirementSerializer,
+)
+from project_manager.tags.api.serializers import TagSerializer
 from project_manager.users.api.serializers import ForumUserSerializer
 
 
 # =============================================================================
 # >> SERIALIZERS
 # =============================================================================
+# TODO: APIs
+# TODO:     contributors
+# TODO:     images
+# TODO:     paths
+# TODO:     supported_games
+# TODO:     tags
+class PluginImageSerializer(ModelSerializer):
+    class Meta:
+        model = PluginImage
+        fields = (
+            'image',
+        )
+
+
 class PluginSerializer(ModelSerializer):
     current_release = SerializerMethodField()
-    owner = ForumUserSerializer(read_only=True)
-    contributors = ForumUserSerializer(many=True, read_only=True)
-    locale_created = SerializerMethodField()
-    locale_created_short = SerializerMethodField()
-    pypi_requirements = PyPiRequirementSerializer(many=True, read_only=True)
+    owner = ForumUserSerializer(
+        read_only=True,
+    )
+    contributors = ForumUserSerializer(
+        many=True,
+        read_only=True,
+    )
+    created = SerializerMethodField()
+    updated = SerializerMethodField()
+    package_requirements = PackageRequirementSerializer(
+        many=True,
+        read_only=True,
+    )
+    download_requirements = DownloadRequirementSerializer(
+        many=True,
+        read_only=True,
+    )
+    pypi_requirements = PyPiRequirementSerializer(
+        many=True,
+        read_only=True,
+    )
+    vcs_requirements = VersionControlRequirementSerializer(
+        many=True,
+        read_only=True,
+    )
+    supported_games = GameSerializer(
+        many=True,
+        read_only=True,
+    )
+    images = PluginImageSerializer(
+        many=True,
+        read_only=True,
+    )
+    tags = TagSerializer(
+        many=True,
+        read_only=True,
+    )
 
     class Meta:
         model = Plugin
         """
             TODO: add the following:
 
-                contributors -> ability to add/remove
-                download_requirements
-                images
-                package_requirements
-                paths
-                pypi_requirements
-                supported_games
                 tags
-                total_downloads
-                vcs_requirements
         """
         fields = (
             'name',
-            'basename',
             'slug',
+            'total_downloads',
             'current_release',
             'created',
-            'locale_created',
-            'locale_created_short',
+            'updated',
             'synopsis',
             'description',
             'configuration',
             'logo',
             'owner',
             'contributors',
+            'package_requirements',
+            'download_requirements',
             'pypi_requirements',
+            'vcs_requirements',
+            'supported_games',
+            'images',
+            'tags',
         )
         read_only_fields = (
-            'basename',
             'slug',
         )
 
@@ -88,28 +136,31 @@ class PluginSerializer(ModelSerializer):
             'version': release.version,
             'notes': str(release.notes) if release.notes else release.notes,
             'zip_file': zip_url,
-            'created': release.created,
-            'locale_created': get_date_display(
-                date=release.created,
-                date_format='DATE_FORMAT',
-            ),
-            'locale_created_short': get_date_display(
-                date=release.created,
-                date_format='SHORT_DATE_FORMAT',
-            ),
         }
 
-    def get_locale_created(self, obj):
-        return get_date_display(
-            date=obj.created,
-            date_format='DATE_FORMAT',
-        )
+    def get_created(self, obj):
+        return self.get_date_time_dict(timestamp=obj.created)
 
-    def get_locale_created_short(self, obj):
-        return get_date_display(
-            date=obj.created,
-            date_format='SHORT_DATE_FORMAT',
-        )
+    def get_updated(self, obj):
+        try:
+            release = obj.releases.all()[0]
+        except IndexError:
+            return self.get_date_time_dict(timestamp=obj.created)
+        return self.get_date_time_dict(timestamp=release.modified)
+
+    @staticmethod
+    def get_date_time_dict(timestamp):
+        return {
+            'actual': timestamp,
+            'locale': get_date_display(
+                date=timestamp,
+                date_format='DATE_FORMAT',
+            ),
+            'locale_short': get_date_display(
+                date=timestamp,
+                date_format='SHORT_DATE_FORMAT',
+            )
+        }
 
 
 class PluginReleaseSerializer(ModelSerializer):
