@@ -1,6 +1,9 @@
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
+# Python
+from zipfile import ZipFile, BadZipfile
+
 # Django
 from django.core.exceptions import ValidationError
 
@@ -27,8 +30,16 @@ __all__ = (
 # =============================================================================
 # >> FUNCTIONS
 # =============================================================================
-def get_sub_plugin_basename(file_list, plugin):
+def get_sub_plugin_basename(zip_file, plugin):
     """Return the sub-plugin's basename."""
+    try:
+        file_list = [
+            x for x in ZipFile(zip_file).namelist() if not x.endswith('/')
+        ]
+    except BadZipfile:
+        raise ValidationError({
+            'zip_file': 'Given file is not a valid zip file.'
+        })
     basename, path = _find_basename_and_path(file_list, plugin)
     if basename is None:
         raise ValidationError(

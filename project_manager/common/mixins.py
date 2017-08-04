@@ -159,13 +159,12 @@ class RequirementsParserMixin(ModelFormMixin, View):
             add_download_requirement(basename, url, desc, instance)
         flush_requirements()
         if invalid:
+            packages = ', '.join(invalid)
             messages.warning(
                 request=self.request,
                 message=(
                     'Unable to add all Custom Package requirements.\n'
-                    'Invalid package basenames:\n"{packages}"'.format(
-                        packages=', '.join(invalid)
-                    )
+                    f'Invalid package basenames:\n"{packages}"'
                 ),
             )
         return response

@@ -17,7 +17,7 @@ from project_manager.common.api.mixins import ProjectSerializer
 # =============================================================================
 # >> SERIALIZERS
 # =============================================================================
-# TODO: APIs
+# TODO: APIs for adding/removing
 # TODO:     contributors
 # TODO:     images
 # TODO:     paths

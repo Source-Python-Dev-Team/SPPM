@@ -93,19 +93,24 @@ class ProjectSerializer(ModelSerializer):
             f'Class {self.__class__.__name__} must implement "reverse_path".'
         )
 
+    @staticmethod
+    def get_download_kwargs(obj, release):
+        return {
+            'slug': obj.slug,
+            'zip_file': release.file_name,
+        }
+
     def get_current_release(self, obj):
         try:
             release = obj.releases.all()[0]
         except IndexError:
             return {}
         zip_url = reverse(
-            viewname='{reverse_path}-download'.format(
-                reverse_path=self.reverse_path
+            viewname=f'{self.reverse_path}-download',
+            kwargs=self.get_download_kwargs(
+                obj=obj,
+                release=release,
             ),
-            kwargs={
-                'slug': obj.slug,
-                'zip_file': release.file_name,
-            },
             request=self.context['request']
         )
         return {
