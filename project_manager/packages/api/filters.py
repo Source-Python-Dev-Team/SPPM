@@ -22,7 +22,7 @@ class PackageFilter(FilterSet):
 
     class Meta:
         model = Package
-        fields = ('game', )
+        fields = ('game',)
 
     def filter_userid(self, queryset, name, value):
         return queryset.filter(

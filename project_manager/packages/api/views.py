@@ -18,12 +18,12 @@ from project_manager.common.api.helpers import get_prefetch
 
 
 # =============================================================================
-# VIEWS
+# >> VIEWS
 # =============================================================================
 class PackageViewSet(ModelViewSet):
     filter_backends = (OrderingFilter, DjangoFilterBackend)
     filter_class = PackageFilter
-    ordering = ('-releases__created', )
+    ordering = ('-releases__created',)
     ordering_fields = ('name', 'basename', 'modified')
     queryset = Package.objects.prefetch_related(
         *get_prefetch(

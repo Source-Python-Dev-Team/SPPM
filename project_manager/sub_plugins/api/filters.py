@@ -22,7 +22,7 @@ class PluginFilter(FilterSet):
 
     class Meta:
         model = SubPlugin
-        fields = ('game', )
+        fields = ('game',)
 
     def filter_userid(self, queryset, name, value):
         return queryset.filter(

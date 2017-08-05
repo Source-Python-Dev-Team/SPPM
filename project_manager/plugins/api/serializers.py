@@ -9,9 +9,9 @@ from rest_framework.fields import CharField, FileField
 from rest_framework.serializers import ModelSerializer
 
 # App
-from ..helpers import get_plugin_basename
-from ..models import Plugin, PluginImage, PluginRelease
-from project_manager.common.api.mixins import ProjectSerializer
+from project_manager.common.api.serializers import ProjectSerializer
+from project_manager.plugins.helpers import get_plugin_basename
+from project_manager.plugins.models import Plugin, PluginImage, PluginRelease
 
 
 # =============================================================================
@@ -100,7 +100,7 @@ class PluginCreateSerializer(PluginSerializer):
     releases = PluginReleaseSerializer(write_only=True)
 
     class Meta(PluginSerializer.Meta):
-        fields = PluginSerializer.Meta.fields + ('releases', )
+        fields = PluginSerializer.Meta.fields + ('releases',)
         read_only_fields = PluginSerializer.Meta.read_only_fields
 
     def validate(self, attrs):

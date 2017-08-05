@@ -5,7 +5,7 @@
 from rest_framework.serializers import ModelSerializer
 
 # App
-from ..models import (
+from project_manager.requirements.models import (
     DownloadRequirement,
     PyPiRequirement,
     VersionControlRequirement,
@@ -15,7 +15,7 @@ from ..models import (
 # =============================================================================
 # >> SERIALIZERS
 # =============================================================================
-class DownloadRequirementSerializer(ModelSerializer):
+class RequiredDownloadSerializer(ModelSerializer):
     class Meta:
         model = DownloadRequirement
         fields = (
@@ -25,7 +25,7 @@ class DownloadRequirementSerializer(ModelSerializer):
         )
 
 
-class PyPiRequirementSerializer(ModelSerializer):
+class RequiredPyPiSerializer(ModelSerializer):
     class Meta:
         model = PyPiRequirement
         fields = (
@@ -33,7 +33,7 @@ class PyPiRequirementSerializer(ModelSerializer):
         )
 
 
-class VersionControlRequirementSerializer(ModelSerializer):
+class RequiredVersionControlSerializer(ModelSerializer):
     class Meta:
         model = VersionControlRequirement
         fields = (

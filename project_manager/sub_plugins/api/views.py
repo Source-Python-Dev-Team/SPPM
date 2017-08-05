@@ -20,12 +20,12 @@ from project_manager.plugins.models import Plugin
 
 
 # =============================================================================
-# VIEWS
+# >> VIEWS
 # =============================================================================
 class SubPluginViewSet(ModelViewSet):
     filter_backends = (OrderingFilter, DjangoFilterBackend)
     filter_class = PluginFilter
-    ordering = ('-releases__created', )
+    ordering = ('-releases__created',)
     ordering_fields = ('name', 'basename', 'modified')
     queryset = SubPlugin.objects.prefetch_related(
         *get_prefetch(

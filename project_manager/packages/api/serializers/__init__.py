@@ -9,7 +9,7 @@ from rest_framework.fields import CharField, FileField
 from rest_framework.serializers import ModelSerializer
 
 # App
-from project_manager.common.api.mixins import ProjectSerializer
+from project_manager.common.api.serializers import ProjectSerializer
 from project_manager.packages.helpers import get_package_basename
 from project_manager.packages.models import (
     Package,
@@ -104,7 +104,7 @@ class PackageCreateSerializer(PackageSerializer):
     releases = PackageReleaseSerializer(write_only=True)
 
     class Meta(PackageSerializer.Meta):
-        fields = PackageSerializer.Meta.fields + ('releases', )
+        fields = PackageSerializer.Meta.fields + ('releases',)
         read_only_fields = PackageSerializer.Meta.read_only_fields
 
     def validate(self, attrs):

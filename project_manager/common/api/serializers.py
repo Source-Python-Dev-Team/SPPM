@@ -14,24 +14,26 @@ from project_manager.games.api.serializers import GameSerializer
 from project_manager.packages.api.serializers.common import (
     PackageRequirementSerializer
 )
-from project_manager.requirements.api.serializers import (
-    DownloadRequirementSerializer,
-    PyPiRequirementSerializer,
-    VersionControlRequirementSerializer,
+from project_manager.requirements.api.serializers.common import (
+    RequiredDownloadSerializer,
+    RequiredPyPiSerializer,
+    RequiredVersionControlSerializer,
 )
 from project_manager.tags.api.serializers import TagSerializer
-from project_manager.users.api.serializers import ForumUserSerializer
+from project_manager.users.api.serializers.common import (
+    ForumUserContributorSerializer,
+)
 
 
 # =============================================================================
-# >> MIXINS
+# >> SERIALIZERS
 # =============================================================================
 class ProjectSerializer(ModelSerializer):
     current_release = SerializerMethodField()
-    owner = ForumUserSerializer(
+    owner = ForumUserContributorSerializer(
         read_only=True,
     )
-    contributors = ForumUserSerializer(
+    contributors = ForumUserContributorSerializer(
         many=True,
         read_only=True,
     )
@@ -41,15 +43,15 @@ class ProjectSerializer(ModelSerializer):
         many=True,
         read_only=True,
     )
-    download_requirements = DownloadRequirementSerializer(
+    download_requirements = RequiredDownloadSerializer(
         many=True,
         read_only=True,
     )
-    pypi_requirements = PyPiRequirementSerializer(
+    pypi_requirements = RequiredPyPiSerializer(
         many=True,
         read_only=True,
     )
-    vcs_requirements = VersionControlRequirementSerializer(
+    vcs_requirements = RequiredVersionControlSerializer(
         many=True,
         read_only=True,
     )

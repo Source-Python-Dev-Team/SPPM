@@ -5,13 +5,13 @@
 from rest_framework.serializers import ModelSerializer
 
 # App
-from ..models import ForumUser
+from project_manager.users.models import ForumUser
 
 
 # =============================================================================
 # >> SERIALIZERS
 # =============================================================================
-class ForumUserSerializer(ModelSerializer):
+class ForumUserContributorSerializer(ModelSerializer):
     class Meta:
         model = ForumUser
         fields = (

@@ -56,7 +56,7 @@ class CommonBase(TimeStampedModel):
     )
     download_requirements = models.ManyToManyField(
         to='requirements.DownloadRequirement',
-        related_name='%(class)ss',
+        related_name='required_in_%(class)ss',
     )
     owner = models.ForeignKey(
         to='users.ForumUser',
@@ -94,7 +94,7 @@ class CommonBase(TimeStampedModel):
     )
     vcs_requirements = models.ManyToManyField(
         to='requirements.VersionControlRequirement',
-        related_name='%(class)ss',
+        related_name='required_in_%(class)ss',
     )
 
     class Meta:
