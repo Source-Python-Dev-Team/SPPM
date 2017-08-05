@@ -84,7 +84,7 @@ def handle_sub_plugin_image_upload(instance, filename):
     plugin_slug = instance.sub_plugin.plugin.slug
     slug = instance.sub_plugin.slug
     image_number = find_image_number(
-        directory=f'sub_plugins/{plugin_slug}',
+        directory=f'sub-plugins/{plugin_slug}',
         slug=slug,
     )
     extension = filename.rsplit('.', 1)[1]

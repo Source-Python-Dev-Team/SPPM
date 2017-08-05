@@ -257,9 +257,8 @@ class ProjectReleaseSerializer(ModelSerializer):
         )
 
     def get_project_kwargs(self, parent_project=None):
-        kwargs = self.context['view'].kwargs
         return {
-            'pk': kwargs.get('pk')
+            'pk': self.context['view'].kwargs.get('pk')
         }
 
     def validate(self, attrs):
@@ -312,3 +311,15 @@ class ProjectReleaseSerializer(ModelSerializer):
             modified=instance.created,
         )
         return instance
+
+
+class ProjectImageSerializer(ModelSerializer):
+    class Meta:
+        fields = (
+            'image',
+        )
+
+    def create(self, validated_data):
+        view = self.context['view']
+        validated_data[view.project_type.replace('-', '_')] = view.project
+        return super().create(validated_data=validated_data)

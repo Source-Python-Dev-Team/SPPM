@@ -89,7 +89,7 @@ def handle_package_zip_upload(instance, filename):
 
 def handle_package_logo_upload(instance, filename):
     """Return the path to store the package's logo."""
-    extension = filename.rsplit('.', 1)[1],
+    extension = filename.rsplit('.', 1)[1]
     return f'{PACKAGE_LOGO_URL}{instance.slug}.{extension}'
 
 
@@ -100,5 +100,5 @@ def handle_package_image_upload(instance, filename):
         directory='packages',
         slug=slug,
     )
-    extension = filename.rsplit('.', 1)[1],
+    extension = filename.rsplit('.', 1)[1]
     return f'{PACKAGE_IMAGE_URL}{slug}/{image_number}.{extension}'

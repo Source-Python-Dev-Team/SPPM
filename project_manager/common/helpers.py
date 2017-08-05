@@ -61,7 +61,7 @@ def get_requirements(zip_file, requirement_path):
 
 
 def handle_image_upload(instance, filename):
-    return instance.handle_image_upload(instance, filename)
+    return instance.handle_image_upload(filename)
 
 
 def handle_logo_upload(instance, filename):

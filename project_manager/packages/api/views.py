@@ -11,9 +11,10 @@ from rest_framework.viewsets import ModelViewSet
 
 # App
 from .filters import PackageFilter
-from .serializers import PackageSerializer
+from .serializers import PackageImageSerializer, PackageSerializer
 from ..models import Package, PackageImage, PackageRelease
 from project_manager.common.api.helpers import get_prefetch
+from project_manager.common.api.views import ProjectImageViewSet
 
 
 # =============================================================================
@@ -29,6 +30,10 @@ class PackageAPIView(APIView):
                     viewname='api:packages:projects-list',
                     request=request,
                 ),
+                'images': reverse(
+                    viewname='api:packages:endpoints',
+                    request=request,
+                ) + 'images/<package>/',
             }
         )
 
@@ -47,3 +52,13 @@ class PackageViewSet(ModelViewSet):
         'owner',
     )
     serializer_class = PackageSerializer
+
+
+class PackageImageViewSet(ProjectImageViewSet):
+    queryset = PackageImage.objects.select_related(
+        'package',
+    )
+    serializer_class = PackageImageSerializer
+
+    project_type = 'package'
+    project_model = Package

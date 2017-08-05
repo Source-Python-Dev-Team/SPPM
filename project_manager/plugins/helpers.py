@@ -95,10 +95,10 @@ def handle_plugin_logo_upload(instance, filename):
 
 def handle_plugin_image_upload(instance, filename):
     """Return the path to store the image."""
-    slug = instance.plugin.slug,
+    slug = instance.plugin.slug
     image_number = find_image_number(
-        directory='plugin',
+        directory='plugins',
         slug=slug,
     )
-    extension = filename.rsplit('.', 1)[1],
+    extension = filename.rsplit('.', 1)[1]
     return f'{PLUGIN_IMAGE_URL}{slug}/{image_number}.{extension}'

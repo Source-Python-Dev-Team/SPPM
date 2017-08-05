@@ -12,9 +12,10 @@ from rest_framework.viewsets import ModelViewSet
 
 # App
 from .filters import PluginFilter
-from .serializers import SubPluginSerializer
+from .serializers import SubPluginImageSerializer, SubPluginSerializer
 from ..models import SubPlugin, SubPluginImage, SubPluginRelease
 from project_manager.common.api.helpers import get_prefetch
+from project_manager.common.api.views import ProjectImageViewSet
 from project_manager.plugins.models import Plugin
 
 
@@ -31,6 +32,10 @@ class SubPluginAPIView(APIView):
                     viewname='api:sub-plugins:endpoints',
                     request=request,
                 ) + 'projects/<plugin>/',
+                'images': reverse(
+                    viewname='api:sub-plugins:endpoints',
+                    request=request,
+                ) + 'images/<plugin>/<sub-plugin>/',
             }
         )
 
@@ -62,4 +67,31 @@ class SubPluginViewSet(ModelViewSet):
             self.plugin = Plugin.objects.get(slug=plugin_slug)
             return queryset.filter(plugin=self.plugin)
         except Plugin.DoesNotExist:
-            raise ParseError('Invalid plugin_slug')
+            raise ParseError('Invalid plugin_slug.')
+
+
+class SubPluginImageViewSet(ProjectImageViewSet):
+    queryset = SubPluginImage.objects.select_related(
+        'sub_plugin',
+    )
+    serializer_class = SubPluginImageSerializer
+
+    project_type = 'sub-plugin'
+    project_model = SubPlugin
+
+    @property
+    def parent_project(self):
+        plugin_slug = self.kwargs.get('plugin_slug')
+        # TODO: figure out if this try/except is necessary
+        try:
+            plugin = Plugin.objects.get(slug=plugin_slug)
+        except Plugin.DoesNotExist:
+            raise ParseError(f'Plugin "{plugin_slug}" not found.')
+        return plugin
+
+    def get_project_kwargs(self, parent_project=None):
+        kwargs = super().get_project_kwargs(parent_project=parent_project)
+        kwargs.update(
+            plugin=parent_project,
+        )
+        return kwargs

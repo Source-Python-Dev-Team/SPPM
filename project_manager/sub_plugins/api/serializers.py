@@ -4,11 +4,9 @@
 # Django
 from django.core.exceptions import ValidationError
 
-# 3rd-Party Django
-from rest_framework.serializers import ModelSerializer
-
 # App
 from project_manager.common.api.serializers import (
+    ProjectImageSerializer,
     ProjectReleaseSerializer,
     ProjectSerializer,
 )
@@ -29,12 +27,9 @@ from project_manager.sub_plugins.models import (
 # TODO:     images
 # TODO:     supported_games
 # TODO:     tags
-class SubPluginImageSerializer(ModelSerializer):
-    class Meta:
+class SubPluginImageSerializer(ProjectImageSerializer):
+    class Meta(ProjectImageSerializer.Meta):
         model = SubPluginImage
-        fields = (
-            'image',
-        )
 
 
 class SubPluginReleaseSerializer(ProjectReleaseSerializer):

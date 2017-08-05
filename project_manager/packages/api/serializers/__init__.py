@@ -1,11 +1,9 @@
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
-# 3rd-Party Django
-from rest_framework.serializers import ModelSerializer
-
 # App
 from project_manager.common.api.serializers import (
+    ProjectImageSerializer,
     ProjectReleaseSerializer,
     ProjectSerializer,
 )
@@ -25,12 +23,9 @@ from project_manager.packages.models import (
 # TODO:     images
 # TODO:     supported_games
 # TODO:     tags
-class PackageImageSerializer(ModelSerializer):
-    class Meta:
+class PackageImageSerializer(ProjectImageSerializer):
+    class Meta(ProjectImageSerializer.Meta):
         model = PackageImage
-        fields = (
-            'image',
-        )
 
 
 class PackageReleaseSerializer(ProjectReleaseSerializer):

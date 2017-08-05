@@ -4,6 +4,7 @@
 # 3rd-Party Django
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import OrderingFilter
+from rest_framework.parsers import ParseError
 from rest_framework.response import Response
 from rest_framework.reverse import reverse
 from rest_framework.views import APIView
@@ -11,9 +12,10 @@ from rest_framework.viewsets import ModelViewSet
 
 # App
 from .filters import PluginFilter
-from .serializers import PluginSerializer
+from .serializers import PluginImageSerializer, PluginSerializer
 from ..models import Plugin, PluginImage, PluginRelease
 from project_manager.common.api.helpers import get_prefetch
+from project_manager.common.api.views import ProjectImageViewSet
 
 
 # =============================================================================
@@ -29,6 +31,10 @@ class PluginAPIView(APIView):
                     viewname='api:plugins:projects-list',
                     request=request,
                 ),
+                'images': reverse(
+                    viewname='api:plugins:endpoints',
+                    request=request,
+                ) + 'images/<plugin>/',
             }
         )
 
@@ -48,11 +54,12 @@ class PluginViewSet(ModelViewSet):
     )
     serializer_class = PluginSerializer
 
-    # def get_serializer_class(self):
-    #     if self.action == 'update':
-    #         return PluginUpdateSerializer
-    #     if self.action == 'create':
-    #         return PluginCreateSerializer
-    #     if self.action == 'list':
-    #         return self.serializer_class
-    #     return self.serializer_class
+
+class PluginImageViewSet(ProjectImageViewSet):
+    queryset = PluginImage.objects.select_related(
+        'plugin',
+    )
+    serializer_class = PluginImageSerializer
+
+    project_type = 'plugin'
+    project_model = Plugin

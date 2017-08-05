@@ -1,11 +1,9 @@
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
-# 3rd-Party Django
-from rest_framework.serializers import ModelSerializer
-
 # App
 from project_manager.common.api.serializers import (
+    ProjectImageSerializer,
     ProjectReleaseSerializer,
     ProjectSerializer,
 )
@@ -22,12 +20,9 @@ from project_manager.plugins.models import Plugin, PluginImage, PluginRelease
 # TODO:     paths
 # TODO:     supported_games
 # TODO:     tags
-class PluginImageSerializer(ModelSerializer):
-    class Meta:
+class PluginImageSerializer(ProjectImageSerializer):
+    class Meta(ProjectImageSerializer.Meta):
         model = PluginImage
-        fields = (
-            'image',
-        )
 
 
 class PluginReleaseSerializer(ProjectReleaseSerializer):
