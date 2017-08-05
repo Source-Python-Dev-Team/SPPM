@@ -66,7 +66,7 @@ class PackageEditView(UpdateView):
     template_name = 'packages/edit.html'
 
     def get_initial(self):
-        initial = super(PackageEditView, self).get_initial()
+        initial = super().get_initial()
         initial.update({
             'logo': '',
         })
@@ -85,7 +85,7 @@ class PackageUpdateView(
         return f'{PACKAGE_PATH}{form.instance.basename}/requirements.ini'
 
     def get_context_data(self, **kwargs):
-        context = super(PackageUpdateView, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         context.update({
             'package': self.package,
             'current_version': self.package.current_version,
@@ -93,7 +93,7 @@ class PackageUpdateView(
         return context
 
     def get_initial(self):
-        initial = super(PackageUpdateView, self).get_initial()
+        initial = super().get_initial()
         initial.update({
             'version': '',
             'version_notes': '',
@@ -113,7 +113,7 @@ class PackageView(DetailView):
     template_name = 'packages/view.html'
 
     def get_context_data(self, **kwargs):
-        context = super(PackageView, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         context.update({
             'current_version': self.object.current_version,
             'contributors': self.object.contributors.all(),
@@ -145,10 +145,7 @@ class PackageReleaseListView(RetrievePackageMixin, ListView):
     template_name = 'packages/releases.html'
 
     def get_context_data(self, **kwargs):
-        context = super(
-            PackageReleaseListView,
-            self
-        ).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         context.update({
             'package': self.package,
         })

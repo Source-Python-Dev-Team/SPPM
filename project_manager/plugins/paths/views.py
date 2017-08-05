@@ -29,14 +29,14 @@ class SubPluginPathListView(RetrievePluginMixin, ListView):
     template_name = 'plugins/paths/list.html'
 
     def get_context_data(self, **kwargs):
-        context = super(SubPluginPathListView, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         context.update({
             'plugin': self.plugin,
         })
         return context
 
     def get_queryset(self):
-        return super(SubPluginPathListView, self).get_queryset().filter(
+        return super().get_queryset().filter(
             plugin=self.plugin,
         )
 
@@ -47,7 +47,7 @@ class SubPluginPathCreateView(RetrievePluginMixin, CreateView):
     template_name = 'plugins/paths/create.html'
 
     def get_initial(self):
-        initial = super(SubPluginPathCreateView, self).get_initial()
+        initial = super().get_initial()
         initial.update({
             'plugin': self.plugin,
         })
@@ -61,7 +61,7 @@ class SubPluginPathEditView(RetrievePluginMixin, UpdateView):
     pk_url_kwarg = 'path_pk'
 
     def get_context_data(self, **kwargs):
-        context = super(SubPluginPathEditView, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         context.update({
             'plugin': self.plugin,
         })

@@ -35,7 +35,7 @@ class _PageObject(object):
 # =============================================================================
 class OrderableListView(OrderableListMixin, ListView):
     def get_context_data(self, **kwargs):
-        context = super(OrderableListView, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         default = self.get_orderable_columns_default()
         orderable_columns = sorted(self.get_orderable_columns())
         order_by = context['order_by']
@@ -76,7 +76,7 @@ class PaginatedListView(ListView):
         return self.previous_pages
 
     def get_context_data(self, **kwargs):
-        context = super(PaginatedListView, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         paginator = context['paginator']
         page = context['page_obj']
         total_pages = paginator.num_pages
@@ -138,8 +138,7 @@ class PaginatedListView(ListView):
 
 class OrderablePaginatedListView(OrderableListView, PaginatedListView):
     def get_context_data(self, **kwargs):
-        context = super(
-            OrderablePaginatedListView, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         order_url = context['order_url']
         if order_url:
             for item in context['page_url_list']:

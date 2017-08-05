@@ -26,7 +26,7 @@ class StatisticsView(TemplateView):
     template_name = 'statistics.html'
 
     def get_context_data(self, **kwargs):
-        context = super(StatisticsView, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         package_downloads = sum(
             PackageRelease.objects.all().values_list(
                 'download_count',

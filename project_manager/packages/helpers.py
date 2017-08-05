@@ -83,9 +83,8 @@ def get_package_basename(zip_file):
 
 def handle_package_zip_upload(instance, filename):
     """Return the path to store the zip for the current release."""
-    slug = instance.package.slug,
-    version = instance.version,
-    return f'{PACKAGE_RELEASE_URL}{slug}/{slug}-v{version}.zip'
+    slug = instance.package.slug
+    return f'{PACKAGE_RELEASE_URL}{slug}/{slug}-v{instance.version}.zip'
 
 
 def handle_package_logo_upload(instance, filename):
@@ -96,7 +95,10 @@ def handle_package_logo_upload(instance, filename):
 
 def handle_package_image_upload(instance, filename):
     """Return the path to store the image."""
-    slug = instance.package.slug,
-    image_number = find_image_number('packages', instance.package.slug),
+    slug = instance.package.slug
+    image_number = find_image_number(
+        directory='packages',
+        slug=slug,
+    )
     extension = filename.rsplit('.', 1)[1],
     return f'{PACKAGE_IMAGE_URL}{slug}/{image_number}.{extension}'

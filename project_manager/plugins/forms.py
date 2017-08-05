@@ -78,7 +78,7 @@ class PluginCreateForm(SubmitButtonMixin):
         }
 
     def __init__(self, *args, **kwargs):
-        super(PluginCreateForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         old_fields = self.fields
         self.fields = {
             x: old_fields.pop(x) for x in [
@@ -89,7 +89,7 @@ class PluginCreateForm(SubmitButtonMixin):
         self.fields.update(old_fields)
 
     def save(self, commit=True):
-        instance = super(PluginCreateForm, self).save(commit)
+        instance = super().save(commit)
         PluginRelease.objects.create(
             plugin=instance,
             version=self.cleaned_data['version'],
@@ -171,7 +171,7 @@ class PluginUpdateForm(SubmitButtonMixin):
         }
 
     def save(self, commit=True):
-        instance = super(PluginUpdateForm, self).save(commit)
+        instance = super().save(commit)
         PluginRelease.objects.create(
             plugin=instance,
             version=self.cleaned_data['version'],

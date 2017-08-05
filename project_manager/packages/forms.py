@@ -78,7 +78,7 @@ class PackageCreateForm(SubmitButtonMixin):
         }
 
     def __init__(self, *args, **kwargs):
-        super(PackageCreateForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         old_fields = self.fields
         self.fields = {
             x: old_fields.pop(x) for x in [
@@ -89,7 +89,7 @@ class PackageCreateForm(SubmitButtonMixin):
         self.fields.update(old_fields)
 
     def save(self, commit=True):
-        instance = super(PackageCreateForm, self).save(commit)
+        instance = super().save(commit)
         PackageRelease.objects.create(
             package=instance,
             version=self.cleaned_data['version'],
@@ -171,7 +171,7 @@ class PackageUpdateForm(SubmitButtonMixin):
         }
 
     def save(self, commit=True):
-        instance = super(PackageUpdateForm, self).save(commit)
+        instance = super().save(commit)
         PackageRelease.objects.create(
             package=instance,
             version=self.cleaned_data['version'],

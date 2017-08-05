@@ -93,7 +93,7 @@ class DownloadMixin(View):
     def dispatch(self, request, *args, **kwargs):
         if not self.full_path.isfile():
             raise Http404
-        return super(DownloadMixin, self).dispatch(request, *args, **kwargs)
+        return super().dispatch(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):
         zip_file = kwargs['zip_file']
@@ -133,7 +133,7 @@ class RequirementsParserMixin(ModelFormMixin, View):
         )
 
     def form_valid(self, form):
-        response = super(RequirementsParserMixin, self).form_valid(form)
+        response = super().form_valid(form)
         zip_file = ZipFile(form.cleaned_data['zip_file'])
         instance = form.instance
         requirements = get_requirements(
@@ -172,7 +172,7 @@ class RequirementsParserMixin(ModelFormMixin, View):
 
 class SubmitButtonMixin(forms.ModelForm):
     def __init__(self, *args, **kwargs):
-        super(SubmitButtonMixin, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.helper = FormHelper()
         submit = Submit('submit', 'Submit')
         submit.field_classes = 'btn btn-submit'

@@ -38,13 +38,10 @@ class Game(models.Model):
         """Return the object's name when str cast."""
         return self.name
 
-    def save(
-            self, force_insert=False, force_update=False,
-            using=None, update_fields=None):
+    def save(self, *args, **kwargs):
         """Store the slug."""
         self.slug = slugify(self.basename)
-        super(Game, self).save(
-            force_insert, force_update, using, update_fields)
+        super().save(*args, **kwargs)
 
     def get_absolute_url(self):
         return reverse(

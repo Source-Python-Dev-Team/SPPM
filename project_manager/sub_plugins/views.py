@@ -54,12 +54,12 @@ class SubPluginListView(
     template_name = 'sub_plugins/list.html'
 
     def get_queryset(self):
-        return super(SubPluginListView, self).get_queryset().filter(
+        return super().get_queryset().filter(
             plugin=self.plugin,
         ).select_related('plugin')
 
     def get_context_data(self, **kwargs):
-        context = super(SubPluginListView, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         context.update({
             'plugin': self.plugin,
             'paths': self.plugin.paths.all(),
@@ -86,7 +86,7 @@ class SubPluginCreateView(
         )
 
     def get_context_data(self, **kwargs):
-        context = super(SubPluginCreateView, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         context.update({
             'plugin': self.plugin,
             'paths': self.plugin.paths.all()
@@ -94,7 +94,7 @@ class SubPluginCreateView(
         return context
 
     def get_initial(self):
-        initial = super(SubPluginCreateView, self).get_initial()
+        initial = super().get_initial()
         initial.update({
             'plugin': self.plugin,
         })
@@ -108,14 +108,14 @@ class SubPluginEditView(UpdateView):
     slug_url_kwarg = 'sub_plugin_slug'
 
     def get_initial(self):
-        initial = super(SubPluginEditView, self).get_initial()
+        initial = super().get_initial()
         initial.update({
             'logo': '',
         })
         return initial
 
     def get_context_data(self, **kwargs):
-        context = super(SubPluginEditView, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         context.update({
             'sub_plugin': context['subplugin']
         })
@@ -147,7 +147,7 @@ class SubPluginUpdateView(
         )
 
     def get_context_data(self, **kwargs):
-        context = super(SubPluginUpdateView, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         sub_plugin = context['subplugin']
         context.update({
             'plugin': self.plugin,
@@ -158,7 +158,7 @@ class SubPluginUpdateView(
         return context
 
     def get_initial(self):
-        initial = super(SubPluginUpdateView, self).get_initial()
+        initial = super().get_initial()
         initial.update({
             'plugin': self.plugin,
             'version': '',
@@ -175,10 +175,7 @@ class SubPluginSelectGamesView(UpdateView):
     slug_url_kwarg = 'sub_plugin_slug'
 
     def get_context_data(self, **kwargs):
-        context = super(
-            SubPluginSelectGamesView,
-            self
-        ).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         context.update({
             'sub_plugin': context['subplugin']
         })
@@ -197,7 +194,7 @@ class SubPluginView(RetrieveSubPluginMixin, DetailView):
         ).select_related('plugin')
 
     def get_context_data(self, **kwargs):
-        context = super(SubPluginView, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         sub_plugin = context['subplugin']
         context.update({
             'sub_plugin': sub_plugin,
@@ -225,10 +222,7 @@ class SubPluginReleaseListView(RetrieveSubPluginMixin, ListView):
     template_name = 'sub_plugins/releases.html'
 
     def get_context_data(self, **kwargs):
-        context = super(
-            SubPluginReleaseListView,
-            self
-        ).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         context.update({
             'sub_plugin': self.sub_plugin,
         })

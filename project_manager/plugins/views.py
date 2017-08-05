@@ -63,7 +63,7 @@ class PluginEditView(UpdateView):
     template_name = 'plugins/edit.html'
 
     def get_initial(self):
-        initial = super(PluginEditView, self).get_initial()
+        initial = super().get_initial()
         initial.update({
             'logo': '',
         })
@@ -82,7 +82,7 @@ class PluginUpdateView(
         return f'{PLUGIN_PATH}{form.instance.basename}/requirements.ini'
 
     def get_context_data(self, **kwargs):
-        context = super(PluginUpdateView, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         context.update({
             'plugin': self.plugin,
             'current_version': self.plugin.current_version,
@@ -90,7 +90,7 @@ class PluginUpdateView(
         return context
 
     def get_initial(self):
-        initial = super(PluginUpdateView, self).get_initial()
+        initial = super().get_initial()
         initial.update({
             'version': '',
             'version_notes': '',
@@ -110,7 +110,7 @@ class PluginView(DetailView):
     template_name = 'plugins/view.html'
 
     def get_context_data(self, **kwargs):
-        context = super(PluginView, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         context.update({
             'current_version': self.object.current_version,
             'contributors': self.object.contributors.all(),
@@ -134,7 +134,7 @@ class PluginReleaseListView(RetrievePluginMixin, ListView):
     template_name = 'plugins/releases.html'
 
     def get_context_data(self, **kwargs):
-        context = super(PluginReleaseListView, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         context.update({
             'plugin': self.plugin,
         })

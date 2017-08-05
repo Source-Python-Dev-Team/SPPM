@@ -34,7 +34,7 @@ class SubPluginAddContributorView(RetrieveSubPluginMixin, FilterView):
     filterset_class = ForumUserFilterSet
 
     def get(self, request, *args, **kwargs):
-        value = super(SubPluginAddContributorView, self).get(
+        value = super().get(
             request, *args, **kwargs
         )
         user = value.context_data['user']
@@ -52,10 +52,7 @@ class SubPluginAddContributorView(RetrieveSubPluginMixin, FilterView):
         return value
 
     def get_context_data(self, **kwargs):
-        context = super(
-            SubPluginAddContributorView,
-            self
-        ).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         message = ''
         user = None
         if 'username' in self.request.GET:
@@ -84,18 +81,14 @@ class SubPluginAddContributorConfirmationView(RetrieveSubPluginMixin, FormView):
     template_name = 'sub_plugins/contributors/add_confirmation.html'
 
     def get_initial(self):
-        initial = super(
-            SubPluginAddContributorConfirmationView, self).get_initial()
+        initial = super().get_initial()
         initial.update({
             'id': self.kwargs['id']
         })
         return initial
 
     def get_context_data(self, **kwargs):
-        context = super(
-            SubPluginAddContributorConfirmationView,
-            self
-        ).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         user = ForumUser.objects.get(id=self.kwargs['id'])
         message = None
         if self.sub_plugin.owner == user:

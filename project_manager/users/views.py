@@ -40,7 +40,7 @@ class UserView(DetailView):
     template_name = 'users/view.html'
 
     def get_context_data(self, **kwargs):
-        context = super(UserView, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         context.update({
             'plugins': self.object.plugins.all(),
             'sub_plugins': (
@@ -61,7 +61,7 @@ class UserView(DetailView):
 
     def get_object(self, queryset=None):
         try:
-            forum_user = super(UserView, self).get_object(queryset)
+            forum_user = super().get_object(queryset)
         except Http404:
 
             # TODO: Get user from forum

@@ -31,7 +31,7 @@ class GameView(DetailView):
     template_name = 'games/view.html'
 
     def get_context_data(self, **kwargs):
-        context = super(GameView, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         context.update({
             'plugins': get_groups(self.object.plugins.all()),
             'packages': get_groups(self.object.packages.all()),

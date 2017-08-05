@@ -63,20 +63,20 @@ def get_sub_plugin_basename(zip_file, plugin):
 
 def handle_sub_plugin_zip_upload(instance, filename):
     """Return the path to store the zip for the current release."""
-    plugin_slug = instance.sub_plugin.plugin.slug
     slug = instance.sub_plugin.slug
-    version = instance.version
     return (
-        f'{SUB_PLUGIN_RELEASE_URL}{plugin_slug}/{slug}/{slug}-v{version}.zip'
+        f'{SUB_PLUGIN_RELEASE_URL}{instance.sub_plugin.plugin.slug}/{slug}/'
+        f'{slug}-v{instance.version}.zip'
     )
 
 
 def handle_sub_plugin_logo_upload(instance, filename):
     """Return the path to store the sub-plugin's logo."""
-    plugin_slug = instance.plugin.slug,
-    slug = instance.slug,
-    extension = filename.rsplit('.', 1)[1],
-    return f'{SUB_PLUGIN_LOGO_URL}{plugin_slug}/{slug}.{extension}'
+    extension = filename.rsplit('.', 1)[1]
+    return (
+        f'{SUB_PLUGIN_LOGO_URL}{instance.plugin.slug}/'
+        f'{instance.slug}.{extension}'
+    )
 
 
 def handle_sub_plugin_image_upload(instance, filename):
@@ -84,8 +84,8 @@ def handle_sub_plugin_image_upload(instance, filename):
     plugin_slug = instance.sub_plugin.plugin.slug
     slug = instance.sub_plugin.slug
     image_number = find_image_number(
-        f'sub_plugins/{plugin_slug}',
-        instance.sub_plugin.slug,
+        directory=f'sub_plugins/{plugin_slug}',
+        slug=slug,
     )
     extension = filename.rsplit('.', 1)[1]
     return (
