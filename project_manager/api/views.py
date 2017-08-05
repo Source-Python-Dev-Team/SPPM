@@ -20,24 +20,31 @@ class ProjectManagerAPIView(APIView):
             (
                 'packages',
                 reverse(
-                    viewname='api:packages:packages-list',
+                    viewname='api:packages:endpoints',
                     request=request,
                 )
             ),
             (
                 'plugins',
                 reverse(
-                    viewname='api:plugins:plugins-list',
+                    viewname='api:plugins:endpoints',
                     request=request,
                 )
             ),
             (
                 'sub-plugins',
                 reverse(
-                    viewname='api:sub-plugins:sub-plugins-list',
+                    viewname='api:sub-plugins:endpoints',
                     request=request,
                 )
-            )
+            ),
+            (
+                'users',
+                reverse(
+                    viewname='api:users:users-list',
+                    request=request,
+                )
+            ),
         ])
 
         return Response(data)

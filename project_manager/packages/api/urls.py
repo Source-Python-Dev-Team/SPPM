@@ -2,13 +2,13 @@
 # >> IMPORTS
 # =============================================================================
 # Django
-from django.conf.urls import include, url
+from django.conf.urls import url
 
 # 3rd-Party Django
 from rest_framework import routers
 
 # App
-from .views import PackageViewSet
+from .views import PackageAPIView, PackageViewSet
 
 
 # =============================================================================
@@ -16,9 +16,9 @@ from .views import PackageViewSet
 # =============================================================================
 router = routers.SimpleRouter()
 router.register(
-    prefix=r'',
+    prefix=r'projects',
     viewset=PackageViewSet,
-    base_name='packages'
+    base_name='projects'
 )
 
 
@@ -27,7 +27,10 @@ router.register(
 # =============================================================================
 urlpatterns = [
     url(
-        regex=r'^',
-        view=include(router.urls),
+        regex=r'^$',
+        view=PackageAPIView.as_view(),
+        name='endpoints',
     )
 ]
+
+urlpatterns += router.urls

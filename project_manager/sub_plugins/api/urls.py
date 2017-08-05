@@ -8,17 +8,22 @@ from django.conf.urls import include, url
 from rest_framework import routers
 
 # App
-from .views import SubPluginViewSet
+from .views import SubPluginAPIView, SubPluginViewSet
 
 
 # =============================================================================
 # >> ROUTERS
 # =============================================================================
 router = routers.SimpleRouter()
+# router.register(
+#     prefix=r'^(?P<plugin_slug>[\w-]+)',
+#     viewset=SubPluginViewSet,
+#     base_name='sub-plugins'
+# )
 router.register(
-    prefix=r'^(?P<plugin_slug>[\w-]+)',
+    prefix=r'^projects/(?P<plugin_slug>[\w-]+)',
     viewset=SubPluginViewSet,
-    base_name='sub-plugins'
+    base_name='projects'
 )
 
 
@@ -27,7 +32,10 @@ router.register(
 # =============================================================================
 urlpatterns = [
     url(
-        regex=r'^',
-        view=include(router.urls),
+        regex=r'^$',
+        view=SubPluginAPIView.as_view(),
+        name='endpoints',
     )
 ]
+
+urlpatterns += router.urls
