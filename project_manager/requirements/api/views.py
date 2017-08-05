@@ -7,6 +7,9 @@ from django.db.models import Prefetch
 # 3rd-Party Django
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import OrderingFilter
+from rest_framework.response import Response
+from rest_framework.reverse import reverse
+from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 
 # App
@@ -55,6 +58,28 @@ project_prefetch = (
 # =============================================================================
 # >> VIEWS
 # =============================================================================
+class RequirementAPIView(APIView):
+    http_method_names = ('get', 'options')
+
+    def get(self, request):
+        return Response(
+            data={
+                'download': reverse(
+                    viewname='api:requirements:download-list',
+                    request=request,
+                ),
+                'pypi': reverse(
+                    viewname='api:requirements:pypi-list',
+                    request=request,
+                ),
+                'vcs': reverse(
+                    viewname='api:requirements:vcs-list',
+                    request=request,
+                ),
+            }
+        )
+
+
 class DownloadRequirementViewSet(ModelViewSet):
     filter_backends = (OrderingFilter, DjangoFilterBackend)
     ordering = ('name',)

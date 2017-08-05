@@ -2,7 +2,7 @@
 # >> IMPORTS
 # =============================================================================
 # Django
-from django.conf.urls import include, url
+from django.conf.urls import url
 
 # 3rd-Party Django
 from rest_framework import routers
@@ -11,6 +11,7 @@ from rest_framework import routers
 from .views import (
     DownloadRequirementViewSet,
     PyPiRequirementViewSet,
+    RequirementAPIView,
     VersionControlRequirementViewSet,
 )
 
@@ -41,7 +42,10 @@ router.register(
 # =============================================================================
 urlpatterns = [
     url(
-        regex=r'^',
-        view=include(router.urls),
+        regex=r'^$',
+        view=RequirementAPIView.as_view(),
+        name='endpoints',
     )
 ]
+
+urlpatterns += router.urls
