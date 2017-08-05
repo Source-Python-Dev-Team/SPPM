@@ -35,21 +35,6 @@ class PackageImageSerializer(ModelSerializer):
         )
 
 
-class PackageSerializer(ProjectSerializer):
-    reverse_path = 'package'
-
-    images = PackageImageSerializer(
-        many=True,
-        read_only=True,
-    )
-
-    class Meta(ProjectSerializer.Meta):
-        model = Package
-        fields = ProjectSerializer.Meta.fields + (
-            'images',
-        )
-
-
 class PackageReleaseSerializer(ModelSerializer):
     notes = CharField(max_length=512, allow_blank=True)
     version = CharField(max_length=8, allow_blank=True)
@@ -100,12 +85,29 @@ class PackageReleaseSerializer(ModelSerializer):
         return attrs
 
 
-class PackageCreateSerializer(PackageSerializer):
+class PackageSerializer(ProjectSerializer):
+    images = PackageImageSerializer(
+        many=True,
+        read_only=True,
+    )
     releases = PackageReleaseSerializer(write_only=True)
+    reverse_path = 'package'
 
-    class Meta(PackageSerializer.Meta):
-        fields = PackageSerializer.Meta.fields + ('releases',)
-        read_only_fields = PackageSerializer.Meta.read_only_fields
+    class Meta(ProjectSerializer.Meta):
+        model = Package
+        fields = ProjectSerializer.Meta.fields + (
+            'images',
+            'releases',
+        )
+
+    def get_extra_kwargs(self):
+        extra_kwargs = super().get_extra_kwargs()
+        action = self.context['view'].action
+        if action == 'update':
+            name_kwargs = extra_kwargs.get('name', {})
+            name_kwargs['read_only'] = True
+            extra_kwargs['name'] = name_kwargs
+        return extra_kwargs
 
     def validate(self, attrs):
         release_dict = attrs.get('releases', {})
@@ -132,14 +134,6 @@ class PackageCreateSerializer(PackageSerializer):
             zip_file=zip_file,
         )
         return instance
-
-
-class PackageUpdateSerializer(PackageCreateSerializer):
-
-    class Meta(PackageCreateSerializer.Meta):
-        read_only_fields = PackageCreateSerializer.Meta.read_only_fields + (
-            'name',
-        )
 
     def update(self, instance, validated_data):
         release_dict = validated_data.pop('releases', {})

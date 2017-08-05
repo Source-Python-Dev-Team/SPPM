@@ -11,11 +11,7 @@ from rest_framework.viewsets import ModelViewSet
 
 # App
 from .filters import PackageFilter
-from .serializers import (
-    PackageSerializer,
-    PackageCreateSerializer,
-    PackageUpdateSerializer,
-)
+from .serializers import PackageSerializer
 from ..models import Package, PackageImage, PackageRelease
 from project_manager.common.api.helpers import get_prefetch
 
@@ -51,12 +47,3 @@ class PackageViewSet(ModelViewSet):
         'owner',
     )
     serializer_class = PackageSerializer
-
-    def get_serializer_class(self):
-        if self.action == 'update':
-            return PackageUpdateSerializer
-        if self.action == 'create':
-            return PackageCreateSerializer
-        if self.action == 'list':
-            return self.serializer_class
-        return self.serializer_class

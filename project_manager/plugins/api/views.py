@@ -11,11 +11,7 @@ from rest_framework.viewsets import ModelViewSet
 
 # App
 from .filters import PluginFilter
-from .serializers import (
-    PluginSerializer,
-    PluginCreateSerializer,
-    PluginUpdateSerializer,
-)
+from .serializers import PluginSerializer
 from ..models import Plugin, PluginImage, PluginRelease
 from project_manager.common.api.helpers import get_prefetch
 
@@ -52,11 +48,11 @@ class PluginViewSet(ModelViewSet):
     )
     serializer_class = PluginSerializer
 
-    def get_serializer_class(self):
-        if self.action == 'update':
-            return PluginUpdateSerializer
-        if self.action == 'create':
-            return PluginCreateSerializer
-        if self.action == 'list':
-            return self.serializer_class
-        return self.serializer_class
+    # def get_serializer_class(self):
+    #     if self.action == 'update':
+    #         return PluginUpdateSerializer
+    #     if self.action == 'create':
+    #         return PluginCreateSerializer
+    #     if self.action == 'list':
+    #         return self.serializer_class
+    #     return self.serializer_class

@@ -35,29 +35,6 @@ class SubPluginImageSerializer(ModelSerializer):
         )
 
 
-class SubPluginSerializer(ProjectSerializer):
-    reverse_path = 'sub-plugin'
-
-    images = SubPluginImageSerializer(
-        many=True,
-        read_only=True,
-    )
-
-    class Meta(ProjectSerializer.Meta):
-        model = SubPlugin
-        fields = ProjectSerializer.Meta.fields + (
-            'images',
-        )
-
-    @staticmethod
-    def get_download_kwargs(obj, release):
-        return {
-            'slug': obj.plugin.slug,
-            'sub_plugin_slug': obj.slug,
-            'zip_file': release.file_name,
-        }
-
-
 class SubPluginReleaseSerializer(ModelSerializer):
     notes = CharField(max_length=512, allow_blank=True)
     version = CharField(max_length=8, allow_blank=True)
@@ -108,12 +85,37 @@ class SubPluginReleaseSerializer(ModelSerializer):
         return attrs
 
 
-class SubPluginCreateSerializer(SubPluginSerializer):
+class SubPluginSerializer(ProjectSerializer):
+    images = SubPluginImageSerializer(
+        many=True,
+        read_only=True,
+    )
     releases = SubPluginReleaseSerializer(write_only=True)
+    reverse_path = 'sub-plugin'
 
-    class Meta(SubPluginSerializer.Meta):
-        fields = SubPluginSerializer.Meta.fields + ('releases',)
-        read_only_fields = SubPluginSerializer.Meta.read_only_fields
+    class Meta(ProjectSerializer.Meta):
+        model = SubPlugin
+        fields = ProjectSerializer.Meta.fields + (
+            'images',
+            'releases',
+        )
+
+    @staticmethod
+    def get_download_kwargs(obj, release):
+        return {
+            'slug': obj.plugin.slug,
+            'sub_plugin_slug': obj.slug,
+            'zip_file': release.file_name,
+        }
+
+    def get_extra_kwargs(self):
+        extra_kwargs = super().get_extra_kwargs()
+        action = self.context['view'].action
+        if action == 'update':
+            name_kwargs = extra_kwargs.get('name', {})
+            name_kwargs['read_only'] = True
+            extra_kwargs['name'] = name_kwargs
+        return extra_kwargs
 
     def validate(self, attrs):
         release_dict = attrs.get('releases', {})
@@ -140,14 +142,6 @@ class SubPluginCreateSerializer(SubPluginSerializer):
             zip_file=zip_file,
         )
         return instance
-
-
-class SubPluginUpdateSerializer(SubPluginCreateSerializer):
-
-    class Meta(SubPluginCreateSerializer.Meta):
-        read_only_fields = SubPluginCreateSerializer.Meta.read_only_fields + (
-            'name',
-        )
 
     def update(self, instance, validated_data):
         release_dict = validated_data.pop('releases', {})

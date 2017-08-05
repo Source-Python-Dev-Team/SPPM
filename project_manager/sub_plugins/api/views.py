@@ -12,11 +12,7 @@ from rest_framework.viewsets import ModelViewSet
 
 # App
 from .filters import PluginFilter
-from .serializers import (
-    SubPluginSerializer,
-    SubPluginCreateSerializer,
-    SubPluginUpdateSerializer,
-)
+from .serializers import SubPluginSerializer
 from ..models import SubPlugin, SubPluginImage, SubPluginRelease
 from project_manager.common.api.helpers import get_prefetch
 from project_manager.plugins.models import Plugin
@@ -57,18 +53,7 @@ class SubPluginViewSet(ModelViewSet):
     lookup_field = 'slug'
     plugin = None
 
-    def get_serializer_class(self):
-        if self.action == 'update':
-            return SubPluginUpdateSerializer
-        if self.action == 'create':
-            return SubPluginCreateSerializer
-        if self.action == 'list':
-            return self.serializer_class
-        return self.serializer_class
-
     def get_queryset(self):
-        print(self.args)
-        print(self.kwargs)
         queryset = super().get_queryset()
         if self.plugin is not None:
             return queryset.filter(plugin=self.plugin)
