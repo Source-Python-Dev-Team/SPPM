@@ -1,10 +1,6 @@
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
-# Python
-from collections import OrderedDict
-from zipfile import ZipFile
-
 # Django
 from django import forms
 from django.core.exceptions import ValidationError
@@ -84,10 +80,12 @@ class PluginCreateForm(SubmitButtonMixin):
     def __init__(self, *args, **kwargs):
         super(PluginCreateForm, self).__init__(*args, **kwargs)
         old_fields = self.fields
-        self.fields = OrderedDict([x, old_fields.pop(x)] for x in [
-            'name', 'version', 'version_notes', 'zip_file', 'synopsis',
-            'description', 'configuration', 'logo',
-        ])
+        self.fields = {
+            x: old_fields.pop(x) for x in [
+                'name', 'version', 'version_notes', 'zip_file', 'synopsis',
+                'description', 'configuration', 'logo',
+            ]
+        }
         self.fields.update(old_fields)
 
     def save(self, commit=True):

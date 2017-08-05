@@ -1,17 +1,12 @@
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
-# Python
-from collections import OrderedDict
-from zipfile import ZipFile
-
 # Django
 from django import forms
 from django.core.exceptions import ValidationError
 
 # App
 from project_manager.common.mixins import SubmitButtonMixin
-from .constants import PACKAGE_PATH
 from .helpers import get_package_basename
 from .models import Package, PackageRelease
 
@@ -85,10 +80,12 @@ class PackageCreateForm(SubmitButtonMixin):
     def __init__(self, *args, **kwargs):
         super(PackageCreateForm, self).__init__(*args, **kwargs)
         old_fields = self.fields
-        self.fields = OrderedDict([x, old_fields.pop(x)] for x in [
-            'name', 'version', 'version_notes', 'zip_file', 'synopsis',
-            'description', 'configuration', 'logo',
-        ])
+        self.fields = {
+            x: old_fields.pop(x) for x in [
+                'name', 'version', 'version_notes', 'zip_file', 'synopsis',
+                'description', 'configuration', 'logo',
+            ]
+        }
         self.fields.update(old_fields)
 
     def save(self, commit=True):
@@ -103,17 +100,15 @@ class PackageCreateForm(SubmitButtonMixin):
 
     def clean_zip_file(self):
         """Verify the zip file contents."""
-        file_list = [x for x in ZipFile(
-            self.cleaned_data['zip_file']).namelist() if not x.endswith('/')]
-        basename = get_package_basename(file_list)
-        current = Package.objects.filter(basename=basename)
-        if current:
+        zip_file = self.cleaned_data['zip_file']
+        basename = get_package_basename(zip_file)
+        if Package.objects.filter(basename=basename).exists():
             raise ValidationError(
                 f'Package {basename} is already registered.',
                 code='duplicate',
             )
         self.instance.basename = basename
-        return self.cleaned_data['zip_file']
+        return zip_file
 
 
 class PackageEditForm(SubmitButtonMixin):
@@ -200,20 +195,11 @@ class PackageUpdateForm(SubmitButtonMixin):
 
     def clean_zip_file(self):
         """Verify the zip file contents."""
-        file_list = [x for x in ZipFile(
-            self.cleaned_data['zip_file']).namelist() if not x.endswith('/')]
-        basename, is_module = get_package_basename(file_list)
-        if (
-            not is_module and
-            f'{PACKAGE_PATH}{basename}/{basename}.py' in file_list
-        ):
-            raise ValidationError(
-                'No primary file found in zip.',
-                code='not-found',
-            )
+        zip_file = self.cleaned_data['zip_file']
+        basename, is_module = get_package_basename(zip_file)
         if basename != self.instance.basename:
             raise ValidationError(
                 'Uploaded package does not match current package.',
                 code='mismatch',
             )
-        return self.cleaned_data['zip_file']
+        return zip_file

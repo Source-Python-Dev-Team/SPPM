@@ -2,7 +2,7 @@
 # >> IMPORTS
 # =============================================================================
 # Django
-from django.conf.urls import include, url
+from django.conf.urls import url
 
 # 3rd-Party Django
 from rest_framework import routers
@@ -15,11 +15,6 @@ from .views import SubPluginAPIView, SubPluginViewSet
 # >> ROUTERS
 # =============================================================================
 router = routers.SimpleRouter()
-# router.register(
-#     prefix=r'^(?P<plugin_slug>[\w-]+)',
-#     viewset=SubPluginViewSet,
-#     base_name='sub-plugins'
-# )
 router.register(
     prefix=r'^projects/(?P<plugin_slug>[\w-]+)',
     viewset=SubPluginViewSet,

@@ -31,6 +31,7 @@ __all__ = (
 # =============================================================================
 def get_package_basename(zip_file):
     """Return the package's basename."""
+    # TODO: add module/package validation
     try:
         file_list = [
             x for x in ZipFile(zip_file).namelist() if not x.endswith('/')

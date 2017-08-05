@@ -1,10 +1,6 @@
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
-# Python
-from collections import OrderedDict
-from zipfile import ZipFile
-
 # Django
 from django import forms
 from django.core.exceptions import ValidationError
@@ -13,7 +9,6 @@ from django.core.exceptions import ValidationError
 from project_manager.common.mixins import SubmitButtonMixin
 from .helpers import get_sub_plugin_basename
 from .models import SubPlugin, SubPluginRelease
-from project_manager.plugins.constants import PLUGIN_PATH
 
 
 # =============================================================================
@@ -87,10 +82,12 @@ class SubPluginCreateForm(SubmitButtonMixin):
     def __init__(self, *args, **kwargs):
         super(SubPluginCreateForm, self).__init__(*args, **kwargs)
         old_fields = self.fields
-        self.fields = OrderedDict([x, old_fields.pop(x)] for x in [
-            'name', 'version', 'version_notes', 'zip_file', 'synopsis',
-            'description', 'configuration', 'logo',
-        ])
+        self.fields = {
+            x: old_fields.pop(x) for x in [
+                'name', 'version', 'version_notes', 'zip_file', 'synopsis',
+                'description', 'configuration', 'logo',
+            ]
+        }
         self.fields.update(old_fields)
 
     def save(self, commit=True):
@@ -105,18 +102,9 @@ class SubPluginCreateForm(SubmitButtonMixin):
 
     def clean_zip_file(self):
         """Verify the zip file contents."""
-        file_list = [x for x in ZipFile(
-            self.cleaned_data['zip_file']).namelist() if not x.endswith('/')]
+        zip_file = self.cleaned_data['zip_file']
         plugin = self.initial['plugin']
-        basename, path = get_sub_plugin_basename(file_list, plugin)
-        if (
-            f'{PLUGIN_PATH}{plugin.basename}/{path}/{basename}/'
-        ) not in file_list:
-            raise ValidationError(
-                'No primary file found in zip.  ' +
-                'Perhaps you are attempting to upload a sub-plugin.',
-                code='not-found',
-            )
+        basename, path = get_sub_plugin_basename(zip_file, plugin)
         current = SubPlugin.objects.filter(plugin=plugin, basename=basename)
         if current:
             raise ValidationError(
@@ -126,7 +114,7 @@ class SubPluginCreateForm(SubmitButtonMixin):
             )
         self.instance.basename = basename
         self.cleaned_data['path'] = path
-        return self.cleaned_data['zip_file']
+        return zip_file
 
 
 class SubPluginEditForm(SubmitButtonMixin):
@@ -213,22 +201,13 @@ class SubPluginUpdateForm(SubmitButtonMixin):
 
     def clean_zip_file(self):
         """Verify the zip file contents."""
-        file_list = [x for x in ZipFile(
-            self.cleaned_data['zip_file']).namelist() if not x.endswith('/')]
+        zip_file = self.cleaned_data['zip_file']
         plugin = self.instance.plugin
-        basename, path = get_sub_plugin_basename(file_list, plugin)
-        if not (
-            f'{PLUGIN_PATH}{plugin.basename}/{path}/{basename}/{basename}.py'
-        ) in file_list:
-            raise ValidationError(
-                'No primary file found in zip.  ' +
-                'Perhaps you are attempting to upload a sub-plugin.',
-                code='not-found',
-            )
+        basename, path = get_sub_plugin_basename(zip_file, plugin)
         if basename != self.instance.basename:
             raise ValidationError(
                 'Uploaded sub-plugin does not match current sub-plugin.',
                 code='mismatch',
             )
         self.cleaned_data['path'] = path
-        return self.cleaned_data['zip_file']
+        return zip_file

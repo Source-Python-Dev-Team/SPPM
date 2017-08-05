@@ -32,6 +32,7 @@ __all__ = (
 # =============================================================================
 def get_sub_plugin_basename(zip_file, plugin):
     """Return the sub-plugin's basename."""
+    # TODO: add 'path' validation
     try:
         file_list = [
             x for x in ZipFile(zip_file).namelist() if not x.endswith('/')
