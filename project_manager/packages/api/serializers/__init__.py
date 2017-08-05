@@ -23,7 +23,6 @@ from project_manager.packages.models import (
 # TODO: APIs
 # TODO:     contributors
 # TODO:     images
-# TODO:     paths
 # TODO:     supported_games
 # TODO:     tags
 class PackageImageSerializer(ModelSerializer):
@@ -48,7 +47,9 @@ class PackageSerializer(ProjectSerializer):
         many=True,
         read_only=True,
     )
-    releases = PackageReleaseSerializer(write_only=True)
+    releases = PackageReleaseSerializer(
+        write_only=True,
+    )
 
     project_type = 'package'
     release_model = PackageRelease

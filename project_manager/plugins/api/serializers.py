@@ -44,7 +44,9 @@ class PluginSerializer(ProjectSerializer):
         many=True,
         read_only=True,
     )
-    releases = PluginReleaseSerializer(write_only=True)
+    releases = PluginReleaseSerializer(
+        write_only=True,
+    )
 
     project_type = 'plugin'
     release_model = PluginRelease

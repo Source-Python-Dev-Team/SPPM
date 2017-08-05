@@ -27,7 +27,6 @@ from project_manager.sub_plugins.models import (
 # TODO: APIs
 # TODO:     contributors
 # TODO:     images
-# TODO:     paths
 # TODO:     supported_games
 # TODO:     tags
 class SubPluginImageSerializer(ModelSerializer):
@@ -44,7 +43,7 @@ class SubPluginReleaseSerializer(ProjectReleaseSerializer):
     slug_kwarg = 'slug'
     zip_parser = get_sub_plugin_basename
 
-    class Meta:
+    class Meta(ProjectReleaseSerializer.Meta):
         model = SubPluginRelease
 
     @property
@@ -71,7 +70,9 @@ class SubPluginSerializer(ProjectSerializer):
         many=True,
         read_only=True,
     )
-    releases = SubPluginReleaseSerializer(write_only=True)
+    releases = SubPluginReleaseSerializer(
+        write_only=True,
+    )
 
     project_type = 'sub-plugin'
     release_model = SubPluginRelease
