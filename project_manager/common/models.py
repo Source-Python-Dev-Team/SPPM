@@ -8,30 +8,45 @@ from operator import attrgetter
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils.text import slugify
+from django.utils.translation import ugettext_lazy as _
 
 # 3rd-Party Django
-from model_utils.models import TimeStampedModel
+from model_utils.fields import AutoCreatedField
 from PIL import Image
 from precise_bbcode.fields import BBCodeTextField
 
 # App
 from .constants import FORUM_THREAD_URL, LOGO_MAX_HEIGHT, LOGO_MAX_WIDTH
+from .helpers import (
+    handle_image_upload,
+    handle_logo_upload,
+    handle_zip_file_upload,
+)
+from .validators import version_validator
 
 
 # =============================================================================
 # >> ALL DECLARATION
 # =============================================================================
 __all__ = (
-    'CommonBase',
-    'Release',
+    'ImageBase',
+    'ProjectBase',
+    'ReleaseBase',
 )
 
 
 # =============================================================================
 # >> MODELS
 # =============================================================================
-class CommonBase(TimeStampedModel):
+class ProjectBase(models.Model):
     """Base model for upload content."""
+    name = models.CharField(
+        max_length=64,
+        help_text=(
+            "The name of the project. Do not include the version, as that is "
+            "added dynamically to the project's page."
+        ),
+    )
     configuration = BBCodeTextField(
         max_length=1024,
         blank=True,
@@ -57,6 +72,12 @@ class CommonBase(TimeStampedModel):
     download_requirements = models.ManyToManyField(
         to='requirements.DownloadRequirement',
         related_name='required_in_%(class)ss',
+    )
+    logo = models.ImageField(
+        upload_to=handle_logo_upload,
+        blank=True,
+        null=True,
+        help_text="The project's logo image.",
     )
     owner = models.ForeignKey(
         to='users.ForumUser',
@@ -96,6 +117,12 @@ class CommonBase(TimeStampedModel):
         to='requirements.VersionControlRequirement',
         related_name='required_in_%(class)ss',
     )
+    created = AutoCreatedField(
+        verbose_name='created',
+    )
+    modified = AutoCreatedField(
+        verbose_name='modified',
+    )
 
     class Meta:
         abstract = True
@@ -105,16 +132,17 @@ class CommonBase(TimeStampedModel):
         return self.name
 
     @property
-    def logo(self):
+    def handle_logo_upload(self):
         raise NotImplementedError(
-            f'Class "{self.__class__.__name__}" must implement a "logo" field.'
+            f'Class "{self.__class__.__name__}" must implement a '
+            '"handle_logo_upload" attribute.'
         )
 
     @property
     def releases(self):
         raise NotImplementedError(
             f'Class "{self.__class__.__name__}" must implement a '
-            '"releases" field from ForeignKey.'
+            '"releases" field via ForeignKey relationship.'
         )
 
     @property
@@ -125,23 +153,6 @@ class CommonBase(TimeStampedModel):
         ).order_by(
             '-created'
         )[0]
-
-    @property
-    def datetime_created(self):
-        return self.releases.values_list(
-            'created',
-            flat=True
-        ).order_by('created')[0]
-
-    @property
-    def datetime_last_updated(self):
-        release_datetimes = self.releases.values_list(
-            'created',
-            flat=True,
-        ).order_by('-created')
-        if len(release_datetimes) == 1:
-            return None
-        return release_datetimes[0]
 
     @property
     def total_downloads(self):
@@ -160,7 +171,7 @@ class CommonBase(TimeStampedModel):
             errors['logo'] = logo_errors
         if errors:
             raise ValidationError(errors)
-        return super(CommonBase, self).clean()
+        return super().clean()
 
     def clean_logo(self):
         """Verify the logo is within the proper dimensions."""
@@ -176,15 +187,10 @@ class CommonBase(TimeStampedModel):
             )
         return errors
 
-    def save(
-            self, force_insert=False, force_update=False,
-            using=None, update_fields=None):
+    def save(self, *args, **kwargs):
         """Store the slug and release data."""
         self.slug = slugify(self.basename)
-
-        super(CommonBase, self).save(
-            force_insert, force_update, using, update_fields
-        )
+        super().save(*args, **kwargs)
 
     def get_forum_url(self):
         if self.topic is not None:
@@ -192,21 +198,57 @@ class CommonBase(TimeStampedModel):
         return None
 
 
-class Release(TimeStampedModel):
+class ReleaseBase(models.Model):
+    version = models.CharField(
+        max_length=8,
+        validators=[version_validator],
+        help_text='The version for this release of the project.',
+    )
+    notes = BBCodeTextField(
+        max_length=512,
+        blank=True,
+        null=True,
+        help_text='The notes for this particular release of the project.',
+    )
+    zip_file = models.FileField(
+        upload_to=handle_zip_file_upload,
+    )
     download_count = models.PositiveIntegerField(
         default=0,
     )
+    created = AutoCreatedField(_('created'))
 
     class Meta:
         abstract = True
+        verbose_name = 'Release'
+        verbose_name_plural = 'Releases'
 
     @property
     def file_name(self):
         return self.zip_file.name.rsplit('/', 1)[1]
 
     @property
-    def zip_file(self):
+    def handle_zip_file_upload(self):
         raise NotImplementedError(
             f'Class "{self.__class__.__name__}" must implement a '
-            '"zip_file" field.'
+            '"handle_zip_file_upload" attribute.'
+        )
+
+
+class ImageBase(models.Model):
+    image = models.ImageField(
+        upload_to=handle_image_upload,
+    )
+    created = AutoCreatedField(_('created'))
+
+    class Meta:
+        abstract = True
+        verbose_name = 'Image'
+        verbose_name_plural = 'Images'
+
+    @property
+    def handle_image_upload(self):
+        raise NotImplementedError(
+            f'Class "{self.__class__.__name__}" must implement a '
+            '"handle_image_upload" attribute.'
         )

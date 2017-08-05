@@ -60,6 +60,18 @@ def get_requirements(zip_file, requirement_path):
     return ConfigObj(ini)
 
 
+def handle_image_upload(instance, filename):
+    return instance.handle_image_upload(instance, filename)
+
+
+def handle_logo_upload(instance, filename):
+    return instance.handle_logo_upload(instance, filename)
+
+
+def handle_zip_file_upload(instance, filename):
+    return instance.handle_zip_file_upload(instance, filename)
+
+
 def add_package_requirement(package_basename, project):
     from project_manager.packages.models import Package
     try:
