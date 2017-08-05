@@ -51,21 +51,21 @@ class DownloadMixin(View):
     def model(self):
         raise NotImplementedError(
             f'Class {self.__class__.__name__} must implement a '
-            'model attribute.'
+            '"model" attribute.'
         )
 
     @property
     def base_url(self):
         raise NotImplementedError(
             f'Class {self.__class__.__name__} must implement a '
-            'base_url attribute.'
+            '"base_url" attribute.'
         )
 
     @property
     def super_model(self):
         raise NotImplementedError(
             f'Class {self.__class__.__name__} must implement a '
-            'super_model attribute.'
+            '"super_model" attribute.'
         )
 
     @property
@@ -73,7 +73,7 @@ class DownloadMixin(View):
         if self.sub_model is not None:
             raise NotImplementedError(
                 f'Class {self.__class__.__name__} must implement a '
-                'super_kwarg attribute.'
+                '"super_kwarg" attribute.'
             )
         return None
 
@@ -129,7 +129,7 @@ class RequirementsParserMixin(ModelFormMixin, View):
     def get_requirements_path(self, instance):
         raise NotImplementedError(
             f'Class "{self.__class__.__name__}" must implement a '
-            'get_requirements_path method.'
+            '"get_requirements_path" method.'
         )
 
     def form_valid(self, form):

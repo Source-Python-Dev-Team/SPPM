@@ -107,13 +107,13 @@ class CommonBase(TimeStampedModel):
     @property
     def logo(self):
         raise NotImplementedError(
-            f'Class "{self.__class__.__name__}" must implement "logo" field.'
+            f'Class "{self.__class__.__name__}" must implement a "logo" field.'
         )
 
     @property
     def releases(self):
         raise NotImplementedError(
-            f'Class "{self.__class__.__name__}" must implement '
+            f'Class "{self.__class__.__name__}" must implement a '
             '"releases" field from ForeignKey.'
         )
 
@@ -207,6 +207,6 @@ class Release(TimeStampedModel):
     @property
     def zip_file(self):
         raise NotImplementedError(
-            f'Class "{self.__class__.__name__}" must implement '
+            f'Class "{self.__class__.__name__}" must implement a '
             '"zip_file" field.'
         )

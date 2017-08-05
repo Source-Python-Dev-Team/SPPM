@@ -62,16 +62,16 @@ class PaginatedListView(ListView):
     def get_next_pages(self):
         if not isinstance(self.next_pages, int) or self.next_pages <= 0:
             raise AttributeError(
-                f'{self.__class__.__name__}.next_pages not a valid '
-                f'value ({self.next_pages}).'
+                f'"{self.next_pages}" is not a valid value for '
+                f'{self.__class__.__name__}.next_pages.'
             )
         return self.next_pages
 
     def get_previous_pages(self):
         if not isinstance(self.next_pages, int) or self.previous_pages <= 0:
             raise AttributeError(
-                f'{self.__class__.__name__}.previous_pages not a valid value '
-                f'({self.previous_pages}).'
+                f'"{self.next_pages}" is not a valid value for '
+                f'{self.__class__.__name__}.previous_pages.'
             )
         return self.previous_pages
 
