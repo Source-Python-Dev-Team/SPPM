@@ -10,6 +10,7 @@ from rest_framework.serializers import ModelSerializer
 
 # App
 from project_manager.common.api.serializers import ProjectSerializer
+from project_manager.plugins.models import Plugin
 from project_manager.sub_plugins.helpers import get_sub_plugin_basename
 from project_manager.sub_plugins.models import (
     SubPlugin,
@@ -59,11 +60,24 @@ class SubPluginReleaseSerializer(ModelSerializer):
                 )
             })
 
+        if zip_file is None:
+            return attrs
+
+        kwargs = self.context['view'].kwargs
+        plugin_slug = kwargs.get('plugin_slug', None)
+        # TODO: figure out if this try/except is necessary
+        try:
+            plugin = Plugin.objects.get(slug=plugin_slug)
+        except Plugin.DoesNotExist:
+            raise ValidationError(f'Plugin "{plugin_slug}" not found.')
+
         # Validate the version is new for the sub_plugin
         try:
-            sub_plugin = SubPlugin.objects.get(pk=self.context['view'].kwargs['pk'])
+            sub_plugin = SubPlugin.objects.get(
+                slug=kwargs['slug'],
+            )
             sub_plugin_basename = sub_plugin.basename
-        except SubPlugin.DoesNotExist:
+        except (SubPlugin.DoesNotExist, KeyError):
             sub_plugin_basename = None
         else:
             if SubPluginRelease.objects.filter(
@@ -74,14 +88,15 @@ class SubPluginReleaseSerializer(ModelSerializer):
                     'version': 'Given version matches existing version.',
                 })
 
-        basename = get_sub_plugin_basename(zip_file)
-        if basename != sub_plugin_basename:
-            raise ValidationError({
-                'zip_file': (
-                    f"Basename in zip '{basename}' does not match basename "
-                    f"for sub_plugin '{sub_plugin_basename}'"
-                )
-            })
+        if zip_file is not None:
+            basename = get_sub_plugin_basename(zip_file, plugin)
+            if basename != sub_plugin_basename:
+                raise ValidationError({
+                    'zip_file': (
+                        f"Basename in zip '{basename}' does not match "
+                        f"basename for sub_plugin '{sub_plugin_basename}'"
+                    )
+                })
         return attrs
 
 
