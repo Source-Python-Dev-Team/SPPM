@@ -10,6 +10,10 @@
 # Local shell files
 *.sh
 
+# Local text files
+*.txt
+!requirements.txt
+
 # Migrations
 */migrations/0*
 
