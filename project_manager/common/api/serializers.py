@@ -4,6 +4,7 @@
 # Django
 from django.core.exceptions import ValidationError
 from django.utils import formats
+from django.utils.timezone import now
 
 # 3rd-Party Django
 from rest_framework.fields import CharField, FileField, SerializerMethodField
@@ -166,11 +167,7 @@ class ProjectSerializer(ModelSerializer):
         return extra_kwargs
 
     def get_updated(self, obj):
-        try:
-            release = obj.releases.all()[0]
-        except IndexError:
-            return self.get_date_time_dict(timestamp=obj.created)
-        return self.get_date_time_dict(timestamp=release.modified)
+        return self.get_date_time_dict(timestamp=obj.modified)
 
     def update(self, instance, validated_data):
         release_dict = validated_data.pop('releases', {})
@@ -308,3 +305,10 @@ class ProjectReleaseSerializer(ModelSerializer):
                 )
             })
         return attrs
+
+    def create(self, validated_data):
+        instance = super().create(validated_data=validated_data)
+        getattr(instance, self.project_type.replace('-', '_')).update(
+            modified=instance.created,
+        )
+        return instance
