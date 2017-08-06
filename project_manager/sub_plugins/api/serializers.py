@@ -34,11 +34,6 @@ __all__ = (
 # =============================================================================
 # >> SERIALIZERS
 # =============================================================================
-# TODO: APIs
-# TODO:     contributors
-# TODO:     images
-# TODO:     supported_games
-# TODO:     tags
 class SubPluginImageSerializer(ProjectImageSerializer):
     """Serializer for adding, removing, and listing SubPlugin images."""
 

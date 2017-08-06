@@ -3,6 +3,9 @@
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
+# Python
+from operator import itemgetter
+
 # Django
 from django.core.exceptions import ValidationError
 from django.utils import formats
@@ -14,6 +17,7 @@ from rest_framework.serializers import ModelSerializer
 
 # App
 from project_manager.games.api.serializers import GameSerializer
+from project_manager.games.models import Game
 from project_manager.packages.api.serializers.common import (
     PackageRequirementSerializer
 )
@@ -23,9 +27,11 @@ from project_manager.requirements.api.serializers.common import (
     RequiredVersionControlSerializer,
 )
 from project_manager.tags.api.serializers import TagSerializer
+from project_manager.tags.models import Tag
 from project_manager.users.api.serializers.common import (
     ForumUserContributorSerializer,
 )
+from project_manager.users.models import ForumUser
 
 
 # =============================================================================
@@ -41,6 +47,11 @@ __all__ = (
 # =============================================================================
 # >> SERIALIZERS
 # =============================================================================
+# TODO: APIs for adding/removing
+# TODO:     contributors (add through model to do properly)
+# TODO:     images (mostly done)
+# TODO:     supported_games (add through model to do properly)
+# TODO:     tags (add through model to do properly)
 class ProjectSerializer(ModelSerializer):
     """Base Project Serializer."""
 
@@ -50,7 +61,6 @@ class ProjectSerializer(ModelSerializer):
     )
     contributors = ForumUserContributorSerializer(
         many=True,
-        read_only=True,
     )
     created = SerializerMethodField()
     updated = SerializerMethodField()
@@ -72,11 +82,9 @@ class ProjectSerializer(ModelSerializer):
     )
     supported_games = GameSerializer(
         many=True,
-        read_only=True,
     )
     tags = TagSerializer(
         many=True,
-        read_only=True,
     )
 
     class Meta:
@@ -122,6 +130,7 @@ class ProjectSerializer(ModelSerializer):
 
     def create(self, validated_data):
         """Create the instance and the first release of the project."""
+        # TODO: set the owner to the logged in user
         release_dict = validated_data.pop('releases', {})
         version = release_dict['version']
         zip_file = release_dict['zip_file']
@@ -136,6 +145,7 @@ class ProjectSerializer(ModelSerializer):
             'zip_file': zip_file,
         }
         self.release_model.objects.create(**kwargs)
+        self.update_all_many_to_many_fields(instance=instance)
         return instance
 
     def get_created(self, obj):
@@ -211,19 +221,79 @@ class ProjectSerializer(ModelSerializer):
             instance=instance,
             validated_data=validated_data,
         )
-
+        self.update_all_many_to_many_fields(instance=instance)
         return instance
+
+    def update_all_many_to_many_fields(self, instance):
+        """Update the many-to-many fields with the given values."""
+        self.update_many_to_many(
+            instance=instance,
+            field_name='contributors',
+            related_model=ForumUser,
+            related_field_name='id',
+        )
+        self.update_many_to_many(
+            instance=instance,
+            field_name='supported_games',
+            related_model=Game,
+            related_field_name='slug',
+        )
+        # TODO: add any new tags
+        # TODO: create a blacklist for tag names that can be handled via admin
+        self.update_many_to_many(
+            instance=instance,
+            field_name='tags',
+            related_model=Tag,
+            related_field_name='name',
+        )
+
+    def update_many_to_many(
+        self, instance, field_name, related_model, related_field_name
+    ):
+        """Update the given many-to-many."""
+        stored_object = getattr(self.context['view'], f'stored_{field_name}')
+
+        # If patching, there might be nothing passed
+        if stored_object is None:
+            return
+
+        kwargs = {
+            f'{related_field_name}__in': map(
+                itemgetter(related_field_name),
+                stored_object,
+            )
+        }
+        stored_values = related_model.objects.filter(**kwargs).in_bulk()
+        related_queryset = getattr(instance, field_name)
+        current_values = related_queryset.in_bulk()
+
+        values_to_remove = set(current_values).difference(
+            stored_values,
+        )
+        values_to_add = set(stored_values).difference(
+            current_values,
+        )
+
+        related_queryset.remove(
+            *[current_values[x] for x in values_to_remove]
+        )
+        related_queryset.add(
+            *[stored_values[x] for x in values_to_add]
+        )
 
     def validate(self, attrs):
         """Validate the given field values."""
         release_dict = attrs.get('releases', {})
         version = release_dict.get('version', '')
         zip_file = release_dict.get('zip_file')
-        if not all([version, zip_file]):
+        if (
+            self.context['view'].request.method in ('POST', 'PUT') and
+            not all([version, zip_file])
+        ):
             raise ValidationError({
                 'releases': (
-                    'Version and Zip File are required when creating a '
-                    f'{self.project_type}.'
+                    'Version and Zip File are required when using POST or PUT '
+                    f'for creating/updating a {self.project_type}.'
                 )
             })
         return attrs

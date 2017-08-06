@@ -6,14 +6,14 @@
 # 3rd-Party Django
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import OrderingFilter
-from rest_framework.response import Response
-from rest_framework.reverse import reverse
-from rest_framework.views import APIView
-from rest_framework.viewsets import ModelViewSet
 
 # App
 from project_manager.common.api.helpers import get_prefetch
-from project_manager.common.api.views import ProjectImageViewSet
+from project_manager.common.api.views import (
+    ProjectAPIView,
+    ProjectImageViewSet,
+    ProjectViewSet,
+)
 from .filters import PluginFilter
 from .serializers import PluginImageSerializer, PluginSerializer
 from ..models import Plugin, PluginImage, PluginRelease
@@ -32,29 +32,13 @@ __all__ = (
 # =============================================================================
 # >> VIEWS
 # =============================================================================
-class PluginAPIView(APIView):
+class PluginAPIView(ProjectAPIView):
     """Plugin API routes."""
 
-    http_method_names = ('get', 'options')
-
-    @staticmethod
-    def get(request):
-        """Return all the API routes for Plugins."""
-        return Response(
-            data={
-                'projects': reverse(
-                    viewname='api:plugins:projects-list',
-                    request=request,
-                ),
-                'images': reverse(
-                    viewname='api:plugins:endpoints',
-                    request=request,
-                ) + 'images/<plugin>/',
-            }
-        )
+    project_type = 'plugin'
 
 
-class PluginViewSet(ModelViewSet):
+class PluginViewSet(ProjectViewSet):
     """ViewSet for creating, updating, and listing Plugins."""
 
     filter_backends = (OrderingFilter, DjangoFilterBackend)

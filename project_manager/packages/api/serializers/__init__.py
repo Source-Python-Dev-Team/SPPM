@@ -30,11 +30,6 @@ __all__ = (
 # =============================================================================
 # >> SERIALIZERS
 # =============================================================================
-# TODO: APIs
-# TODO:     contributors
-# TODO:     images
-# TODO:     supported_games
-# TODO:     tags
 class PackageImageSerializer(ProjectImageSerializer):
     """Serializer for adding, removing, and listing Package images."""
 

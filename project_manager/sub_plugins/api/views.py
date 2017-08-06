@@ -7,14 +7,14 @@
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import OrderingFilter
 from rest_framework.parsers import ParseError
-from rest_framework.response import Response
-from rest_framework.reverse import reverse
-from rest_framework.views import APIView
-from rest_framework.viewsets import ModelViewSet
 
 # App
 from project_manager.common.api.helpers import get_prefetch
-from project_manager.common.api.views import ProjectImageViewSet
+from project_manager.common.api.views import (
+    ProjectAPIView,
+    ProjectImageViewSet,
+    ProjectViewSet,
+)
 from project_manager.plugins.models import Plugin
 from .filters import SubPluginFilter
 from .serializers import SubPluginImageSerializer, SubPluginSerializer
@@ -34,29 +34,14 @@ __all__ = (
 # =============================================================================
 # >> VIEWS
 # =============================================================================
-class SubPluginAPIView(APIView):
+class SubPluginAPIView(ProjectAPIView):
     """SubPlugin API routes."""
 
-    http_method_names = ('get', 'options')
-
-    @staticmethod
-    def get(request):
-        """Return all the API routes for SubPlugins."""
-        return Response(
-            data={
-                'projects': reverse(
-                    viewname='api:sub-plugins:endpoints',
-                    request=request,
-                ) + 'projects/<plugin>/',
-                'images': reverse(
-                    viewname='api:sub-plugins:endpoints',
-                    request=request,
-                ) + 'images/<plugin>/<sub-plugin>/',
-            }
-        )
+    project_type = 'sub-plugin'
+    extra_params = '<plugin>/'
 
 
-class SubPluginViewSet(ModelViewSet):
+class SubPluginViewSet(ProjectViewSet):
     """ViewSet for creating, updating, and listing SubPlugins."""
 
     filter_backends = (OrderingFilter, DjangoFilterBackend)
