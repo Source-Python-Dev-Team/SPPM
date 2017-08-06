@@ -12,6 +12,18 @@ from project_manager.users.models import ForumUser
 
 
 # =============================================================================
+# >> ALL DECLARATION
+# =============================================================================
+__all__ = (
+    'ForumUserSerializer',
+    'PackageContributionSerializer',
+    'PluginContributionSerializer',
+    'ProjectContributionSerializer',
+    'SubPluginContributionSerializer',
+)
+
+
+# =============================================================================
 # >> SERIALIZERS
 # =============================================================================
 class ProjectContributionSerializer(ModelSerializer):

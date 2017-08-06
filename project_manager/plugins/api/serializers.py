@@ -12,6 +12,16 @@ from project_manager.plugins.models import Plugin, PluginImage, PluginRelease
 
 
 # =============================================================================
+# >> ALL DECLARATION
+# =============================================================================
+__all__ = (
+    'PluginImageSerializer',
+    'PluginReleaseSerializer',
+    'PluginSerializer',
+)
+
+
+# =============================================================================
 # >> SERIALIZERS
 # =============================================================================
 # TODO: APIs for adding/removing

@@ -15,8 +15,20 @@ from .tags.models import Tag
 from .users.models import ForumUser
 
 _all_models = (
-    DownloadRequirement, ForumUser, Game, Package, PackageImage,
-    PackageRelease, Plugin, PluginImage, PluginRelease, PyPiRequirement,
-    SubPlugin, SubPluginImage, SubPluginPath, SubPluginRelease, Tag,
+    DownloadRequirement,
+    ForumUser,
+    Game,
+    Package,
+    PackageImage,
+    PackageRelease,
+    Plugin,
+    PluginImage,
+    PluginRelease,
+    PyPiRequirement,
+    SubPlugin,
+    SubPluginImage,
+    SubPluginPath,
+    SubPluginRelease,
+    Tag,
     VersionControlRequirement,
 )

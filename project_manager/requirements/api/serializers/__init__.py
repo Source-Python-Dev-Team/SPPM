@@ -18,6 +18,17 @@ from project_manager.users.api.serializers import (
 
 
 # =============================================================================
+# >> ALL DECLARATION
+# =============================================================================
+__all__ = (
+    'DownloadRequirementSerializer',
+    'PyPiRequirementSerializer',
+    'RequirementSerializer',
+    'VersionControlRequirementSerializer',
+)
+
+
+# =============================================================================
 # >> SERIALIZERS
 # =============================================================================
 class RequirementSerializer(ModelSerializer):

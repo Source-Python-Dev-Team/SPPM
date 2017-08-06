@@ -27,6 +27,9 @@ __all__ = (
     'flush_requirements',
     'get_groups',
     'get_requirements',
+    'handle_image_upload',
+    'handle_logo_upload',
+    'handle_zip_file_upload',
     'reset_requirements',
 )
 

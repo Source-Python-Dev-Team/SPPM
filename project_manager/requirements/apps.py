@@ -6,7 +6,15 @@ from django.apps import AppConfig
 
 
 # =============================================================================
-# Application Config
+# >> ALL DECLARATION
+# =============================================================================
+__all__ = (
+    'RequirementConfig',
+)
+
+
+# =============================================================================
+# >> APPLICATION CONFIG
 # =============================================================================
 class RequirementConfig(AppConfig):
     name = 'project_manager.requirements'

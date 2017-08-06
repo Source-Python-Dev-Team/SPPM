@@ -13,6 +13,16 @@ from project_manager.requirements.models import (
 
 
 # =============================================================================
+# >> ALL DECLARATION
+# =============================================================================
+__all__ = (
+    'RequiredDownloadSerializer',
+    'RequiredPyPiSerializer',
+    'RequiredVersionControlSerializer',
+)
+
+
+# =============================================================================
 # >> SERIALIZERS
 # =============================================================================
 class RequiredDownloadSerializer(ModelSerializer):

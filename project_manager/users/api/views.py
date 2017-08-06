@@ -10,6 +10,7 @@ from rest_framework.filters import OrderingFilter
 from rest_framework.viewsets import ModelViewSet
 
 # App
+from .filters import ForumUserFilter
 from .serializers import ForumUserSerializer
 from ..models import ForumUser
 from project_manager.packages.models import Package
@@ -18,10 +19,20 @@ from project_manager.sub_plugins.models import SubPlugin
 
 
 # =============================================================================
+# >> ALL DECLARATION
+# =============================================================================
+__all__ = (
+    'ForumUserViewSet',
+)
+
+
+# =============================================================================
 # >> VIEWS
 # =============================================================================
 class ForumUserViewSet(ModelViewSet):
     filter_backends = (OrderingFilter, DjangoFilterBackend)
+    filter_class = ForumUserFilter
+    http_method_names = ('get', 'options')
     ordering = ('username',)
     ordering_fields = ('id', 'username')
     queryset = ForumUser.objects.prefetch_related(
@@ -66,5 +77,4 @@ class ForumUserViewSet(ModelViewSet):
             )
         )
     )
-    http_method_names = ('get', 'options')
     serializer_class = ForumUserSerializer

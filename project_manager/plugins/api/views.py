@@ -4,7 +4,6 @@
 # 3rd-Party Django
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import OrderingFilter
-from rest_framework.parsers import ParseError
 from rest_framework.response import Response
 from rest_framework.reverse import reverse
 from rest_framework.views import APIView
@@ -16,6 +15,16 @@ from .serializers import PluginImageSerializer, PluginSerializer
 from ..models import Plugin, PluginImage, PluginRelease
 from project_manager.common.api.helpers import get_prefetch
 from project_manager.common.api.views import ProjectImageViewSet
+
+
+# =============================================================================
+# >> ALL DECLARATION
+# =============================================================================
+__all__ = (
+    'PluginAPIView',
+    'PluginImageViewSet',
+    'PluginViewSet',
+)
 
 
 # =============================================================================

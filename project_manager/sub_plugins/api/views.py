@@ -11,12 +11,22 @@ from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 
 # App
-from .filters import PluginFilter
+from .filters import SubPluginFilter
 from .serializers import SubPluginImageSerializer, SubPluginSerializer
 from ..models import SubPlugin, SubPluginImage, SubPluginRelease
 from project_manager.common.api.helpers import get_prefetch
 from project_manager.common.api.views import ProjectImageViewSet
 from project_manager.plugins.models import Plugin
+
+
+# =============================================================================
+# >> ALL DECLARATION
+# =============================================================================
+__all__ = (
+    'SubPluginAPIView',
+    'SubPluginImageViewSet',
+    'SubPluginViewSet',
+)
 
 
 # =============================================================================
@@ -42,7 +52,7 @@ class SubPluginAPIView(APIView):
 
 class SubPluginViewSet(ModelViewSet):
     filter_backends = (OrderingFilter, DjangoFilterBackend)
-    filter_class = PluginFilter
+    filter_class = SubPluginFilter
     ordering = ('-releases__created',)
     ordering_fields = ('name', 'basename', 'modified')
     queryset = SubPlugin.objects.prefetch_related(

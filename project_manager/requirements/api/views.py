@@ -29,9 +29,20 @@ from project_manager.sub_plugins.models import SubPlugin
 
 
 # =============================================================================
+# >> ALL DECLARATION
+# =============================================================================
+__all__ = (
+    'DownloadRequirementViewSet',
+    'PyPiRequirementViewSet',
+    'RequirementAPIView',
+    'VersionControlRequirementViewSet',
+)
+
+
+# =============================================================================
 # >> GLOBALS
 # =============================================================================
-project_prefetch = (
+_project_prefetch = (
     Prefetch(
         lookup='required_in_packages',
         queryset=Package.objects.order_by(
@@ -85,7 +96,7 @@ class DownloadRequirementViewSet(ModelViewSet):
     ordering = ('name',)
     ordering_fields = ('name',)
     queryset = DownloadRequirement.objects.prefetch_related(
-        *project_prefetch,
+        *_project_prefetch,
     )
     http_method_names = ('get', 'options')
     lookup_field = 'name'
@@ -97,7 +108,7 @@ class PyPiRequirementViewSet(ModelViewSet):
     ordering = ('name',)
     ordering_fields = ('name',)
     queryset = PyPiRequirement.objects.prefetch_related(
-        *project_prefetch,
+        *_project_prefetch,
     )
     http_method_names = ('get', 'options')
     lookup_field = 'name'
@@ -109,7 +120,7 @@ class VersionControlRequirementViewSet(ModelViewSet):
     ordering = ('name',)
     ordering_fields = ('name',)
     queryset = VersionControlRequirement.objects.prefetch_related(
-        *project_prefetch,
+        *_project_prefetch,
     )
     http_method_names = ('get', 'options')
     lookup_field = 'name'

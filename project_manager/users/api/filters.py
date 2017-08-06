@@ -12,13 +12,24 @@ from ..models import ForumUser
 
 
 # =============================================================================
+# >> ALL DECLARATION
+# =============================================================================
+__all__ = (
+    'ForumUserFilter',
+)
+
+
+# =============================================================================
 # >> FILTERS
 # =============================================================================
-class PackageFilter(FilterSet):
+class ForumUserFilter(FilterSet):
     has_contributions = BooleanFilter(method='filter_has_contributions')
 
     class Meta:
         model = ForumUser
+        fields = (
+            'has_contributions',
+        )
 
     def filter_has_contributions(self, queryset, name, value):
         value = not value
