@@ -31,4 +31,5 @@ class Tag(models.Model):
     )
 
     def __str__(self):
+        """Return the tag's name."""
         return self.name

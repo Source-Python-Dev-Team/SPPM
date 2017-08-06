@@ -33,6 +33,7 @@ class SubPluginPathListView(RetrievePluginMixin, ListView):
     template_name = 'plugins/paths/list.html'
 
     def get_context_data(self, **kwargs):
+        """Add the plugin to the context for the template."""
         context = super().get_context_data(**kwargs)
         context.update({
             'plugin': self.plugin,
@@ -40,6 +41,7 @@ class SubPluginPathListView(RetrievePluginMixin, ListView):
         return context
 
     def get_queryset(self):
+        """Filter down to SubPluginPaths for the given plugin."""
         return super().get_queryset().filter(
             plugin=self.plugin,
         )
@@ -53,6 +55,7 @@ class SubPluginPathCreateView(RetrievePluginMixin, CreateView):
     template_name = 'plugins/paths/create.html'
 
     def get_initial(self):
+        """Add the plugin to the initial."""
         initial = super().get_initial()
         initial.update({
             'plugin': self.plugin,
@@ -69,6 +72,7 @@ class SubPluginPathEditView(RetrievePluginMixin, UpdateView):
     pk_url_kwarg = 'path_pk'
 
     def get_context_data(self, **kwargs):
+        """Add the plugin to the context for the template."""
         context = super().get_context_data(**kwargs)
         context.update({
             'plugin': self.plugin,
@@ -82,4 +86,5 @@ class SubPluginPathDeleteView(DeleteView):
     model = SubPluginPath
 
     def get_object(self, queryset=None):
+        """Return the object for the view."""
         return SubPluginPath.objects.get(pk=self.kwargs.get('path_pk'))

@@ -82,6 +82,7 @@ class PluginCreateForm(SubmitButtonMixin):
         }
 
     def __init__(self, *args, **kwargs):
+        """Initialize the form."""
         super().__init__(*args, **kwargs)
         old_fields = self.fields
         self.fields = {
@@ -93,6 +94,7 @@ class PluginCreateForm(SubmitButtonMixin):
         self.fields.update(old_fields)
 
     def save(self, commit=True):
+        """Save the plugin and create the release."""
         instance = super().save(commit)
         PluginRelease.objects.create(
             plugin=instance,
@@ -181,6 +183,7 @@ class PluginUpdateForm(SubmitButtonMixin):
         }
 
     def save(self, commit=True):
+        """Create the release."""
         instance = super().save(commit)
         PluginRelease.objects.create(
             plugin=instance,

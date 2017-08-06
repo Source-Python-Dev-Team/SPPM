@@ -39,6 +39,7 @@ class PyPiView(DetailView):
     template_name = 'pypi/view.html'
 
     def get_context_data(self, **kwargs):
+        """Add necessary context for the template."""
         context = super().get_context_data(**kwargs)
         context.update({
             'required_in_plugins': get_groups(

@@ -34,4 +34,5 @@ class SubPluginAddContributorConfirmationForm(forms.ModelForm):
         }
 
     def validate_unique(self):
+        """Override validate_unique to do nothing."""
         pass

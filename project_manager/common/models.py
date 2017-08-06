@@ -143,7 +143,7 @@ class ProjectBase(models.Model):
 
     @property
     def releases(self):
-        """Raise error if class does not have a related field for 'releases'"""
+        """Raise error if class doesn't have a related field for 'releases'."""
         raise NotImplementedError(
             f'Class "{self.__class__.__name__}" must implement a '
             '"releases" field via ForeignKey relationship.'

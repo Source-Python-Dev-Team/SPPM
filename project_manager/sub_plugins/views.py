@@ -155,7 +155,7 @@ class SubPluginUpdateView(
         )
 
     def get_queryset(self):
-        """This is to fix a MultipleObjectsReturned error."""
+        """Filter down to only the current sub-plugin to avoid an exception."""
         return SubPlugin.objects.filter(
             pk=self.sub_plugin.pk,
         )
@@ -209,7 +209,7 @@ class SubPluginView(RetrieveSubPluginMixin, DetailView):
     slug_url_kwarg = 'sub_plugin_slug'
 
     def get_queryset(self):
-        """This is to fix a MultipleObjectsReturned error."""
+        """Filter down to only the current sub-plugin to avoid an exception."""
         return SubPlugin.objects.filter(
             pk=self.sub_plugin.pk,
         ).select_related('plugin')

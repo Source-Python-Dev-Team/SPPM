@@ -38,6 +38,7 @@ class PackageAddContributorView(RetrievePackageMixin, FilterView):
     filterset_class = ForumUserFilterSet
 
     def get(self, request, *args, **kwargs):
+        """Return the redirect if adding a contributor."""
         value = super().get(request, *args, **kwargs)
         user = value.context_data['user']
         if user is not None and not value.context_data['warning_message']:
@@ -53,6 +54,7 @@ class PackageAddContributorView(RetrievePackageMixin, FilterView):
         return value
 
     def get_context_data(self, **kwargs):
+        """Update the view's context for the template."""
         context = super().get_context_data(**kwargs)
         message = ''
         user = None
@@ -83,6 +85,7 @@ class PackageAddContributorConfirmationView(RetrievePackageMixin, FormView):
     template_name = 'packages/contributors/add_confirmation.html'
 
     def get_initial(self):
+        """Add 'id' to the initial."""
         initial = super().get_initial()
         initial.update({
             'id': self.kwargs['id']
@@ -90,6 +93,7 @@ class PackageAddContributorConfirmationView(RetrievePackageMixin, FormView):
         return initial
 
     def get_context_data(self, **kwargs):
+        """Update the view's context for the template."""
         context = super().get_context_data(**kwargs)
         user = ForumUser.objects.get(id=self.kwargs['id'])
         message = None
@@ -105,5 +109,6 @@ class PackageAddContributorConfirmationView(RetrievePackageMixin, FormView):
         return context
 
     def form_valid(self, form):
+        """Add the contributors to the package."""
         self.package.contributors.add(form.cleaned_data['id'])
         return HttpResponseRedirect(self.package.get_absolute_url())

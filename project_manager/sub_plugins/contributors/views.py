@@ -38,6 +38,7 @@ class SubPluginAddContributorView(RetrieveSubPluginMixin, FilterView):
     filterset_class = ForumUserFilterSet
 
     def get(self, request, *args, **kwargs):
+        """Return the redirect if adding a contributor."""
         value = super().get(
             request, *args, **kwargs
         )
@@ -56,6 +57,7 @@ class SubPluginAddContributorView(RetrieveSubPluginMixin, FilterView):
         return value
 
     def get_context_data(self, **kwargs):
+        """Update the view's context for the template."""
         context = super().get_context_data(**kwargs)
         message = ''
         user = None
@@ -80,13 +82,16 @@ class SubPluginAddContributorView(RetrieveSubPluginMixin, FilterView):
         return context
 
 
-class SubPluginAddContributorConfirmationView(RetrieveSubPluginMixin, FormView):
+class SubPluginAddContributorConfirmationView(
+    RetrieveSubPluginMixin, FormView
+):
     """View for confirming adding a contributor to a SubPlugin."""
 
     form_class = SubPluginAddContributorConfirmationForm
     template_name = 'sub_plugins/contributors/add_confirmation.html'
 
     def get_initial(self):
+        """Add 'id' to the initial."""
         initial = super().get_initial()
         initial.update({
             'id': self.kwargs['id']
@@ -94,6 +99,7 @@ class SubPluginAddContributorConfirmationView(RetrieveSubPluginMixin, FormView):
         return initial
 
     def get_context_data(self, **kwargs):
+        """Update the view's context for the template."""
         context = super().get_context_data(**kwargs)
         user = ForumUser.objects.get(id=self.kwargs['id'])
         message = None
@@ -109,5 +115,6 @@ class SubPluginAddContributorConfirmationView(RetrieveSubPluginMixin, FormView):
         return context
 
     def form_valid(self, form):
+        """Add the contributors to the sub-plugin."""
         self.sub_plugin.contributors.add(form.cleaned_data['id'])
         return HttpResponseRedirect(self.sub_plugin.get_absolute_url())

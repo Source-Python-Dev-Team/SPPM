@@ -82,6 +82,7 @@ class PackageCreateForm(SubmitButtonMixin):
         }
 
     def __init__(self, *args, **kwargs):
+        """Initialize the form."""
         super().__init__(*args, **kwargs)
         old_fields = self.fields
         self.fields = {
@@ -93,6 +94,7 @@ class PackageCreateForm(SubmitButtonMixin):
         self.fields.update(old_fields)
 
     def save(self, commit=True):
+        """Save the package and create the release."""
         instance = super().save(commit)
         PackageRelease.objects.create(
             package=instance,
@@ -181,6 +183,7 @@ class PackageUpdateForm(SubmitButtonMixin):
         }
 
     def save(self, commit=True):
+        """Create the release."""
         instance = super().save(commit)
         PackageRelease.objects.create(
             package=instance,

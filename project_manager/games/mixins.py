@@ -23,6 +23,7 @@ class GameSpecificOrderablePaginatedListView(OrderablePaginatedListView):
     """View to be inherited for ordering, pagination, and game filtering."""
 
     def get_queryset(self):
+        """Filter to projects that support the given game."""
         queryset = super().get_queryset()
         basename = self.request.GET.get('game')
         if basename is not None:
@@ -30,6 +31,7 @@ class GameSpecificOrderablePaginatedListView(OrderablePaginatedListView):
         return queryset
 
     def get_context_data(self, **kwargs):
+        """Add all the proper context for templates."""
         context = super().get_context_data(**kwargs)
         game_slug = self.request.GET.get('game')
         games = Game.objects.order_by(
