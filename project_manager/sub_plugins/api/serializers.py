@@ -57,11 +57,10 @@ class SubPluginReleaseSerializer(ProjectReleaseSerializer):
         """Return the parent plugin."""
         kwargs = self.context['view'].kwargs
         plugin_slug = kwargs.get('plugin_slug')
-        # TODO: figure out if this try/except is necessary
         try:
             plugin = Plugin.objects.get(slug=plugin_slug)
         except Plugin.DoesNotExist:
-            raise ValidationError(f'Plugin "{plugin_slug}" not found.')
+            raise ValidationError(f"Plugin '{plugin_slug}' not found.")
         return plugin
 
     def get_project_kwargs(self, parent_project=None):

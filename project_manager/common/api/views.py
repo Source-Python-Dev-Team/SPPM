@@ -37,9 +37,9 @@ class ProjectAPIView(APIView):
         return Response(
             data={
                 'projects': reverse(
-                    viewname=f'api:{self.project_type}s:projects-list',
+                    viewname=f'api:{self.project_type}s:endpoints',
                     request=request,
-                ),
+                ) + f'projects/{self.extra_params}',
                 'images': reverse(
                     viewname=f'api:{self.project_type}s:endpoints',
                     request=request,
