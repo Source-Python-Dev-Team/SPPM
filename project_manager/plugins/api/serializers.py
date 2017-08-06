@@ -1,3 +1,5 @@
+"""Plugin serializers for APIs."""
+
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
@@ -31,11 +33,15 @@ __all__ = (
 # TODO:     supported_games
 # TODO:     tags
 class PluginImageSerializer(ProjectImageSerializer):
+    """Serializer for adding, removing, and listing Plugin images."""
+
     class Meta(ProjectImageSerializer.Meta):
         model = PluginImage
 
 
 class PluginReleaseSerializer(ProjectReleaseSerializer):
+    """Serializer for creating and listing Plugin releases."""
+
     project_class = Plugin
     project_type = 'plugin'
     zip_parser = get_plugin_basename
@@ -45,6 +51,8 @@ class PluginReleaseSerializer(ProjectReleaseSerializer):
 
 
 class PluginSerializer(ProjectSerializer):
+    """Serializer for creating, updating, and listing Plugins."""
+
     images = PluginImageSerializer(
         many=True,
         read_only=True,

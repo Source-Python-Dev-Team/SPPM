@@ -1,3 +1,5 @@
+"""Common helper functions."""
+
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
@@ -27,9 +29,9 @@ __all__ = (
     'flush_requirements',
     'get_groups',
     'get_requirements',
-    'handle_image_upload',
-    'handle_logo_upload',
-    'handle_zip_file_upload',
+    'handle_project_image_upload',
+    'handle_project_logo_upload',
+    'handle_release_zip_file_upload',
     'reset_requirements',
 )
 
@@ -45,6 +47,7 @@ def find_image_number(directory, slug):
 
 
 def get_groups(iterable, count=3):
+    """Return lists from the given iterable in chunks of 'count'."""
     if not iterable:
         return iterable
     iterable = list(iterable)
@@ -54,6 +57,7 @@ def get_groups(iterable, count=3):
 
 
 def get_requirements(zip_file, requirement_path):
+    """Return the requirements for the release."""
     for zipped_file in zip_file.filelist:
         if zipped_file.filename == requirement_path:
             break
@@ -63,19 +67,23 @@ def get_requirements(zip_file, requirement_path):
     return ConfigObj(ini)
 
 
-def handle_image_upload(instance, filename):
+def handle_project_image_upload(instance, filename):
+    """Handle uploading the image by directing to the proper directory."""
     return instance.handle_image_upload(filename)
 
 
-def handle_logo_upload(instance, filename):
+def handle_project_logo_upload(instance, filename):
+    """Handle uploading the logo by directing to the proper directory."""
     return instance.handle_logo_upload(instance, filename)
 
 
-def handle_zip_file_upload(instance, filename):
+def handle_release_zip_file_upload(instance, filename):
+    """Handle uploading the zip file by directing to the proper directory."""
     return instance.handle_zip_file_upload(instance, filename)
 
 
 def add_package_requirement(package_basename, project):
+    """Add a Package requirement to a project."""
     from project_manager.packages.models import Package
     try:
         package = Package.objects.get(basename=package_basename)
@@ -86,6 +94,7 @@ def add_package_requirement(package_basename, project):
 
 
 def add_pypi_requirement(package_basename, project):
+    """Add a PyPi requirement to a project."""
     package, created = PyPiRequirement.objects.get_or_create(
         name=package_basename,
     )
@@ -93,6 +102,7 @@ def add_pypi_requirement(package_basename, project):
 
 
 def add_vcs_requirement(name, url, project):
+    """Add a VCS requirement to a project."""
     package, created = VersionControlRequirement.objects.get_or_create(
         name=name,
         url=url,
@@ -101,6 +111,7 @@ def add_vcs_requirement(name, url, project):
 
 
 def add_download_requirement(name, url, desc, project):
+    """Add a Download requirement to a project."""
     package, created = DownloadRequirement.objects.get_or_create(
         name=name,
         url=url,
@@ -110,6 +121,7 @@ def add_download_requirement(name, url, desc, project):
 
 
 def reset_requirements(project):
+    """Clear all requirements for the given project."""
     project.package_requirements.clear()
     project.pypi_requirements.clear()
     project.vcs_requirements.clear()
@@ -117,6 +129,7 @@ def reset_requirements(project):
 
 
 def flush_requirements():
+    """Remove any requirements that no longer are required by any projects."""
     PyPiRequirement.objects.filter(
         required_in_packages__isnull=True,
         required_in_plugins__isnull=True,

@@ -1,3 +1,5 @@
+"""SubPluginPath forms."""
+
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
@@ -22,6 +24,8 @@ __all__ = (
 # >> FORMS
 # =============================================================================
 class SubPluginPathCreateForm(SubmitButtonMixin):
+    """SubPluginPath creation form."""
+
     class Meta:
         model = SubPluginPath
         fields = (
@@ -34,6 +38,8 @@ class SubPluginPathCreateForm(SubmitButtonMixin):
 
 
 class SubPluginPathEditForm(SubmitButtonMixin):
+    """SubPluginPath update form."""
+
     class Meta:
         model = SubPluginPath
         fields = (

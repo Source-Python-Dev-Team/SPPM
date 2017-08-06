@@ -1,3 +1,5 @@
+"""User API filters."""
+
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
@@ -23,6 +25,8 @@ __all__ = (
 # >> FILTERS
 # =============================================================================
 class ForumUserFilter(FilterSet):
+    """Filters for ForumUsers."""
+
     has_contributions = BooleanFilter(method='filter_has_contributions')
 
     class Meta:
@@ -31,7 +35,9 @@ class ForumUserFilter(FilterSet):
             'has_contributions',
         )
 
-    def filter_has_contributions(self, queryset, name, value):
+    @staticmethod
+    def filter_has_contributions(queryset, name, value):
+        """Filter down to users that do/don't have any contributions."""
         value = not value
         return queryset.filter(
             Q(plugins__isnull=value) |

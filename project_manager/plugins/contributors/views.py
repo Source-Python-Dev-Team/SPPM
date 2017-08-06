@@ -1,3 +1,5 @@
+"""Plugin contributors views."""
+
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
@@ -10,10 +12,10 @@ from django.views.generic import FormView
 from django_filters.views import FilterView
 
 # App
-from .forms import PluginAddContributorConfirmationForm
 from project_manager.plugins.mixins import RetrievePluginMixin
 from project_manager.users.filtersets import ForumUserFilterSet
 from project_manager.users.models import ForumUser
+from .forms import PluginAddContributorConfirmationForm
 
 
 # =============================================================================
@@ -29,6 +31,8 @@ __all__ = (
 # >> VIEWS
 # =============================================================================
 class PluginAddContributorView(RetrievePluginMixin, FilterView):
+    """View for adding a contributor to a Plugin."""
+
     model = ForumUser
     template_name = 'plugins/contributors/add.html'
     filterset_class = ForumUserFilterSet
@@ -73,6 +77,8 @@ class PluginAddContributorView(RetrievePluginMixin, FilterView):
 
 
 class PluginAddContributorConfirmationView(RetrievePluginMixin, FormView):
+    """View for confirming adding a contributor to a Plugin."""
+
     form_class = PluginAddContributorConfirmationForm
     template_name = 'plugins/contributors/add_confirmation.html'
 

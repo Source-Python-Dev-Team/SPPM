@@ -1,3 +1,5 @@
+"""Common models used for inheritance."""
+
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
@@ -18,9 +20,9 @@ from precise_bbcode.fields import BBCodeTextField
 # App
 from .constants import FORUM_THREAD_URL, LOGO_MAX_HEIGHT, LOGO_MAX_WIDTH
 from .helpers import (
-    handle_image_upload,
-    handle_logo_upload,
-    handle_zip_file_upload,
+    handle_project_image_upload,
+    handle_project_logo_upload,
+    handle_release_zip_file_upload,
 )
 from .validators import version_validator
 
@@ -39,7 +41,8 @@ __all__ = (
 # >> MODELS
 # =============================================================================
 class ProjectBase(models.Model):
-    """Base model for upload content."""
+    """Base model for projects."""
+
     name = models.CharField(
         max_length=64,
         help_text=(
@@ -74,7 +77,7 @@ class ProjectBase(models.Model):
         related_name='required_in_%(class)ss',
     )
     logo = models.ImageField(
-        upload_to=handle_logo_upload,
+        upload_to=handle_project_logo_upload,
         blank=True,
         null=True,
         help_text="The project's logo image.",
@@ -133,6 +136,7 @@ class ProjectBase(models.Model):
 
     @property
     def handle_logo_upload(self):
+        """Return the function to use for handling logo uploads."""
         raise NotImplementedError(
             f'Class "{self.__class__.__name__}" must implement a '
             '"handle_logo_upload" attribute.'
@@ -140,6 +144,7 @@ class ProjectBase(models.Model):
 
     @property
     def releases(self):
+        """Raise error if class does not have a related field for 'releases'"""
         raise NotImplementedError(
             f'Class "{self.__class__.__name__}" must implement a '
             '"releases" field via ForeignKey relationship.'
@@ -147,6 +152,7 @@ class ProjectBase(models.Model):
 
     @property
     def current_version(self):
+        """Return the current release's version."""
         return self.releases.values_list(
             'version',
             flat=True,
@@ -156,6 +162,7 @@ class ProjectBase(models.Model):
 
     @property
     def total_downloads(self):
+        """Return the total number of downloads for the project."""
         return sum(
             map(
                 attrgetter('download_count'),
@@ -193,12 +200,15 @@ class ProjectBase(models.Model):
         super().save(*args, **kwargs)
 
     def get_forum_url(self):
+        """Return the forum topic URL."""
         if self.topic is not None:
             return FORUM_THREAD_URL.format(topic=self.topic)
         return None
 
 
 class ReleaseBase(models.Model):
+    """Base model for project releases."""
+
     version = models.CharField(
         max_length=8,
         validators=[version_validator],
@@ -211,7 +221,7 @@ class ReleaseBase(models.Model):
         help_text='The notes for this particular release of the project.',
     )
     zip_file = models.FileField(
-        upload_to=handle_zip_file_upload,
+        upload_to=handle_release_zip_file_upload,
     )
     download_count = models.PositiveIntegerField(
         default=0,
@@ -225,10 +235,12 @@ class ReleaseBase(models.Model):
 
     @property
     def file_name(self):
+        """Return the name of the zip file."""
         return self.zip_file.name.rsplit('/', 1)[1]
 
     @property
     def handle_zip_file_upload(self):
+        """Return the function to use for handling zip file uploads."""
         raise NotImplementedError(
             f'Class "{self.__class__.__name__}" must implement a '
             '"handle_zip_file_upload" attribute.'
@@ -236,8 +248,10 @@ class ReleaseBase(models.Model):
 
 
 class ImageBase(models.Model):
+    """Base model for project images."""
+
     image = models.ImageField(
-        upload_to=handle_image_upload,
+        upload_to=handle_project_image_upload,
     )
     created = AutoCreatedField(_('created'))
 
@@ -248,6 +262,7 @@ class ImageBase(models.Model):
 
     @property
     def handle_image_upload(self):
+        """Return the function to use for handling image uploads."""
         raise NotImplementedError(
             f'Class "{self.__class__.__name__}" must implement a '
             '"handle_image_upload" attribute.'

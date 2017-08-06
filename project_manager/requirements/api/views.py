@@ -1,3 +1,5 @@
+"""Requirement API views."""
+
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
@@ -13,11 +15,6 @@ from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 
 # App
-from .serializers import (
-    DownloadRequirementSerializer,
-    PyPiRequirementSerializer,
-    VersionControlRequirementSerializer,
-)
 from project_manager.packages.models import Package
 from project_manager.plugins.models import Plugin
 from project_manager.requirements.models import (
@@ -26,6 +23,11 @@ from project_manager.requirements.models import (
     VersionControlRequirement,
 )
 from project_manager.sub_plugins.models import SubPlugin
+from .serializers import (
+    DownloadRequirementSerializer,
+    PyPiRequirementSerializer,
+    VersionControlRequirementSerializer,
+)
 
 
 # =============================================================================
@@ -70,9 +72,13 @@ _project_prefetch = (
 # >> VIEWS
 # =============================================================================
 class RequirementAPIView(APIView):
+    """Requirement API routes."""
+
     http_method_names = ('get', 'options')
 
-    def get(self, request):
+    @staticmethod
+    def get(request):
+        """Return all API routes for requirements."""
         return Response(
             data={
                 'download': reverse(
@@ -92,6 +98,8 @@ class RequirementAPIView(APIView):
 
 
 class DownloadRequirementViewSet(ModelViewSet):
+    """ViewSet for getting and listing Download requirements."""
+
     filter_backends = (OrderingFilter, DjangoFilterBackend)
     ordering = ('name',)
     ordering_fields = ('name',)
@@ -104,6 +112,8 @@ class DownloadRequirementViewSet(ModelViewSet):
 
 
 class PyPiRequirementViewSet(ModelViewSet):
+    """ViewSet for getting and listing PyPi requirements."""
+
     filter_backends = (OrderingFilter, DjangoFilterBackend)
     ordering = ('name',)
     ordering_fields = ('name',)
@@ -116,6 +126,8 @@ class PyPiRequirementViewSet(ModelViewSet):
 
 
 class VersionControlRequirementViewSet(ModelViewSet):
+    """ViewSet for getting and listing Version Control requirements."""
+
     filter_backends = (OrderingFilter, DjangoFilterBackend)
     ordering = ('name',)
     ordering_fields = ('name',)

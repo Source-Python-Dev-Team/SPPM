@@ -1,3 +1,5 @@
+"""Mixins for use with Packages."""
+
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
@@ -17,10 +19,13 @@ __all__ = (
 # >> MIX-INS
 # =============================================================================
 class RetrievePackageMixin(object):
+    """Mixin to retrieve the Package for the view."""
+
     _package = None
 
     @property
     def package(self):
+        """Return the Package for the view."""
         if self._package is None:
             self._package = Package.objects.get(slug=self.kwargs['slug'])
         return self._package

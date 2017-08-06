@@ -1,3 +1,5 @@
+"""Game model classes."""
+
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
@@ -19,6 +21,8 @@ __all__ = (
 # >> MODELS
 # =============================================================================
 class Game(models.Model):
+    """Game model."""
+
     name = models.CharField(
         max_length=16,
         unique=True,
@@ -44,6 +48,7 @@ class Game(models.Model):
         super().save(*args, **kwargs)
 
     def get_absolute_url(self):
+        """Return the URL for the Game."""
         return reverse(
             viewname='games:detail',
             kwargs={

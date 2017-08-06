@@ -1,3 +1,5 @@
+"""SubPlugin API filters."""
+
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
@@ -23,6 +25,8 @@ __all__ = (
 # >> FILTERS
 # =============================================================================
 class SubPluginFilter(FilterSet):
+    """Filters for SubPlugins."""
+
     game = CharFilter(
         'supported_games__basename',
     )
@@ -32,7 +36,9 @@ class SubPluginFilter(FilterSet):
         model = SubPlugin
         fields = ('game',)
 
-    def filter_userid(self, queryset, name, value):
+    @staticmethod
+    def filter_userid(queryset, name, value):
+        """Filter to SubPlugins owned or contributed to by given ForumUser."""
         return queryset.filter(
             Q(owner__id=value) | Q(contributors__id=value)
         )

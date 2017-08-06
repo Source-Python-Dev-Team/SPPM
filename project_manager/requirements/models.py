@@ -1,3 +1,5 @@
+"""Requirement model classes."""
+
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
@@ -22,6 +24,8 @@ __all__ = (
 # >> MODELS
 # =============================================================================
 class DownloadRequirement(models.Model):
+    """Download requirement model."""
+
     name = models.CharField(
         max_length=64,
     )
@@ -40,6 +44,8 @@ class DownloadRequirement(models.Model):
 
 
 class PyPiRequirement(models.Model):
+    """PyPi requirement model."""
+
     name = models.CharField(
         max_length=32,
         unique=True,
@@ -58,10 +64,12 @@ class PyPiRequirement(models.Model):
         return self.name
 
     def save(self, *args, **kwargs):
+        """Set the slug and save the Requirement."""
         self.slug = slugify(self.name)
         super().save(*args, **kwargs)
 
     def get_absolute_url(self):
+        """Return the URL for the PyPiRequirement."""
         return reverse(
             viewname='pypi:detail',
             kwargs={
@@ -70,10 +78,13 @@ class PyPiRequirement(models.Model):
         )
 
     def get_pypi_url(self):
+        """Return the PyPi URL for the requirement."""
         return settings.PYPI_URL + f'/{self.name}'
 
 
 class VersionControlRequirement(models.Model):
+    """VCS requirement model."""
+
     GIT = 0
     MERCURIAL = 1
     SUBVERSION = 2

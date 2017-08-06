@@ -1,3 +1,5 @@
+"""SubPlugin app config."""
+
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
@@ -17,5 +19,7 @@ __all__ = (
 # >> APPLICATION CONFIG
 # =============================================================================
 class SubPluginConfig(AppConfig):
+    """SubPlugin app config."""
+
     name = 'project_manager.sub_plugins'
     verbose_name = 'SubPlugins'

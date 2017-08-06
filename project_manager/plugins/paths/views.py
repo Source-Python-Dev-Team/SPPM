@@ -1,3 +1,5 @@
+"""SubPluginPath views."""
+
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
@@ -5,9 +7,9 @@
 from django.views.generic import CreateView, DeleteView, ListView, UpdateView
 
 # App
+from project_manager.plugins.mixins import RetrievePluginMixin
 from .forms import SubPluginPathCreateForm, SubPluginPathEditForm
 from .models import SubPluginPath
-from project_manager.plugins.mixins import RetrievePluginMixin
 
 
 # =============================================================================
@@ -25,6 +27,8 @@ __all__ = (
 # >> VIEWS
 # =============================================================================
 class SubPluginPathListView(RetrievePluginMixin, ListView):
+    """SubPluginPath listing view."""
+
     model = SubPluginPath
     template_name = 'plugins/paths/list.html'
 
@@ -42,6 +46,8 @@ class SubPluginPathListView(RetrievePluginMixin, ListView):
 
 
 class SubPluginPathCreateView(RetrievePluginMixin, CreateView):
+    """SubPluginPath creation view."""
+
     model = SubPluginPath
     form_class = SubPluginPathCreateForm
     template_name = 'plugins/paths/create.html'
@@ -55,6 +61,8 @@ class SubPluginPathCreateView(RetrievePluginMixin, CreateView):
 
 
 class SubPluginPathEditView(RetrievePluginMixin, UpdateView):
+    """SubPluginPath update view."""
+
     model = SubPluginPath
     form_class = SubPluginPathEditForm
     template_name = 'plugins/paths/edit.html'
@@ -69,6 +77,8 @@ class SubPluginPathEditView(RetrievePluginMixin, UpdateView):
 
 
 class SubPluginPathDeleteView(DeleteView):
+    """SubPluginPath deletion view."""
+
     model = SubPluginPath
 
     def get_object(self, queryset=None):

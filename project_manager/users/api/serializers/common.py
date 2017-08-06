@@ -1,3 +1,5 @@
+"""User serializers for APIs in other apps."""
+
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
@@ -20,6 +22,8 @@ __all__ = (
 # >> SERIALIZERS
 # =============================================================================
 class ForumUserContributorSerializer(ModelSerializer):
+    """Used for owner/contributors for Projects."""
+
     class Meta:
         model = ForumUser
         fields = (

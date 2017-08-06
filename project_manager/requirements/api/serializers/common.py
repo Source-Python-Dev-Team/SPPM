@@ -1,3 +1,5 @@
+"""Requirement serializers for APIs in other apps."""
+
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
@@ -26,6 +28,8 @@ __all__ = (
 # >> SERIALIZERS
 # =============================================================================
 class RequiredDownloadSerializer(ModelSerializer):
+    """Serializer for listing required Downloads for projects."""
+
     class Meta:
         model = DownloadRequirement
         fields = (
@@ -36,6 +40,8 @@ class RequiredDownloadSerializer(ModelSerializer):
 
 
 class RequiredPyPiSerializer(ModelSerializer):
+    """Serializer for listing required PyPis for projects."""
+
     class Meta:
         model = PyPiRequirement
         fields = (
@@ -44,6 +50,8 @@ class RequiredPyPiSerializer(ModelSerializer):
 
 
 class RequiredVersionControlSerializer(ModelSerializer):
+    """Serializer for listing required VCS for projects."""
+
     class Meta:
         model = VersionControlRequirement
         fields = (

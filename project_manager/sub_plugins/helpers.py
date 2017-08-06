@@ -1,3 +1,5 @@
+"""Helpers for use with SubPlugins."""
+
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
@@ -8,12 +10,12 @@ from zipfile import ZipFile, BadZipfile
 from django.core.exceptions import ValidationError
 
 # App
-from .constants import (
-    SUB_PLUGIN_IMAGE_URL, SUB_PLUGIN_LOGO_URL, SUB_PLUGIN_RELEASE_URL,
-)
 from project_manager.plugins.constants import PLUGIN_PATH
 from project_manager.common.constants import CANNOT_BE_NAMED, CANNOT_START_WITH
 from project_manager.common.helpers import find_image_number
+from .constants import (
+    SUB_PLUGIN_IMAGE_URL, SUB_PLUGIN_LOGO_URL, SUB_PLUGIN_RELEASE_URL,
+)
 
 
 # =============================================================================

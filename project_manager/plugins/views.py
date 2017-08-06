@@ -1,3 +1,5 @@
+"""Plugin views."""
+
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
@@ -37,6 +39,8 @@ __all__ = (
 # >> VIEWS
 # =============================================================================
 class PluginListView(GameSpecificOrderablePaginatedListView):
+    """Plugin listing view."""
+
     model = Plugin
     orderable_columns = (
         'name',
@@ -48,21 +52,26 @@ class PluginListView(GameSpecificOrderablePaginatedListView):
 
 
 class PluginCreateView(RequirementsParserMixin, CreateView):
+    """Plugin creation view."""
+
     model = Plugin
     form_class = PluginCreateForm
     template_name = 'plugins/create.html'
 
-    @staticmethod
-    def get_requirements_path(form):
+    def get_requirements_path(self, form):
+        """Return the path for the requirements file."""
         return f'{PLUGIN_PATH}{form.instance.basename}/requirements.ini'
 
 
 class PluginEditView(UpdateView):
+    """Plugin field editing view."""
+
     model = Plugin
     form_class = PluginEditForm
     template_name = 'plugins/edit.html'
 
     def get_initial(self):
+        """Add the logo to the initial."""
         initial = super().get_initial()
         initial.update({
             'logo': '',
@@ -73,15 +82,18 @@ class PluginEditView(UpdateView):
 class PluginUpdateView(
     RequirementsParserMixin, RetrievePluginMixin, UpdateView
 ):
+    """Plugin release creation view."""
+
     model = Plugin
     form_class = PluginUpdateForm
     template_name = 'plugins/update.html'
 
-    @staticmethod
-    def get_requirements_path(form):
+    def get_requirements_path(self, form):
+        """Return the path for the requirements file."""
         return f'{PLUGIN_PATH}{form.instance.basename}/requirements.ini'
 
     def get_context_data(self, **kwargs):
+        """Add the necessary info to the context."""
         context = super().get_context_data(**kwargs)
         context.update({
             'plugin': self.plugin,
@@ -90,6 +102,7 @@ class PluginUpdateView(
         return context
 
     def get_initial(self):
+        """Clear out the initial."""
         initial = super().get_initial()
         initial.update({
             'version': '',
@@ -100,16 +113,21 @@ class PluginUpdateView(
 
 
 class PluginSelectGamesView(UpdateView):
+    """Plugin Game selection view."""
+
     model = Plugin
     form_class = PluginSelectGamesForm
     template_name = 'plugins/games.html'
 
 
 class PluginView(DetailView):
+    """Plugin get view."""
+
     model = Plugin
     template_name = 'plugins/view.html'
 
     def get_context_data(self, **kwargs):
+        """Add the necessary info to the context."""
         context = super().get_context_data(**kwargs)
         context.update({
             'current_version': self.object.current_version,
@@ -123,6 +141,8 @@ class PluginView(DetailView):
 
 
 class PluginReleaseDownloadView(DownloadMixin):
+    """Plugin download view for releases."""
+
     model = PluginRelease
     super_model = Plugin
     super_kwarg = 'plugin'
@@ -130,10 +150,13 @@ class PluginReleaseDownloadView(DownloadMixin):
 
 
 class PluginReleaseListView(RetrievePluginMixin, ListView):
+    """PluginRelease listing view."""
+
     model = PluginRelease
     template_name = 'plugins/releases.html'
 
     def get_context_data(self, **kwargs):
+        """Add the plugin to the context."""
         context = super().get_context_data(**kwargs)
         context.update({
             'plugin': self.plugin,
@@ -141,6 +164,7 @@ class PluginReleaseListView(RetrievePluginMixin, ListView):
         return context
 
     def get_queryset(self):
+        """Filter down to the releases for the Plugin and order them."""
         return PluginRelease.objects.filter(
             plugin=self.plugin,
         ).order_by('-created')

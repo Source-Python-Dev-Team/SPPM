@@ -1,3 +1,5 @@
+"""Common views."""
+
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
@@ -34,7 +36,10 @@ class _PageObject(object):
 # >> VIEWS
 # =============================================================================
 class OrderableListView(OrderableListMixin, ListView):
+    """View to be inherited for ordering."""
+
     def get_context_data(self, **kwargs):
+        """Update ordering."""
         context = super().get_context_data(**kwargs)
         default = self.get_orderable_columns_default()
         orderable_columns = sorted(self.get_orderable_columns())
@@ -56,10 +61,13 @@ class OrderableListView(OrderableListMixin, ListView):
 
 
 class PaginatedListView(ListView):
+    """View to be inherited for pagination."""
+
     next_pages = 2
     previous_pages = 2
 
     def get_next_pages(self):
+        """Return the next page URLs."""
         if not isinstance(self.next_pages, int) or self.next_pages <= 0:
             raise AttributeError(
                 f'"{self.next_pages}" is not a valid value for '
@@ -68,6 +76,7 @@ class PaginatedListView(ListView):
         return self.next_pages
 
     def get_previous_pages(self):
+        """Return the previous page URLs."""
         if not isinstance(self.next_pages, int) or self.previous_pages <= 0:
             raise AttributeError(
                 f'"{self.next_pages}" is not a valid value for '
@@ -76,6 +85,7 @@ class PaginatedListView(ListView):
         return self.previous_pages
 
     def get_context_data(self, **kwargs):
+        """Add pagination to the view's context."""
         context = super().get_context_data(**kwargs)
         paginator = context['paginator']
         page = context['page_obj']
@@ -137,7 +147,10 @@ class PaginatedListView(ListView):
 
 
 class OrderablePaginatedListView(OrderableListView, PaginatedListView):
+    """View to be inherited for both ordering and pagination."""
+
     def get_context_data(self, **kwargs):
+        """Update the ordering and pagination."""
         context = super().get_context_data(**kwargs)
         order_url = context['order_url']
         if order_url:

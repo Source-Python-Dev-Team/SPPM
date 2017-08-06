@@ -1,3 +1,5 @@
+"""Package contributors forms."""
+
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
@@ -20,6 +22,8 @@ __all__ = (
 # >> FORMS
 # =============================================================================
 class PackageAddContributorConfirmationForm(forms.ModelForm):
+    """Form for confirming adding a contributor to a Package."""
+
     class Meta:
         model = ForumUser
         fields = (

@@ -1,3 +1,5 @@
+"""Plugin admin classes."""
+
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
@@ -5,7 +7,6 @@
 from django.contrib import admin
 
 # App
-from .paths.admin import SubPluginPathAdmin
 from .models import Plugin, PluginImage, PluginRelease
 
 
@@ -24,6 +25,8 @@ __all__ = (
 # =============================================================================
 @admin.register(PluginRelease)
 class PluginReleaseAdmin(admin.ModelAdmin):
+    """PluginRelease admin."""
+
     list_display = (
         'plugin',
     )
@@ -40,6 +43,8 @@ class PluginReleaseAdmin(admin.ModelAdmin):
 
 @admin.register(Plugin)
 class PluginAdmin(admin.ModelAdmin):
+    """Plugin admin."""
+
     exclude = (
         'slug',
     )
@@ -67,6 +72,8 @@ class PluginAdmin(admin.ModelAdmin):
 
 @admin.register(PluginImage)
 class PluginImageAdmin(admin.ModelAdmin):
+    """PluginImage admin."""
+
     list_display = (
         'plugin',
         'image',

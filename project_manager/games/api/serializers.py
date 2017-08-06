@@ -1,3 +1,5 @@
+"""Game serializers for APIs."""
+
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
@@ -20,6 +22,8 @@ __all__ = (
 # >> SERIALIZERS
 # =============================================================================
 class GameSerializer(ModelSerializer):
+    """Serializer for supported games for projects."""
+
     class Meta:
         model = Game
         fields = (

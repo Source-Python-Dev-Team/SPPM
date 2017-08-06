@@ -1,3 +1,5 @@
+"""Package app config."""
+
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
@@ -17,5 +19,7 @@ __all__ = (
 # >> APPLICATION CONFIG
 # =============================================================================
 class PackageConfig(AppConfig):
+    """Package app config."""
+
     name = 'project_manager.packages'
     verbose_name = 'Packages'

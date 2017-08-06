@@ -1,3 +1,5 @@
+"""SubPluginPath model classes."""
+
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
@@ -21,6 +23,8 @@ __all__ = (
 # >> MODELS
 # =============================================================================
 class SubPluginPath(models.Model):
+    """Model to store SubPlugin paths for a Plugin."""
+
     plugin = models.ForeignKey(
         to='plugins.Plugin',
         related_name='paths',
@@ -38,9 +42,11 @@ class SubPluginPath(models.Model):
         )
 
     def __str__(self):
+        """Return the path."""
         return self.path
 
     def get_absolute_url(self):
+        """Return the SubPluginPath listing URL for the Plugin."""
         return reverse(
             viewname='plugins:paths:list',
             kwargs={

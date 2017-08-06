@@ -1,3 +1,5 @@
+"""Package serializers for APIs in other apps."""
+
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
@@ -20,6 +22,8 @@ __all__ = (
 # >> SERIALIZERS
 # =============================================================================
 class PackageRequirementSerializer(ModelSerializer):
+    """Serializer for Package requirements."""
+
     class Meta:
         model = Package
         fields = (

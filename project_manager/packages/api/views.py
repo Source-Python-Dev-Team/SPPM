@@ -1,3 +1,5 @@
+"""Package API views."""
+
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
@@ -10,11 +12,11 @@ from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 
 # App
+from project_manager.common.api.helpers import get_prefetch
+from project_manager.common.api.views import ProjectImageViewSet
 from .filters import PackageFilter
 from .serializers import PackageImageSerializer, PackageSerializer
 from ..models import Package, PackageImage, PackageRelease
-from project_manager.common.api.helpers import get_prefetch
-from project_manager.common.api.views import ProjectImageViewSet
 
 
 # =============================================================================
@@ -31,9 +33,13 @@ __all__ = (
 # >> VIEWS
 # =============================================================================
 class PackageAPIView(APIView):
+    """Package API routes."""
+
     http_method_names = ('get', 'options')
 
-    def get(self, request):
+    @staticmethod
+    def get(request):
+        """Return all the API routes for Packages."""
         return Response(
             data={
                 'projects': reverse(
@@ -49,6 +55,8 @@ class PackageAPIView(APIView):
 
 
 class PackageViewSet(ModelViewSet):
+    """ViewSet for creating, updating, and listing Packages."""
+
     filter_backends = (OrderingFilter, DjangoFilterBackend)
     filter_class = PackageFilter
     ordering = ('-releases__created',)
@@ -65,6 +73,8 @@ class PackageViewSet(ModelViewSet):
 
 
 class PackageImageViewSet(ProjectImageViewSet):
+    """ViewSet for adding, removing, and listing images for Packages."""
+
     queryset = PackageImage.objects.select_related(
         'package',
     )

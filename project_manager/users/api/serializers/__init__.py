@@ -1,3 +1,5 @@
+"""User serializers for APIs."""
+
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
@@ -27,6 +29,8 @@ __all__ = (
 # >> SERIALIZERS
 # =============================================================================
 class ProjectContributionSerializer(ModelSerializer):
+    """Base class for Project contributions."""
+
     class Meta:
         fields = (
             'name',
@@ -35,16 +39,22 @@ class ProjectContributionSerializer(ModelSerializer):
 
 
 class PackageContributionSerializer(ProjectContributionSerializer):
+    """Serializer for Package Contributions."""
+
     class Meta(ProjectContributionSerializer.Meta):
         model = Package
 
 
 class PluginContributionSerializer(ProjectContributionSerializer):
+    """Serializer for Plugin Contributions."""
+
     class Meta(ProjectContributionSerializer.Meta):
         model = Plugin
 
 
 class SubPluginContributionSerializer(ModelSerializer):
+    """Serializer for SubPlugin Contributions."""
+
     plugin = PluginContributionSerializer()
 
     class Meta:
@@ -57,6 +67,8 @@ class SubPluginContributionSerializer(ModelSerializer):
 
 
 class ForumUserSerializer(ModelSerializer):
+    """Serializer for User Contributions."""
+
     packages = PackageContributionSerializer(
         many=True,
         read_only=True,

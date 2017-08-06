@@ -1,3 +1,5 @@
+"""Plugin API filters."""
+
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
@@ -23,6 +25,8 @@ __all__ = (
 # >> FILTERS
 # =============================================================================
 class PluginFilter(FilterSet):
+    """Filters for Plugins."""
+
     game = CharFilter(
         'supported_games__basename',
     )
@@ -32,7 +36,9 @@ class PluginFilter(FilterSet):
         model = Plugin
         fields = ('game',)
 
-    def filter_userid(self, queryset, name, value):
+    @staticmethod
+    def filter_userid(queryset, name, value):
+        """Filter to Plugins owned or contributed to by given ForumUser."""
         return queryset.filter(
             Q(owner__id=value) | Q(contributors__id=value)
         )

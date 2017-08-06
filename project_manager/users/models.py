@@ -1,3 +1,5 @@
+"""User model classes."""
+
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
@@ -21,6 +23,8 @@ __all__ = (
 # >> MODELS
 # =============================================================================
 class ForumUser(models.Model):
+    """Model for User based information."""
+
     username = models.CharField(
         max_length=30,
         unique=True,
@@ -35,9 +39,11 @@ class ForumUser(models.Model):
         verbose_name_plural = 'Forum Users'
 
     def __str__(self):
+        """Return the ForumUser's username."""
         return self.username
 
     def get_absolute_url(self):
+        """Return the URL for the user."""
         return reverse(
             viewname='users:detail',
             kwargs={
@@ -46,4 +52,5 @@ class ForumUser(models.Model):
         )
 
     def get_forum_url(self):
+        """Return the user's forum URL."""
         return FORUM_MEMBER_URL.format(user_id=self.id)

@@ -1,3 +1,5 @@
+"""Common helper functions for APIs."""
+
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
@@ -28,6 +30,7 @@ __all__ = (
 # >> HELPER FUNCTIONS
 # =============================================================================
 def get_prefetch(release_class, image_class):
+    """Return a common Prefetch for Projects."""
     return (
         Prefetch(
             lookup='releases',

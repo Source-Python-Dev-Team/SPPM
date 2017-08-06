@@ -1,3 +1,5 @@
+"""Base views."""
+
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
@@ -23,9 +25,12 @@ __all__ = (
 # >> VIEWS
 # =============================================================================
 class StatisticsView(TemplateView):
+    """View for total Project statistics."""
+
     template_name = 'statistics.html'
 
     def get_context_data(self, **kwargs):
+        """Return all statistical context data."""
         context = super().get_context_data(**kwargs)
         package_downloads = sum(
             PackageRelease.objects.all().values_list(

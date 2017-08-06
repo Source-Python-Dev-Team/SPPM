@@ -1,3 +1,5 @@
+"""Requirement serializers for APIs."""
+
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
@@ -32,6 +34,8 @@ __all__ = (
 # >> SERIALIZERS
 # =============================================================================
 class RequirementSerializer(ModelSerializer):
+    """Base serializer for listing requirements."""
+
     required_in_packages = PackageContributionSerializer(
         many=True,
         read_only=True,
@@ -54,6 +58,8 @@ class RequirementSerializer(ModelSerializer):
 
 
 class DownloadRequirementSerializer(RequirementSerializer):
+    """Serializer for listing Download requirements."""
+
     class Meta(RequirementSerializer):
         model = DownloadRequirement
         fields = (
@@ -64,6 +70,8 @@ class DownloadRequirementSerializer(RequirementSerializer):
 
 
 class PyPiRequirementSerializer(RequirementSerializer):
+    """Serializer for listing PyPi requirements."""
+
     class Meta(RequirementSerializer):
         model = PyPiRequirement
         fields = (
@@ -72,6 +80,8 @@ class PyPiRequirementSerializer(RequirementSerializer):
 
 
 class VersionControlRequirementSerializer(RequirementSerializer):
+    """Serializer for listing Version Control requirements."""
+
     class Meta(RequirementSerializer):
         model = VersionControlRequirement
         fields = (

@@ -1,3 +1,5 @@
+"""Package views."""
+
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
@@ -10,7 +12,6 @@ from project_manager.common.mixins import (
     DownloadMixin,
     RequirementsParserMixin,
 )
-from project_manager.common.views import OrderablePaginatedListView
 from project_manager.games.mixins import GameSpecificOrderablePaginatedListView
 from .constants import PACKAGE_PATH, PACKAGE_RELEASE_URL
 from .forms import (
@@ -40,6 +41,8 @@ __all__ = (
 # >> VIEWS
 # =============================================================================
 class PackageListView(GameSpecificOrderablePaginatedListView):
+    """Package listing view."""
+
     model = Package
     orderable_columns = (
         'name',
@@ -51,21 +54,26 @@ class PackageListView(GameSpecificOrderablePaginatedListView):
 
 
 class PackageCreateView(RequirementsParserMixin, CreateView):
+    """Package creation view."""
+
     model = Package
     form_class = PackageCreateForm
     template_name = 'packages/create.html'
 
-    @staticmethod
-    def get_requirements_path(form):
+    def get_requirements_path(self, form):
+        """Return the path for the requirements file."""
         return f'{PACKAGE_PATH}{form.instance.basename}/requirements.ini'
 
 
 class PackageEditView(UpdateView):
+    """Package field editing view."""
+
     model = Package
     form_class = PackageEditForm
     template_name = 'packages/edit.html'
 
     def get_initial(self):
+        """Add the logo to the initial."""
         initial = super().get_initial()
         initial.update({
             'logo': '',
@@ -76,15 +84,18 @@ class PackageEditView(UpdateView):
 class PackageUpdateView(
     RequirementsParserMixin, RetrievePackageMixin, UpdateView
 ):
+    """Package release creation view."""
+
     model = Package
     form_class = PackageUpdateForm
     template_name = 'packages/update.html'
 
-    @staticmethod
-    def get_requirements_path(form):
+    def get_requirements_path(self, form):
+        """Return the path for the requirements file."""
         return f'{PACKAGE_PATH}{form.instance.basename}/requirements.ini'
 
     def get_context_data(self, **kwargs):
+        """Add the necessary info to the context."""
         context = super().get_context_data(**kwargs)
         context.update({
             'package': self.package,
@@ -93,6 +104,7 @@ class PackageUpdateView(
         return context
 
     def get_initial(self):
+        """Clear out the initial."""
         initial = super().get_initial()
         initial.update({
             'version': '',
@@ -103,16 +115,21 @@ class PackageUpdateView(
 
 
 class PackageSelectGamesView(UpdateView):
+    """Package Game selection view."""
+
     model = Package
     form_class = PackageSelectGamesForm
     template_name = 'packages/games.html'
 
 
 class PackageView(DetailView):
+    """Package get view."""
+
     model = Package
     template_name = 'packages/view.html'
 
     def get_context_data(self, **kwargs):
+        """Add the necessary info to the context."""
         context = super().get_context_data(**kwargs)
         context.update({
             'current_version': self.object.current_version,
@@ -134,6 +151,8 @@ class PackageView(DetailView):
 
 
 class PackageReleaseDownloadView(DownloadMixin):
+    """Package download view for releases."""
+
     model = PackageRelease
     super_model = Package
     super_kwarg = 'package'
@@ -141,10 +160,13 @@ class PackageReleaseDownloadView(DownloadMixin):
 
 
 class PackageReleaseListView(RetrievePackageMixin, ListView):
+    """PackageRelease listing view."""
+
     model = PackageRelease
     template_name = 'packages/releases.html'
 
     def get_context_data(self, **kwargs):
+        """Add the package to the context."""
         context = super().get_context_data(**kwargs)
         context.update({
             'package': self.package,
@@ -152,6 +174,7 @@ class PackageReleaseListView(RetrievePackageMixin, ListView):
         return context
 
     def get_queryset(self):
+        """Filter down to the releases for the Package and order them."""
         return PackageRelease.objects.filter(
             package=self.package,
         ).order_by('-created')

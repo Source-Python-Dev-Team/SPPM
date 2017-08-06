@@ -1,3 +1,5 @@
+"""Plugin API views."""
+
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
@@ -10,11 +12,11 @@ from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 
 # App
+from project_manager.common.api.helpers import get_prefetch
+from project_manager.common.api.views import ProjectImageViewSet
 from .filters import PluginFilter
 from .serializers import PluginImageSerializer, PluginSerializer
 from ..models import Plugin, PluginImage, PluginRelease
-from project_manager.common.api.helpers import get_prefetch
-from project_manager.common.api.views import ProjectImageViewSet
 
 
 # =============================================================================
@@ -31,9 +33,13 @@ __all__ = (
 # >> VIEWS
 # =============================================================================
 class PluginAPIView(APIView):
+    """Plugin API routes."""
+
     http_method_names = ('get', 'options')
 
-    def get(self, request):
+    @staticmethod
+    def get(request):
+        """Return all the API routes for Plugins."""
         return Response(
             data={
                 'projects': reverse(
@@ -49,6 +55,8 @@ class PluginAPIView(APIView):
 
 
 class PluginViewSet(ModelViewSet):
+    """ViewSet for creating, updating, and listing Plugins."""
+
     filter_backends = (OrderingFilter, DjangoFilterBackend)
     filter_class = PluginFilter
     ordering = ('-releases__created',)
@@ -65,6 +73,8 @@ class PluginViewSet(ModelViewSet):
 
 
 class PluginImageViewSet(ProjectImageViewSet):
+    """ViewSet for adding, removing, and listing images for Plugins."""
+
     queryset = PluginImage.objects.select_related(
         'plugin',
     )

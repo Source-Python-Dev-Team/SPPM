@@ -1,3 +1,5 @@
+"""Requirement admin classes."""
+
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
@@ -27,6 +29,8 @@ __all__ = (
 # =============================================================================
 @admin.register(DownloadRequirement)
 class DownloadRequirementAdmin(admin.ModelAdmin):
+    """DownloadRequirement admin."""
+
     list_display = (
         'name',
         'url',
@@ -40,6 +44,8 @@ class DownloadRequirementAdmin(admin.ModelAdmin):
 
 @admin.register(PyPiRequirement)
 class PyPiRequirementAdmin(admin.ModelAdmin):
+    """PyPiRequirement admin."""
+
     exclude = (
         'slug',
     )
@@ -50,6 +56,8 @@ class PyPiRequirementAdmin(admin.ModelAdmin):
 
 @admin.register(VersionControlRequirement)
 class VersionControlRequirementAdmin(admin.ModelAdmin):
+    """VersionControlRequirement admin."""
+
     list_display = (
         'name',
         'url',

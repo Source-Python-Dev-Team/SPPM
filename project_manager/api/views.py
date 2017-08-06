@@ -1,3 +1,5 @@
+"""API base views."""
+
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
@@ -19,8 +21,11 @@ __all__ = (
 # >> VIEWS
 # =============================================================================
 class ProjectManagerAPIView(APIView):
+    """Base API view."""
 
-    def get(self, request):
+    @staticmethod
+    def get(request):
+        """Retrieve the API endpoints."""
         data = {
             'packages': reverse(
                 viewname='api:packages:endpoints',

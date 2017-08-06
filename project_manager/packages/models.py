@@ -1,3 +1,5 @@
+"""Package model classes."""
+
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
@@ -7,7 +9,7 @@ from django.core.urlresolvers import reverse
 from django.db import models
 
 # App
-from project_manager.common.models import ProjectBase, ReleaseBase
+from project_manager.common.models import ImageBase, ProjectBase, ReleaseBase
 from project_manager.common.validators import basename_validator
 from project_manager.users.models import ForumUser
 from .constants import PACKAGE_LOGO_URL
@@ -30,6 +32,8 @@ __all__ = (
 # >> MODELS
 # =============================================================================
 class Package(ProjectBase):
+    """Package project type model."""
+
     basename = models.CharField(
         max_length=32,
         validators=[basename_validator],
@@ -46,6 +50,7 @@ class Package(ProjectBase):
     handle_logo_upload = handle_package_logo_upload
 
     def get_absolute_url(self):
+        """Return the URL for the Package."""
         return reverse(
             viewname='packages:detail',
             kwargs={
@@ -71,7 +76,8 @@ class Package(ProjectBase):
 
 
 class PackageRelease(ReleaseBase):
-    """Store the information for """
+    """Package release type model."""
+
     package = models.ForeignKey(
         to='packages.Package',
         related_name='releases',
@@ -80,6 +86,7 @@ class PackageRelease(ReleaseBase):
     handle_zip_file_upload = handle_package_zip_upload
 
     def get_absolute_url(self):
+        """Return the URL for the PackageRelease."""
         return reverse(
             viewname='package-download',
             kwargs={
@@ -89,15 +96,12 @@ class PackageRelease(ReleaseBase):
         )
 
 
-class PackageImage(models.Model):
-    image = models.ImageField(
-        upload_to=handle_package_image_upload,
-    )
+class PackageImage(ImageBase):
+    """Package image type model."""
+
     package = models.ForeignKey(
         to='packages.Package',
         related_name='images',
     )
 
-    class Meta:
-        verbose_name = 'Image'
-        verbose_name_plural = 'Images'
+    handle_image_upload = handle_package_image_upload

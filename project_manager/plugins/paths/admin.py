@@ -1,3 +1,5 @@
+"""SubPluginPath admin classes."""
+
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
@@ -21,6 +23,8 @@ __all__ = (
 # =============================================================================
 @admin.register(SubPluginPath)
 class SubPluginPathAdmin(admin.ModelAdmin):
+    """SubPluginPath admin."""
+
     list_display = (
         'path',
         'plugin',

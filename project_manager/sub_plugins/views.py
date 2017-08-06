@@ -1,3 +1,5 @@
+"""SubPlugin views."""
+
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
@@ -9,7 +11,6 @@ from project_manager.common.mixins import (
     DownloadMixin,
     RequirementsParserMixin,
 )
-from project_manager.common.views import OrderablePaginatedListView
 from project_manager.games.mixins import GameSpecificOrderablePaginatedListView
 from project_manager.plugins.constants import PLUGIN_PATH
 from project_manager.plugins.models import Plugin
@@ -41,9 +42,10 @@ __all__ = (
 # >> VIEWS
 # =============================================================================
 class SubPluginListView(
-    RetrieveSubPluginMixin,
-    GameSpecificOrderablePaginatedListView
+    RetrieveSubPluginMixin, GameSpecificOrderablePaginatedListView
 ):
+    """SubPlugin listing view."""
+
     model = SubPlugin
     orderable_columns = (
         'name',
@@ -54,11 +56,13 @@ class SubPluginListView(
     template_name = 'sub_plugins/list.html'
 
     def get_queryset(self):
+        """Filter down to just the given plugin."""
         return super().get_queryset().filter(
             plugin=self.plugin,
         ).select_related('plugin')
 
     def get_context_data(self, **kwargs):
+        """Add necessary info to the context."""
         context = super().get_context_data(**kwargs)
         context.update({
             'plugin': self.plugin,
@@ -71,12 +75,14 @@ class SubPluginListView(
 class SubPluginCreateView(
     RequirementsParserMixin, RetrieveSubPluginMixin, CreateView
 ):
+    """SubPlugin creation view."""
+
     model = SubPlugin
     form_class = SubPluginCreateForm
     template_name = 'sub_plugins/create.html'
 
-    @staticmethod
-    def get_requirements_path(form):
+    def get_requirements_path(self, form):
+        """Return the path for the requirements file."""
         plugin_basename = form.instance.plugin.basename
         path = form.cleaned_data['path']
         basename = form.instance.basename
@@ -86,6 +92,7 @@ class SubPluginCreateView(
         )
 
     def get_context_data(self, **kwargs):
+        """Add the necessary info to the context."""
         context = super().get_context_data(**kwargs)
         context.update({
             'plugin': self.plugin,
@@ -94,6 +101,7 @@ class SubPluginCreateView(
         return context
 
     def get_initial(self):
+        """Add the plugin to the initial."""
         initial = super().get_initial()
         initial.update({
             'plugin': self.plugin,
@@ -102,12 +110,15 @@ class SubPluginCreateView(
 
 
 class SubPluginEditView(UpdateView):
+    """Plugin field editing view."""
+
     model = SubPlugin
     form_class = SubPluginEditForm
     template_name = 'sub_plugins/edit.html'
     slug_url_kwarg = 'sub_plugin_slug'
 
     def get_initial(self):
+        """Add the logo to the initial."""
         initial = super().get_initial()
         initial.update({
             'logo': '',
@@ -115,6 +126,7 @@ class SubPluginEditView(UpdateView):
         return initial
 
     def get_context_data(self, **kwargs):
+        """Duplicate subplugin for use in template."""
         context = super().get_context_data(**kwargs)
         context.update({
             'sub_plugin': context['subplugin']
@@ -125,13 +137,15 @@ class SubPluginEditView(UpdateView):
 class SubPluginUpdateView(
     RequirementsParserMixin, RetrieveSubPluginMixin, UpdateView
 ):
+    """SubPlugin Release creation view."""
+
     model = SubPlugin
     form_class = SubPluginUpdateForm
     template_name = 'sub_plugins/update.html'
     slug_url_kwarg = 'sub_plugin_slug'
 
-    @staticmethod
-    def get_requirements_path(form):
+    def get_requirements_path(self, form):
+        """Return the path for the requirements file."""
         plugin_basename = form.instance.plugin.basename
         path = form.cleaned_data['path']
         basename = form.instance.basename
@@ -147,6 +161,7 @@ class SubPluginUpdateView(
         )
 
     def get_context_data(self, **kwargs):
+        """Add the necessary info to the context."""
         context = super().get_context_data(**kwargs)
         sub_plugin = context['subplugin']
         context.update({
@@ -158,6 +173,7 @@ class SubPluginUpdateView(
         return context
 
     def get_initial(self):
+        """Clear out the initial and add the plugin."""
         initial = super().get_initial()
         initial.update({
             'plugin': self.plugin,
@@ -169,12 +185,15 @@ class SubPluginUpdateView(
 
 
 class SubPluginSelectGamesView(UpdateView):
+    """SubPlugin Game selection view."""
+
     model = SubPlugin
     form_class = SubPluginSelectGamesForm
     template_name = 'sub_plugins/games.html'
     slug_url_kwarg = 'sub_plugin_slug'
 
     def get_context_data(self, **kwargs):
+        """Duplicate subplugin for use in template."""
         context = super().get_context_data(**kwargs)
         context.update({
             'sub_plugin': context['subplugin']
@@ -183,6 +202,8 @@ class SubPluginSelectGamesView(UpdateView):
 
 
 class SubPluginView(RetrieveSubPluginMixin, DetailView):
+    """SubPlugin get view."""
+
     model = SubPlugin
     template_name = 'sub_plugins/view.html'
     slug_url_kwarg = 'sub_plugin_slug'
@@ -194,6 +215,7 @@ class SubPluginView(RetrieveSubPluginMixin, DetailView):
         ).select_related('plugin')
 
     def get_context_data(self, **kwargs):
+        """Add the necessary info to the context."""
         context = super().get_context_data(**kwargs)
         sub_plugin = context['subplugin']
         context.update({
@@ -208,6 +230,8 @@ class SubPluginView(RetrieveSubPluginMixin, DetailView):
 
 
 class SubPluginReleaseDownloadView(DownloadMixin):
+    """SubPlugin download view for releases."""
+
     model = SubPluginRelease
     super_model = Plugin
     sub_model = SubPlugin
@@ -218,10 +242,13 @@ class SubPluginReleaseDownloadView(DownloadMixin):
 
 
 class SubPluginReleaseListView(RetrieveSubPluginMixin, ListView):
+    """SubPluginRelease listing view."""
+
     model = SubPluginRelease
     template_name = 'sub_plugins/releases.html'
 
     def get_context_data(self, **kwargs):
+        """Add the sub_plugin to the context."""
         context = super().get_context_data(**kwargs)
         context.update({
             'sub_plugin': self.sub_plugin,
@@ -229,6 +256,7 @@ class SubPluginReleaseListView(RetrieveSubPluginMixin, ListView):
         return context
 
     def get_queryset(self):
+        """Filter down to the releases for the SubPlugin and order them."""
         return SubPluginRelease.objects.filter(
             sub_plugin=self.sub_plugin,
         ).order_by('-created')

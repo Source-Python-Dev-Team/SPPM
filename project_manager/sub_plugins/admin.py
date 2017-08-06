@@ -1,3 +1,5 @@
+"""SubPlugin admin classes."""
+
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
@@ -25,6 +27,8 @@ __all__ = (
 # =============================================================================
 @admin.register(SubPluginRelease)
 class SubPluginReleaseAdmin(admin.ModelAdmin):
+    """SubPluginRelease admin."""
+
     list_display = (
         'sub_plugin',
     )
@@ -43,6 +47,8 @@ class SubPluginReleaseAdmin(admin.ModelAdmin):
 
 @admin.register(SubPlugin)
 class SubPluginAdmin(admin.ModelAdmin):
+    """SubPlugin admin."""
+
     exclude = (
         'slug',
     )
@@ -73,6 +79,8 @@ class SubPluginAdmin(admin.ModelAdmin):
 
 @admin.register(SubPluginImage)
 class SubPluginImageAdmin(admin.ModelAdmin):
+    """SubPluginImage admin."""
+
     list_display = (
         'sub_plugin',
         'get_plugin',
@@ -88,7 +96,9 @@ class SubPluginImageAdmin(admin.ModelAdmin):
         'sub_plugin__plugin__basename',
     )
 
-    def get_plugin(self, obj):
+    @staticmethod
+    def get_plugin(obj):
+        """Return the Plugin for the SubPlugin."""
         return obj.sub_plugin.plugin
     get_plugin.short_description = 'Plugin'
     get_plugin.admin_order_field = 'sub_plugin__plugin'

@@ -1,3 +1,5 @@
+"""Forms for use with SubPlugins."""
+
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
@@ -26,6 +28,8 @@ __all__ = (
 # >> FORMS
 # =============================================================================
 class SubPluginCreateForm(SubmitButtonMixin):
+    """SubPlugin creation form."""
+
     version = forms.CharField(
         max_length=8,
         help_text=SubPluginRelease._meta.get_field('version').help_text,
@@ -118,6 +122,8 @@ class SubPluginCreateForm(SubmitButtonMixin):
 
 
 class SubPluginEditForm(SubmitButtonMixin):
+    """SubPlugin field editing form."""
+
     class Meta:
         model = SubPlugin
         fields = (
@@ -149,6 +155,8 @@ class SubPluginEditForm(SubmitButtonMixin):
 
 
 class SubPluginSelectGamesForm(SubmitButtonMixin):
+    """SubPlugin Game selection form."""
+
     class Meta:
         model = SubPlugin
         fields = (
@@ -160,6 +168,8 @@ class SubPluginSelectGamesForm(SubmitButtonMixin):
 
 
 class SubPluginUpdateForm(SubmitButtonMixin):
+    """SubPlugin release creation form."""
+
     class Meta:
         model = SubPluginRelease
         fields = (

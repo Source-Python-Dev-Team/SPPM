@@ -1,3 +1,5 @@
+"""Package admin classes."""
+
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
@@ -25,6 +27,8 @@ __all__ = (
 # =============================================================================
 @admin.register(PackageRelease)
 class PackageReleaseAdmin(admin.ModelAdmin):
+    """PackageRelease admin."""
+
     list_display = (
         'package',
     )
@@ -41,6 +45,8 @@ class PackageReleaseAdmin(admin.ModelAdmin):
 
 @admin.register(Package)
 class PackageAdmin(admin.ModelAdmin):
+    """Package admin."""
+
     exclude = (
         'slug',
     )
@@ -68,6 +74,8 @@ class PackageAdmin(admin.ModelAdmin):
 
 @admin.register(PackageImage)
 class PackageImageAdmin(admin.ModelAdmin):
+    """PackageImage admin."""
+
     list_display = (
         'package',
         'image',

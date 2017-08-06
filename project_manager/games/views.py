@@ -1,3 +1,5 @@
+"""Game views."""
+
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
@@ -5,8 +7,8 @@
 from django.views.generic import DetailView, ListView
 
 # App
-from .models import Game
 from project_manager.common.helpers import get_groups
+from .models import Game
 
 
 # =============================================================================
@@ -22,15 +24,20 @@ __all__ = (
 # >> VIEWS
 # =============================================================================
 class GameListView(ListView):
+    """Game listing view."""
+
     model = Game
     template_name = 'games/list.html'
 
 
 class GameView(DetailView):
+    """Game get view."""
+
     model = Game
     template_name = 'games/view.html'
 
     def get_context_data(self, **kwargs):
+        """Add projects that support the current game to the context."""
         context = super().get_context_data(**kwargs)
         context.update({
             'plugins': get_groups(self.object.plugins.all()),

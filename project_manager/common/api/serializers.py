@@ -1,3 +1,5 @@
+"""Common serializers for APIs."""
+
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
@@ -40,6 +42,8 @@ __all__ = (
 # >> SERIALIZERS
 # =============================================================================
 class ProjectSerializer(ModelSerializer):
+    """Base Project Serializer."""
+
     current_release = SerializerMethodField()
     owner = ForumUserContributorSerializer(
         read_only=True,
@@ -102,6 +106,7 @@ class ProjectSerializer(ModelSerializer):
 
     @property
     def project_type(self):
+        """Return the project's type."""
         raise NotImplementedError(
             f'Class {self.__class__.__name__} must implement a '
             '"project_type" attribute.'
@@ -109,12 +114,14 @@ class ProjectSerializer(ModelSerializer):
 
     @property
     def release_model(self):
+        """Return the model to use for releases."""
         raise NotImplementedError(
             f'Class {self.__class__.__name__} must implement a '
             '"release_model" attribute.'
         )
 
     def create(self, validated_data):
+        """Create the instance and the first release of the project."""
         release_dict = validated_data.pop('releases', {})
         version = release_dict['version']
         zip_file = release_dict['zip_file']
@@ -132,9 +139,11 @@ class ProjectSerializer(ModelSerializer):
         return instance
 
     def get_created(self, obj):
+        """Return the project's created info."""
         return self.get_date_time_dict(timestamp=obj.created)
 
     def get_current_release(self, obj):
+        """Return the current release info."""
         try:
             release = obj.releases.all()[0]
         except IndexError:
@@ -154,6 +163,7 @@ class ProjectSerializer(ModelSerializer):
         }
 
     def get_date_time_dict(self, timestamp):
+        """Return a dictionary of the formatted timestamp."""
         return {
             'actual': timestamp,
             'locale': self.get_date_display(
@@ -167,6 +177,7 @@ class ProjectSerializer(ModelSerializer):
         }
 
     def get_extra_kwargs(self):
+        """Set the 'name' field to read-only when updating."""
         extra_kwargs = super().get_extra_kwargs()
         action = self.context['view'].action
         if action == 'update':
@@ -176,9 +187,11 @@ class ProjectSerializer(ModelSerializer):
         return extra_kwargs
 
     def get_updated(self, obj):
+        """Return the project's last updated info."""
         return self.get_date_time_dict(timestamp=obj.modified)
 
     def update(self, instance, validated_data):
+        """Update the project."""
         release_dict = validated_data.pop('releases', {})
         version = release_dict.get('version', '')
         zip_file = release_dict.get('zip_file')
@@ -202,6 +215,7 @@ class ProjectSerializer(ModelSerializer):
         return instance
 
     def validate(self, attrs):
+        """Validate the given field values."""
         release_dict = attrs.get('releases', {})
         version = release_dict.get('version', '')
         zip_file = release_dict.get('zip_file')
@@ -212,9 +226,11 @@ class ProjectSerializer(ModelSerializer):
                     f'{self.project_type}.'
                 )
             })
+        return attrs
 
     @staticmethod
     def get_date_display(date, date_format):
+        """Return the formatted date."""
         return formats.date_format(
             value=date,
             format=date_format,
@@ -222,6 +238,7 @@ class ProjectSerializer(ModelSerializer):
 
     @staticmethod
     def get_download_kwargs(obj, release):
+        """Return the release's reverse kwargs."""
         return {
             'slug': obj.slug,
             'zip_file': release.file_name,
@@ -229,6 +246,8 @@ class ProjectSerializer(ModelSerializer):
 
 
 class ProjectReleaseSerializer(ModelSerializer):
+    """Base ProjectRelease Serializer."""
+
     notes = CharField(max_length=512, allow_blank=True)
     version = CharField(max_length=8, allow_blank=True)
     zip_file = FileField(allow_null=True)
@@ -246,6 +265,7 @@ class ProjectReleaseSerializer(ModelSerializer):
 
     @property
     def project_class(self):
+        """Return the project's class."""
         raise NotImplementedError(
             f'Class {self.__class__.__name__} must implement a '
             '"project_class" attribute.'
@@ -253,6 +273,7 @@ class ProjectReleaseSerializer(ModelSerializer):
 
     @property
     def project_type(self):
+        """Return the project's type."""
         raise NotImplementedError(
             f'Class {self.__class__.__name__} must implement a '
             '"project_type" attribute.'
@@ -260,17 +281,20 @@ class ProjectReleaseSerializer(ModelSerializer):
 
     @property
     def zip_parser(self):
+        """Return the project's zip parsing function."""
         raise NotImplementedError(
             f'Class {self.__class__.__name__} must implement a '
             '"project_class" attribute.'
         )
 
     def get_project_kwargs(self, parent_project=None):
+        """Return kwargs for the project."""
         return {
             'pk': self.context['view'].kwargs.get('pk')
         }
 
     def validate(self, attrs):
+        """Validate that the new release can be created."""
         version = attrs.get('version', '')
         zip_file = attrs.get('zip_file')
         if any([version, zip_file]) and not all([version, zip_file]):
@@ -315,6 +339,7 @@ class ProjectReleaseSerializer(ModelSerializer):
         return attrs
 
     def create(self, validated_data):
+        """Update the project's modified datetime when release is created."""
         instance = super().create(validated_data=validated_data)
         getattr(instance, self.project_type.replace('-', '_')).update(
             modified=instance.created,
@@ -323,12 +348,15 @@ class ProjectReleaseSerializer(ModelSerializer):
 
 
 class ProjectImageSerializer(ModelSerializer):
+    """Base ProjectImage Serializer."""
+
     class Meta:
         fields = (
             'image',
         )
 
     def create(self, validated_data):
+        """Add the project to the validated_data when creating the image."""
         view = self.context['view']
         validated_data[view.project_type.replace('-', '_')] = view.project
         return super().create(validated_data=validated_data)

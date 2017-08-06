@@ -1,3 +1,5 @@
+"""Plugin model classes."""
+
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
@@ -32,6 +34,8 @@ __all__ = (
 # >> MODELS
 # =============================================================================
 class Plugin(ProjectBase):
+    """Plugin project type model."""
+
     basename = models.CharField(
         max_length=32,
         validators=[basename_validator],
@@ -48,6 +52,7 @@ class Plugin(ProjectBase):
     handle_logo_upload = handle_plugin_logo_upload
 
     def get_absolute_url(self):
+        """Return the URL for the Plugin."""
         return reverse(
             viewname='plugins:detail',
             kwargs={
@@ -73,6 +78,8 @@ class Plugin(ProjectBase):
 
 
 class PluginRelease(ReleaseBase):
+    """Plugin release type model."""
+
     plugin = models.ForeignKey(
         to='plugins.Plugin',
         related_name='releases',
@@ -81,6 +88,7 @@ class PluginRelease(ReleaseBase):
     handle_zip_file_upload = handle_plugin_zip_upload
 
     def get_absolute_url(self):
+        """Return the URL for the PluginRelease."""
         return reverse(
             viewname='plugin-download',
             kwargs={
@@ -91,6 +99,8 @@ class PluginRelease(ReleaseBase):
 
 
 class PluginImage(ImageBase):
+    """Plugin image type model."""
+
     plugin = models.ForeignKey(
         to='plugins.Plugin',
         related_name='images',

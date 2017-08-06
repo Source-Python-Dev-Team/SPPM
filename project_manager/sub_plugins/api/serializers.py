@@ -1,3 +1,5 @@
+"""SubPlugin serializers for APIs."""
+
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
@@ -38,11 +40,15 @@ __all__ = (
 # TODO:     supported_games
 # TODO:     tags
 class SubPluginImageSerializer(ProjectImageSerializer):
+    """Serializer for adding, removing, and listing SubPlugin images."""
+
     class Meta(ProjectImageSerializer.Meta):
         model = SubPluginImage
 
 
 class SubPluginReleaseSerializer(ProjectReleaseSerializer):
+    """Serializer for creating and listing SubPlugin releases."""
+
     project_class = SubPlugin
     project_type = 'sub-plugin'
     slug_kwarg = 'slug'
@@ -53,6 +59,7 @@ class SubPluginReleaseSerializer(ProjectReleaseSerializer):
 
     @property
     def parent_project(self):
+        """Return the parent plugin."""
         kwargs = self.context['view'].kwargs
         plugin_slug = kwargs.get('plugin_slug')
         # TODO: figure out if this try/except is necessary
@@ -63,6 +70,7 @@ class SubPluginReleaseSerializer(ProjectReleaseSerializer):
         return plugin
 
     def get_project_kwargs(self, parent_project=None):
+        """Return kwargs for the project."""
         kwargs = self.context['view'].kwargs
         return {
             'slug': kwargs.get('slug'),
@@ -71,6 +79,8 @@ class SubPluginReleaseSerializer(ProjectReleaseSerializer):
 
 
 class SubPluginSerializer(ProjectSerializer):
+    """Serializer for creating, updating, and listing SubPlugins."""
+
     images = SubPluginImageSerializer(
         many=True,
         read_only=True,
@@ -91,6 +101,7 @@ class SubPluginSerializer(ProjectSerializer):
 
     @staticmethod
     def get_download_kwargs(obj, release):
+        """Return the release's reverse kwargs."""
         return {
             'slug': obj.plugin.slug,
             'sub_plugin_slug': obj.slug,

@@ -1,3 +1,5 @@
+"""Package contributors views."""
+
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
@@ -10,10 +12,10 @@ from django.views.generic import FormView
 from django_filters.views import FilterView
 
 # App
-from .forms import PackageAddContributorConfirmationForm
 from project_manager.packages.mixins import RetrievePackageMixin
 from project_manager.users.filtersets import ForumUserFilterSet
 from project_manager.users.models import ForumUser
+from .forms import PackageAddContributorConfirmationForm
 
 
 # =============================================================================
@@ -29,6 +31,8 @@ __all__ = (
 # >> VIEWS
 # =============================================================================
 class PackageAddContributorView(RetrievePackageMixin, FilterView):
+    """View for adding a contributor to a Package."""
+
     model = ForumUser
     template_name = 'packages/contributors/add.html'
     filterset_class = ForumUserFilterSet
@@ -73,6 +77,8 @@ class PackageAddContributorView(RetrievePackageMixin, FilterView):
 
 
 class PackageAddContributorConfirmationView(RetrievePackageMixin, FormView):
+    """View for confirming adding a contributor to a Package."""
+
     form_class = PackageAddContributorConfirmationForm
     template_name = 'packages/contributors/add_confirmation.html'
 

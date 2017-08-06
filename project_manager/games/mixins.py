@@ -1,3 +1,5 @@
+"""Game mixins."""
+
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
@@ -18,6 +20,7 @@ __all__ = (
 # >> MIXINS
 # =============================================================================
 class GameSpecificOrderablePaginatedListView(OrderablePaginatedListView):
+    """View to be inherited for ordering, pagination, and game filtering."""
 
     def get_queryset(self):
         queryset = super().get_queryset()

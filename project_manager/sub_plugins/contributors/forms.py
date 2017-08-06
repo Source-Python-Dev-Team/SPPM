@@ -1,3 +1,5 @@
+"""SubPlugin contributors forms."""
+
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
@@ -20,6 +22,8 @@ __all__ = (
 # >> FORMS
 # =============================================================================
 class SubPluginAddContributorConfirmationForm(forms.ModelForm):
+    """Form for confirming adding a contributor to a SubPlugin."""
+
     class Meta:
         model = ForumUser
         fields = (

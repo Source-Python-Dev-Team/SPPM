@@ -1,3 +1,5 @@
+"""Forms for use with Packages."""
+
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
@@ -26,6 +28,8 @@ __all__ = (
 # >> FORMS
 # =============================================================================
 class PackageCreateForm(SubmitButtonMixin):
+    """Package creation form."""
+
     version = forms.CharField(
         max_length=8,
         help_text=PackageRelease._meta.get_field('version').help_text,
@@ -112,6 +116,8 @@ class PackageCreateForm(SubmitButtonMixin):
 
 
 class PackageEditForm(SubmitButtonMixin):
+    """Package field editing form."""
+
     class Meta:
         model = Package
         fields = (
@@ -143,6 +149,8 @@ class PackageEditForm(SubmitButtonMixin):
 
 
 class PackageSelectGamesForm(SubmitButtonMixin):
+    """Package Game selection form."""
+
     class Meta:
         model = Package
         fields = (
@@ -154,6 +162,8 @@ class PackageSelectGamesForm(SubmitButtonMixin):
 
 
 class PackageUpdateForm(SubmitButtonMixin):
+    """Package release creation form."""
+
     class Meta:
         model = PackageRelease
         fields = (

@@ -1,3 +1,5 @@
+"""SubPlugin contributors views."""
+
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
@@ -10,10 +12,10 @@ from django.views.generic import FormView
 from django_filters.views import FilterView
 
 # App
-from .forms import SubPluginAddContributorConfirmationForm
-from ..mixins import RetrieveSubPluginMixin
 from project_manager.users.filtersets import ForumUserFilterSet
 from project_manager.users.models import ForumUser
+from .forms import SubPluginAddContributorConfirmationForm
+from ..mixins import RetrieveSubPluginMixin
 
 
 # =============================================================================
@@ -29,6 +31,8 @@ __all__ = (
 # >> VIEWS
 # =============================================================================
 class SubPluginAddContributorView(RetrieveSubPluginMixin, FilterView):
+    """View for adding a contributor to a SubPlugin."""
+
     model = ForumUser
     template_name = 'sub_plugins/contributors/add.html'
     filterset_class = ForumUserFilterSet
@@ -77,6 +81,8 @@ class SubPluginAddContributorView(RetrieveSubPluginMixin, FilterView):
 
 
 class SubPluginAddContributorConfirmationView(RetrieveSubPluginMixin, FormView):
+    """View for confirming adding a contributor to a SubPlugin."""
+
     form_class = SubPluginAddContributorConfirmationForm
     template_name = 'sub_plugins/contributors/add_confirmation.html'
 

@@ -1,3 +1,5 @@
+"""Common views for APIs."""
+
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
@@ -18,11 +20,14 @@ __all__ = (
 # >> VIEWS
 # =============================================================================
 class ProjectImageViewSet(ModelViewSet):
+    """Base Image View."""
+
     parent_project = None
     _project = None
 
     @property
     def project(self):
+        """Return the project for the image."""
         if self._project is not None:
             return self._project
         kwargs = self.get_project_kwargs(self.parent_project)
@@ -38,6 +43,7 @@ class ProjectImageViewSet(ModelViewSet):
 
     @property
     def project_model(self):
+        """Return the model to use for the project."""
         raise NotImplementedError(
             f'Class {self.__class__.__name__} must implement a '
             '"project_model" attribute.'
@@ -45,12 +51,14 @@ class ProjectImageViewSet(ModelViewSet):
 
     @property
     def project_type(self):
+        """Return the project's type."""
         raise NotImplementedError(
             f'Class {self.__class__.__name__} must implement a '
             '"project_type" attribute.'
         )
 
     def get_project_kwargs(self, parent_project=None):
+        """Return the kwargs to use to filter for the project."""
         project_slug = '{project_type}_slug'.format(
             project_type=self.project_type.replace('-', '_')
         )
@@ -59,6 +67,7 @@ class ProjectImageViewSet(ModelViewSet):
         }
 
     def get_queryset(self):
+        """Filter images to only the ones of the current project."""
         queryset = super().get_queryset()
         kwargs = {
             self.project_type.replace('-', '_'): self.project

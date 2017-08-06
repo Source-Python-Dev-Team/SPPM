@@ -1,3 +1,5 @@
+"""Requirement app config."""
+
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
@@ -17,5 +19,7 @@ __all__ = (
 # >> APPLICATION CONFIG
 # =============================================================================
 class RequirementConfig(AppConfig):
+    """Requirement app config."""
+
     name = 'project_manager.requirements'
     verbose_name = 'Requirements'

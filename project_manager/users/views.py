@@ -1,3 +1,5 @@
+"""User views."""
+
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
@@ -23,11 +25,14 @@ __all__ = (
 # >> VIEWS
 # =============================================================================
 class UserListView(PaginatedListView):
+    """User listing view."""
+
     model = ForumUser
     paginate_by = 40
     template_name = 'users/list.html'
 
     def get_queryset(self):
+        """Filter out any ForumUsers with no contributions."""
         return ForumUser.objects.exclude(
             plugins__isnull=True, plugin_contributions__isnull=True,
             subplugins__isnull=True, subplugin_contributions__isnull=True,
@@ -36,10 +41,13 @@ class UserListView(PaginatedListView):
 
 
 class UserView(DetailView):
+    """User get view."""
+
     model = ForumUser
     template_name = 'users/view.html'
 
     def get_context_data(self, **kwargs):
+        """Add all the ForumUser's contributions to the context."""
         context = super().get_context_data(**kwargs)
         context.update({
             'plugins': self.object.plugins.all(),
@@ -60,6 +68,7 @@ class UserView(DetailView):
         return context
 
     def get_object(self, queryset=None):
+        """Retrieve the User from the forum if not already a known member."""
         try:
             forum_user = super().get_object(queryset)
         except Http404:

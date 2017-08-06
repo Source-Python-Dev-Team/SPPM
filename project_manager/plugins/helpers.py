@@ -1,3 +1,5 @@
+"""Helpers for use with Plugins."""
+
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
@@ -8,11 +10,11 @@ from zipfile import ZipFile, BadZipfile
 from django.core.exceptions import ValidationError
 
 # App
+from project_manager.common.constants import CANNOT_BE_NAMED, CANNOT_START_WITH
+from project_manager.common.helpers import find_image_number
 from .constants import (
     PLUGIN_PATH, PLUGIN_IMAGE_URL, PLUGIN_LOGO_URL, PLUGIN_RELEASE_URL,
 )
-from project_manager.common.constants import CANNOT_BE_NAMED, CANNOT_START_WITH
-from project_manager.common.helpers import find_image_number
 
 
 # =============================================================================

@@ -1,3 +1,5 @@
+"""Package serializers for APIs."""
+
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
@@ -34,11 +36,15 @@ __all__ = (
 # TODO:     supported_games
 # TODO:     tags
 class PackageImageSerializer(ProjectImageSerializer):
+    """Serializer for adding, removing, and listing Package images."""
+
     class Meta(ProjectImageSerializer.Meta):
         model = PackageImage
 
 
 class PackageReleaseSerializer(ProjectReleaseSerializer):
+    """Serializer for creating and listing Package releases."""
+
     project_class = Package
     project_type = 'package'
     zip_parser = get_package_basename
@@ -48,6 +54,8 @@ class PackageReleaseSerializer(ProjectReleaseSerializer):
 
 
 class PackageSerializer(ProjectSerializer):
+    """Serializer for creating, updating, and listing Packages."""
+
     images = PackageImageSerializer(
         many=True,
         read_only=True,

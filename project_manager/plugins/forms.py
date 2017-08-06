@@ -1,3 +1,5 @@
+"""Forms for use with Plugins."""
+
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
@@ -26,6 +28,8 @@ __all__ = (
 # >> FORMS
 # =============================================================================
 class PluginCreateForm(SubmitButtonMixin):
+    """Plugin creation form."""
+
     version = forms.CharField(
         max_length=8,
         help_text=PluginRelease._meta.get_field('version').help_text,
@@ -112,6 +116,8 @@ class PluginCreateForm(SubmitButtonMixin):
 
 
 class PluginEditForm(SubmitButtonMixin):
+    """Plugin field editing form."""
+
     class Meta:
         model = Plugin
         fields = (
@@ -143,6 +149,8 @@ class PluginEditForm(SubmitButtonMixin):
 
 
 class PluginSelectGamesForm(SubmitButtonMixin):
+    """Plugin Game selection form."""
+
     class Meta:
         model = Plugin
         fields = (
@@ -154,6 +162,8 @@ class PluginSelectGamesForm(SubmitButtonMixin):
 
 
 class PluginUpdateForm(SubmitButtonMixin):
+    """Plugin release creation form."""
+
     class Meta:
         model = PluginRelease
         fields = (

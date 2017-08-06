@@ -1,3 +1,5 @@
+"""Common mixins for use in multiple apps."""
+
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
@@ -42,6 +44,8 @@ __all__ = (
 # >> MIX-INS
 # =============================================================================
 class DownloadMixin(View):
+    """Mixin for handling downloads and download counts."""
+
     _full_path = None
     sub_model = None
     slug_url_kwarg = None
@@ -49,6 +53,7 @@ class DownloadMixin(View):
 
     @property
     def model(self):
+        """Return the release model."""
         raise NotImplementedError(
             f'Class {self.__class__.__name__} must implement a '
             '"model" attribute.'
@@ -56,6 +61,7 @@ class DownloadMixin(View):
 
     @property
     def base_url(self):
+        """Return the base url for the download."""
         raise NotImplementedError(
             f'Class {self.__class__.__name__} must implement a '
             '"base_url" attribute.'
@@ -63,6 +69,7 @@ class DownloadMixin(View):
 
     @property
     def super_model(self):
+        """Return the project model."""
         raise NotImplementedError(
             f'Class {self.__class__.__name__} must implement a '
             '"super_model" attribute.'
@@ -70,6 +77,7 @@ class DownloadMixin(View):
 
     @property
     def super_kwarg(self):
+        """Return the project's kwarg key."""
         if self.sub_model is not None:
             raise NotImplementedError(
                 f'Class {self.__class__.__name__} must implement a '
@@ -79,6 +87,7 @@ class DownloadMixin(View):
 
     @property
     def full_path(self):
+        """Return the full path for the download."""
         if self._full_path is None:
             self._full_path = (
                 settings.MEDIA_ROOT / self.base_url / self.kwargs['slug']
@@ -91,11 +100,13 @@ class DownloadMixin(View):
         return self._full_path
 
     def dispatch(self, request, *args, **kwargs):
+        """Handle dispatching the file."""
         if not self.full_path.isfile():
             raise Http404
         return super().dispatch(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):
+        """Handle the download and download counter."""
         zip_file = kwargs['zip_file']
         with self.full_path.open('rb') as open_file:
             response = HttpResponse(
@@ -125,14 +136,17 @@ class DownloadMixin(View):
 
 
 class RequirementsParserMixin(ModelFormMixin, View):
+    """Mixin for handling requirements."""
 
-    def get_requirements_path(self, instance):
+    def get_requirements_path(self, form):
+        """Return the path to the requirements file."""
         raise NotImplementedError(
             f'Class "{self.__class__.__name__}" must implement a '
             '"get_requirements_path" method.'
         )
 
     def form_valid(self, form):
+        """Handle the requirements."""
         response = super().form_valid(form)
         zip_file = ZipFile(form.cleaned_data['zip_file'])
         instance = form.instance
@@ -171,7 +185,10 @@ class RequirementsParserMixin(ModelFormMixin, View):
 
 
 class SubmitButtonMixin(forms.ModelForm):
+    """Mixin for all forms with 'Submit' buttons."""
+
     def __init__(self, *args, **kwargs):
+        """Add the 'Submit' button to the form."""
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
         submit = Submit('submit', 'Submit')

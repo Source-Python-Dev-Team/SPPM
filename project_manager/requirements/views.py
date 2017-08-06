@@ -1,3 +1,5 @@
+"""Requirement views."""
+
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
@@ -5,9 +7,9 @@
 from django.views.generic import DetailView
 
 # App
-from .models import PyPiRequirement
 from project_manager.common.helpers import get_groups
 from project_manager.common.views import PaginatedListView
+from .models import PyPiRequirement
 
 
 # =============================================================================
@@ -23,12 +25,16 @@ __all__ = (
 # >> VIEWS
 # =============================================================================
 class PyPiListView(PaginatedListView):
+    """PyPiRequirement listing view."""
+
     model = PyPiRequirement
     paginate_by = 20
     template_name = 'pypi/list.html'
 
 
 class PyPiView(DetailView):
+    """PyPiRequirement get view."""
+
     model = PyPiRequirement
     template_name = 'pypi/view.html'
 

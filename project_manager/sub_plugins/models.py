@@ -1,3 +1,5 @@
+"""SubPlugin model classes."""
+
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
@@ -32,6 +34,8 @@ __all__ = (
 # >> MODELS
 # =============================================================================
 class SubPlugin(ProjectBase):
+    """SubPlugin project type model."""
+
     basename = models.CharField(
         max_length=32,
         validators=[basename_validator],
@@ -58,6 +62,7 @@ class SubPlugin(ProjectBase):
         )
 
     def get_absolute_url(self):
+        """Return the URL for the SubPlugin."""
         return reverse(
             viewname='plugins:sub-plugins:detail',
             kwargs={
@@ -84,6 +89,8 @@ class SubPlugin(ProjectBase):
 
 
 class SubPluginRelease(ReleaseBase):
+    """SubPlugin release type model."""
+
     sub_plugin = models.ForeignKey(
         to='sub_plugins.SubPlugin',
         related_name='releases',
@@ -92,6 +99,7 @@ class SubPluginRelease(ReleaseBase):
     handle_zip_file_upload = handle_sub_plugin_zip_upload
 
     def get_absolute_url(self):
+        """Return the URL for the SubPluginRelease."""
         return reverse(
             viewname='sub-plugin-download',
             kwargs={
@@ -103,6 +111,8 @@ class SubPluginRelease(ReleaseBase):
 
 
 class SubPluginImage(ImageBase):
+    """SubPlugin image type model."""
+
     sub_plugin = models.ForeignKey(
         to='sub_plugins.SubPlugin',
         related_name='images',

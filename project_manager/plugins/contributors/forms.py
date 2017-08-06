@@ -1,3 +1,5 @@
+"""Plugin contributors forms."""
+
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
@@ -20,6 +22,8 @@ __all__ = (
 # >> FORMS
 # =============================================================================
 class PluginAddContributorConfirmationForm(forms.ModelForm):
+    """Form for confirming adding a contributor to a Plugin."""
+
     class Meta:
         model = ForumUser
         fields = (

@@ -1,9 +1,11 @@
+"""Tag views."""
+
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
 # App
-from .models import Tag
 from project_manager.common.views import PaginatedListView
+from .models import Tag
 
 
 # =============================================================================
@@ -18,6 +20,8 @@ __all__ = (
 # >> VIEWS
 # =============================================================================
 class TagListView(PaginatedListView):
+    """Tag listing view."""
+
     model = Tag
     paginate_by = 20
     template_name = 'tags/list.html'
