@@ -10,7 +10,6 @@ from operator import attrgetter
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils.text import slugify
-from django.utils.translation import ugettext_lazy as _
 
 # 3rd-Party Django
 from model_utils.fields import AutoCreatedField
@@ -226,7 +225,9 @@ class ReleaseBase(models.Model):
     download_count = models.PositiveIntegerField(
         default=0,
     )
-    created = AutoCreatedField(_('created'))
+    created = AutoCreatedField(
+        verbose_name='created',
+    )
 
     class Meta:
         abstract = True
@@ -253,7 +254,9 @@ class ImageBase(models.Model):
     image = models.ImageField(
         upload_to=handle_project_image_upload,
     )
-    created = AutoCreatedField(_('created'))
+    created = AutoCreatedField(
+        verbose_name='created',
+    )
 
     class Meta:
         abstract = True
