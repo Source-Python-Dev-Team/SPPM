@@ -4,7 +4,10 @@
 # >> IMPORTS
 # =============================================================================
 # 3rd-Party Django
+from rest_framework.authentication import SessionAuthentication
+from rest_framework.exceptions import PermissionDenied
 from rest_framework.parsers import ParseError
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 from rest_framework.reverse import reverse
 from rest_framework.views import APIView
@@ -51,6 +54,10 @@ class ProjectAPIView(APIView):
 class ProjectViewSet(ModelViewSet):
     """Base ViewSet for creating, updating, and listing Projects."""
 
+    authentication_classes = (SessionAuthentication,)
+    http_method_names = ['get', 'post', 'patch', 'options']
+    permission_classes = (IsAuthenticatedOrReadOnly,)
+
     stored_contributors = None
     stored_supported_games = None
     stored_tags = None
@@ -70,6 +77,20 @@ class ProjectViewSet(ModelViewSet):
         """Store the many-to-many fields before updating."""
         self.store_many_to_many_fields(request=request)
         return super().update(request, *args, **kwargs)
+
+    def check_object_permissions(self, request, obj):
+        """Only allow the owner and contributors to update the project."""
+        if request.method == 'PATCH':
+            user_id = request.user.id
+            if (
+                user_id != obj.owner.user.id and
+                user_id not in obj.contributors.values_list('user', flat=True)
+            ):
+                raise PermissionDenied
+        return super().check_object_permissions(
+            request=request,
+            obj=obj,
+        )
 
 
 class ProjectImageViewSet(ModelViewSet):
