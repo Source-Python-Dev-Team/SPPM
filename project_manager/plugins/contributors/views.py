@@ -12,10 +12,10 @@ from django.views.generic import FormView
 from django_filters.views import FilterView
 
 # App
-from project_manager.plugins.mixins import RetrievePluginMixin
 from project_manager.users.filtersets import ForumUserFilterSet
 from project_manager.users.models import ForumUser
 from .forms import PluginAddContributorConfirmationForm
+from ..mixins import RetrievePluginMixin
 
 
 # =============================================================================
@@ -47,7 +47,7 @@ class PluginAddContributorView(RetrievePluginMixin, FilterView):
                     viewname='plugins:contributors:confirm-add',
                     kwargs={
                         'slug': self.plugin.slug,
-                        'id': user.id,
+                        'forum_id': user.forum_id,
                     }
                 )
             )
@@ -57,23 +57,25 @@ class PluginAddContributorView(RetrievePluginMixin, FilterView):
         """Update the view's context for the template."""
         context = super().get_context_data(**kwargs)
         message = ''
-        user = None
+        forum_user = None
         if 'username' in self.request.GET:
             try:
-                user = ForumUser.objects.get(
-                    username=self.request.GET['username'])
+                forum_user = ForumUser.objects.get(
+                    user__username=self.request.GET['username'],
+                )
             except ForumUser.DoesNotExist:
                 pass
             else:
-                if user == self.plugin.owner:
+                if forum_user == self.plugin.owner:
                     message = (
-                        'is the owner and cannot be added as a contributor.')
-                elif user in self.plugin.contributors.all():
+                        'is the owner and cannot be added as a contributor.'
+                    )
+                elif forum_user in self.plugin.contributors.all():
                     message = 'is already a contributor.'
         context.update({
             'plugin': self.plugin,
             'warning_message': message,
-            'user': user,
+            'user': forum_user,
         })
         return context
 
@@ -85,30 +87,31 @@ class PluginAddContributorConfirmationView(RetrievePluginMixin, FormView):
     template_name = 'plugins/contributors/add_confirmation.html'
 
     def get_initial(self):
-        """Add 'id' to the initial."""
+        """Add 'forum_id' to the initial."""
+        print(self.kwargs)
         initial = super().get_initial()
         initial.update({
-            'id': self.kwargs['id']
+            'forum_id': self.kwargs['forum_id']
         })
         return initial
 
     def get_context_data(self, **kwargs):
         """Update the view's context for the template."""
         context = super().get_context_data(**kwargs)
-        user = ForumUser.objects.get(id=self.kwargs['id'])
+        forum_user = ForumUser.objects.get(forum_id=self.kwargs['forum_id'])
         message = None
-        if self.plugin.owner == user:
+        if self.plugin.owner == forum_user:
             message = 'is the owner and cannot be added as a contributor.'
-        elif user in self.plugin.contributors.all():
+        elif forum_user in self.plugin.contributors.all():
             message = 'is already a contributor.'
         context.update({
             'plugin': self.plugin,
-            'username': user.username,
+            'username': forum_user.user.username,
             'warning_message': message,
         })
         return context
 
     def form_valid(self, form):
         """Add the contributors to the plugin."""
-        self.plugin.contributors.add(form.cleaned_data['id'])
+        self.plugin.contributors.add(form.cleaned_data['forum_id'])
         return HttpResponseRedirect(self.plugin.get_absolute_url())

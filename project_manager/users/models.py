@@ -4,6 +4,7 @@
 # >> IMPORTS
 # =============================================================================
 # Django
+from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.db import models
 
@@ -25,11 +26,11 @@ __all__ = (
 class ForumUser(models.Model):
     """Model for User based information."""
 
-    username = models.CharField(
-        max_length=30,
-        unique=True,
+    user = models.OneToOneField(
+        to=settings.AUTH_USER_MODEL,
+        related_name='forum_user',
     )
-    id = models.IntegerField(
+    forum_id = models.IntegerField(
         primary_key=True,
         unique=True,
     )
@@ -40,17 +41,17 @@ class ForumUser(models.Model):
 
     def __str__(self):
         """Return the ForumUser's username."""
-        return self.username
+        return self.user.username
 
     def get_absolute_url(self):
         """Return the URL for the user."""
         return reverse(
             viewname='users:detail',
             kwargs={
-                'pk': self.id,
+                'pk': self.forum_id,
             }
         )
 
     def get_forum_url(self):
         """Return the user's forum URL."""
-        return FORUM_MEMBER_URL.format(user_id=self.id)
+        return FORUM_MEMBER_URL.format(user_id=self.forum_id)

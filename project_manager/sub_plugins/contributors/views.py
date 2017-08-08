@@ -39,9 +39,7 @@ class SubPluginAddContributorView(RetrieveSubPluginMixin, FilterView):
 
     def get(self, request, *args, **kwargs):
         """Return the redirect if adding a contributor."""
-        value = super().get(
-            request, *args, **kwargs
-        )
+        value = super().get(request, *args, **kwargs)
         user = value.context_data['user']
         if user is not None and not value.context_data['warning_message']:
             return HttpResponseRedirect(
@@ -50,7 +48,7 @@ class SubPluginAddContributorView(RetrieveSubPluginMixin, FilterView):
                     kwargs={
                         'slug': self.plugin.slug,
                         'sub_plugin_slug': self.sub_plugin.slug,
-                        'id': user.id,
+                        'forum_id': user.forum_id,
                     }
                 )
             )
@@ -60,24 +58,26 @@ class SubPluginAddContributorView(RetrieveSubPluginMixin, FilterView):
         """Update the view's context for the template."""
         context = super().get_context_data(**kwargs)
         message = ''
-        user = None
+        forum_user = None
         if 'username' in self.request.GET:
             try:
-                user = ForumUser.objects.get(
-                    username=self.request.GET['username'])
+                forum_user = ForumUser.objects.get(
+                    user__username=self.request.GET['username'],
+                )
             except ForumUser.DoesNotExist:
                 pass
             else:
-                if user == self.sub_plugin.owner:
+                if forum_user == self.sub_plugin.owner:
                     message = (
-                        'is the owner and cannot be added as a contributor.')
-                elif user in self.sub_plugin.contributors.all():
+                        'is the owner and cannot be added as a contributor.'
+                    )
+                elif forum_user in self.sub_plugin.contributors.all():
                     message = 'is already a contributor.'
         context.update({
             'plugin': self.plugin,
             'sub_plugin': self.sub_plugin,
             'warning_message': message,
-            'user': user,
+            'user': forum_user,
         })
         return context
 
@@ -91,30 +91,30 @@ class SubPluginAddContributorConfirmationView(
     template_name = 'sub_plugins/contributors/add_confirmation.html'
 
     def get_initial(self):
-        """Add 'id' to the initial."""
+        """Add 'forum_id' to the initial."""
         initial = super().get_initial()
         initial.update({
-            'id': self.kwargs['id']
+            'forum_id': self.kwargs['forum_id']
         })
         return initial
 
     def get_context_data(self, **kwargs):
         """Update the view's context for the template."""
         context = super().get_context_data(**kwargs)
-        user = ForumUser.objects.get(id=self.kwargs['id'])
+        forum_user = ForumUser.objects.get(forum_id=self.kwargs['forum_id'])
         message = None
-        if self.sub_plugin.owner == user:
+        if self.sub_plugin.owner == forum_user:
             message = 'is the owner and cannot be added as a contributor.'
-        elif user in self.sub_plugin.contributors.all():
+        elif forum_user in self.sub_plugin.contributors.all():
             message = 'is already a contributor.'
         context.update({
             'sub_plugin': self.sub_plugin,
-            'username': user.username,
+            'username': forum_user.user.username,
             'warning_message': message,
         })
         return context
 
     def form_valid(self, form):
         """Add the contributors to the sub-plugin."""
-        self.sub_plugin.contributors.add(form.cleaned_data['id'])
+        self.sub_plugin.contributors.add(form.cleaned_data['forum_id'])
         return HttpResponseRedirect(self.sub_plugin.get_absolute_url())

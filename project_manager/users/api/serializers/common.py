@@ -4,6 +4,7 @@
 # >> IMPORTS
 # =============================================================================
 # 3rd-Party Django
+from rest_framework.fields import SerializerMethodField
 from rest_framework.serializers import ModelSerializer
 
 # App
@@ -24,9 +25,14 @@ __all__ = (
 class ForumUserContributorSerializer(ModelSerializer):
     """Used for owner/contributors for Projects."""
 
+    username = SerializerMethodField()
+
     class Meta:
         model = ForumUser
         fields = (
-            'id',
+            'forum_id',
             'username',
         )
+
+    def get_username(self, obj):
+        return obj.user.username

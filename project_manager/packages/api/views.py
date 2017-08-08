@@ -51,7 +51,7 @@ class PackageViewSet(ProjectViewSet):
             image_class=PackageImage,
         )
     ).select_related(
-        'owner',
+        'owner__user',
     )
     serializer_class = PackageSerializer
 

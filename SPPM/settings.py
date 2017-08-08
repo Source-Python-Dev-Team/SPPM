@@ -133,6 +133,8 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+AUTH_USER_MODEL = 'project_manager.User'
+
 # Rest Framework
 REST_FRAMEWORK = {
     'PAGE_SIZE': 20,

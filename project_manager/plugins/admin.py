@@ -36,8 +36,8 @@ class PluginReleaseAdmin(admin.ModelAdmin):
     search_fields = (
         'plugin__name',
         'plugin__basename',
-        'plugin__owner__username',
-        'plugin__contributors__username',
+        'plugin__owner__user__username',
+        'plugin__contributors__user__username',
     )
 
 
@@ -65,8 +65,8 @@ class PluginAdmin(admin.ModelAdmin):
     search_fields = (
         'name',
         'basename',
-        'owner__username',
-        'contributors__username',
+        'owner__user__username',
+        'contributors__user__username',
     )
 
 

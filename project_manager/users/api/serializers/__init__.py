@@ -4,6 +4,7 @@
 # >> IMPORTS
 # =============================================================================
 # 3rd-Party Django
+from rest_framework.fields import SerializerMethodField
 from rest_framework.serializers import ModelSerializer
 
 # App
@@ -69,6 +70,7 @@ class SubPluginContributionSerializer(ModelSerializer):
 class ForumUserSerializer(ModelSerializer):
     """Serializer for User Contributions."""
 
+    username = SerializerMethodField()
     packages = PackageContributionSerializer(
         many=True,
         read_only=True,
@@ -97,7 +99,7 @@ class ForumUserSerializer(ModelSerializer):
     class Meta:
         model = ForumUser
         fields = (
-            'id',
+            'forum_id',
             'username',
             'packages',
             'package_contributions',
@@ -106,3 +108,6 @@ class ForumUserSerializer(ModelSerializer):
             'subplugins',
             'subplugin_contributions',
         )
+
+    def get_username(self, obj):
+        return obj.user.username

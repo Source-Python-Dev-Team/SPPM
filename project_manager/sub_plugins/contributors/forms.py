@@ -27,10 +27,10 @@ class SubPluginAddContributorConfirmationForm(forms.ModelForm):
     class Meta:
         model = ForumUser
         fields = (
-            "id",
+            'forum_id',
         )
         widgets = {
-            "id": forms.HiddenInput(),
+            'forum_id': forms.HiddenInput(),
         }
 
     def validate_unique(self):

@@ -25,14 +25,31 @@ __all__ = (
 class ForumUserAdmin(admin.ModelAdmin):
     """ForumUser admin."""
 
+    actions = None
     list_display = (
-        'username',
-        'id',
+        'get_username',
+        'forum_id',
     )
     readonly_fields = (
-        'username',
-        'id',
+        'user',
+        'forum_id',
     )
     search_fields = (
-        'username',
+        'user__username',
     )
+
+    def get_queryset(self, request):
+        return super().get_queryset(request=request).select_related(
+            'user',
+        )
+
+    def get_username(self, obj):
+        return obj.user.username
+    get_username.short_description = 'Username'
+    get_username.admin_order_field = 'user__username'
+
+    def has_add_permission(self, request):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        return False

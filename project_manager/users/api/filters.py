@@ -4,7 +4,7 @@
 # >> IMPORTS
 # =============================================================================
 # Django
-from django.db.models import Q
+from django.db.models import Count, Q
 
 # 3rd-Party Django
 from django_filters.filters import BooleanFilter
@@ -38,12 +38,20 @@ class ForumUserFilter(FilterSet):
     @staticmethod
     def filter_has_contributions(queryset, name, value):
         """Filter down to users that do/don't have any contributions."""
-        value = not value
-        return queryset.filter(
-            Q(plugins__isnull=value) |
-            Q(plugin_contributions__isnull=value) |
-            Q(packages__isnull=value) |
-            Q(package_contributions__isnull=value) |
-            Q(sub_plugins__isnull=value) |
-            Q(sub_plugin_contributions__isnull=value)
+        queryset = queryset.annotate(
+            plugin_count=Count('plugins'),
+            plugin_contribution_count=Count('plugin_contributions'),
+            package_count=Count('packages'),
+            package_contribution_count=Count('package_contributions'),
+            sub_plugin_count=Count('subplugins'),
+            sub_plugin_contribution_count=Count('subplugin_contributions'),
         )
+        method = queryset.filter if value else queryset.exclude
+        return method(
+            Q(plugin_count__gt=0) |
+            Q(plugin_contribution_count__gt=0) |
+            Q(package_count__gt=0) |
+            Q(package_contribution_count__gt=0) |
+            Q(sub_plugin_count__gt=0) |
+            Q(sub_plugin_contribution_count__gt=0)
+        ).distinct()

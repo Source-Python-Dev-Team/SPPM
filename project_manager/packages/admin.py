@@ -38,8 +38,8 @@ class PackageReleaseAdmin(admin.ModelAdmin):
     search_fields = (
         'package__name',
         'package__basename',
-        'package__owner__username',
-        'package__contributors__username',
+        'package__owner__user__username',
+        'package__contributors__user__username',
     )
 
 
@@ -67,8 +67,8 @@ class PackageAdmin(admin.ModelAdmin):
     search_fields = (
         'name',
         'basename',
-        'owner__username',
-        'contributors__username',
+        'owner__user__username',
+        'contributors__user__username',
     )
 
 

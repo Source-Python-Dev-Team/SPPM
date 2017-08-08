@@ -40,8 +40,10 @@ def get_prefetch(release_class, image_class):
         ),
         Prefetch(
             lookup='contributors',
-            queryset=ForumUser.objects.order_by(
-                'username',
+            queryset=ForumUser.objects.select_related(
+                'user',
+            ).order_by(
+                'user__username',
             ),
         ),
         Prefetch(

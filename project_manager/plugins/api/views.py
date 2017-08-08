@@ -51,7 +51,7 @@ class PluginViewSet(ProjectViewSet):
             image_class=PluginImage,
         )
     ).select_related(
-        'owner',
+        'owner__user',
     )
     serializer_class = PluginSerializer
 

@@ -23,8 +23,8 @@ urlpatterns = [
         name='add',
     ),
     url(
-        # /packages/<slug>/contributors/add/<id>/
-        regex=r'^add/(?P<id>\d+)/$',
+        # /packages/<slug>/contributors/add/<forum_id>/
+        regex=r'^add/(?P<forum_id>\d+)/$',
         view=PackageAddContributorConfirmationView.as_view(),
         name='confirm-add',
     ),
@@ -35,8 +35,8 @@ urlpatterns = [
     #     name='remove',
     # ),
     # url(
-    #     # /packages/<slug>/contributors/remove/<id>/
-    #     regex=r'^remove/(?P<id>\d+)/$',
+    #     # /packages/<slug>/contributors/remove/<forum_id>/
+    #     regex=r'^remove/(?P<forum_id>\d+)/$',
     #     view=PluginAddContributorConfirmationView.as_view(),
     #     name='confirm-remove',
     # ),

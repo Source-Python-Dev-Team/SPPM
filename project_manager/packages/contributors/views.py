@@ -47,7 +47,7 @@ class PackageAddContributorView(RetrievePackageMixin, FilterView):
                     viewname='packages:contributors:confirm-add',
                     kwargs={
                         'slug': self.package.slug,
-                        'id': user.id,
+                        'forum_id': user.forum_id,
                     }
                 )
             )
@@ -57,23 +57,25 @@ class PackageAddContributorView(RetrievePackageMixin, FilterView):
         """Update the view's context for the template."""
         context = super().get_context_data(**kwargs)
         message = ''
-        user = None
+        forum_user = None
         if 'username' in self.request.GET:
             try:
-                user = ForumUser.objects.get(
-                    username=self.request.GET['username'])
+                forum_user = ForumUser.objects.get(
+                    user__username=self.request.GET['username'],
+                )
             except ForumUser.DoesNotExist:
                 pass
             else:
-                if user == self.package.owner:
+                if forum_user == self.package.owner:
                     message = (
-                        'is the owner and cannot be added as a contributor.')
-                elif user in self.package.contributors.all():
+                        'is the owner and cannot be added as a contributor.'
+                    )
+                elif forum_user in self.package.contributors.all():
                     message = 'is already a contributor.'
         context.update({
             'package': self.package,
             'warning_message': message,
-            'user': user,
+            'user': forum_user,
         })
         return context
 
@@ -85,30 +87,30 @@ class PackageAddContributorConfirmationView(RetrievePackageMixin, FormView):
     template_name = 'packages/contributors/add_confirmation.html'
 
     def get_initial(self):
-        """Add 'id' to the initial."""
+        """Add 'forum_id' to the initial."""
         initial = super().get_initial()
         initial.update({
-            'id': self.kwargs['id']
+            'forum_id': self.kwargs['forum_id']
         })
         return initial
 
     def get_context_data(self, **kwargs):
         """Update the view's context for the template."""
         context = super().get_context_data(**kwargs)
-        user = ForumUser.objects.get(id=self.kwargs['id'])
+        forum_user = ForumUser.objects.get(forum_id=self.kwargs['forum_id'])
         message = None
-        if self.package.owner == user:
+        if self.package.owner == forum_user:
             message = 'is the owner and cannot be added as a contributor.'
-        elif user in self.package.contributors.all():
+        elif forum_user in self.package.contributors.all():
             message = 'is already a contributor.'
         context.update({
             'package': self.package,
-            'username': user.username,
+            'username': forum_user.user.username,
             'warning_message': message,
         })
         return context
 
     def form_valid(self, form):
         """Add the contributors to the package."""
-        self.package.contributors.add(form.cleaned_data['id'])
+        self.package.contributors.add(form.cleaned_data['forum_id'])
         return HttpResponseRedirect(self.package.get_absolute_url())

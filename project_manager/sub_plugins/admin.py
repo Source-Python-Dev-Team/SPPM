@@ -38,8 +38,8 @@ class SubPluginReleaseAdmin(admin.ModelAdmin):
     search_fields = (
         'sub_plugin__name',
         'sub_plugin__basename',
-        'sub_plugin__owner__username',
-        'sub_plugin__contributors__username',
+        'sub_plugin__owner__user__username',
+        'sub_plugin__contributors__user__username',
         'sub_plugin__plugin__basename',
         'sub_plugin__plugin__name',
     )
@@ -70,8 +70,8 @@ class SubPluginAdmin(admin.ModelAdmin):
     search_fields = (
         'name',
         'basename',
-        'owner__username',
-        'contributors__username',
+        'owner__user__username',
+        'contributors__user__username',
         'plugin__name',
         'plugin__basename',
     )

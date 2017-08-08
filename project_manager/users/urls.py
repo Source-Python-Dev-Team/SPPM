@@ -21,7 +21,7 @@ urlpatterns = [
         name='list',
     ),
     url(
-        # /users/<pk>/
+        # /users/<forum_id>/
         regex=r'^(?P<pk>[0-9]+)/$',
         view=UserView.as_view(),
         name='detail',

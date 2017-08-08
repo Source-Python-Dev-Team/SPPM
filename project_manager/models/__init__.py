@@ -3,18 +3,28 @@
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
-from .games.models import Game
-from .packages.models import Package, PackageImage, PackageRelease
-from .plugins.models import Plugin, PluginImage, PluginRelease
-from .plugins.paths.models import SubPluginPath
-from .requirements.models import (
+# App
+from project_manager.games.models import Game
+from project_manager.packages.models import (
+    Package,
+    PackageImage,
+    PackageRelease,
+)
+from project_manager.plugins.models import Plugin, PluginImage, PluginRelease
+from project_manager.plugins.paths.models import SubPluginPath
+from project_manager.requirements.models import (
     DownloadRequirement,
     PyPiRequirement,
     VersionControlRequirement,
 )
-from .sub_plugins.models import SubPlugin, SubPluginImage, SubPluginRelease
-from .tags.models import Tag
-from .users.models import ForumUser
+from project_manager.sub_plugins.models import (
+    SubPlugin,
+    SubPluginImage,
+    SubPluginRelease,
+)
+from project_manager.tags.models import Tag
+from project_manager.users.models import ForumUser
+from .models import User
 
 _all_models = (
     DownloadRequirement,
@@ -31,6 +41,7 @@ _all_models = (
     SubPluginImage,
     SubPluginPath,
     SubPluginRelease,
+    User,
     Tag,
     VersionControlRequirement,
 )

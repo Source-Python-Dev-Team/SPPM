@@ -87,6 +87,9 @@ class PluginRelease(ReleaseBase):
 
     handle_zip_file_upload = handle_plugin_zip_upload
 
+    class Meta(ReleaseBase.Meta):
+        unique_together = ('plugin', 'version')
+
     def get_absolute_url(self):
         """Return the URL for the PluginRelease."""
         return reverse(

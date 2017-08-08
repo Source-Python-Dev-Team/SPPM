@@ -78,8 +78,9 @@ class UserView(DetailView):
             import string
             all_chars = string.ascii_letters + string.digits + '-._'
             forum_user = ForumUser.objects.create(
-                username=''.join(choice(all_chars) for x in range(
-                    randint(4, 12))),
-                id=self.kwargs['pk'],
+                username=''.join(
+                    choice(all_chars) for _ in range(randint(4, 12))
+                ),
+                forum_id=self.kwargs['forum_id'],
             )
         return forum_user

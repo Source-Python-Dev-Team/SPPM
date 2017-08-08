@@ -230,7 +230,7 @@ class ProjectSerializer(ModelSerializer):
             instance=instance,
             field_name='contributors',
             related_model=ForumUser,
-            related_field_name='id',
+            related_field_name='forum_id',
         )
         self.update_many_to_many(
             instance=instance,

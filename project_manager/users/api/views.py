@@ -37,8 +37,8 @@ class ForumUserViewSet(ModelViewSet):
     filter_backends = (OrderingFilter, DjangoFilterBackend)
     filter_class = ForumUserFilter
     http_method_names = ('get', 'options')
-    ordering = ('username',)
-    ordering_fields = ('id', 'username')
+    ordering = ('user__username',)
+    ordering_fields = ('forum_id', 'user__username')
     queryset = ForumUser.objects.prefetch_related(
         Prefetch(
             lookup='packages',
@@ -80,5 +80,7 @@ class ForumUserViewSet(ModelViewSet):
                 'plugin',
             )
         )
+    ).select_related(
+        'user',
     )
     serializer_class = ForumUserSerializer

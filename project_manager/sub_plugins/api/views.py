@@ -54,7 +54,7 @@ class SubPluginViewSet(ProjectViewSet):
             image_class=SubPluginImage,
         )
     ).select_related(
-        'owner',
+        'owner__user',
         'plugin',
     )
     serializer_class = SubPluginSerializer
