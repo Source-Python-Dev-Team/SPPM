@@ -3,11 +3,15 @@
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
+# Python
+from zipfile import ZipFile, BadZipfile
+
 # 3rd-Party Python
 from configobj import ConfigObj
 
 # Django
 from django.conf import settings
+from django.core.exceptions import ValidationError
 
 # App
 from project_manager.requirements.models import (
@@ -27,6 +31,7 @@ __all__ = (
     'add_vcs_requirement',
     'find_image_number',
     'flush_requirements',
+    'get_file_list',
     'get_groups',
     'get_requirements',
     'handle_project_image_upload',
@@ -79,7 +84,7 @@ def handle_project_logo_upload(instance, filename):
 
 def handle_release_zip_file_upload(instance, filename):
     """Handle uploading the zip file by directing to the proper directory."""
-    return instance.handle_zip_file_upload(instance, filename)
+    return instance.handle_zip_file_upload(filename)
 
 
 def add_package_requirement(package_basename, project):
@@ -145,3 +150,14 @@ def flush_requirements():
         plugins__isnull=True,
         sub_plugins__isnull=True,
     ).delete()
+
+
+def get_file_list(zip_file):
+    try:
+        return [
+            x for x in ZipFile(zip_file).namelist() if not x.endswith('/')
+        ]
+    except BadZipfile:
+        raise ValidationError({
+            'zip_file': 'Given file is not a valid zip file.'
+        })

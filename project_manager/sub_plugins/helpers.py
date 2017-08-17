@@ -3,16 +3,13 @@
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
-# Python
-from zipfile import ZipFile, BadZipfile
-
 # Django
 from django.core.exceptions import ValidationError
 
 # App
 from project_manager.plugins.constants import PLUGIN_PATH
 from project_manager.common.constants import CANNOT_BE_NAMED, CANNOT_START_WITH
-from project_manager.common.helpers import find_image_number
+from project_manager.common.helpers import find_image_number, get_file_list
 from .constants import (
     SUB_PLUGIN_IMAGE_URL, SUB_PLUGIN_LOGO_URL, SUB_PLUGIN_RELEASE_URL,
 )
@@ -35,14 +32,7 @@ __all__ = (
 def get_sub_plugin_basename(zip_file, plugin):
     """Return the sub-plugin's basename."""
     # TODO: add 'path' validation
-    try:
-        file_list = [
-            x for x in ZipFile(zip_file).namelist() if not x.endswith('/')
-        ]
-    except BadZipfile:
-        raise ValidationError({
-            'zip_file': 'Given file is not a valid zip file.'
-        })
+    file_list = get_file_list(zip_file)
     basename, path = _find_basename_and_path(file_list, plugin)
     if basename is None:
         raise ValidationError(

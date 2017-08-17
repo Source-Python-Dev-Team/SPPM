@@ -3,15 +3,12 @@
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
-# Python
-from zipfile import ZipFile, BadZipfile
-
 # Django
 from django.core.exceptions import ValidationError
 
 # App
 from project_manager.common.constants import CANNOT_BE_NAMED, CANNOT_START_WITH
-from project_manager.common.helpers import find_image_number
+from project_manager.common.helpers import find_image_number, get_file_list
 from .constants import (
     PACKAGE_PATH, PACKAGE_IMAGE_URL, PACKAGE_LOGO_URL, PACKAGE_RELEASE_URL,
 )
@@ -34,14 +31,7 @@ __all__ = (
 def get_package_basename(zip_file):
     """Return the package's basename."""
     # TODO: add module/package validation
-    try:
-        file_list = [
-            x for x in ZipFile(zip_file).namelist() if not x.endswith('/')
-        ]
-    except BadZipfile:
-        raise ValidationError({
-            'zip_file': 'Given file is not a valid zip file.'
-        })
+    file_list = get_file_list(zip_file)
     basename = None
     is_module = False
     for file_path in file_list:
