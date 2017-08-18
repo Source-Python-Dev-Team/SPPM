@@ -124,7 +124,9 @@ class ProjectImageViewSet(ModelViewSet):
             return self._project
         kwargs = self.get_project_kwargs(self.parent_project)
         try:
-            self._project = self.project_model.objects.get(**kwargs)
+            self._project = self.project_model.objects.select_related(
+                'owner__user'
+            ).get(**kwargs)
         except self.project_model.DoesNotExist:
             raise ParseError(
                 'Invalid {project_type}_slug.'.format(
