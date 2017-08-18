@@ -34,5 +34,6 @@ class ForumUserContributorSerializer(ModelSerializer):
             'username',
         )
 
-    def get_username(self, obj):
+    @staticmethod
+    def get_username(obj):
         return obj.user.username

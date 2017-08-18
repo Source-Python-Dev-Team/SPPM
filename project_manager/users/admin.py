@@ -43,7 +43,8 @@ class ForumUserAdmin(admin.ModelAdmin):
             'user',
         )
 
-    def get_username(self, obj):
+    @staticmethod
+    def get_username(obj):
         return obj.user.username
     get_username.short_description = 'Username'
     get_username.admin_order_field = 'user__username'

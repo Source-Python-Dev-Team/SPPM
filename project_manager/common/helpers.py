@@ -64,12 +64,11 @@ def get_groups(iterable, count=3):
 def get_requirements(zip_file, requirement_path):
     """Return the requirements for the release."""
     for zipped_file in zip_file.filelist:
-        if zipped_file.filename == requirement_path:
-            break
-    else:
-        return {}
-    ini = zip_file.open(zipped_file)
-    return ConfigObj(ini)
+        if zipped_file.filename != requirement_path:
+            continue
+        ini = zip_file.open(zipped_file)
+        return ConfigObj(ini)
+    return {}
 
 
 def handle_project_image_upload(instance, filename):
