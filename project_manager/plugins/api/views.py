@@ -3,10 +3,6 @@
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
-# 3rd-Party Django
-from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework.filters import OrderingFilter
-
 # App
 from project_manager.common.api.helpers import get_prefetch
 from project_manager.common.api.views import (
@@ -41,10 +37,7 @@ class PluginAPIView(ProjectAPIView):
 class PluginViewSet(ProjectViewSet):
     """ViewSet for creating, updating, and listing Plugins."""
 
-    filter_backends = (OrderingFilter, DjangoFilterBackend)
     filter_class = PluginFilter
-    ordering = ('-releases__created',)
-    ordering_fields = ('name', 'basename', 'modified')
     queryset = Plugin.objects.prefetch_related(
         *get_prefetch(
             release_class=PluginRelease,

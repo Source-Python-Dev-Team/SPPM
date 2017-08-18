@@ -9,6 +9,7 @@ from operator import itemgetter
 # Django
 from django.core.exceptions import ValidationError
 from django.utils import formats
+from django.utils.text import slugify
 
 # 3rd-Party Django
 from rest_framework.fields import CharField, FileField, SerializerMethodField
@@ -48,10 +49,9 @@ __all__ = (
 # >> SERIALIZERS
 # =============================================================================
 # TODO: APIs for adding/removing
-# TODO:     contributors (add through model to do properly)
-# TODO:     images (mostly done)
-# TODO:     supported_games (add through model to do properly)
-# TODO:     tags (add through model to do properly)
+# TODO:     contributors
+# TODO:     supported_games
+# TODO:     tags
 class ProjectSerializer(ModelSerializer):
     """Base Project Serializer."""
 
@@ -130,12 +130,15 @@ class ProjectSerializer(ModelSerializer):
 
     def create(self, validated_data):
         """Create the instance and the first release of the project."""
-        # TODO: set the owner to the logged in user
-        release_dict = validated_data.pop('releases', {})
+        release_dict = validated_data.pop('releases')
+        instance = super().create(validated_data)
         version = release_dict['version']
         zip_file = release_dict['zip_file']
         notes = release_dict['notes']
-        instance = super().create(validated_data)
+        instance.basename = release_dict['basename']
+        instance.owner = self.context['request'].user.forum_user
+        instance.slug = slugify(instance.basename)
+        instance.save()
         kwargs = {
             '{project_type}'.format(
                 project_type=self.project_type.replace('-', '_')
@@ -287,7 +290,7 @@ class ProjectSerializer(ModelSerializer):
         version = release_dict.get('version', '')
         zip_file = release_dict.get('zip_file')
         if (
-            self.context['view'].request.method in ('POST', 'PUT') and
+            self.context['request'].method in ('POST', 'PUT') and
             not all([version, zip_file])
         ):
             raise ValidationError({
@@ -406,6 +409,7 @@ class ProjectReleaseSerializer(ModelSerializer):
                     f"for {self.project_type} '{project_basename}'"
                 )
             })
+        attrs['basename'] = basename
         return attrs
 
     def create(self, validated_data):

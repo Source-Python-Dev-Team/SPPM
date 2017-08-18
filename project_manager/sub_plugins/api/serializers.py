@@ -47,7 +47,6 @@ class SubPluginReleaseSerializer(ProjectReleaseSerializer):
     project_class = SubPlugin
     project_type = 'sub-plugin'
     slug_kwarg = 'slug'
-    zip_parser = get_sub_plugin_basename
 
     class Meta(ProjectReleaseSerializer.Meta):
         model = SubPluginRelease
@@ -62,6 +61,10 @@ class SubPluginReleaseSerializer(ProjectReleaseSerializer):
         except Plugin.DoesNotExist:
             raise ValidationError(f"Plugin '{plugin_slug}' not found.")
         return plugin
+
+    @property
+    def zip_parser(self):
+        return get_sub_plugin_basename
 
     def get_project_kwargs(self, parent_project=None):
         """Return kwargs for the project."""

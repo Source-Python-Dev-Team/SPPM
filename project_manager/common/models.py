@@ -125,6 +125,7 @@ class ProjectBase(models.Model):
     modified = AutoCreatedField(
         verbose_name='modified',
     )
+    basename = None
 
     class Meta:
         abstract = True

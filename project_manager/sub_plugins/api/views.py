@@ -3,9 +3,6 @@
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
-# 3rd-Party Django
-from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework.filters import OrderingFilter
 from rest_framework.parsers import ParseError
 
 # App
@@ -44,10 +41,7 @@ class SubPluginAPIView(ProjectAPIView):
 class SubPluginViewSet(ProjectViewSet):
     """ViewSet for creating, updating, and listing SubPlugins."""
 
-    filter_backends = (OrderingFilter, DjangoFilterBackend)
     filter_class = SubPluginFilter
-    ordering = ('-releases__created',)
-    ordering_fields = ('name', 'basename', 'modified')
     queryset = SubPlugin.objects.prefetch_related(
         *get_prefetch(
             release_class=SubPluginRelease,

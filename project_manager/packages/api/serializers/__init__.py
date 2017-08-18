@@ -42,10 +42,13 @@ class PackageReleaseSerializer(ProjectReleaseSerializer):
 
     project_class = Package
     project_type = 'package'
-    zip_parser = get_package_basename
 
     class Meta(ProjectReleaseSerializer.Meta):
         model = PackageRelease
+
+    @property
+    def zip_parser(self):
+        return get_package_basename
 
 
 class PackageSerializer(ProjectSerializer):

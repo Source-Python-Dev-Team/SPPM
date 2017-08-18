@@ -39,10 +39,13 @@ class PluginReleaseSerializer(ProjectReleaseSerializer):
 
     project_class = Plugin
     project_type = 'plugin'
-    zip_parser = get_plugin_basename
 
     class Meta(ProjectReleaseSerializer.Meta):
         model = PluginRelease
+
+    @property
+    def zip_parser(self):
+        return get_plugin_basename
 
 
 class PluginSerializer(ProjectSerializer):

@@ -88,7 +88,6 @@ class PluginAddContributorConfirmationView(RetrievePluginMixin, FormView):
 
     def get_initial(self):
         """Add 'forum_id' to the initial."""
-        print(self.kwargs)
         initial = super().get_initial()
         initial.update({
             'forum_id': self.kwargs['forum_id']
