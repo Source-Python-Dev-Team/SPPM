@@ -14,6 +14,7 @@ from django.conf import settings
 from django.core.exceptions import ValidationError
 
 # App
+from project_manager.common.constants import CANNOT_BE_NAMED, CANNOT_START_WITH
 from project_manager.requirements.models import (
     DownloadRequirement,
     PyPiRequirement,
@@ -38,6 +39,7 @@ __all__ = (
     'handle_project_logo_upload',
     'handle_release_zip_file_upload',
     'reset_requirements',
+    'validate_basename',
 )
 
 
@@ -160,3 +162,25 @@ def get_file_list(zip_file):
         raise ValidationError({
             'zip_file': 'Given file is not a valid zip file.'
         })
+
+
+def validate_basename(basename, project_type):
+    if basename is None:
+        raise ValidationError(
+            f'No base directory or file found for {project_type}.',
+            code='not-found',
+        )
+    if basename in CANNOT_BE_NAMED:
+        raise ValidationError(
+            f'{project_type.capitalize()} basename cannot be "{basename}".',
+            code='invalid',
+        )
+    for start in CANNOT_START_WITH:
+        if basename.startswith(start):
+            raise ValidationError(
+                (
+                    f'{project_type.capitalize()} basename cannot start '
+                    f'with "{start}".'
+                ),
+                code='invalid',
+            )

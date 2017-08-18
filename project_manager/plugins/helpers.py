@@ -7,8 +7,11 @@
 from django.core.exceptions import ValidationError
 
 # App
-from project_manager.common.constants import CANNOT_BE_NAMED, CANNOT_START_WITH
-from project_manager.common.helpers import find_image_number, get_file_list
+from project_manager.common.helpers import (
+    find_image_number,
+    get_file_list,
+    validate_basename,
+)
 from .constants import (
     PLUGIN_PATH, PLUGIN_IMAGE_URL, PLUGIN_LOGO_URL, PLUGIN_RELEASE_URL,
 )
@@ -31,39 +34,8 @@ __all__ = (
 def get_plugin_basename(zip_file):
     """Return the plugin's basename."""
     file_list = get_file_list(zip_file)
-    basename = None
-    for file_path in file_list:
-        if not file_path.endswith('.py'):
-            continue
-        if not file_path.startswith(PLUGIN_PATH):
-            continue
-        current = file_path.split(PLUGIN_PATH, 1)[1]
-        if not current:
-            continue
-        current = current.split('/', 1)[0]
-        if basename is None:
-            basename = current
-        elif basename != current:
-            raise ValidationError(
-                'Multiple base directories found for plugin',
-                code='multiple',
-            )
-    if basename is None:
-        raise ValidationError(
-            'No base directory found for plugin.',
-            code='not-found',
-        )
-    if basename in CANNOT_BE_NAMED:
-        raise ValidationError(
-            f'Plugin basename cannot be "{basename}".',
-            code='invalid',
-        )
-    for start in CANNOT_START_WITH:
-        if basename.startswith(start):
-            raise ValidationError(
-                f'Plugin basename cannot start with "{start}".',
-                code='invalid',
-            )
+    basename = _find_basename(file_list)
+    validate_basename(basename=basename, project_type='plugin')
     if f'{PLUGIN_PATH}{basename}/{basename}.py' not in file_list:
         raise ValidationError(
             'No primary file found in zip.  ' +
@@ -94,3 +66,27 @@ def handle_plugin_image_upload(instance, filename):
     )
     extension = filename.rsplit('.', 1)[1]
     return f'{PLUGIN_IMAGE_URL}{slug}/{image_number}.{extension}'
+
+
+# =============================================================================
+# >> HELPER FUNCTIONS
+# =============================================================================
+def _find_basename(file_list):
+    basename = None
+    for file_path in file_list:
+        if not file_path.endswith('.py'):
+            continue
+        if not file_path.startswith(PLUGIN_PATH):
+            continue
+        current = file_path.split(PLUGIN_PATH, 1)[1]
+        if not current:
+            continue
+        current = current.split('/', 1)[0]
+        if basename is None:
+            basename = current
+        elif basename != current:
+            raise ValidationError(
+                'Multiple base directories found for plugin',
+                code='multiple',
+            )
+    return basename

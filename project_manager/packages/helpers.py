@@ -7,8 +7,11 @@
 from django.core.exceptions import ValidationError
 
 # App
-from project_manager.common.constants import CANNOT_BE_NAMED, CANNOT_START_WITH
-from project_manager.common.helpers import find_image_number, get_file_list
+from project_manager.common.helpers import (
+    find_image_number,
+    get_file_list,
+    validate_basename,
+)
 from .constants import (
     PACKAGE_PATH, PACKAGE_IMAGE_URL, PACKAGE_LOGO_URL, PACKAGE_RELEASE_URL,
 )
@@ -32,44 +35,8 @@ def get_package_basename(zip_file):
     """Return the package's basename."""
     # TODO: add module/package validation
     file_list = get_file_list(zip_file)
-    basename = None
-    is_module = False
-    for file_path in file_list:
-        if not file_path.endswith('.py'):
-            continue
-        if not file_path.startswith(PACKAGE_PATH):
-            continue
-        current = file_path.split(PACKAGE_PATH, 1)[1]
-        if not current:
-            continue
-        if '/' not in current:
-            current = current.rsplit('.', 1)[0]
-            is_module = True
-        else:
-            current = current.split('/', 1)[0]
-        if basename is None:
-            basename = current
-        elif basename != current:
-            raise ValidationError(
-                'Multiple base directories found for package.',
-                code='multiple',
-            )
-    if basename is None:
-        raise ValidationError(
-            'No base directory or file found for package.',
-            code='not-found',
-        )
-    if basename in CANNOT_BE_NAMED:
-        raise ValidationError(
-            f'Package basename cannot be "{basename}".',
-            code='invalid',
-        )
-    for start in CANNOT_START_WITH:
-        if basename.startswith(start):
-            raise ValidationError(
-                f'Package basename cannot start with "{start}".',
-                code='invalid',
-            )
+    basename, is_module = _find_basename_and_is_module(file_list)
+    validate_basename(basename=basename, project_type='package')
     return basename, is_module
 
 
@@ -94,3 +61,32 @@ def handle_package_image_upload(instance, filename):
     )
     extension = filename.rsplit('.', 1)[1]
     return f'{PACKAGE_IMAGE_URL}{slug}/{image_number}.{extension}'
+
+
+# =============================================================================
+# >> HELPER FUNCTIONS
+# =============================================================================
+def _find_basename_and_is_module(file_list):
+    basename = None
+    is_module = False
+    for file_path in file_list:
+        if not file_path.endswith('.py'):
+            continue
+        if not file_path.startswith(PACKAGE_PATH):
+            continue
+        current = file_path.split(PACKAGE_PATH, 1)[1]
+        if not current:
+            continue
+        if '/' not in current:
+            current = current.rsplit('.', 1)[0]
+            is_module = True
+        else:
+            current = current.split('/', 1)[0]
+        if basename is None:
+            basename = current
+        elif basename != current:
+            raise ValidationError(
+                'Multiple base directories found for package.',
+                code='multiple',
+            )
+    return basename, is_module

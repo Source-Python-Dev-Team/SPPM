@@ -8,8 +8,11 @@ from django.core.exceptions import ValidationError
 
 # App
 from project_manager.plugins.constants import PLUGIN_PATH
-from project_manager.common.constants import CANNOT_BE_NAMED, CANNOT_START_WITH
-from project_manager.common.helpers import find_image_number, get_file_list
+from project_manager.common.helpers import (
+    find_image_number,
+    get_file_list,
+    validate_basename,
+)
 from .constants import (
     SUB_PLUGIN_IMAGE_URL, SUB_PLUGIN_LOGO_URL, SUB_PLUGIN_RELEASE_URL,
 )
@@ -34,22 +37,7 @@ def get_sub_plugin_basename(zip_file, plugin):
     # TODO: add 'path' validation
     file_list = get_file_list(zip_file)
     basename, path = _find_basename_and_path(file_list, plugin)
-    if basename is None:
-        raise ValidationError(
-            'No sub-plugin base directory found in zip.',
-            code='not-found',
-        )
-    if basename in CANNOT_BE_NAMED:
-        raise ValidationError(
-            f'Sub-plugin basename cannot be "{basename}".',
-            code='invalid',
-        )
-    for start in CANNOT_START_WITH:
-        if basename.startswith(start):
-            raise ValidationError(
-                f'Sub-plugin basename cannot start with "{start}".',
-                code='invalid',
-            )
+    validate_basename(basename=basename, project_type='sub-plugin')
     return basename, path
 
 
@@ -121,6 +109,9 @@ def _validate_plugin_name(file_list, plugin):
     return plugin_name
 
 
+# =============================================================================
+# >> HELPER FUNCTIONS
+# =============================================================================
 def _find_basename_and_path(file_list, plugin):
     plugin_name = _validate_plugin_name(file_list, plugin)
     path = None
