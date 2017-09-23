@@ -86,10 +86,6 @@ class SubPluginReleaseSerializer(ProjectReleaseSerializer):
 class SubPluginSerializer(ProjectSerializer):
     """Serializer for creating, updating, and listing SubPlugins."""
 
-    images = SubPluginImageSerializer(
-        many=True,
-        read_only=True,
-    )
     releases = SubPluginReleaseSerializer(
         write_only=True,
     )

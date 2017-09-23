@@ -59,10 +59,6 @@ class PluginReleaseSerializer(ProjectReleaseSerializer):
 class PluginSerializer(ProjectSerializer):
     """Serializer for creating, updating, and listing Plugins."""
 
-    images = PluginImageSerializer(
-        many=True,
-        read_only=True,
-    )
     releases = PluginReleaseSerializer(
         write_only=True,
     )

@@ -62,10 +62,6 @@ class PackageReleaseSerializer(ProjectReleaseSerializer):
 class PackageSerializer(ProjectSerializer):
     """Serializer for creating, updating, and listing Packages."""
 
-    images = PackageImageSerializer(
-        many=True,
-        read_only=True,
-    )
     releases = PackageReleaseSerializer(
         write_only=True,
     )
