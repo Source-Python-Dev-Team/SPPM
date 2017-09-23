@@ -12,7 +12,6 @@
         <img src="{{ MEDIA_URL }}{{ plugin.logo }}" height="135" width="135" alt="{{ plugin }} Logo"/>
     {% endif %}
     <h1>{{ plugin }} - version {{ current_version }}</h1>
-    {# TODO: only show this if the logged in user is the owner or a contributors #}
     <ul>
         <b><a href="{% url 'plugins:edit' slug=plugin.slug %}">Edit Page</a></b> |
         <b><a href="{% url 'plugins:update' slug=plugin.slug %}">Update Plugin</a></b> |
@@ -63,7 +62,6 @@
                 <div class="panel panel-primary panel-primary-custom">
                     <div class="panel-heading panel-heading-custom">
                         <h3 class="panel-title">Contributors</h3>
-                        {#  TODO: only show this if the user is logged in and is the owner #}
                         <span class="pull-right" style="margin-top: -20px">
                             <a href="{% url 'plugins:contributors:add' slug=plugin.slug %}">
                                 <button type="button" class="btn btn-xs btn-default">Add Contributor</button>
@@ -75,7 +73,6 @@
                             {% for contributor in contributors %}
                                 <tr>
                                     <td><a href="{{ contributor.get_absolute_url }}">{{ contributor }}</a></td>
-                                    {# TODO: add the delete button.  only show if the user is the owner #}
                                     <td class="text-right">
     {#                                    <a data-toggle="modal" href="#{{  }}"#}
                                     </td>

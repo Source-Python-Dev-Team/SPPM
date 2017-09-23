@@ -1,7 +1,5 @@
 {% extends "base.html" %}
 
-{# TODO: Only owner and contributors should have access to this page #}
-
 {% block title %}
     Sub-Plugin Paths for {{ plugin }}
 {% endblock title %}
@@ -29,7 +27,6 @@
                         {% for path in object_list %}
                             <tr>
                                 <td>{{ path }}</td>
-                                {# TODO: add the delete button. #}
 
                                 <td class="text-right">
                                     <a href="{% url 'plugins:paths:edit' slug=plugin.slug path_pk=path.pk %}">
