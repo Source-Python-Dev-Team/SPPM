@@ -80,11 +80,6 @@ class SubPlugin(ProjectBase):
                 if logo:
                     logo[0].remove()
 
-        # TODO: Set the owner based on the user that is logged in
-        if not self.owner_id:
-            from random import choice
-            self.owner = choice(ForumUser.objects.all())
-
         super().save(*args, **kwargs)
 
 
