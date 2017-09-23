@@ -8,7 +8,6 @@ from operator import itemgetter
 
 # Django
 from django.core.exceptions import ValidationError
-from django.utils import formats
 from django.utils.text import slugify
 
 # 3rd-Party Django
@@ -33,6 +32,7 @@ from project_manager.users.api.serializers.common import (
     ForumUserContributorSerializer,
 )
 from project_manager.users.models import ForumUser
+from .mixins import ProjectLocaleMixin
 
 
 # =============================================================================
@@ -52,7 +52,7 @@ __all__ = (
 # TODO:     contributors
 # TODO:     supported_games
 # TODO:     tags
-class ProjectSerializer(ModelSerializer):
+class ProjectSerializer(ModelSerializer, ProjectLocaleMixin):
     """Base Project Serializer."""
 
     current_release = SerializerMethodField()
@@ -175,20 +175,6 @@ class ProjectSerializer(ModelSerializer):
             'zip_file': zip_url,
         }
 
-    def get_date_time_dict(self, timestamp):
-        """Return a dictionary of the formatted timestamp."""
-        return {
-            'actual': timestamp,
-            'locale': self.get_date_display(
-                date=timestamp,
-                date_format='DATE_FORMAT',
-            ),
-            'locale_short': self.get_date_display(
-                date=timestamp,
-                date_format='SHORT_DATE_FORMAT',
-            )
-        }
-
     def get_extra_kwargs(self):
         """Set the 'name' field to read-only when updating."""
         extra_kwargs = super().get_extra_kwargs()
@@ -302,14 +288,6 @@ class ProjectSerializer(ModelSerializer):
         return attrs
 
     @staticmethod
-    def get_date_display(date, date_format):
-        """Return the formatted date."""
-        return formats.date_format(
-            value=date,
-            format=date_format,
-        ) if date else date
-
-    @staticmethod
     def get_download_kwargs(obj, release):
         """Return the release's reverse kwargs."""
         return {
@@ -318,8 +296,27 @@ class ProjectSerializer(ModelSerializer):
         }
 
 
+class ProjectReleaseListSerializer(ModelSerializer, ProjectLocaleMixin):
+    """Base ProjectRelease Serializer for listing."""
+
+    created = SerializerMethodField()
+
+    class Meta:
+        model = None
+        fields = (
+            'notes',
+            'zip_file',
+            'version',
+            'created',
+        )
+
+    def get_created(self, obj):
+        """Return the release's created info."""
+        return self.get_date_time_dict(timestamp=obj.created)
+
+
 class ProjectReleaseSerializer(ModelSerializer):
-    """Base ProjectRelease Serializer."""
+    """Base ProjectRelease Serializer for creating and retrieving."""
 
     notes = CharField(max_length=512, allow_blank=True)
     version = CharField(max_length=8, allow_blank=True)

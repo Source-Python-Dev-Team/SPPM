@@ -8,10 +8,15 @@ from project_manager.common.api.helpers import get_prefetch
 from project_manager.common.api.views import (
     ProjectAPIView,
     ProjectImageViewSet,
+    ProjectReleaseViewSet,
     ProjectViewSet,
 )
 from .filters import PackageFilter
-from .serializers import PackageImageSerializer, PackageSerializer
+from .serializers import (
+    PackageImageSerializer,
+    PackageReleaseListSerializer,
+    PackageSerializer,
+)
 from ..models import Package, PackageImage, PackageRelease
 
 
@@ -56,6 +61,18 @@ class PackageImageViewSet(ProjectImageViewSet):
         'package',
     )
     serializer_class = PackageImageSerializer
+
+    project_type = 'package'
+    project_model = Package
+
+
+class PackageReleaseViewSet(ProjectReleaseViewSet):
+    """ViewSet for retrieving releases for Packages."""
+
+    queryset = PackageRelease.objects.select_related(
+        'package',
+    )
+    serializer_class = PackageReleaseListSerializer
 
     project_type = 'package'
     project_model = Package

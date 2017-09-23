@@ -10,7 +10,12 @@ from django.conf.urls import url
 from rest_framework import routers
 
 # App
-from .views import SubPluginAPIView, SubPluginImageViewSet, SubPluginViewSet
+from .views import (
+    SubPluginAPIView,
+    SubPluginImageViewSet,
+    SubPluginReleaseViewSet,
+    SubPluginViewSet,
+)
 
 
 # =============================================================================
@@ -20,12 +25,17 @@ router = routers.SimpleRouter()
 router.register(
     prefix=r'^projects/(?P<plugin_slug>[\w-]+)',
     viewset=SubPluginViewSet,
-    base_name='projects'
+    base_name='projects',
 )
 router.register(
     prefix=r'^images/(?P<plugin_slug>[\w-]+)/(?P<sub_plugin_slug>[\w-]+)',
     viewset=SubPluginImageViewSet,
-    base_name='images'
+    base_name='images',
+)
+router.register(
+    prefix=r'^releases/(?P<plugin_slug>[\w-]+)/(?P<sub_plugin_slug>[\w-]+)',
+    viewset=SubPluginReleaseViewSet,
+    base_name='releases',
 )
 
 

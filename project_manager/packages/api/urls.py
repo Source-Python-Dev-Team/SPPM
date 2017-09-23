@@ -10,7 +10,12 @@ from django.conf.urls import url
 from rest_framework import routers
 
 # App
-from .views import PackageAPIView, PackageImageViewSet, PackageViewSet
+from .views import (
+    PackageAPIView,
+    PackageImageViewSet,
+    PackageReleaseViewSet,
+    PackageViewSet,
+)
 
 
 # =============================================================================
@@ -20,12 +25,17 @@ router = routers.SimpleRouter()
 router.register(
     prefix=r'projects',
     viewset=PackageViewSet,
-    base_name='projects'
+    base_name='projects',
 )
 router.register(
     prefix=r'^images/(?P<package_slug>[\w-]+)',
     viewset=PackageImageViewSet,
-    base_name='images'
+    base_name='images',
+)
+router.register(
+    prefix=r'^releases/(?P<package_slug>[\w-]+)',
+    viewset=PackageReleaseViewSet,
+    base_name='releases',
 )
 
 

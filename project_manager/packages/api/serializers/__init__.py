@@ -6,6 +6,7 @@
 # App
 from project_manager.common.api.serializers import (
     ProjectImageSerializer,
+    ProjectReleaseListSerializer,
     ProjectReleaseSerializer,
     ProjectSerializer,
 )
@@ -35,6 +36,13 @@ class PackageImageSerializer(ProjectImageSerializer):
 
     class Meta(ProjectImageSerializer.Meta):
         model = PackageImage
+
+
+class PackageReleaseListSerializer(ProjectReleaseListSerializer):
+    """Serializer for listing Package releases."""
+
+    class Meta(ProjectReleaseListSerializer.Meta):
+        model = PackageRelease
 
 
 class PackageReleaseSerializer(ProjectReleaseSerializer):

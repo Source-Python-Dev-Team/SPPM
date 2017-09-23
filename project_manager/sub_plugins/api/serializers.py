@@ -9,6 +9,7 @@ from django.core.exceptions import ValidationError
 # App
 from project_manager.common.api.serializers import (
     ProjectImageSerializer,
+    ProjectReleaseListSerializer,
     ProjectReleaseSerializer,
     ProjectSerializer,
 )
@@ -39,6 +40,13 @@ class SubPluginImageSerializer(ProjectImageSerializer):
 
     class Meta(ProjectImageSerializer.Meta):
         model = SubPluginImage
+
+
+class SubPluginReleaseListSerializer(ProjectReleaseListSerializer):
+    """Serializer for listing Plugin releases."""
+
+    class Meta(ProjectReleaseListSerializer.Meta):
+        model = SubPluginRelease
 
 
 class SubPluginReleaseSerializer(ProjectReleaseSerializer):

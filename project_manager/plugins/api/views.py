@@ -8,10 +8,15 @@ from project_manager.common.api.helpers import get_prefetch
 from project_manager.common.api.views import (
     ProjectAPIView,
     ProjectImageViewSet,
+    ProjectReleaseViewSet,
     ProjectViewSet,
 )
 from .filters import PluginFilter
-from .serializers import PluginImageSerializer, PluginSerializer
+from .serializers import (
+    PluginImageSerializer,
+    PluginReleaseListSerializer,
+    PluginSerializer,
+)
 from ..models import Plugin, PluginImage, PluginRelease
 
 
@@ -56,6 +61,18 @@ class PluginImageViewSet(ProjectImageViewSet):
         'plugin',
     )
     serializer_class = PluginImageSerializer
+
+    project_type = 'plugin'
+    project_model = Plugin
+
+
+class PluginReleaseViewSet(ProjectReleaseViewSet):
+    """ViewSet for retrieving releases for Plugins."""
+
+    queryset = PluginRelease.objects.select_related(
+        'plugin',
+    )
+    serializer_class = PluginReleaseListSerializer
 
     project_type = 'plugin'
     project_model = Plugin

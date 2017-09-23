@@ -8,12 +8,14 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.filters import OrderingFilter
-from rest_framework.parsers import ParseError
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, SAFE_METHODS
 from rest_framework.response import Response
 from rest_framework.reverse import reverse
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
+
+# App
+from .mixins import ProjectInfoMixin
 
 
 # =============================================================================
@@ -49,6 +51,10 @@ class ProjectAPIView(APIView):
                     viewname=f'api:{self.project_type}s:endpoints',
                     request=request,
                 ) + f'images/{self.extra_params}<{self.project_type}>/',
+                'releases': reverse(
+                    viewname=f'api:{self.project_type}s:endpoints',
+                    request=request,
+                ) + f'releases/{self.extra_params}<{self.project_type}>/'
             }
         )
 
@@ -105,51 +111,11 @@ class ProjectViewSet(ModelViewSet):
         return super().update(request, *args, **kwargs)
 
 
-class ProjectImageViewSet(ModelViewSet):
+class ProjectImageViewSet(ProjectInfoMixin):
     """Base Image View."""
 
     authentication_classes = (SessionAuthentication,)
-    filter_backends = (OrderingFilter, DjangoFilterBackend)
-    ordering = ('-created',)
-    ordering_fields = ('created',)
     permission_classes = (IsAuthenticatedOrReadOnly,)
-
-    parent_project = None
-    _project = None
-
-    @property
-    def project(self):
-        """Return the project for the image."""
-        if self._project is not None:
-            return self._project
-        kwargs = self.get_project_kwargs(self.parent_project)
-        try:
-            self._project = self.project_model.objects.select_related(
-                'owner__user'
-            ).get(**kwargs)
-        except self.project_model.DoesNotExist:
-            raise ParseError(
-                'Invalid {project_type}_slug.'.format(
-                    project_type=self.project_type.replace('-', '_')
-                )
-            )
-        return self._project
-
-    @property
-    def project_model(self):
-        """Return the model to use for the project."""
-        raise NotImplementedError(
-            f'Class {self.__class__.__name__} must implement a '
-            '"project_model" attribute.'
-        )
-
-    @property
-    def project_type(self):
-        """Return the project's type."""
-        raise NotImplementedError(
-            f'Class {self.__class__.__name__} must implement a '
-            '"project_type" attribute.'
-        )
 
     def check_permissions(self, request):
         if request.method not in SAFE_METHODS:
@@ -164,19 +130,8 @@ class ProjectImageViewSet(ModelViewSet):
                 raise PermissionDenied
         return super().check_permissions(request=request)
 
-    def get_project_kwargs(self, parent_project=None):
-        """Return the kwargs to use to filter for the project."""
-        project_slug = '{project_type}_slug'.format(
-            project_type=self.project_type.replace('-', '_')
-        )
-        return {
-            'slug': self.kwargs.get(project_slug)
-        }
 
-    def get_queryset(self):
-        """Filter images to only the ones of the current project."""
-        queryset = super().get_queryset()
-        kwargs = {
-            self.project_type.replace('-', '_'): self.project
-        }
-        return queryset.filter(**kwargs)
+class ProjectReleaseViewSet(ProjectInfoMixin):
+    """Base Release ViewSet."""
+
+    http_method_names = ('get', 'options')

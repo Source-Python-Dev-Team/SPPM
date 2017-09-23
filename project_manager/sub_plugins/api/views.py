@@ -10,11 +10,16 @@ from project_manager.common.api.helpers import get_prefetch
 from project_manager.common.api.views import (
     ProjectAPIView,
     ProjectImageViewSet,
+    ProjectReleaseViewSet,
     ProjectViewSet,
 )
 from project_manager.plugins.models import Plugin
 from .filters import SubPluginFilter
-from .serializers import SubPluginImageSerializer, SubPluginSerializer
+from .serializers import (
+    SubPluginImageSerializer,
+    SubPluginReleaseListSerializer,
+    SubPluginSerializer,
+)
 from ..models import SubPlugin, SubPluginImage, SubPluginRelease
 
 
@@ -75,6 +80,36 @@ class SubPluginImageViewSet(ProjectImageViewSet):
         'sub_plugin',
     )
     serializer_class = SubPluginImageSerializer
+
+    project_type = 'sub-plugin'
+    project_model = SubPlugin
+
+    @property
+    def parent_project(self):
+        """Return the Plugin for the SubPlugin image view."""
+        plugin_slug = self.kwargs.get('plugin_slug')
+        try:
+            plugin = Plugin.objects.get(slug=plugin_slug)
+        except Plugin.DoesNotExist:
+            raise ParseError(f"Plugin '{plugin_slug}' not found.")
+        return plugin
+
+    def get_project_kwargs(self, parent_project=None):
+        """Add the Plugin to the kwargs for filtering for the project."""
+        kwargs = super().get_project_kwargs(parent_project=parent_project)
+        kwargs.update(
+            plugin=parent_project,
+        )
+        return kwargs
+
+
+class SubPluginReleaseViewSet(ProjectReleaseViewSet):
+    """ViewSet for retrieving releases for SubPlugins."""
+
+    queryset = SubPluginRelease.objects.select_related(
+        'sub_plugin',
+    )
+    serializer_class = SubPluginReleaseListSerializer
 
     project_type = 'sub-plugin'
     project_model = SubPlugin

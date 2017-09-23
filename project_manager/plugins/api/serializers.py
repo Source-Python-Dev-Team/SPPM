@@ -6,6 +6,7 @@
 # App
 from project_manager.common.api.serializers import (
     ProjectImageSerializer,
+    ProjectReleaseListSerializer,
     ProjectReleaseSerializer,
     ProjectSerializer,
 )
@@ -34,8 +35,15 @@ class PluginImageSerializer(ProjectImageSerializer):
         model = PluginImage
 
 
+class PluginReleaseListSerializer(ProjectReleaseListSerializer):
+    """Serializer for listing Plugin releases."""
+
+    class Meta(ProjectReleaseListSerializer.Meta):
+        model = PluginRelease
+
+
 class PluginReleaseSerializer(ProjectReleaseSerializer):
-    """Serializer for creating and listing Plugin releases."""
+    """Serializer for creating and retrieving Plugin releases."""
 
     project_class = Plugin
     project_type = 'plugin'
