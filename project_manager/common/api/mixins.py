@@ -87,11 +87,11 @@ class ProjectLocaleMixin(object):
             'actual': timestamp,
             'locale': self.get_date_display(
                 date=timestamp,
-                date_format='DATE_FORMAT',
+                date_format='DATETIME_FORMAT',
             ),
             'locale_short': self.get_date_display(
                 date=timestamp,
-                date_format='SHORT_DATE_FORMAT',
+                date_format='SHORT_DATETIME_FORMAT',
             )
         }
 
