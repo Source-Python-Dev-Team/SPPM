@@ -96,7 +96,6 @@ class SubPluginSerializer(ProjectSerializer):
     class Meta(ProjectSerializer.Meta):
         model = SubPlugin
         fields = ProjectSerializer.Meta.fields + (
-            'images',
             'releases',
         )
 

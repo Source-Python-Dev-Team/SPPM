@@ -72,6 +72,5 @@ class PackageSerializer(ProjectSerializer):
     class Meta(ProjectSerializer.Meta):
         model = Package
         fields = ProjectSerializer.Meta.fields + (
-            'images',
             'releases',
         )

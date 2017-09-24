@@ -69,6 +69,5 @@ class PluginSerializer(ProjectSerializer):
     class Meta(ProjectSerializer.Meta):
         model = Plugin
         fields = ProjectSerializer.Meta.fields + (
-            'images',
             'releases',
         )
