@@ -18,8 +18,10 @@ from .mixins import PluginReleaseBase
 # >> ALL DECLARATION
 # =============================================================================
 __all__ = (
-    'PluginImageSerializer',
+    'PluginCreateSerializer',
     'PluginCreateReleaseSerializer',
+    'PluginImageSerializer',
+    'PluginReleaseSerializer',
     'PluginSerializer',
 )
 

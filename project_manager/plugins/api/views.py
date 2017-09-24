@@ -27,6 +27,7 @@ from ..models import Plugin, PluginImage, PluginRelease
 __all__ = (
     'PluginAPIView',
     'PluginImageViewSet',
+    'PluginReleaseViewSet',
     'PluginViewSet',
 )
 

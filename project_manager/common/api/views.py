@@ -24,6 +24,7 @@ from .mixins import ProjectRelatedInfoMixin
 __all__ = (
     'ProjectAPIView',
     'ProjectImageViewSet',
+    'ProjectReleaseViewSet',
     'ProjectViewSet',
 )
 

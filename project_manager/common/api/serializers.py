@@ -36,6 +36,7 @@ from .mixins import (
 __all__ = (
     'ProjectImageSerializer',
     'ProjectCreateReleaseSerializer',
+    'ProjectReleaseSerializer',
     'ProjectSerializer',
 )
 

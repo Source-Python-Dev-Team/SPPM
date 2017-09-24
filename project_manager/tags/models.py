@@ -14,6 +14,7 @@ from .validators import tag_name_validator
 # >> ALL DECLARATION
 # =============================================================================
 __all__ = (
+    'BlackListedTag',
     'Tag',
 )
 

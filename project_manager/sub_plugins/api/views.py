@@ -30,6 +30,7 @@ from ..models import SubPlugin, SubPluginImage, SubPluginRelease
 __all__ = (
     'SubPluginAPIView',
     'SubPluginImageViewSet',
+    'SubPluginReleaseViewSet',
     'SubPluginViewSet',
 )
 

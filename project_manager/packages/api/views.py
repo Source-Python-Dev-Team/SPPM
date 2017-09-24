@@ -27,6 +27,7 @@ from ..models import Package, PackageImage, PackageRelease
 __all__ = (
     'PackageAPIView',
     'PackageImageViewSet',
+    'PackageReleaseViewSet',
     'PackageViewSet',
 )
 

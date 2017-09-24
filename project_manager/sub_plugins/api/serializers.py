@@ -26,8 +26,10 @@ from .mixins import SubPluginReleaseBase
 # >> ALL DECLARATION
 # =============================================================================
 __all__ = (
-    'SubPluginImageSerializer',
+    'SubPluginCreateSerializer',
     'SubPluginCreateReleaseSerializer',
+    'SubPluginImageSerializer',
+    'SubPluginReleaseSerializer',
     'SubPluginSerializer',
 )
 

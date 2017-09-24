@@ -16,6 +16,16 @@ from rest_framework.viewsets import ModelViewSet
 
 
 # =============================================================================
+# >> ALL DECLARATION
+# =============================================================================
+__all__ = (
+    'ProjectLocaleMixin',
+    'ProjectRelatedInfoMixin',
+    'ProjectReleaseCreationMixin',
+)
+
+
+# =============================================================================
 # >> MIXINS
 # =============================================================================
 class ProjectRelatedInfoMixin(ModelViewSet):
