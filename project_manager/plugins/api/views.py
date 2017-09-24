@@ -13,6 +13,7 @@ from project_manager.common.api.views import (
 )
 from .filters import PluginFilter
 from .serializers import (
+    PluginCreateSerializer,
     PluginImageSerializer,
     PluginReleaseListSerializer,
     PluginSerializer,
@@ -52,6 +53,8 @@ class PluginViewSet(ProjectViewSet):
         'owner__user',
     )
     serializer_class = PluginSerializer
+
+    creation_serializer_class = PluginCreateSerializer
 
 
 class PluginImageViewSet(ProjectImageViewSet):

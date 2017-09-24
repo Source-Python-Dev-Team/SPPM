@@ -16,6 +16,7 @@ from project_manager.common.api.views import (
 from project_manager.plugins.models import Plugin
 from .filters import SubPluginFilter
 from .serializers import (
+    SubPluginCreateSerializer,
     SubPluginImageSerializer,
     SubPluginReleaseListSerializer,
     SubPluginSerializer,
@@ -58,6 +59,8 @@ class SubPluginViewSet(ProjectViewSet):
     )
     serializer_class = SubPluginSerializer
     lookup_field = 'slug'
+
+    creation_serializer_class = SubPluginCreateSerializer
     plugin = None
 
     def get_queryset(self):

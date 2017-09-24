@@ -57,17 +57,23 @@ class PluginReleaseSerializer(ProjectReleaseSerializer):
 
 
 class PluginSerializer(ProjectSerializer):
-    """Serializer for creating, updating, and listing Plugins."""
-
-    releases = PluginReleaseSerializer(
-        write_only=True,
-    )
+    """Serializer for updating and listing Plugins."""
 
     project_type = 'plugin'
     release_model = PluginRelease
 
     class Meta(ProjectSerializer.Meta):
         model = Plugin
-        fields = ProjectSerializer.Meta.fields + (
+
+
+class PluginCreateSerializer(PluginSerializer):
+    """Serializer for creating Plugins."""
+
+    releases = PluginReleaseSerializer(
+        write_only=True,
+    )
+
+    class Meta(PluginSerializer.Meta):
+        fields = PluginSerializer.Meta.fields + (
             'releases',
         )

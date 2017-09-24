@@ -13,6 +13,7 @@ from project_manager.common.api.views import (
 )
 from .filters import PackageFilter
 from .serializers import (
+    PackageCreateSerializer,
     PackageImageSerializer,
     PackageReleaseListSerializer,
     PackageSerializer,
@@ -52,6 +53,8 @@ class PackageViewSet(ProjectViewSet):
         'owner__user',
     )
     serializer_class = PackageSerializer
+
+    creation_serializer_class = PackageCreateSerializer
 
 
 class PackageImageViewSet(ProjectImageViewSet):

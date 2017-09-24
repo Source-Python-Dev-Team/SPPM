@@ -60,17 +60,23 @@ class PackageReleaseSerializer(ProjectReleaseSerializer):
 
 
 class PackageSerializer(ProjectSerializer):
-    """Serializer for creating, updating, and listing Packages."""
-
-    releases = PackageReleaseSerializer(
-        write_only=True,
-    )
+    """Serializer for updating and listing Packages."""
 
     project_type = 'package'
     release_model = PackageRelease
 
     class Meta(ProjectSerializer.Meta):
         model = Package
-        fields = ProjectSerializer.Meta.fields + (
+
+
+class PackageCreateSerializer(PackageSerializer):
+    """Serializer for creating Packages."""
+
+    releases = PackageReleaseSerializer(
+        write_only=True,
+    )
+
+    class Meta(PackageSerializer.Meta):
+        fields = PackageSerializer.Meta.fields + (
             'releases',
         )

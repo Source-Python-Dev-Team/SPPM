@@ -84,20 +84,13 @@ class SubPluginReleaseSerializer(ProjectReleaseSerializer):
 
 
 class SubPluginSerializer(ProjectSerializer):
-    """Serializer for creating, updating, and listing SubPlugins."""
-
-    releases = SubPluginReleaseSerializer(
-        write_only=True,
-    )
+    """Serializer for updating and listing SubPlugins."""
 
     project_type = 'sub-plugin'
     release_model = SubPluginRelease
 
     class Meta(ProjectSerializer.Meta):
         model = SubPlugin
-        fields = ProjectSerializer.Meta.fields + (
-            'releases',
-        )
 
     @staticmethod
     def get_download_kwargs(obj, release):
@@ -107,3 +100,16 @@ class SubPluginSerializer(ProjectSerializer):
             'sub_plugin_slug': obj.slug,
             'zip_file': release.file_name,
         }
+
+
+class SubPluginCreateSerializer(SubPluginSerializer):
+    """Serializer for creating SubPlugins."""
+
+    releases = SubPluginReleaseSerializer(
+        write_only=True,
+    )
+
+    class Meta(SubPluginSerializer.Meta):
+        fields = SubPluginSerializer.Meta.fields + (
+            'releases',
+        )

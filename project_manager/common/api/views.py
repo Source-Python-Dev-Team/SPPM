@@ -73,6 +73,13 @@ class ProjectViewSet(ModelViewSet):
     stored_supported_games = None
     stored_tags = None
 
+    @property
+    def creation_serializer_class(self):
+        raise NotImplementedError(
+            f'Class {self.__class__.__name__} must implement a '
+            '"creation_serializer_class" attribute.'
+        )
+
     def check_object_permissions(self, request, obj):
         """Only allow the owner and contributors to update the project."""
         if request.method not in SAFE_METHODS:
@@ -98,6 +105,11 @@ class ProjectViewSet(ModelViewSet):
         """Store the many-to-many fields before creation."""
         self.store_many_to_many_fields(request=request)
         return super().create(request, *args, **kwargs)
+
+    def get_serializer_class(self):
+        if self.request.method == 'POST':
+            return self.creation_serializer_class
+        return super().get_serializer_class()
 
     def store_many_to_many_fields(self, request):
         """Store the many-to-many fields."""

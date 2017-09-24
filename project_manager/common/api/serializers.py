@@ -191,21 +191,6 @@ class ProjectSerializer(ModelSerializer, ProjectLocaleMixin):
 
     def update(self, instance, validated_data):
         """Update the project."""
-        release_dict = validated_data.pop('releases', {})
-        version = release_dict.get('version', '')
-        zip_file = release_dict.get('zip_file')
-        if all([version, zip_file]):
-            notes = release_dict.get('notes', '')
-            kwargs = {
-                '{project_type}'.format(
-                    project_type=self.project_type.replace('-', '_')
-                ): instance,
-                'notes': notes,
-                'version': version,
-                'zip_file': zip_file,
-            }
-            self.release_model.objects.create(**kwargs)
-
         super().update(
             instance=instance,
             validated_data=validated_data,
@@ -276,7 +261,7 @@ class ProjectSerializer(ModelSerializer, ProjectLocaleMixin):
         version = release_dict.get('version', '')
         zip_file = release_dict.get('zip_file')
         if (
-            self.context['request'].method in ('POST', 'PUT') and
+            self.context['request'].method == 'POST' and
             not all([version, zip_file])
         ):
             raise ValidationError({
