@@ -90,6 +90,7 @@ class SubPluginSerializer(ProjectSerializer):
         }
 
     def get_extra_validated_data(self, validated_data):
+        """Add any extra data to be used on create."""
         validated_data = super().get_extra_validated_data(validated_data)
         validated_data['plugin'] = self.parent_project
         return validated_data

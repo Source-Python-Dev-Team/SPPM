@@ -1,3 +1,5 @@
+"""Base app models."""
+
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
@@ -11,9 +13,19 @@ from django.db import models
 
 
 # =============================================================================
+# >> ALL DECLARATION
+# =============================================================================
+__all__ = (
+    'User',
+)
+
+
+# =============================================================================
 # >> MODELS
 # =============================================================================
 class User(AbstractBaseUser, PermissionsMixin):
+    """Base User Model."""
+
     username = models.CharField(
         max_length=30,
         unique=True,
@@ -31,5 +43,5 @@ class User(AbstractBaseUser, PermissionsMixin):
     USERNAME_FIELD = 'username'
 
     def get_short_name(self):
-        """Returns the short name for the user."""
+        """Return the short name for the user."""
         return self.username

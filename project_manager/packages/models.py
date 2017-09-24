@@ -11,7 +11,6 @@ from django.db import models
 # App
 from project_manager.common.models import ImageBase, ProjectBase, ReleaseBase
 from project_manager.common.validators import basename_validator
-from project_manager.users.models import ForumUser
 from .constants import PACKAGE_LOGO_URL
 from .helpers import handle_package_image_upload
 from .helpers import handle_package_logo_upload

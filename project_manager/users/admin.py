@@ -39,18 +39,22 @@ class ForumUserAdmin(admin.ModelAdmin):
     )
 
     def get_queryset(self, request):
+        """Cache the 'user' for the queryset."""
         return super().get_queryset(request=request).select_related(
             'user',
         )
 
     @staticmethod
     def get_username(obj):
+        """Return the user's username."""
         return obj.user.username
     get_username.short_description = 'Username'
     get_username.admin_order_field = 'user__username'
 
     def has_add_permission(self, request):
+        """No one should be able to add users."""
         return False
 
     def has_delete_permission(self, request, obj=None):
+        """No one should be able to delete users."""
         return False

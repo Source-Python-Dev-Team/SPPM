@@ -154,6 +154,7 @@ def flush_requirements():
 
 
 def get_file_list(zip_file):
+    """Return a list of all files in the given zip file."""
     try:
         return [
             x for x in ZipFile(zip_file).namelist() if not x.endswith('/')
@@ -165,6 +166,7 @@ def get_file_list(zip_file):
 
 
 def validate_basename(basename, project_type):
+    """Validate that the basename is not erroneous."""
     if basename is None:
         raise ValidationError(
             f'No base directory or file found for {project_type}.',

@@ -1,4 +1,4 @@
-""""""
+"""Mixins for package functionalities between APIs."""
 
 # =============================================================================
 # IMPORTS
@@ -19,6 +19,7 @@ class PackageReleaseBase(object):
 
     @property
     def zip_parser(self):
+        """Return the Package zip parsing function."""
         return get_package_basename
 
     def get_project_kwargs(self, parent_project=None):

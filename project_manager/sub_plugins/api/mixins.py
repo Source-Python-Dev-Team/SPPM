@@ -1,4 +1,4 @@
-""""""
+"""Mixins for sub-plugin functionalities between APIs."""
 
 # =============================================================================
 # IMPORTS
@@ -34,6 +34,7 @@ class SubPluginReleaseBase(object):
 
     @property
     def zip_parser(self):
+        """Return the SubPlugin zip parsing function."""
         return get_sub_plugin_basename
 
     def get_project_kwargs(self, parent_project=None):

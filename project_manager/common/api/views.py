@@ -75,6 +75,7 @@ class ProjectViewSet(ModelViewSet):
 
     @property
     def creation_serializer_class(self):
+        """The serializer class to use ONLY when creating a project."""
         raise NotImplementedError(
             f'Class {self.__class__.__name__} must implement a '
             '"creation_serializer_class" attribute.'
@@ -107,6 +108,7 @@ class ProjectViewSet(ModelViewSet):
         return super().create(request, *args, **kwargs)
 
     def get_serializer_class(self):
+        """Return the serializer class for the current method."""
         if self.request.method == 'POST':
             return self.creation_serializer_class
         return super().get_serializer_class()
@@ -130,6 +132,7 @@ class ProjectImageViewSet(ProjectRelatedInfoMixin):
     permission_classes = (IsAuthenticatedOrReadOnly,)
 
     def check_permissions(self, request):
+        """Do not allow users who are not owner/contributor to edit/update."""
         if request.method not in SAFE_METHODS:
             user_id = request.user.id
             if (
