@@ -15,7 +15,7 @@ from .filters import PackageFilter
 from .serializers import (
     PackageCreateSerializer,
     PackageImageSerializer,
-    PackageReleaseListSerializer,
+    PackageReleaseSerializer,
     PackageSerializer,
 )
 from ..models import Package, PackageImage, PackageRelease
@@ -75,7 +75,7 @@ class PackageReleaseViewSet(ProjectReleaseViewSet):
     queryset = PackageRelease.objects.select_related(
         'package',
     )
-    serializer_class = PackageReleaseListSerializer
+    serializer_class = PackageReleaseSerializer
 
     project_type = 'package'
     project_model = Package

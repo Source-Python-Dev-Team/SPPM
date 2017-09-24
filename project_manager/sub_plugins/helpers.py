@@ -38,7 +38,7 @@ def get_sub_plugin_basename(zip_file, plugin):
     file_list = get_file_list(zip_file)
     basename, path = _find_basename_and_path(file_list, plugin)
     validate_basename(basename=basename, project_type='sub-plugin')
-    return basename, path
+    return basename
 
 
 def handle_sub_plugin_zip_upload(instance, filename):

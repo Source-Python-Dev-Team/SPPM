@@ -9,17 +9,17 @@ from django.core.exceptions import ValidationError
 # App
 from project_manager.common.api.serializers import (
     ProjectImageSerializer,
-    ProjectReleaseListSerializer,
     ProjectReleaseSerializer,
+    ProjectCreateReleaseSerializer,
     ProjectSerializer,
 )
 from project_manager.plugins.models import Plugin
-from project_manager.sub_plugins.helpers import get_sub_plugin_basename
 from project_manager.sub_plugins.models import (
     SubPlugin,
     SubPluginImage,
     SubPluginRelease,
 )
+from .mixins import SubPluginReleaseBase
 
 
 # =============================================================================
@@ -27,7 +27,7 @@ from project_manager.sub_plugins.models import (
 # =============================================================================
 __all__ = (
     'SubPluginImageSerializer',
-    'SubPluginReleaseSerializer',
+    'SubPluginCreateReleaseSerializer',
     'SubPluginSerializer',
 )
 
@@ -42,22 +42,32 @@ class SubPluginImageSerializer(ProjectImageSerializer):
         model = SubPluginImage
 
 
-class SubPluginReleaseListSerializer(ProjectReleaseListSerializer):
+class SubPluginReleaseSerializer(
+    SubPluginReleaseBase, ProjectReleaseSerializer
+):
     """Serializer for listing Plugin releases."""
-
-    class Meta(ProjectReleaseListSerializer.Meta):
-        model = SubPluginRelease
-
-
-class SubPluginReleaseSerializer(ProjectReleaseSerializer):
-    """Serializer for creating and listing SubPlugin releases."""
-
-    project_class = SubPlugin
-    project_type = 'sub-plugin'
-    slug_kwarg = 'slug'
 
     class Meta(ProjectReleaseSerializer.Meta):
         model = SubPluginRelease
+
+
+class SubPluginCreateReleaseSerializer(
+    SubPluginReleaseBase, ProjectCreateReleaseSerializer
+):
+    """Serializer for creating and listing SubPlugin releases."""
+
+    class Meta(ProjectCreateReleaseSerializer.Meta):
+        model = SubPluginRelease
+
+
+class SubPluginSerializer(ProjectSerializer):
+    """Serializer for updating and listing SubPlugins."""
+
+    project_type = 'sub-plugin'
+    release_model = SubPluginRelease
+
+    class Meta(ProjectSerializer.Meta):
+        model = SubPlugin
 
     @property
     def parent_project(self):
@@ -70,28 +80,6 @@ class SubPluginReleaseSerializer(ProjectReleaseSerializer):
             raise ValidationError(f"Plugin '{plugin_slug}' not found.")
         return plugin
 
-    @property
-    def zip_parser(self):
-        return get_sub_plugin_basename
-
-    def get_project_kwargs(self, parent_project=None):
-        """Return kwargs for the project."""
-        kwargs = self.context['view'].kwargs
-        return {
-            'slug': kwargs.get('slug'),
-            'plugin': parent_project,
-        }
-
-
-class SubPluginSerializer(ProjectSerializer):
-    """Serializer for updating and listing SubPlugins."""
-
-    project_type = 'sub-plugin'
-    release_model = SubPluginRelease
-
-    class Meta(ProjectSerializer.Meta):
-        model = SubPlugin
-
     @staticmethod
     def get_download_kwargs(obj, release):
         """Return the release's reverse kwargs."""
@@ -101,11 +89,16 @@ class SubPluginSerializer(ProjectSerializer):
             'zip_file': release.file_name,
         }
 
+    def get_extra_validated_data(self, validated_data):
+        validated_data = super().get_extra_validated_data(validated_data)
+        validated_data['plugin'] = self.parent_project
+        return validated_data
+
 
 class SubPluginCreateSerializer(SubPluginSerializer):
     """Serializer for creating SubPlugins."""
 
-    releases = SubPluginReleaseSerializer(
+    releases = SubPluginCreateReleaseSerializer(
         write_only=True,
     )
 

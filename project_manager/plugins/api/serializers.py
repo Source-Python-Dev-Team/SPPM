@@ -6,12 +6,12 @@
 # App
 from project_manager.common.api.serializers import (
     ProjectImageSerializer,
-    ProjectReleaseListSerializer,
     ProjectReleaseSerializer,
+    ProjectCreateReleaseSerializer,
     ProjectSerializer,
 )
-from project_manager.plugins.helpers import get_plugin_basename
 from project_manager.plugins.models import Plugin, PluginImage, PluginRelease
+from .mixins import PluginReleaseBase
 
 
 # =============================================================================
@@ -19,7 +19,7 @@ from project_manager.plugins.models import Plugin, PluginImage, PluginRelease
 # =============================================================================
 __all__ = (
     'PluginImageSerializer',
-    'PluginReleaseSerializer',
+    'PluginCreateReleaseSerializer',
     'PluginSerializer',
 )
 
@@ -35,25 +35,20 @@ class PluginImageSerializer(ProjectImageSerializer):
         model = PluginImage
 
 
-class PluginReleaseListSerializer(ProjectReleaseListSerializer):
+class PluginReleaseSerializer(PluginReleaseBase, ProjectReleaseSerializer):
     """Serializer for listing Plugin releases."""
-
-    class Meta(ProjectReleaseListSerializer.Meta):
-        model = PluginRelease
-
-
-class PluginReleaseSerializer(ProjectReleaseSerializer):
-    """Serializer for creating and retrieving Plugin releases."""
-
-    project_class = Plugin
-    project_type = 'plugin'
 
     class Meta(ProjectReleaseSerializer.Meta):
         model = PluginRelease
 
-    @property
-    def zip_parser(self):
-        return get_plugin_basename
+
+class PluginCreateReleaseSerializer(
+    PluginReleaseBase, ProjectCreateReleaseSerializer
+):
+    """Serializer for creating and retrieving Plugin releases."""
+
+    class Meta(ProjectCreateReleaseSerializer.Meta):
+        model = PluginRelease
 
 
 class PluginSerializer(ProjectSerializer):
@@ -69,7 +64,7 @@ class PluginSerializer(ProjectSerializer):
 class PluginCreateSerializer(PluginSerializer):
     """Serializer for creating Plugins."""
 
-    releases = PluginReleaseSerializer(
+    releases = PluginCreateReleaseSerializer(
         write_only=True,
     )
 

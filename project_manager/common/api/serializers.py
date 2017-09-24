@@ -8,7 +8,6 @@ from operator import itemgetter
 
 # Django
 from django.core.exceptions import ValidationError
-from django.utils.text import slugify
 
 # 3rd-Party Django
 from rest_framework.fields import CharField, FileField, SerializerMethodField
@@ -32,7 +31,10 @@ from project_manager.users.api.serializers.common import (
     ForumUserContributorSerializer,
 )
 from project_manager.users.models import ForumUser
-from .mixins import ProjectLocaleMixin
+from .mixins import (
+    ProjectLocaleMixin,
+    ProjectReleaseCreationMixin,
+)
 
 
 # =============================================================================
@@ -40,7 +42,7 @@ from .mixins import ProjectLocaleMixin
 # =============================================================================
 __all__ = (
     'ProjectImageSerializer',
-    'ProjectReleaseSerializer',
+    'ProjectCreateReleaseSerializer',
     'ProjectSerializer',
 )
 
@@ -61,6 +63,7 @@ class ProjectSerializer(ModelSerializer, ProjectLocaleMixin):
     )
     contributors = ForumUserContributorSerializer(
         many=True,
+        read_only=True,
     )
     created = SerializerMethodField()
     updated = SerializerMethodField()
@@ -82,10 +85,14 @@ class ProjectSerializer(ModelSerializer, ProjectLocaleMixin):
     )
     supported_games = GameSerializer(
         many=True,
+        read_only=True,
     )
     tags = TagSerializer(
         many=True,
+        read_only=True,
     )
+
+    release_dict = {}
 
     class Meta:
         fields = (
@@ -130,15 +137,11 @@ class ProjectSerializer(ModelSerializer, ProjectLocaleMixin):
 
     def create(self, validated_data):
         """Create the instance and the first release of the project."""
-        release_dict = validated_data.pop('releases')
+        validated_data = self.get_extra_validated_data(validated_data)
         instance = super().create(validated_data)
-        version = release_dict['version']
-        zip_file = release_dict['zip_file']
-        notes = release_dict['notes']
-        instance.basename = release_dict['basename']
-        instance.owner = self.context['request'].user.forum_user
-        instance.slug = slugify(instance.basename)
-        instance.save()
+        version = self.release_dict['version']
+        zip_file = self.release_dict['zip_file']
+        notes = self.release_dict['notes']
         kwargs = {
             '{project_type}'.format(
                 project_type=self.project_type.replace('-', '_')
@@ -184,6 +187,12 @@ class ProjectSerializer(ModelSerializer, ProjectLocaleMixin):
             name_kwargs['read_only'] = True
             extra_kwargs['name'] = name_kwargs
         return extra_kwargs
+
+    def get_extra_validated_data(self, validated_data):
+        """"""
+        validated_data['owner'] = self.context['request'].user.forum_user
+        validated_data['basename'] = self.release_dict['basename']
+        return validated_data
 
     def get_updated(self, obj):
         """Return the project's last updated info."""
@@ -257,9 +266,9 @@ class ProjectSerializer(ModelSerializer, ProjectLocaleMixin):
 
     def validate(self, attrs):
         """Validate the given field values."""
-        release_dict = attrs.get('releases', {})
-        version = release_dict.get('version', '')
-        zip_file = release_dict.get('zip_file')
+        self.release_dict = attrs.pop('releases', {})
+        version = self.release_dict.get('version', '')
+        zip_file = self.release_dict.get('zip_file')
         if (
             self.context['request'].method == 'POST' and
             not all([version, zip_file])
@@ -281,7 +290,9 @@ class ProjectSerializer(ModelSerializer, ProjectLocaleMixin):
         }
 
 
-class ProjectReleaseListSerializer(ModelSerializer, ProjectLocaleMixin):
+class ProjectReleaseSerializer(
+    ProjectReleaseCreationMixin, ProjectLocaleMixin
+):
     """Base ProjectRelease Serializer for listing."""
 
     created = SerializerMethodField()
@@ -300,15 +311,12 @@ class ProjectReleaseListSerializer(ModelSerializer, ProjectLocaleMixin):
         return self.get_date_time_dict(timestamp=obj.created)
 
 
-class ProjectReleaseSerializer(ModelSerializer):
+class ProjectCreateReleaseSerializer(ProjectReleaseCreationMixin):
     """Base ProjectRelease Serializer for creating and retrieving."""
 
     notes = CharField(max_length=512, allow_blank=True)
     version = CharField(max_length=8, allow_blank=True)
     zip_file = FileField(allow_null=True)
-
-    parent_project = None
-    slug_kwarg = 'pk'
 
     class Meta:
         model = None
@@ -317,90 +325,6 @@ class ProjectReleaseSerializer(ModelSerializer):
             'zip_file',
             'version',
         )
-
-    @property
-    def project_class(self):
-        """Return the project's class."""
-        raise NotImplementedError(
-            f'Class {self.__class__.__name__} must implement a '
-            '"project_class" attribute.'
-        )
-
-    @property
-    def project_type(self):
-        """Return the project's type."""
-        raise NotImplementedError(
-            f'Class {self.__class__.__name__} must implement a '
-            '"project_type" attribute.'
-        )
-
-    @property
-    def zip_parser(self):
-        """Return the project's zip parsing function."""
-        raise NotImplementedError(
-            f'Class {self.__class__.__name__} must implement a '
-            '"project_class" attribute.'
-        )
-
-    def get_project_kwargs(self, parent_project=None):
-        """Return kwargs for the project."""
-        return {
-            'pk': self.context['view'].kwargs.get('pk')
-        }
-
-    def validate(self, attrs):
-        """Validate that the new release can be created."""
-        version = attrs.get('version', '')
-        zip_file = attrs.get('zip_file')
-        if any([version, zip_file]) and not all([version, zip_file]):
-            raise ValidationError({
-                '__all__': (
-                    "If either 'version' or 'zip_file' are provided, "
-                    "must be provided."
-                )
-            })
-
-        # Validate the version is new for the project
-        parent_project = self.parent_project
-        kwargs = self.get_project_kwargs(parent_project)
-        try:
-            project = self.project_class.objects.get(**kwargs)
-            project_basename = project.basename
-        except self.project_class.DoesNotExist:
-            project_basename = None
-        else:
-            kwargs = {
-                '{project_type}'.format(
-                    project_type=self.project_type.replace('-', '_')
-                ): project,
-                'version': version,
-            }
-            if self.Meta.model.objects.filter(**kwargs).exists():
-                raise ValidationError({
-                    'version': 'Given version matches existing version.',
-                })
-
-        args = (zip_file,)
-        if parent_project is not None:
-            args += (parent_project,)
-        basename = self.zip_parser(*args)
-        if project_basename not in (basename, None):
-            raise ValidationError({
-                'zip_file': (
-                    f"Basename in zip '{basename}' does not match basename "
-                    f"for {self.project_type} '{project_basename}'"
-                )
-            })
-        attrs['basename'] = basename
-        return attrs
-
-    def create(self, validated_data):
-        """Update the project's modified datetime when release is created."""
-        instance = super().create(validated_data=validated_data)
-        getattr(instance, self.project_type.replace('-', '_')).update(
-            modified=instance.created,
-        )
-        return instance
 
 
 class ProjectImageSerializer(ModelSerializer):

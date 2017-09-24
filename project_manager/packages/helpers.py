@@ -37,7 +37,7 @@ def get_package_basename(zip_file):
     file_list = get_file_list(zip_file)
     basename, is_module = _find_basename_and_is_module(file_list)
     validate_basename(basename=basename, project_type='package')
-    return basename, is_module
+    return basename
 
 
 def handle_package_zip_upload(instance, filename):

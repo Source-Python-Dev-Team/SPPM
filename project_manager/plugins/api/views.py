@@ -15,7 +15,7 @@ from .filters import PluginFilter
 from .serializers import (
     PluginCreateSerializer,
     PluginImageSerializer,
-    PluginReleaseListSerializer,
+    PluginReleaseSerializer,
     PluginSerializer,
 )
 from ..models import Plugin, PluginImage, PluginRelease
@@ -75,7 +75,7 @@ class PluginReleaseViewSet(ProjectReleaseViewSet):
     queryset = PluginRelease.objects.select_related(
         'plugin',
     )
-    serializer_class = PluginReleaseListSerializer
+    serializer_class = PluginReleaseSerializer
 
     project_type = 'plugin'
     project_model = Plugin

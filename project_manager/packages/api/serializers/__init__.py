@@ -6,16 +6,16 @@
 # App
 from project_manager.common.api.serializers import (
     ProjectImageSerializer,
-    ProjectReleaseListSerializer,
     ProjectReleaseSerializer,
+    ProjectCreateReleaseSerializer,
     ProjectSerializer,
 )
-from project_manager.packages.helpers import get_package_basename
 from project_manager.packages.models import (
     Package,
     PackageImage,
     PackageRelease,
 )
+from ..mixins import PackageReleaseBase
 
 
 # =============================================================================
@@ -23,7 +23,7 @@ from project_manager.packages.models import (
 # =============================================================================
 __all__ = (
     'PackageImageSerializer',
-    'PackageReleaseSerializer',
+    'PackageCreateReleaseSerializer',
     'PackageSerializer',
 )
 
@@ -38,25 +38,20 @@ class PackageImageSerializer(ProjectImageSerializer):
         model = PackageImage
 
 
-class PackageReleaseListSerializer(ProjectReleaseListSerializer):
+class PackageReleaseSerializer(PackageReleaseBase, ProjectReleaseSerializer):
     """Serializer for listing Package releases."""
-
-    class Meta(ProjectReleaseListSerializer.Meta):
-        model = PackageRelease
-
-
-class PackageReleaseSerializer(ProjectReleaseSerializer):
-    """Serializer for creating and listing Package releases."""
-
-    project_class = Package
-    project_type = 'package'
 
     class Meta(ProjectReleaseSerializer.Meta):
         model = PackageRelease
 
-    @property
-    def zip_parser(self):
-        return get_package_basename
+
+class PackageCreateReleaseSerializer(
+    PackageReleaseBase, ProjectCreateReleaseSerializer
+):
+    """Serializer for creating and listing Package releases."""
+
+    class Meta(ProjectCreateReleaseSerializer.Meta):
+        model = PackageRelease
 
 
 class PackageSerializer(ProjectSerializer):
@@ -72,7 +67,7 @@ class PackageSerializer(ProjectSerializer):
 class PackageCreateSerializer(PackageSerializer):
     """Serializer for creating Packages."""
 
-    releases = PackageReleaseSerializer(
+    releases = PackageCreateReleaseSerializer(
         write_only=True,
     )
 

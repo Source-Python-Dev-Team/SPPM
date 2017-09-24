@@ -18,7 +18,7 @@ from .filters import SubPluginFilter
 from .serializers import (
     SubPluginCreateSerializer,
     SubPluginImageSerializer,
-    SubPluginReleaseListSerializer,
+    SubPluginReleaseSerializer,
     SubPluginSerializer,
 )
 from ..models import SubPlugin, SubPluginImage, SubPluginRelease
@@ -112,7 +112,7 @@ class SubPluginReleaseViewSet(ProjectReleaseViewSet):
     queryset = SubPluginRelease.objects.select_related(
         'sub_plugin',
     )
-    serializer_class = SubPluginReleaseListSerializer
+    serializer_class = SubPluginReleaseSerializer
 
     project_type = 'sub-plugin'
     project_model = SubPlugin

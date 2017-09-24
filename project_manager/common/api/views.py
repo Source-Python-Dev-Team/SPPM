@@ -15,7 +15,7 @@ from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 
 # App
-from .mixins import ProjectInfoMixin
+from .mixins import ProjectRelatedInfoMixin
 
 
 # =============================================================================
@@ -123,7 +123,7 @@ class ProjectViewSet(ModelViewSet):
         return super().update(request, *args, **kwargs)
 
 
-class ProjectImageViewSet(ProjectInfoMixin):
+class ProjectImageViewSet(ProjectRelatedInfoMixin):
     """Base Image View."""
 
     authentication_classes = (SessionAuthentication,)
@@ -143,7 +143,7 @@ class ProjectImageViewSet(ProjectInfoMixin):
         return super().check_permissions(request=request)
 
 
-class ProjectReleaseViewSet(ProjectInfoMixin):
+class ProjectReleaseViewSet(ProjectRelatedInfoMixin):
     """Base Release ViewSet."""
 
-    http_method_names = ('get', 'options')
+    http_method_names = ('get', 'post', 'options')
