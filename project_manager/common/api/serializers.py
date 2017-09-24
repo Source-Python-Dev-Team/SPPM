@@ -8,6 +8,7 @@ from operator import itemgetter
 
 # Django
 from django.core.exceptions import ValidationError
+from django.utils.timezone import now
 
 # 3rd-Party Django
 from rest_framework.fields import CharField, FileField, SerializerMethodField
@@ -138,6 +139,8 @@ class ProjectSerializer(ModelSerializer, ProjectLocaleMixin):
     def create(self, validated_data):
         """Create the instance and the first release of the project."""
         validated_data = self.get_extra_validated_data(validated_data)
+        current_time = now()
+        validated_data['created'] = validated_data['modified'] = current_time
         instance = super().create(validated_data)
         version = self.release_dict['version']
         zip_file = self.release_dict['zip_file']
@@ -146,6 +149,7 @@ class ProjectSerializer(ModelSerializer, ProjectLocaleMixin):
             '{project_type}'.format(
                 project_type=self.project_type.replace('-', '_')
             ): instance,
+            'created': current_time,
             'notes': notes,
             'version': version,
             'zip_file': zip_file,

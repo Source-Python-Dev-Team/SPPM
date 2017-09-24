@@ -119,10 +119,10 @@ class ProjectBase(models.Model):
         to='requirements.VersionControlRequirement',
         related_name='required_in_%(class)ss',
     )
-    created = AutoCreatedField(
+    created = models.DateTimeField(
         verbose_name='created',
     )
-    modified = AutoCreatedField(
+    modified = models.DateTimeField(
         verbose_name='modified',
     )
     basename = None
