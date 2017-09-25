@@ -48,7 +48,6 @@ class PackageViewSet(ProjectViewSet):
     queryset = Package.objects.prefetch_related(
         *get_prefetch(
             release_class=PackageRelease,
-            image_class=PackageImage,
         )
     ).select_related(
         'owner__user',

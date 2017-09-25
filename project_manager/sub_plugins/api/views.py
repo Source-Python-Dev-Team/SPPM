@@ -52,7 +52,6 @@ class SubPluginViewSet(ProjectViewSet):
     queryset = SubPlugin.objects.prefetch_related(
         *get_prefetch(
             release_class=SubPluginRelease,
-            image_class=SubPluginImage,
         )
     ).select_related(
         'owner__user',

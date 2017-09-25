@@ -48,7 +48,6 @@ class PluginViewSet(ProjectViewSet):
     queryset = Plugin.objects.prefetch_related(
         *get_prefetch(
             release_class=PluginRelease,
-            image_class=PluginImage,
         )
     ).select_related(
         'owner__user',
