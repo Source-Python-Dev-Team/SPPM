@@ -13,6 +13,7 @@ from rest_framework.reverse import reverse
 from rest_framework.serializers import ModelSerializer
 
 # App
+from project_manager.games.models import Game
 from project_manager.packages.api.serializers.common import (
     PackageRequirementSerializer
 )
@@ -21,9 +22,11 @@ from project_manager.requirements.api.serializers.common import (
     RequiredPyPiSerializer,
     RequiredVersionControlSerializer,
 )
+from project_manager.tags.models import Tag
 from project_manager.users.api.serializers.common import (
     ForumUserContributorSerializer,
 )
+from project_manager.users.models import ForumUser
 from .mixins import (
     ProjectLocaleMixin,
     ProjectReleaseCreationMixin,
@@ -46,10 +49,6 @@ __all__ = (
 # =============================================================================
 # TODO: APIs for adding/removing
 # TODO:     contributors
-# TODO:     supported_games
-# TODO:     tags
-# TODO: add any new tags
-# TODO: create a blacklist for tag names that can be handled via admin
 class ProjectSerializer(ModelSerializer, ProjectLocaleMixin):
     """Base Project Serializer."""
 
@@ -257,3 +256,119 @@ class ProjectImageSerializer(ModelSerializer):
         view = self.context['view']
         validated_data[view.project_type.replace('-', '_')] = view.project
         return super().create(validated_data=validated_data)
+
+
+class ProjectThroughSerializer(ModelSerializer):
+    """"""
+
+    def get_field_names(self, declared_fields, info):
+        """"""
+        field_names = super().get_field_names(
+            declared_fields=declared_fields,
+            info=info,
+        )
+        request = self.context['request']
+        if request.method == 'GET':
+            view = self.context['view']
+            user = request.user.id
+            if view.owner == user:
+                return field_names + ('id',)
+            if user in view.contributors and not view.owner_only:
+                return field_names + ('id',)
+        return field_names
+
+    def validate(self, attrs):
+        """"""
+        view = self.context['view']
+        attrs[view.project_type.replace('-', '_')] = view.project
+        return super().validate(attrs=attrs)
+
+
+class ProjectGameSerializer(ProjectThroughSerializer):
+    """"""
+
+    game = CharField(max_length=16)
+
+    class Meta:
+        fields = (
+            'game',
+        )
+
+    def validate(self, attrs):
+        name = attrs['game']
+        view = self.context['view']
+        if name in view.project.supported_games.values_list('slug', flat=True):
+            raise ValidationError({
+                'game': f'Game already linked to {view.project_type}.',
+            })
+        try:
+            game = Game.objects.get(slug=name)
+        except Game.DoesNotExist:
+            raise ValidationError({
+                'game': f'Invalid game "{name}".'
+            })
+        attrs['game'] = game
+        return super().validate(attrs=attrs)
+
+
+class ProjectTagSerializer(ProjectThroughSerializer):
+    """"""
+
+    tag = CharField(max_length=16)
+
+    class Meta:
+        fields = (
+            'tag',
+        )
+
+    def validate(self, attrs):
+        name = attrs['tag']
+        view = self.context['view']
+        if name in view.project.tags.values_list('name', flat=True):
+            raise ValidationError({
+                'tag': f'Tag already linked to {view.project_type}.',
+            })
+        tag, created = Tag.objects.get_or_create(name=name)
+        if tag.black_listed:
+            raise ValidationError({
+                'tag': f'Tag "{name}" is black-listed, unable to add.',
+            })
+        attrs['tag'] = tag
+        return super().validate(attrs=attrs)
+
+
+class ProjectContributorSerializer(ProjectThroughSerializer):
+    """"""
+
+    user = CharField(max_length=30)
+
+    class Meta:
+        fields = (
+            'user',
+        )
+
+    def validate(self, attrs):
+        username = attrs['user']
+        view = self.context['view']
+        if username in view.project.contributors.values_list(
+            'user__username',
+            flat=True,
+        ):
+            raise ValidationError({
+                'username': f'User {username} is already a contributor',
+            })
+        if username == view.project.owner.user.username:
+            raise ValidationError({
+                'username': (
+                    f'User {username} is the owner, '
+                    f'cannot add as a contributor'
+                ),
+            })
+        try:
+            user = ForumUser.objects.get(user__username=username)
+        except ForumUser.DoesNotExist:
+            raise ValidationError({
+                'user': f'No user named "{username}".'
+            })
+        attrs['user'] = user
+        return super().validate(attrs=attrs)

@@ -7,18 +7,31 @@
 from project_manager.common.api.helpers import get_prefetch
 from project_manager.common.api.views import (
     ProjectAPIView,
+    ProjectContributorViewSet,
+    ProjectGameViewSet,
     ProjectImageViewSet,
     ProjectReleaseViewSet,
+    ProjectTagViewSet,
     ProjectViewSet,
 )
 from .filters import PackageFilter
 from .serializers import (
+    PackageContributorSerializer,
     PackageCreateSerializer,
+    PackageGameSerializer,
     PackageImageSerializer,
     PackageReleaseSerializer,
     PackageSerializer,
+    PackageTagSerializer,
 )
-from ..models import Package, PackageImage, PackageRelease
+from ..models import (
+    Package,
+    PackageContributor,
+    PackageGame,
+    PackageImage,
+    PackageRelease,
+    PackageTag,
+)
 
 
 # =============================================================================
@@ -76,6 +89,48 @@ class PackageReleaseViewSet(ProjectReleaseViewSet):
         'package',
     )
     serializer_class = PackageReleaseSerializer
+
+    project_type = 'package'
+    project_model = Package
+
+
+class PackageGameViewSet(ProjectGameViewSet):
+    """"""
+
+    http_method_names = ('get', 'post', 'delete', 'options')
+    queryset = PackageGame.objects.select_related(
+        'game',
+        'package',
+    )
+    serializer_class = PackageGameSerializer
+
+    project_type = 'package'
+    project_model = Package
+
+
+class PackageTagViewSet(ProjectTagViewSet):
+    """"""
+
+    http_method_names = ('get', 'post', 'delete', 'options')
+    queryset = PackageTag.objects.select_related(
+        'tag',
+        'package',
+    )
+    serializer_class = PackageTagSerializer
+
+    project_type = 'package'
+    project_model = Package
+
+
+class PackageContributorsViewSet(ProjectContributorViewSet):
+    """"""
+
+    http_method_names = ('get', 'post', 'delete', 'options')
+    queryset = PackageContributor.objects.select_related(
+        'user',
+        'package',
+    )
+    serializer_class = PackageContributorSerializer
 
     project_type = 'package'
     project_model = Package

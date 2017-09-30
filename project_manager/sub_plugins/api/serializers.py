@@ -8,16 +8,22 @@ from django.core.exceptions import ValidationError
 
 # App
 from project_manager.common.api.serializers import (
+    ProjectContributorSerializer,
+    ProjectCreateReleaseSerializer,
+    ProjectGameSerializer,
     ProjectImageSerializer,
     ProjectReleaseSerializer,
-    ProjectCreateReleaseSerializer,
     ProjectSerializer,
+    ProjectTagSerializer,
 )
 from project_manager.plugins.models import Plugin
 from project_manager.sub_plugins.models import (
     SubPlugin,
+    SubPluginContributor,
+    SubPluginGame,
     SubPluginImage,
     SubPluginRelease,
+    SubPluginTag,
 )
 from .mixins import SubPluginReleaseBase
 
@@ -109,3 +115,24 @@ class SubPluginCreateSerializer(SubPluginSerializer):
         fields = SubPluginSerializer.Meta.fields + (
             'releases',
         )
+
+
+class SubPluginGameSerializer(ProjectGameSerializer):
+    """"""
+
+    class Meta(ProjectGameSerializer.Meta):
+        model = SubPluginGame
+
+
+class SubPluginTagSerializer(ProjectTagSerializer):
+    """"""
+
+    class Meta(ProjectTagSerializer.Meta):
+        model = SubPluginTag
+
+
+class SubPluginContributorSerializer(ProjectContributorSerializer):
+    """"""
+
+    class Meta(ProjectContributorSerializer.Meta):
+        model = SubPluginContributor

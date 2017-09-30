@@ -9,19 +9,32 @@ from rest_framework.parsers import ParseError
 from project_manager.common.api.helpers import get_prefetch
 from project_manager.common.api.views import (
     ProjectAPIView,
+    ProjectContributorViewSet,
+    ProjectGameViewSet,
     ProjectImageViewSet,
     ProjectReleaseViewSet,
+    ProjectTagViewSet,
     ProjectViewSet,
 )
 from project_manager.plugins.models import Plugin
 from .filters import SubPluginFilter
 from .serializers import (
+    SubPluginContributorSerializer,
     SubPluginCreateSerializer,
+    SubPluginGameSerializer,
     SubPluginImageSerializer,
     SubPluginReleaseSerializer,
     SubPluginSerializer,
+    SubPluginTagSerializer,
 )
-from ..models import SubPlugin, SubPluginImage, SubPluginRelease
+from ..models import (
+    SubPlugin,
+    SubPluginContributor,
+    SubPluginGame,
+    SubPluginImage,
+    SubPluginRelease,
+    SubPluginTag,
+)
 
 
 # =============================================================================
@@ -134,3 +147,45 @@ class SubPluginReleaseViewSet(ProjectReleaseViewSet):
             plugin=parent_project,
         )
         return kwargs
+
+
+class SubPluginGameViewSet(ProjectGameViewSet):
+    """"""
+
+    http_method_names = ('get', 'post', 'delete', 'options')
+    queryset = SubPluginGame.objects.select_related(
+        'game',
+        'sub_plugin',
+    )
+    serializer_class = SubPluginGameSerializer
+
+    project_type = 'sub-plugin'
+    project_model = SubPlugin
+
+
+class SubPluginTagViewSet(ProjectTagViewSet):
+    """"""
+
+    http_method_names = ('get', 'post', 'delete', 'options')
+    queryset = SubPluginTag.objects.select_related(
+        'tag',
+        'sub_plugin',
+    )
+    serializer_class = SubPluginTagSerializer
+
+    project_type = 'sub-plugin'
+    project_model = SubPlugin
+
+
+class SubPluginContributorViewSet(ProjectContributorViewSet):
+    """"""
+
+    http_method_names = ('get', 'post', 'delete', 'options')
+    queryset = SubPluginContributor.objects.select_related(
+        'user',
+        'sub_plugin',
+    )
+    serializer_class = SubPluginContributorSerializer
+
+    project_type = 'sub-plugin'
+    project_model = SubPlugin

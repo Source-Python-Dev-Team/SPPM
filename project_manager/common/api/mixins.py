@@ -9,8 +9,11 @@ from django.utils import formats
 
 # 3rd-Party Django
 from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.authentication import SessionAuthentication
+from rest_framework.exceptions import PermissionDenied
 from rest_framework.filters import OrderingFilter
 from rest_framework.parsers import ParseError
+from rest_framework.permissions import IsAuthenticatedOrReadOnly, SAFE_METHODS
 from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import ModelViewSet
 
@@ -32,8 +35,6 @@ class ProjectRelatedInfoMixin(ModelViewSet):
     """Mixin used to retrieve information for a specific project."""
 
     filter_backends = (OrderingFilter, DjangoFilterBackend)
-    ordering = ('-created',)
-    ordering_fields = ('created',)
 
     parent_project = None
     _project = None
@@ -88,6 +89,43 @@ class ProjectRelatedInfoMixin(ModelViewSet):
             self.project_type.replace('-', '_'): self.project
         }
         return queryset.filter(**kwargs)
+
+
+class ProjectThroughModelMixin(ProjectRelatedInfoMixin):
+    """"""
+
+    authentication_classes = (SessionAuthentication,)
+    permission_classes = (IsAuthenticatedOrReadOnly,)
+
+    owner_only = False
+    _owner = None
+    _contributors = list()
+
+    @property
+    def owner(self):
+        if self._owner is None:
+            self._owner = self.project.owner.user_id
+        return self._owner
+
+    @property
+    def contributors(self):
+        if isinstance(self._contributors, list):
+            self._contributors = self.project.contributors.values_list(
+                'user',
+                flat=True,
+            )
+        return self._contributors
+
+    def check_permissions(self, request):
+        """Only allow the owner and contributors to add game support."""
+        if request.method not in SAFE_METHODS or self.action == 'retrieve':
+            user = request.user.id
+            is_contributor = user in self.contributors
+            if user != self.owner and not is_contributor:
+                raise PermissionDenied
+            if self.owner_only and is_contributor:
+                raise PermissionDenied
+        return super().check_permissions(request=request)
 
 
 class ProjectLocaleMixin(object):

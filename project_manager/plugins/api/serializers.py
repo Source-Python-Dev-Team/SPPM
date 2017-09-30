@@ -5,12 +5,22 @@
 # =============================================================================
 # App
 from project_manager.common.api.serializers import (
+    ProjectContributorSerializer,
+    ProjectCreateReleaseSerializer,
+    ProjectGameSerializer,
     ProjectImageSerializer,
     ProjectReleaseSerializer,
-    ProjectCreateReleaseSerializer,
     ProjectSerializer,
+    ProjectTagSerializer,
 )
-from project_manager.plugins.models import Plugin, PluginImage, PluginRelease
+from project_manager.plugins.models import (
+    Plugin,
+    PluginContributor,
+    PluginGame,
+    PluginImage,
+    PluginRelease,
+    PluginTag,
+)
 from .mixins import PluginReleaseBase
 
 
@@ -74,3 +84,24 @@ class PluginCreateSerializer(PluginSerializer):
         fields = PluginSerializer.Meta.fields + (
             'releases',
         )
+
+
+class PluginGameSerializer(ProjectGameSerializer):
+    """"""
+
+    class Meta(ProjectGameSerializer.Meta):
+        model = PluginGame
+
+
+class PluginTagSerializer(ProjectTagSerializer):
+    """"""
+
+    class Meta(ProjectTagSerializer.Meta):
+        model = PluginTag
+
+
+class PluginContributorSerializer(ProjectContributorSerializer):
+    """"""
+
+    class Meta(ProjectContributorSerializer.Meta):
+        model = PluginContributor

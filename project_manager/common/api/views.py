@@ -15,7 +15,7 @@ from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 
 # App
-from .mixins import ProjectRelatedInfoMixin
+from .mixins import ProjectRelatedInfoMixin, ProjectThroughModelMixin
 
 
 # =============================================================================
@@ -44,18 +44,30 @@ class ProjectAPIView(APIView):
         """Return all the API routes for Projects."""
         return Response(
             data={
-                'projects': reverse(
+                'contributors': reverse(
                     viewname=f'api:{self.project_type}s:endpoints',
                     request=request,
-                ) + f'projects/{self.extra_params}',
+                ) + f'contributors/{self.extra_params}<{self.project_type}>/',
+                'games': reverse(
+                    viewname=f'api:{self.project_type}s:endpoints',
+                    request=request,
+                ) + f'games/{self.extra_params}<{self.project_type}>/',
                 'images': reverse(
                     viewname=f'api:{self.project_type}s:endpoints',
                     request=request,
                 ) + f'images/{self.extra_params}<{self.project_type}>/',
+                'projects': reverse(
+                    viewname=f'api:{self.project_type}s:endpoints',
+                    request=request,
+                ) + f'projects/{self.extra_params}',
                 'releases': reverse(
                     viewname=f'api:{self.project_type}s:endpoints',
                     request=request,
-                ) + f'releases/{self.extra_params}<{self.project_type}>/'
+                ) + f'releases/{self.extra_params}<{self.project_type}>/',
+                'tags': reverse(
+                    viewname=f'api:{self.project_type}s:endpoints',
+                    request=request,
+                ) + f'tags/{self.extra_params}<{self.project_type}>/',
             }
         )
 
@@ -65,7 +77,7 @@ class ProjectViewSet(ModelViewSet):
 
     authentication_classes = (SessionAuthentication,)
     filter_backends = (OrderingFilter, DjangoFilterBackend)
-    http_method_names = ['get', 'post', 'patch', 'options']
+    http_method_names = ('get', 'post', 'patch', 'options')
     ordering = ('-releases__created',)
     ordering_fields = ('name', 'basename', 'modified')
     permission_classes = (IsAuthenticatedOrReadOnly,)
@@ -126,28 +138,41 @@ class ProjectViewSet(ModelViewSet):
         return super().update(request, *args, **kwargs)
 
 
-class ProjectImageViewSet(ProjectRelatedInfoMixin):
+class ProjectImageViewSet(ProjectThroughModelMixin):
     """Base Image View."""
 
-    authentication_classes = (SessionAuthentication,)
-    permission_classes = (IsAuthenticatedOrReadOnly,)
-
-    def check_permissions(self, request):
-        """Do not allow users who are not owner/contributor to edit/update."""
-        if request.method not in SAFE_METHODS:
-            user_id = request.user.id
-            if (
-                user_id != self.project.owner.user.id and
-                user_id not in self.project.contributors.values_list(
-                    'user',
-                    flat=True,
-                )
-            ):
-                raise PermissionDenied
-        return super().check_permissions(request=request)
+    http_method_names = ('get', 'post', 'options')
 
 
 class ProjectReleaseViewSet(ProjectRelatedInfoMixin):
     """Base Release ViewSet."""
 
     http_method_names = ('get', 'post', 'options')
+    ordering = ('-created',)
+    ordering_fields = ('created',)
+
+
+class ProjectGameViewSet(ProjectThroughModelMixin):
+    """"""
+
+    http_method_names = ('get', 'post', 'delete', 'options')
+    ordering = ('-game',)
+    ordering_fields = ('game',)
+
+
+class ProjectTagViewSet(ProjectThroughModelMixin):
+    """"""
+
+    http_method_names = ('get', 'post', 'delete', 'options')
+    ordering = ('-tag',)
+    ordering_fields = ('tag',)
+
+
+class ProjectContributorViewSet(ProjectThroughModelMixin):
+    """"""
+
+    http_method_names = ('get', 'post', 'delete', 'options')
+    ordering = ('-user',)
+    ordering_fields = ('user',)
+
+    owner_only = True

@@ -5,15 +5,21 @@
 # =============================================================================
 # App
 from project_manager.common.api.serializers import (
+    ProjectContributorSerializer,
+    ProjectCreateReleaseSerializer,
+    ProjectGameSerializer,
     ProjectImageSerializer,
     ProjectReleaseSerializer,
-    ProjectCreateReleaseSerializer,
     ProjectSerializer,
+    ProjectTagSerializer,
 )
 from project_manager.packages.models import (
     Package,
+    PackageContributor,
+    PackageGame,
     PackageImage,
     PackageRelease,
+    PackageTag,
 )
 from ..mixins import PackageReleaseBase
 
@@ -77,3 +83,24 @@ class PackageCreateSerializer(PackageSerializer):
         fields = PackageSerializer.Meta.fields + (
             'releases',
         )
+
+
+class PackageGameSerializer(ProjectGameSerializer):
+    """"""
+
+    class Meta(ProjectGameSerializer.Meta):
+        model = PackageGame
+
+
+class PackageTagSerializer(ProjectTagSerializer):
+    """"""
+
+    class Meta(ProjectTagSerializer.Meta):
+        model = PackageTag
+
+
+class PackageContributorSerializer(ProjectContributorSerializer):
+    """"""
+
+    class Meta(ProjectContributorSerializer.Meta):
+        model = PackageContributor

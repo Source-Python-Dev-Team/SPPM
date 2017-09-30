@@ -7,18 +7,31 @@
 from project_manager.common.api.helpers import get_prefetch
 from project_manager.common.api.views import (
     ProjectAPIView,
+    ProjectContributorViewSet,
+    ProjectGameViewSet,
     ProjectImageViewSet,
     ProjectReleaseViewSet,
+    ProjectTagViewSet,
     ProjectViewSet,
 )
 from .filters import PluginFilter
 from .serializers import (
+    PluginContributorSerializer,
     PluginCreateSerializer,
+    PluginGameSerializer,
     PluginImageSerializer,
     PluginReleaseSerializer,
     PluginSerializer,
+    PluginTagSerializer,
 )
-from ..models import Plugin, PluginImage, PluginRelease
+from ..models import (
+    Plugin,
+    PluginContributor,
+    PluginGame,
+    PluginImage,
+    PluginRelease,
+    PluginTag,
+)
 
 
 # =============================================================================
@@ -76,6 +89,48 @@ class PluginReleaseViewSet(ProjectReleaseViewSet):
         'plugin',
     )
     serializer_class = PluginReleaseSerializer
+
+    project_type = 'plugin'
+    project_model = Plugin
+
+
+class PluginGameViewSet(ProjectGameViewSet):
+    """"""
+
+    http_method_names = ('get', 'post', 'delete', 'options')
+    queryset = PluginGame.objects.select_related(
+        'game',
+        'plugin',
+    )
+    serializer_class = PluginGameSerializer
+
+    project_type = 'plugin'
+    project_model = Plugin
+
+
+class PluginTagViewSet(ProjectTagViewSet):
+    """"""
+
+    http_method_names = ('get', 'post', 'delete', 'options')
+    queryset = PluginTag.objects.select_related(
+        'tag',
+        'plugin',
+    )
+    serializer_class = PluginTagSerializer
+
+    project_type = 'plugin'
+    project_model = Plugin
+
+
+class PluginContributorViewSet(ProjectContributorViewSet):
+    """"""
+
+    http_method_names = ('get', 'post', 'delete', 'options')
+    queryset = PluginContributor.objects.select_related(
+        'user',
+        'plugin',
+    )
+    serializer_class = PluginContributorSerializer
 
     project_type = 'plugin'
     project_model = Plugin

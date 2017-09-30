@@ -12,8 +12,11 @@ from rest_framework import routers
 # App
 from .views import (
     SubPluginAPIView,
+    SubPluginContributorViewSet,
+    SubPluginGameViewSet,
     SubPluginImageViewSet,
     SubPluginReleaseViewSet,
+    SubPluginTagViewSet,
     SubPluginViewSet,
 )
 
@@ -36,6 +39,21 @@ router.register(
     prefix=r'^releases/(?P<plugin_slug>[\w-]+)/(?P<sub_plugin_slug>[\w-]+)',
     viewset=SubPluginReleaseViewSet,
     base_name='releases',
+)
+router.register(
+    prefix=r'^games/(?P<plugin_slug>[\w-]+)/(?P<sub_plugin_slug>[\w-]+)',
+    viewset=SubPluginGameViewSet,
+    base_name='games',
+)
+router.register(
+    prefix=r'^tags/(?P<plugin_slug>[\w-]+)/(?P<sub_plugin_slug>[\w-]+)',
+    viewset=SubPluginTagViewSet,
+    base_name='tags',
+)
+router.register(
+    prefix=r'^contributors/(?P<plugin_slug>[\w-]+)/(?P<sub_plugin_slug>[\w-]+)',
+    viewset=SubPluginContributorViewSet,
+    base_name='contributors',
 )
 
 
