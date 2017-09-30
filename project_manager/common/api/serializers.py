@@ -13,6 +13,7 @@ from rest_framework.reverse import reverse
 from rest_framework.serializers import ModelSerializer
 
 # App
+from project_manager.games.api.serializers import GameSerializer
 from project_manager.games.models import Game
 from project_manager.packages.api.serializers.common import (
     PackageRequirementSerializer
@@ -287,15 +288,17 @@ class ProjectThroughSerializer(ModelSerializer):
 class ProjectGameSerializer(ProjectThroughSerializer):
     """"""
 
-    game = CharField(max_length=16)
+    game_slug = CharField(max_length=16, write_only=True)
+    game = GameSerializer(read_only=True)
 
     class Meta:
         fields = (
+            'game_slug',
             'game',
         )
 
     def validate(self, attrs):
-        name = attrs['game']
+        name = attrs.pop('game_slug')
         view = self.context['view']
         if name in view.project.supported_games.values_list('slug', flat=True):
             raise ValidationError({
@@ -340,15 +343,17 @@ class ProjectTagSerializer(ProjectThroughSerializer):
 class ProjectContributorSerializer(ProjectThroughSerializer):
     """"""
 
-    user = CharField(max_length=30)
+    username = CharField(max_length=30, write_only=True)
+    user = ForumUserContributorSerializer(read_only=True)
 
     class Meta:
         fields = (
+            'username',
             'user',
         )
 
     def validate(self, attrs):
-        username = attrs['user']
+        username = attrs.pop('username')
         view = self.context['view']
         if username in view.project.contributors.values_list(
             'user__username',
