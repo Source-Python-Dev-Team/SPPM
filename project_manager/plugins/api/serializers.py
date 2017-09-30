@@ -28,11 +28,14 @@ from .mixins import PluginReleaseBase
 # >> ALL DECLARATION
 # =============================================================================
 __all__ = (
+    'PluginContributorSerializer',
     'PluginCreateSerializer',
     'PluginCreateReleaseSerializer',
+    'PluginGameSerializer',
     'PluginImageSerializer',
     'PluginReleaseSerializer',
     'PluginSerializer',
+    'PluginTagSerializer',
 )
 
 
@@ -87,21 +90,21 @@ class PluginCreateSerializer(PluginSerializer):
 
 
 class PluginGameSerializer(ProjectGameSerializer):
-    """"""
+    """Supported Games Serializer for Plugins."""
 
     class Meta(ProjectGameSerializer.Meta):
         model = PluginGame
 
 
 class PluginTagSerializer(ProjectTagSerializer):
-    """"""
+    """Tags Serializer for Plugins."""
 
     class Meta(ProjectTagSerializer.Meta):
         model = PluginTag
 
 
 class PluginContributorSerializer(ProjectContributorSerializer):
-    """"""
+    """Contributors Serializer for Plugins."""
 
     class Meta(ProjectContributorSerializer.Meta):
         model = PluginContributor

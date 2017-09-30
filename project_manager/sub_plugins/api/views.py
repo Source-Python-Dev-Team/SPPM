@@ -42,8 +42,11 @@ from ..models import (
 # =============================================================================
 __all__ = (
     'SubPluginAPIView',
+    'SubPluginContributorViewSet',
+    'SubPluginGameViewSet',
     'SubPluginImageViewSet',
     'SubPluginReleaseViewSet',
+    'SubPluginTagViewSet',
     'SubPluginViewSet',
 )
 
@@ -150,7 +153,7 @@ class SubPluginReleaseViewSet(ProjectReleaseViewSet):
 
 
 class SubPluginGameViewSet(ProjectGameViewSet):
-    """"""
+    """Supported Games listing for SubPlugins."""
 
     http_method_names = ('get', 'post', 'delete', 'options')
     queryset = SubPluginGame.objects.select_related(
@@ -164,7 +167,7 @@ class SubPluginGameViewSet(ProjectGameViewSet):
 
 
 class SubPluginTagViewSet(ProjectTagViewSet):
-    """"""
+    """Tags listing for SubPlugins."""
 
     http_method_names = ('get', 'post', 'delete', 'options')
     queryset = SubPluginTag.objects.select_related(
@@ -178,7 +181,7 @@ class SubPluginTagViewSet(ProjectTagViewSet):
 
 
 class SubPluginContributorViewSet(ProjectContributorViewSet):
-    """"""
+    """Contributors listing for SubPlugins."""
 
     http_method_names = ('get', 'post', 'delete', 'options')
     queryset = SubPluginContributor.objects.select_related(

@@ -11,9 +11,12 @@ from django.db import models
 # App
 from project_manager.common.models import (
     AbstractUUIDPrimaryKeyModel,
-    ImageBase,
     ProjectBase,
-    ReleaseBase,
+    ProjectContributor,
+    ProjectGame,
+    ProjectImage,
+    ProjectRelease,
+    ProjectTag,
 )
 from project_manager.common.validators import basename_validator
 from .constants import PACKAGE_LOGO_URL
@@ -92,7 +95,7 @@ class Package(ProjectBase):
         super().save(*args, **kwargs)
 
 
-class PackageRelease(ReleaseBase):
+class PackageRelease(ProjectRelease):
     """Package release type model."""
 
     package = models.ForeignKey(
@@ -113,7 +116,7 @@ class PackageRelease(ReleaseBase):
         )
 
 
-class PackageImage(ImageBase):
+class PackageImage(ProjectImage):
     """Package image type model."""
 
     package = models.ForeignKey(
@@ -124,36 +127,33 @@ class PackageImage(ImageBase):
     handle_image_upload = handle_package_image_upload
 
 
-class PackageContributor(AbstractUUIDPrimaryKeyModel):
+class PackageContributor(ProjectContributor):
+    """Package contributors through model."""
+
     package = models.ForeignKey(
         to='packages.Package',
-    )
-    user = models.ForeignKey(
-        to='users.ForumUser',
     )
 
     class Meta:
         unique_together = ('package', 'user')
 
 
-class PackageGame(AbstractUUIDPrimaryKeyModel):
+class PackageGame(ProjectGame):
+    """Package supported_games through model."""
+
     package = models.ForeignKey(
         to='packages.Package',
-    )
-    game = models.ForeignKey(
-        to='games.Game',
     )
 
     class Meta:
         unique_together = ('package', 'game')
 
 
-class PackageTag(AbstractUUIDPrimaryKeyModel):
+class PackageTag(ProjectTag):
+    """Package tags through model."""
+
     package = models.ForeignKey(
         to='packages.Package',
-    )
-    tag = models.ForeignKey(
-        to='tags.Tag',
     )
 
     class Meta:

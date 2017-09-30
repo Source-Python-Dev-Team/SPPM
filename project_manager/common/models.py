@@ -32,9 +32,9 @@ from .validators import version_validator
 # =============================================================================
 __all__ = (
     'AbstractUUIDPrimaryKeyModel',
-    'ImageBase',
+    'ProjectImage',
     'ProjectBase',
-    'ReleaseBase',
+    'ProjectRelease',
 )
 
 
@@ -196,7 +196,7 @@ class ProjectBase(models.Model):
         return None
 
 
-class ReleaseBase(models.Model):
+class ProjectRelease(models.Model):
     """Base model for project releases."""
 
     version = models.CharField(
@@ -239,7 +239,7 @@ class ReleaseBase(models.Model):
         )
 
 
-class ImageBase(models.Model):
+class ProjectImage(models.Model):
     """Base model for project images."""
 
     image = models.ImageField(
@@ -275,3 +275,27 @@ class AbstractUUIDPrimaryKeyModel(models.Model):
 
     class Meta:
         abstract = True
+
+
+class ProjectContributor(AbstractUUIDPrimaryKeyModel):
+    """Base through model for project contributors."""
+
+    user = models.ForeignKey(
+        to='users.ForumUser',
+    )
+
+
+class ProjectGame(AbstractUUIDPrimaryKeyModel):
+    """Base through model for project supported_games."""
+
+    game = models.ForeignKey(
+        to='games.Game',
+    )
+
+
+class ProjectTag(AbstractUUIDPrimaryKeyModel):
+    """Base through model for project tags."""
+
+    tag = models.ForeignKey(
+        to='tags.Tag',
+    )

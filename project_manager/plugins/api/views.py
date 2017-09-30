@@ -39,8 +39,11 @@ from ..models import (
 # =============================================================================
 __all__ = (
     'PluginAPIView',
+    'PluginContributorViewSet',
+    'PluginGameViewSet',
     'PluginImageViewSet',
     'PluginReleaseViewSet',
+    'PluginTagViewSet',
     'PluginViewSet',
 )
 
@@ -95,7 +98,7 @@ class PluginReleaseViewSet(ProjectReleaseViewSet):
 
 
 class PluginGameViewSet(ProjectGameViewSet):
-    """"""
+    """Supported Games listing for Plugins."""
 
     http_method_names = ('get', 'post', 'delete', 'options')
     queryset = PluginGame.objects.select_related(
@@ -109,7 +112,7 @@ class PluginGameViewSet(ProjectGameViewSet):
 
 
 class PluginTagViewSet(ProjectTagViewSet):
-    """"""
+    """Tags listing for Plugins."""
 
     http_method_names = ('get', 'post', 'delete', 'options')
     queryset = PluginTag.objects.select_related(
@@ -123,7 +126,7 @@ class PluginTagViewSet(ProjectTagViewSet):
 
 
 class PluginContributorViewSet(ProjectContributorViewSet):
-    """"""
+    """Contributors listing for Plugins."""
 
     http_method_names = ('get', 'post', 'delete', 'options')
     queryset = PluginContributor.objects.select_related(

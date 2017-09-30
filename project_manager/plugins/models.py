@@ -11,9 +11,12 @@ from django.db import models
 # App
 from project_manager.common.models import (
     AbstractUUIDPrimaryKeyModel,
-    ImageBase,
     ProjectBase,
-    ReleaseBase,
+    ProjectContributor,
+    ProjectGame,
+    ProjectImage,
+    ProjectRelease,
+    ProjectTag,
 )
 from project_manager.common.validators import basename_validator
 from .constants import PLUGIN_LOGO_URL
@@ -94,7 +97,7 @@ class Plugin(ProjectBase):
         super().save(*args, **kwargs)
 
 
-class PluginRelease(ReleaseBase):
+class PluginRelease(ProjectRelease):
     """Plugin release type model."""
 
     plugin = models.ForeignKey(
@@ -104,7 +107,7 @@ class PluginRelease(ReleaseBase):
 
     handle_zip_file_upload = handle_plugin_zip_upload
 
-    class Meta(ReleaseBase.Meta):
+    class Meta(ProjectRelease.Meta):
         unique_together = ('plugin', 'version')
 
     def get_absolute_url(self):
@@ -118,7 +121,7 @@ class PluginRelease(ReleaseBase):
         )
 
 
-class PluginImage(ImageBase):
+class PluginImage(ProjectImage):
     """Plugin image type model."""
 
     plugin = models.ForeignKey(
@@ -129,36 +132,33 @@ class PluginImage(ImageBase):
     handle_image_upload = handle_plugin_image_upload
 
 
-class PluginContributor(AbstractUUIDPrimaryKeyModel):
+class PluginContributor(ProjectContributor):
+    """Plugin contributors through model."""
+
     plugin = models.ForeignKey(
         to='plugins.Plugin',
-    )
-    user = models.ForeignKey(
-        to='users.ForumUser',
     )
 
     class Meta:
         unique_together = ('plugin', 'user')
 
 
-class PluginGame(AbstractUUIDPrimaryKeyModel):
+class PluginGame(ProjectGame):
+    """Plugin supported_games through model."""
+
     plugin = models.ForeignKey(
         to='plugins.Plugin',
-    )
-    game = models.ForeignKey(
-        to='games.Game',
     )
 
     class Meta:
         unique_together = ('plugin', 'game')
 
 
-class PluginTag(AbstractUUIDPrimaryKeyModel):
+class PluginTag(ProjectTag):
+    """Plugin tags through model."""
+
     plugin = models.ForeignKey(
         to='plugins.Plugin',
-    )
-    tag = models.ForeignKey(
-        to='tags.Tag',
     )
 
     class Meta:

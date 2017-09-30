@@ -8,6 +8,7 @@ from django.contrib import admin
 
 # App
 from .models import Plugin, PluginImage, PluginRelease
+from .paths.admin import SubPluginPathAdmin
 
 
 # =============================================================================

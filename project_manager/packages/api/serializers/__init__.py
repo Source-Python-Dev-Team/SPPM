@@ -28,11 +28,14 @@ from ..mixins import PackageReleaseBase
 # >> ALL DECLARATION
 # =============================================================================
 __all__ = (
+    'PackageContributorSerializer',
     'PackageCreateSerializer',
     'PackageCreateReleaseSerializer',
+    'PackageGameSerializer',
     'PackageImageSerializer',
     'PackageReleaseSerializer',
     'PackageSerializer',
+    'PackageTagSerializer',
 )
 
 
@@ -86,21 +89,21 @@ class PackageCreateSerializer(PackageSerializer):
 
 
 class PackageGameSerializer(ProjectGameSerializer):
-    """"""
+    """Supported Games Serializer for Packages."""
 
     class Meta(ProjectGameSerializer.Meta):
         model = PackageGame
 
 
 class PackageTagSerializer(ProjectTagSerializer):
-    """"""
+    """Tags Serializer for Packages."""
 
     class Meta(ProjectTagSerializer.Meta):
         model = PackageTag
 
 
 class PackageContributorSerializer(ProjectContributorSerializer):
-    """"""
+    """Contributors Serializer for Packages."""
 
     class Meta(ProjectContributorSerializer.Meta):
         model = PackageContributor

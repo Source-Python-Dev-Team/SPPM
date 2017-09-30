@@ -23,8 +23,11 @@ from .mixins import ProjectRelatedInfoMixin, ProjectThroughModelMixin
 # =============================================================================
 __all__ = (
     'ProjectAPIView',
+    'ProjectContributorViewSet',
+    'ProjectGameViewSet',
     'ProjectImageViewSet',
     'ProjectReleaseViewSet',
+    'ProjectTagViewSet',
     'ProjectViewSet',
 )
 
@@ -39,10 +42,6 @@ class ProjectAPIView(APIView):
 
     project_type = None
     extra_params = ''
-
-    @classmethod
-    def view_name(cls):
-        return f'{cls.project_type.title()} APIs'
 
     def get(self, request):
         """Return all the API routes for Projects."""
@@ -75,6 +74,10 @@ class ProjectAPIView(APIView):
             }
         )
 
+    def get_view_name(self):
+        """Return the project type API name."""
+        return f'{self.project_type.title()} APIs'
+
 
 class ProjectViewSet(ModelViewSet):
     """Base ViewSet for creating, updating, and listing Projects."""
@@ -89,6 +92,7 @@ class ProjectViewSet(ModelViewSet):
     stored_contributors = None
     stored_supported_games = None
     stored_tags = None
+    _obj = None
 
     @property
     def creation_serializer_class(self):
@@ -141,6 +145,15 @@ class ProjectViewSet(ModelViewSet):
         self.store_many_to_many_fields(request=request)
         return super().update(request, *args, **kwargs)
 
+    def get_view_name(self):
+        if self._obj is not None:
+            return self._obj
+        return super().get_view_name()
+
+    def get_object(self):
+        self._obj = super().get_object()
+        return self._obj
+
 
 class ProjectImageViewSet(ProjectThroughModelMixin):
     """Base Image View."""
@@ -148,6 +161,8 @@ class ProjectImageViewSet(ProjectThroughModelMixin):
     http_method_names = ('get', 'post', 'options')
     ordering = ('-created',)
     ordering_fields = ('created',)
+
+    api_type = 'Images'
 
 
 class ProjectReleaseViewSet(ProjectRelatedInfoMixin):
@@ -157,28 +172,35 @@ class ProjectReleaseViewSet(ProjectRelatedInfoMixin):
     ordering = ('-created',)
     ordering_fields = ('created',)
 
+    api_type = 'Releases'
+
 
 class ProjectGameViewSet(ProjectThroughModelMixin):
-    """"""
+    """Base Game Support ViewSet."""
 
     http_method_names = ('get', 'post', 'delete', 'options')
     ordering = ('-game',)
     ordering_fields = ('game',)
 
+    api_type = 'Supported Games'
+
 
 class ProjectTagViewSet(ProjectThroughModelMixin):
-    """"""
+    """Base Project Tag ViewSet."""
 
     http_method_names = ('get', 'post', 'delete', 'options')
     ordering = ('-tag',)
     ordering_fields = ('tag',)
 
+    api_type = 'Tags'
+
 
 class ProjectContributorViewSet(ProjectThroughModelMixin):
-    """"""
+    """Base Project Contributor ViewSet."""
 
     http_method_names = ('get', 'post', 'delete', 'options')
     ordering = ('-user',)
     ordering_fields = ('user',)
 
+    api_type = 'Contributors'
     owner_only = True

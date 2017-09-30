@@ -23,8 +23,6 @@ __all__ = (
 class ProjectManagerAPIView(APIView):
     """Project Manager API listing."""
 
-    view_name = 'Project Manager APIs'
-
     @staticmethod
     def get(request):
         """Retrieve the API endpoints."""
@@ -52,3 +50,7 @@ class ProjectManagerAPIView(APIView):
         }
 
         return Response(data)
+
+    def get_view_name(self):
+        """Return the base API name."""
+        return 'Project Manager APIs'

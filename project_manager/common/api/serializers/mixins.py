@@ -1,4 +1,4 @@
-"""Mixins for common functionalities between APIs."""
+"""Mixins for common serializers."""
 
 # =============================================================================
 # >> IMPORTS
@@ -8,14 +8,7 @@ from django.core.exceptions import ValidationError
 from django.utils import formats
 
 # 3rd-Party Django
-from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework.authentication import SessionAuthentication
-from rest_framework.exceptions import PermissionDenied
-from rest_framework.filters import OrderingFilter
-from rest_framework.parsers import ParseError
-from rest_framework.permissions import IsAuthenticatedOrReadOnly, SAFE_METHODS
 from rest_framework.serializers import ModelSerializer
-from rest_framework.viewsets import ModelViewSet
 
 
 # =============================================================================
@@ -23,111 +16,14 @@ from rest_framework.viewsets import ModelViewSet
 # =============================================================================
 __all__ = (
     'ProjectLocaleMixin',
-    'ProjectRelatedInfoMixin',
     'ProjectReleaseCreationMixin',
+    'ProjectThroughMixin',
 )
 
 
 # =============================================================================
 # >> MIXINS
 # =============================================================================
-class ProjectRelatedInfoMixin(ModelViewSet):
-    """Mixin used to retrieve information for a specific project."""
-
-    filter_backends = (OrderingFilter, DjangoFilterBackend)
-
-    parent_project = None
-    _project = None
-
-    @property
-    def project(self):
-        """Return the project for the image."""
-        if self._project is not None:
-            return self._project
-        kwargs = self.get_project_kwargs(self.parent_project)
-        try:
-            self._project = self.project_model.objects.select_related(
-                'owner__user'
-            ).get(**kwargs)
-        except self.project_model.DoesNotExist:
-            raise ParseError(
-                'Invalid {project_type}_slug.'.format(
-                    project_type=self.project_type.replace('-', '_')
-                )
-            )
-        return self._project
-
-    @property
-    def project_model(self):
-        """Return the model to use for the project."""
-        raise NotImplementedError(
-            f'Class {self.__class__.__name__} must implement a '
-            '"project_model" attribute.'
-        )
-
-    @property
-    def project_type(self):
-        """Return the project's type."""
-        raise NotImplementedError(
-            f'Class {self.__class__.__name__} must implement a '
-            '"project_type" attribute.'
-        )
-
-    def get_project_kwargs(self, parent_project=None):
-        """Return the kwargs to use to filter for the project."""
-        project_slug = '{project_type}_slug'.format(
-            project_type=self.project_type.replace('-', '_')
-        )
-        return {
-            'slug': self.kwargs.get(project_slug)
-        }
-
-    def get_queryset(self):
-        """Filter the queryset to only the ones for the current project."""
-        queryset = super().get_queryset()
-        kwargs = {
-            self.project_type.replace('-', '_'): self.project
-        }
-        return queryset.filter(**kwargs)
-
-
-class ProjectThroughModelMixin(ProjectRelatedInfoMixin):
-    """"""
-
-    authentication_classes = (SessionAuthentication,)
-    permission_classes = (IsAuthenticatedOrReadOnly,)
-
-    owner_only = False
-    _owner = None
-    _contributors = list()
-
-    @property
-    def owner(self):
-        if self._owner is None:
-            self._owner = self.project.owner.user_id
-        return self._owner
-
-    @property
-    def contributors(self):
-        if isinstance(self._contributors, list):
-            self._contributors = self.project.contributors.values_list(
-                'user',
-                flat=True,
-            )
-        return self._contributors
-
-    def check_permissions(self, request):
-        """Only allow the owner and contributors to add game support."""
-        if request.method not in SAFE_METHODS or self.action == 'retrieve':
-            user = request.user.id
-            is_contributor = user in self.contributors
-            if user != self.owner and not is_contributor:
-                raise PermissionDenied
-            if self.owner_only and is_contributor:
-                raise PermissionDenied
-        return super().check_permissions(request=request)
-
-
 class ProjectLocaleMixin(object):
     """Mixin for getting the locale for timestamps."""
 
@@ -255,3 +151,29 @@ class ProjectReleaseCreationMixin(ModelSerializer):
             modified=instance.created,
         )
         return instance
+
+
+class ProjectThroughMixin(ModelSerializer):
+    """Mixin for through model serializers."""
+
+    def get_field_names(self, declared_fields, info):
+        """Add the 'id' field if necessary."""
+        field_names = super().get_field_names(
+            declared_fields=declared_fields,
+            info=info,
+        )
+        request = self.context['request']
+        if request.method == 'GET':
+            view = self.context['view']
+            user = request.user.id
+            if view.owner == user:
+                return field_names + ('id',)
+            if user in view.contributors and not view.owner_only:
+                return field_names + ('id',)
+        return field_names
+
+    def validate(self, attrs):
+        """Add the project to the validated data."""
+        view = self.context['view']
+        attrs[view.project_type.replace('-', '_')] = view.project
+        return super().validate(attrs=attrs)

@@ -31,6 +31,7 @@ from project_manager.users.models import ForumUser
 from .mixins import (
     ProjectLocaleMixin,
     ProjectReleaseCreationMixin,
+    ProjectThroughMixin,
 )
 
 
@@ -38,10 +39,13 @@ from .mixins import (
 # >> ALL DECLARATION
 # =============================================================================
 __all__ = (
+    'ProjectContributorSerializer',
+    'ProjectGameSerializer',
     'ProjectImageSerializer',
     'ProjectCreateReleaseSerializer',
     'ProjectReleaseSerializer',
     'ProjectSerializer',
+    'ProjectTagSerializer',
 )
 
 
@@ -259,34 +263,8 @@ class ProjectImageSerializer(ModelSerializer):
         return super().create(validated_data=validated_data)
 
 
-class ProjectThroughSerializer(ModelSerializer):
-    """"""
-
-    def get_field_names(self, declared_fields, info):
-        """"""
-        field_names = super().get_field_names(
-            declared_fields=declared_fields,
-            info=info,
-        )
-        request = self.context['request']
-        if request.method == 'GET':
-            view = self.context['view']
-            user = request.user.id
-            if view.owner == user:
-                return field_names + ('id',)
-            if user in view.contributors and not view.owner_only:
-                return field_names + ('id',)
-        return field_names
-
-    def validate(self, attrs):
-        """"""
-        view = self.context['view']
-        attrs[view.project_type.replace('-', '_')] = view.project
-        return super().validate(attrs=attrs)
-
-
-class ProjectGameSerializer(ProjectThroughSerializer):
-    """"""
+class ProjectGameSerializer(ProjectThroughMixin):
+    """Base ProjectGame Serializer"""
 
     game_slug = CharField(max_length=16, write_only=True)
     game = GameSerializer(read_only=True)
@@ -314,8 +292,8 @@ class ProjectGameSerializer(ProjectThroughSerializer):
         return super().validate(attrs=attrs)
 
 
-class ProjectTagSerializer(ProjectThroughSerializer):
-    """"""
+class ProjectTagSerializer(ProjectThroughMixin):
+    """Base ProjectTag Serializer."""
 
     tag = CharField(max_length=16)
 
@@ -340,8 +318,8 @@ class ProjectTagSerializer(ProjectThroughSerializer):
         return super().validate(attrs=attrs)
 
 
-class ProjectContributorSerializer(ProjectThroughSerializer):
-    """"""
+class ProjectContributorSerializer(ProjectThroughMixin):
+    """Base ProjectContributor Serializer."""
 
     username = CharField(max_length=30, write_only=True)
     user = ForumUserContributorSerializer(read_only=True)

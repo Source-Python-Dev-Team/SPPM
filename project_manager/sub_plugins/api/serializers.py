@@ -32,11 +32,14 @@ from .mixins import SubPluginReleaseBase
 # >> ALL DECLARATION
 # =============================================================================
 __all__ = (
+    'SubPluginContributorSerializer',
     'SubPluginCreateSerializer',
     'SubPluginCreateReleaseSerializer',
+    'SubPluginGameSerializer',
     'SubPluginImageSerializer',
     'SubPluginReleaseSerializer',
     'SubPluginSerializer',
+    'SubPluginTagSerializer',
 )
 
 
@@ -118,21 +121,21 @@ class SubPluginCreateSerializer(SubPluginSerializer):
 
 
 class SubPluginGameSerializer(ProjectGameSerializer):
-    """"""
+    """Supported Games Serializer for SubPlugins."""
 
     class Meta(ProjectGameSerializer.Meta):
         model = SubPluginGame
 
 
 class SubPluginTagSerializer(ProjectTagSerializer):
-    """"""
+    """Tags Serializer for SubPlugins."""
 
     class Meta(ProjectTagSerializer.Meta):
         model = SubPluginTag
 
 
 class SubPluginContributorSerializer(ProjectContributorSerializer):
-    """"""
+    """Contributors Serializer for SubPlugins."""
 
     class Meta(ProjectContributorSerializer.Meta):
         model = SubPluginContributor
