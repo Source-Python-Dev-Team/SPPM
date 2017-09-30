@@ -14,7 +14,6 @@ from .validators import tag_name_validator
 # >> ALL DECLARATION
 # =============================================================================
 __all__ = (
-    'BlackListedTag',
     'Tag',
 )
 
@@ -30,21 +29,10 @@ class Tag(models.Model):
         unique=True,
         validators=[tag_name_validator],
     )
-
-    def __str__(self):
-        """Return the tag's name."""
-        return self.name
-
-
-class BlackListedTag(models.Model):
-    """Model used for blacklisted tags."""
-
-    name = models.CharField(
-        max_length=16,
-        unique=True,
-        validators=[tag_name_validator],
+    black_listed = models.BooleanField(
+        default=False,
     )
 
     def __str__(self):
-        """Return the blacklisted tag's name."""
+        """Return the tag's name."""
         return self.name

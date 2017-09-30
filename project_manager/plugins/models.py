@@ -9,7 +9,12 @@ from django.core.urlresolvers import reverse
 from django.db import models
 
 # App
-from project_manager.common.models import ImageBase, ProjectBase, ReleaseBase
+from project_manager.common.models import (
+    AbstractUUIDPrimaryKeyModel,
+    ImageBase,
+    ProjectBase,
+    ReleaseBase,
+)
 from project_manager.common.validators import basename_validator
 from .constants import PLUGIN_LOGO_URL
 from .helpers import (
@@ -25,7 +30,10 @@ from .helpers import (
 __all__ = (
     'PluginRelease',
     'Plugin',
+    'PluginContributor',
+    'PluginGame',
     'PluginImage',
+    'PluginTag',
 )
 
 
@@ -41,11 +49,26 @@ class Plugin(ProjectBase):
         unique=True,
         blank=True,
     )
+    contributors = models.ManyToManyField(
+        to='users.ForumUser',
+        related_name='plugin_contributions',
+        through='plugins.PluginContributor',
+    )
     slug = models.SlugField(
         max_length=32,
         unique=True,
         blank=True,
         primary_key=True,
+    )
+    supported_games = models.ManyToManyField(
+        to='games.Game',
+        related_name='plugins',
+        through='plugins.PluginGame',
+    )
+    tags = models.ManyToManyField(
+        to='tags.Tag',
+        related_name='plugins',
+        through='plugins.PluginTag',
     )
 
     handle_logo_upload = handle_plugin_logo_upload
@@ -104,3 +127,39 @@ class PluginImage(ImageBase):
     )
 
     handle_image_upload = handle_plugin_image_upload
+
+
+class PluginContributor(AbstractUUIDPrimaryKeyModel):
+    plugin = models.ForeignKey(
+        to='plugins.Plugin',
+    )
+    user = models.ForeignKey(
+        to='users.ForumUser',
+    )
+
+    class Meta:
+        unique_together = ('plugin', 'user')
+
+
+class PluginGame(AbstractUUIDPrimaryKeyModel):
+    plugin = models.ForeignKey(
+        to='plugins.Plugin',
+    )
+    game = models.ForeignKey(
+        to='games.Game',
+    )
+
+    class Meta:
+        unique_together = ('plugin', 'game')
+
+
+class PluginTag(AbstractUUIDPrimaryKeyModel):
+    plugin = models.ForeignKey(
+        to='plugins.Plugin',
+    )
+    tag = models.ForeignKey(
+        to='tags.Tag',
+    )
+
+    class Meta:
+        unique_together = ('plugin', 'tag')

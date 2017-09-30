@@ -9,7 +9,12 @@ from django.core.urlresolvers import reverse
 from django.db import models
 
 # App
-from project_manager.common.models import ImageBase, ProjectBase, ReleaseBase
+from project_manager.common.models import (
+    AbstractUUIDPrimaryKeyModel,
+    ImageBase,
+    ProjectBase,
+    ReleaseBase,
+)
 from project_manager.common.validators import basename_validator
 from .constants import PACKAGE_LOGO_URL
 from .helpers import handle_package_image_upload
@@ -23,7 +28,10 @@ from .helpers import handle_package_zip_upload
 __all__ = (
     'PackageRelease',
     'Package',
+    'PackageContributor',
+    'PackageGame',
     'PackageImage',
+    'PackageTag',
 )
 
 
@@ -39,11 +47,26 @@ class Package(ProjectBase):
         unique=True,
         blank=True,
     )
+    contributors = models.ManyToManyField(
+        to='users.ForumUser',
+        related_name='package_contributions',
+        through='packages.PackageContributor',
+    )
     slug = models.SlugField(
         max_length=32,
         unique=True,
         blank=True,
         primary_key=True,
+    )
+    supported_games = models.ManyToManyField(
+        to='games.Game',
+        related_name='packages',
+        through='packages.PackageGame',
+    )
+    tags = models.ManyToManyField(
+        to='tags.Tag',
+        related_name='packages',
+        through='packages.PackageTag',
     )
 
     handle_logo_upload = handle_package_logo_upload
@@ -99,3 +122,39 @@ class PackageImage(ImageBase):
     )
 
     handle_image_upload = handle_package_image_upload
+
+
+class PackageContributor(AbstractUUIDPrimaryKeyModel):
+    package = models.ForeignKey(
+        to='packages.Package',
+    )
+    user = models.ForeignKey(
+        to='users.ForumUser',
+    )
+
+    class Meta:
+        unique_together = ('package', 'user')
+
+
+class PackageGame(AbstractUUIDPrimaryKeyModel):
+    package = models.ForeignKey(
+        to='packages.Package',
+    )
+    game = models.ForeignKey(
+        to='games.Game',
+    )
+
+    class Meta:
+        unique_together = ('package', 'game')
+
+
+class PackageTag(AbstractUUIDPrimaryKeyModel):
+    package = models.ForeignKey(
+        to='packages.Package',
+    )
+    tag = models.ForeignKey(
+        to='tags.Tag',
+    )
+
+    class Meta:
+        unique_together = ('package', 'tag')

@@ -5,6 +5,7 @@
 # =============================================================================
 # Python
 from operator import attrgetter
+import uuid
 
 # Django
 from django.core.exceptions import ValidationError
@@ -30,6 +31,7 @@ from .validators import version_validator
 # >> ALL DECLARATION
 # =============================================================================
 __all__ = (
+    'AbstractUUIDPrimaryKeyModel',
     'ImageBase',
     'ProjectBase',
     'ReleaseBase',
@@ -57,10 +59,6 @@ class ProjectBase(models.Model):
             'The configuration of the project. If too long, post on the forum '
             'and provide the link here. BBCode is allowed. 1024 char limit.'
         )
-    )
-    contributors = models.ManyToManyField(
-        to='users.ForumUser',
-        related_name='%(class)s_contributions',
     )
     description = BBCodeTextField(
         max_length=1024,
@@ -93,10 +91,6 @@ class ProjectBase(models.Model):
         to='requirements.PyPiRequirement',
         related_name='required_in_%(class)ss',
     )
-    supported_games = models.ManyToManyField(
-        to='games.Game',
-        related_name='%(class)ss',
-    )
     synopsis = BBCodeTextField(
         max_length=128,
         blank=True,
@@ -105,10 +99,6 @@ class ProjectBase(models.Model):
             'A brief description of the project. BBCode is allowed. '
             '128 char limit.'
         )
-    )
-    tags = models.ManyToManyField(
-        to='tags.Tag',
-        related_name='%(class)ss',
     )
     topic = models.IntegerField(
         unique=True,
@@ -271,3 +261,17 @@ class ImageBase(models.Model):
             f'Class "{self.__class__.__name__}" must implement a '
             '"handle_image_upload" attribute.'
         )
+
+
+class AbstractUUIDPrimaryKeyModel(models.Model):
+    """Abstract model that creates an non-editable UUID primary key."""
+
+    id = models.UUIDField(
+        verbose_name='ID',
+        primary_key=True,
+        default=uuid.uuid4,
+        editable=False,
+    )
+
+    class Meta:
+        abstract = True

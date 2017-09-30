@@ -9,7 +9,12 @@ from django.core.urlresolvers import reverse
 from django.db import models
 
 # App
-from project_manager.common.models import ImageBase, ProjectBase, ReleaseBase
+from project_manager.common.models import (
+    AbstractUUIDPrimaryKeyModel,
+    ImageBase,
+    ProjectBase,
+    ReleaseBase,
+)
 from project_manager.common.validators import basename_validator
 from .constants import SUB_PLUGIN_LOGO_URL
 from .helpers import (
@@ -25,7 +30,10 @@ from .helpers import (
 __all__ = (
     'SubPluginRelease',
     'SubPlugin',
+    'SubPluginContributor',
+    'SubPluginGame',
     'SubPluginImage',
+    'SubPluginTag',
 )
 
 
@@ -40,6 +48,11 @@ class SubPlugin(ProjectBase):
         validators=[basename_validator],
         blank=True,
     )
+    contributors = models.ManyToManyField(
+        to='users.ForumUser',
+        related_name='subplugin_contributions',
+        through='sub_plugins.SubPluginContributor',
+    )
     slug = models.SlugField(
         max_length=32,
         blank=True,
@@ -47,6 +60,16 @@ class SubPlugin(ProjectBase):
     plugin = models.ForeignKey(
         to='plugins.Plugin',
         related_name='sub_plugins',
+    )
+    supported_games = models.ManyToManyField(
+        to='games.Game',
+        related_name='subplugins',
+        through='sub_plugins.SubPluginGame',
+    )
+    tags = models.ManyToManyField(
+        to='tags.Tag',
+        related_name='subplugins',
+        through='sub_plugins.SubPluginTag',
     )
 
     handle_logo_upload = handle_sub_plugin_logo_upload
@@ -113,3 +136,39 @@ class SubPluginImage(ImageBase):
     )
 
     handle_image_upload = handle_sub_plugin_image_upload
+
+
+class SubPluginContributor(AbstractUUIDPrimaryKeyModel):
+    sub_plugin = models.ForeignKey(
+        to='sub_plugins.SubPlugin',
+    )
+    user = models.ForeignKey(
+        to='users.ForumUser',
+    )
+
+    class Meta:
+        unique_together = ('sub_plugin', 'user')
+
+
+class SubPluginGame(AbstractUUIDPrimaryKeyModel):
+    sub_plugin = models.ForeignKey(
+        to='sub_plugins.SubPlugin',
+    )
+    game = models.ForeignKey(
+        to='games.Game',
+    )
+
+    class Meta:
+        unique_together = ('sub_plugin', 'game')
+
+
+class SubPluginTag(AbstractUUIDPrimaryKeyModel):
+    sub_plugin = models.ForeignKey(
+        to='sub_plugins.SubPlugin',
+    )
+    tag = models.ForeignKey(
+        to='tags.Tag',
+    )
+
+    class Meta:
+        unique_together = ('sub_plugin', 'tag')
