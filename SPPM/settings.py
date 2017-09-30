@@ -141,6 +141,7 @@ REST_FRAMEWORK = {
     'DEFAULT_FILTER_BACKENDS': (
         'django_filters.rest_framework.DjangoFilterBackend',
     ),
+    'VIEW_NAME_FUNCTION': 'project_manager.helpers.get_view_name',
 }
 
 # Internationalization

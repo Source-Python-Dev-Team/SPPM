@@ -40,6 +40,10 @@ class ProjectAPIView(APIView):
     project_type = None
     extra_params = ''
 
+    @classmethod
+    def view_name(cls):
+        return f'{cls.project_type.title()} APIs'
+
     def get(self, request):
         """Return all the API routes for Projects."""
         return Response(
@@ -142,6 +146,8 @@ class ProjectImageViewSet(ProjectThroughModelMixin):
     """Base Image View."""
 
     http_method_names = ('get', 'post', 'options')
+    ordering = ('-created',)
+    ordering_fields = ('created',)
 
 
 class ProjectReleaseViewSet(ProjectRelatedInfoMixin):

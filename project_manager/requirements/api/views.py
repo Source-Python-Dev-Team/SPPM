@@ -76,6 +76,8 @@ class RequirementAPIView(APIView):
 
     http_method_names = ('get', 'options')
 
+    view_name = 'Requirement APIs'
+
     @staticmethod
     def get(request):
         """Return all API routes for requirements."""

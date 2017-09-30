@@ -21,7 +21,9 @@ __all__ = (
 # >> VIEWS
 # =============================================================================
 class ProjectManagerAPIView(APIView):
-    """Base API view."""
+    """Project Manager API listing."""
+
+    view_name = 'Project Manager APIs'
 
     @staticmethod
     def get(request):
