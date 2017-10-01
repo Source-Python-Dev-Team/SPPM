@@ -10,7 +10,6 @@ from django.db import models
 
 # App
 from project_manager.common.models import (
-    AbstractUUIDPrimaryKeyModel,
     ProjectBase,
     ProjectContributor,
     ProjectGame,

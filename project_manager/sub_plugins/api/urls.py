@@ -51,7 +51,9 @@ router.register(
     base_name='tags',
 )
 router.register(
-    prefix=r'^contributors/(?P<plugin_slug>[\w-]+)/(?P<sub_plugin_slug>[\w-]+)',
+    prefix=(
+        r'^contributors/(?P<plugin_slug>[\w-]+)/(?P<sub_plugin_slug>[\w-]+)'
+    ),
     viewset=SubPluginContributorViewSet,
     base_name='contributors',
 )
