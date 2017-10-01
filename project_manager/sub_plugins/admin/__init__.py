@@ -7,9 +7,9 @@
 from django.contrib import admin
 
 # App
-from .models import SubPluginRelease
-from .models import SubPlugin
-from .models import SubPluginImage
+from ..models import SubPluginRelease
+from ..models import SubPlugin
+from ..models import SubPluginImage
 
 
 # =============================================================================
