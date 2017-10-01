@@ -4,7 +4,6 @@
 # >> IMPORTS
 # =============================================================================
 # Django
-from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.db import models
 
@@ -72,6 +71,7 @@ class Package(ProjectBase):
     )
 
     handle_logo_upload = handle_package_logo_upload
+    logo_path = PACKAGE_LOGO_URL
 
     def get_absolute_url(self):
         """Return the URL for the Package."""
@@ -81,17 +81,6 @@ class Package(ProjectBase):
                 'slug': self.slug,
             }
         )
-
-    def save(self, *args, **kwargs):
-        """Remove the old logo before storing the new one."""
-        if self.logo and PACKAGE_LOGO_URL not in str(self.logo):
-            path = settings.MEDIA_ROOT / PACKAGE_LOGO_URL
-            if path.isdir():
-                logo = [x for x in path.files() if x.namebase == self.slug]
-                if logo:
-                    logo[0].remove()
-
-        super().save(*args, **kwargs)
 
 
 class PackageRelease(ProjectRelease):

@@ -4,7 +4,6 @@
 # >> IMPORTS
 # =============================================================================
 # Django
-from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.db import models
 
@@ -45,6 +44,11 @@ __all__ = (
 class SubPlugin(ProjectBase):
     """SubPlugin project type model."""
 
+    id = models.CharField(
+        max_length=65,
+        blank=True,
+        primary_key=True,
+    )
     basename = models.CharField(
         max_length=32,
         validators=[basename_validator],
@@ -75,6 +79,7 @@ class SubPlugin(ProjectBase):
     )
 
     handle_logo_upload = handle_sub_plugin_logo_upload
+    logo_path = SUB_PLUGIN_LOGO_URL
 
     class Meta:
         verbose_name = 'SubPlugin'
@@ -86,6 +91,7 @@ class SubPlugin(ProjectBase):
         )
 
     def __str__(self):
+        """Return the string formatted name for the sub-plugin."""
         return f'{self.plugin.name}: {self.name}'
 
     def get_absolute_url(self):
@@ -99,14 +105,8 @@ class SubPlugin(ProjectBase):
         )
 
     def save(self, *args, **kwargs):
-        """Remove the old logo before storing the new one."""
-        if self.logo and SUB_PLUGIN_LOGO_URL not in str(self.logo):
-            path = settings.MEDIA_ROOT / SUB_PLUGIN_LOGO_URL
-            if path.isdir():
-                logo = [x for x in path.files() if x.namebase == self.slug]
-                if logo:
-                    logo[0].remove()
-
+        """Set the id using the plugin's slug and the project's slug."""
+        self.id = f'{self.plugin.slug}.{self.get_slug_value()}'
         super().save(*args, **kwargs)
 
 

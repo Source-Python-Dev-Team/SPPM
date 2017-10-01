@@ -8,6 +8,7 @@ from operator import attrgetter
 import uuid
 
 # Django
+from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils.text import slugify
@@ -119,6 +120,7 @@ class ProjectBase(models.Model):
         verbose_name='modified',
     )
     basename = None
+    logo_path = None
 
     class Meta:
         abstract = True
@@ -188,8 +190,18 @@ class ProjectBase(models.Model):
         return errors
 
     def save(self, *args, **kwargs):
-        """Store the slug and release data."""
-        self.slug = slugify(self.basename)
+        """Store the slug and remove old logo if necessary."""
+        self.slug = self.get_slug_value()
+        if all([
+            self.logo_path is not None,
+            self.logo,
+            self.logo_path not in str(self.logo)
+        ]):
+            path = settings.MEDIA_ROOT / self.logo_path
+            if path.isdir():
+                logo = [x for x in path.files() if x.namebase == self.slug]
+                if logo:
+                    logo[0].remove()
         super().save(*args, **kwargs)
 
     def get_forum_url(self):
@@ -197,6 +209,10 @@ class ProjectBase(models.Model):
         if self.topic is not None:
             return FORUM_THREAD_URL.format(topic=self.topic)
         return None
+
+    def get_slug_value(self):
+        """Return the project's slug value."""
+        return slugify(self.basename).replace('_', '-')
 
 
 class ProjectRelease(models.Model):

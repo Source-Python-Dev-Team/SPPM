@@ -4,7 +4,6 @@
 # >> IMPORTS
 # =============================================================================
 # Django
-from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.db import models
 
@@ -74,6 +73,7 @@ class Plugin(ProjectBase):
     )
 
     handle_logo_upload = handle_plugin_logo_upload
+    logo_path = PLUGIN_LOGO_URL
 
     def get_absolute_url(self):
         """Return the URL for the Plugin."""
@@ -83,17 +83,6 @@ class Plugin(ProjectBase):
                 'slug': self.slug,
             }
         )
-
-    def save(self, *args, **kwargs):
-        """Remove the old logo before storing the new one."""
-        if self.logo and PLUGIN_LOGO_URL not in str(self.logo):
-            path = settings.MEDIA_ROOT / PLUGIN_LOGO_URL
-            if path.isdir():
-                logo = [x for x in path.files() if x.namebase == self.slug]
-                if logo:
-                    logo[0].remove()
-
-        super().save(*args, **kwargs)
 
 
 class PluginRelease(ProjectRelease):
