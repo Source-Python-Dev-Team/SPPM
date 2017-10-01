@@ -29,11 +29,11 @@ from .helpers import handle_package_zip_upload
 # >> ALL DECLARATION
 # =============================================================================
 __all__ = (
-    'PackageRelease',
     'Package',
     'PackageContributor',
     'PackageGame',
     'PackageImage',
+    'PackageRelease',
     'PackageTag',
 )
 

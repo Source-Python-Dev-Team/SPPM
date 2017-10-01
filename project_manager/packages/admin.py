@@ -16,9 +16,9 @@ from .models import PackageImage
 # >> ALL DECLARATION
 # =============================================================================
 __all__ = (
-    'PackageReleaseAdmin',
     'PackageAdmin',
     'PackageImageAdmin',
+    'PackageReleaseAdmin',
 )
 
 

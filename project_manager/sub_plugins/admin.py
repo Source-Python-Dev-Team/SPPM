@@ -16,9 +16,9 @@ from .models import SubPluginImage
 # >> ALL DECLARATION
 # =============================================================================
 __all__ = (
-    'SubPluginReleaseAdmin',
     'SubPluginAdmin',
     'SubPluginImageAdmin',
+    'SubPluginReleaseAdmin',
 )
 
 

@@ -31,11 +31,11 @@ from .helpers import (
 # >> ALL DECLARATION
 # =============================================================================
 __all__ = (
-    'SubPluginRelease',
     'SubPlugin',
     'SubPluginContributor',
     'SubPluginGame',
     'SubPluginImage',
+    'SubPluginRelease',
     'SubPluginTag',
 )
 

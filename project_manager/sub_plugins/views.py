@@ -28,8 +28,8 @@ from .models import SubPlugin, SubPluginRelease
 # =============================================================================
 __all__ = (
     'SubPluginCreateView',
-    'SubPluginListView',
     'SubPluginEditView',
+    'SubPluginListView',
     'SubPluginReleaseDownloadView',
     'SubPluginReleaseListView',
     'SubPluginSelectGamesView',

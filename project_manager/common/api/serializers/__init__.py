@@ -40,9 +40,9 @@ from .mixins import (
 # =============================================================================
 __all__ = (
     'ProjectContributorSerializer',
+    'ProjectCreateReleaseSerializer',
     'ProjectGameSerializer',
     'ProjectImageSerializer',
-    'ProjectCreateReleaseSerializer',
     'ProjectReleaseSerializer',
     'ProjectSerializer',
     'ProjectTagSerializer',

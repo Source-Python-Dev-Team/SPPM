@@ -15,9 +15,9 @@ from .paths.admin import SubPluginPathAdmin
 # >> ALL DECLARATION
 # =============================================================================
 __all__ = (
-    'PluginReleaseAdmin',
     'PluginAdmin',
     'PluginImageAdmin',
+    'PluginReleaseAdmin',
 )
 
 

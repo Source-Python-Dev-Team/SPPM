@@ -33,8 +33,8 @@ from .mixins import SubPluginReleaseBase
 # =============================================================================
 __all__ = (
     'SubPluginContributorSerializer',
-    'SubPluginCreateSerializer',
     'SubPluginCreateReleaseSerializer',
+    'SubPluginCreateSerializer',
     'SubPluginGameSerializer',
     'SubPluginImageSerializer',
     'SubPluginReleaseSerializer',

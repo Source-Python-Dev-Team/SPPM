@@ -29,8 +29,8 @@ from ..mixins import PackageReleaseBase
 # =============================================================================
 __all__ = (
     'PackageContributorSerializer',
-    'PackageCreateSerializer',
     'PackageCreateReleaseSerializer',
+    'PackageCreateSerializer',
     'PackageGameSerializer',
     'PackageImageSerializer',
     'PackageReleaseSerializer',

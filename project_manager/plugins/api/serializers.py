@@ -29,8 +29,8 @@ from .mixins import PluginReleaseBase
 # =============================================================================
 __all__ = (
     'PluginContributorSerializer',
-    'PluginCreateSerializer',
     'PluginCreateReleaseSerializer',
+    'PluginCreateSerializer',
     'PluginGameSerializer',
     'PluginImageSerializer',
     'PluginReleaseSerializer',
