@@ -158,7 +158,7 @@ class ProjectViewSet(ModelViewSet):
 class ProjectImageViewSet(ProjectThroughModelMixin):
     """Base Image View."""
 
-    http_method_names = ('get', 'post', 'options')
+    http_method_names = ('get', 'post', 'delete', 'options')
     ordering = ('-created',)
     ordering_fields = ('created',)
 

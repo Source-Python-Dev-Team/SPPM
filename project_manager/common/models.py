@@ -242,7 +242,21 @@ class ProjectRelease(models.Model):
         )
 
 
-class ProjectImage(models.Model):
+class AbstractUUIDPrimaryKeyModel(models.Model):
+    """Abstract model that creates an non-editable UUID primary key."""
+
+    id = models.UUIDField(
+        verbose_name='ID',
+        primary_key=True,
+        default=uuid.uuid4,
+        editable=False,
+    )
+
+    class Meta:
+        abstract = True
+
+
+class ProjectImage(AbstractUUIDPrimaryKeyModel):
     """Base model for project images."""
 
     image = models.ImageField(
@@ -264,20 +278,6 @@ class ProjectImage(models.Model):
             f'Class "{self.__class__.__name__}" must implement a '
             '"handle_image_upload" attribute.'
         )
-
-
-class AbstractUUIDPrimaryKeyModel(models.Model):
-    """Abstract model that creates an non-editable UUID primary key."""
-
-    id = models.UUIDField(
-        verbose_name='ID',
-        primary_key=True,
-        default=uuid.uuid4,
-        editable=False,
-    )
-
-    class Meta:
-        abstract = True
 
 
 class ProjectContributor(AbstractUUIDPrimaryKeyModel):

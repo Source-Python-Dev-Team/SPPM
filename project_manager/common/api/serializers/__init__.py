@@ -3,6 +3,9 @@
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
+# Python
+from contextlib import suppress
+
 # Django
 from django.core.exceptions import ValidationError
 from django.utils.timezone import now
@@ -202,6 +205,12 @@ class ProjectSerializer(ModelSerializer, ProjectLocaleMixin):
             })
         return attrs
 
+    def update(self, instance, validated_data):
+        """Do not allow the project's 'name' to be updated via API."""
+        with suppress(KeyError):
+            del validated_data['name']
+        return super().update(instance=instance, validated_data=validated_data)
+
     @staticmethod
     def get_download_kwargs(obj, release):
         """Return the release's reverse kwargs."""
@@ -248,8 +257,10 @@ class ProjectCreateReleaseSerializer(ProjectReleaseCreationMixin):
         )
 
 
-class ProjectImageSerializer(ModelSerializer):
+class ProjectImageSerializer(ProjectThroughMixin):
     """Base ProjectImage Serializer."""
+
+    add_project = False
 
     class Meta:
         fields = (
