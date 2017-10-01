@@ -116,8 +116,8 @@ class ProjectBase(models.Model):
     created = models.DateTimeField(
         verbose_name='created',
     )
-    modified = models.DateTimeField(
-        verbose_name='modified',
+    updated = models.DateTimeField(
+        verbose_name='updated',
     )
     basename = None
     logo_path = None

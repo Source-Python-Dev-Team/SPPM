@@ -127,7 +127,7 @@ class ProjectSerializer(ModelSerializer, ProjectLocaleMixin):
         """Create the instance and the first release of the project."""
         validated_data = self.get_extra_validated_data(validated_data)
         current_time = now()
-        validated_data['created'] = validated_data['modified'] = current_time
+        validated_data['created'] = validated_data['updated'] = current_time
         instance = super().create(validated_data)
         version = self.release_dict['version']
         zip_file = self.release_dict['zip_file']
@@ -186,7 +186,7 @@ class ProjectSerializer(ModelSerializer, ProjectLocaleMixin):
 
     def get_updated(self, obj):
         """Return the project's last updated info."""
-        return self.get_date_time_dict(timestamp=obj.modified)
+        return self.get_date_time_dict(timestamp=obj.updated)
 
     def validate(self, attrs):
         """Validate the given field values."""

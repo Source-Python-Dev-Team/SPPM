@@ -138,7 +138,7 @@ class ProjectReleaseCreationMixin(ModelSerializer):
         return attrs
 
     def create(self, validated_data):
-        """Update the project's modified datetime when release is created."""
+        """Update the project's updated datetime when release is created."""
         # Remove the basename before creating the release
         del validated_data['basename']
 
@@ -148,7 +148,7 @@ class ProjectReleaseCreationMixin(ModelSerializer):
         self.project_class.objects.filter(
             pk=project.pk
         ).update(
-            modified=instance.created,
+            updated=instance.created,
         )
         return instance
 

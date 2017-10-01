@@ -39,7 +39,7 @@ class Migration(migrations.Migration):
                 ('synopsis', precise_bbcode.fields.BBCodeTextField(blank=True, help_text='A brief description of the project. BBCode is allowed. 128 char limit.', max_length=128, no_rendered_field=True, null=True)),
                 ('topic', models.IntegerField(blank=True, null=True, unique=True)),
                 ('created', models.DateTimeField(verbose_name='created')),
-                ('modified', models.DateTimeField(verbose_name='modified')),
+                ('updated', models.DateTimeField(verbose_name='updated')),
                 ('id', models.CharField(blank=True, max_length=65, primary_key=True, serialize=False)),
                 ('basename', models.CharField(blank=True, max_length=32, validators=[django.core.validators.RegexValidator('^[a-z][0-9a-z_]*[0-9a-z]')])),
                 ('slug', models.SlugField(blank=True, max_length=32)),
