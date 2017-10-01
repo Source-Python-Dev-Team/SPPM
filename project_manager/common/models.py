@@ -32,9 +32,12 @@ from .validators import version_validator
 # =============================================================================
 __all__ = (
     'AbstractUUIDPrimaryKeyModel',
-    'ProjectImage',
     'ProjectBase',
+    'ProjectContributor',
+    'ProjectGame',
+    'ProjectImage',
     'ProjectRelease',
+    'ProjectTag',
 )
 
 
@@ -284,6 +287,9 @@ class ProjectContributor(AbstractUUIDPrimaryKeyModel):
         to='users.ForumUser',
     )
 
+    class Meta:
+        abstract = True
+
 
 class ProjectGame(AbstractUUIDPrimaryKeyModel):
     """Base through model for project supported_games."""
@@ -292,6 +298,9 @@ class ProjectGame(AbstractUUIDPrimaryKeyModel):
         to='games.Game',
     )
 
+    class Meta:
+        abstract = True
+
 
 class ProjectTag(AbstractUUIDPrimaryKeyModel):
     """Base through model for project tags."""
@@ -299,3 +308,6 @@ class ProjectTag(AbstractUUIDPrimaryKeyModel):
     tag = models.ForeignKey(
         to='tags.Tag',
     )
+
+    class Meta:
+        abstract = True
