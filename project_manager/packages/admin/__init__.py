@@ -7,9 +7,9 @@
 from django.contrib import admin
 
 # App
-from .models import PackageRelease
-from .models import Package
-from .models import PackageImage
+from ..models import PackageRelease
+from ..models import Package
+from ..models import PackageImage
 
 
 # =============================================================================
@@ -56,7 +56,7 @@ class PackageAdmin(admin.ModelAdmin):
         'owner',
     )
     list_select_related = (
-        'owner',
+        'owner__user',
     )
     raw_id_fields = (
         'owner',
