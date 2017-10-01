@@ -59,7 +59,7 @@ argument-rgx=[a-z_][a-z0-9_]{2,30}$
 variable-rgx=[a-z_][a-z0-9_]{2,30}$
 
 # Class attribute name regex
-class-attribute-rgx=([A-Za-z_][A-Za-z0-9_]{2,30}|(__.*__))$
+class-attribute-rgx=([A-Za-z_][A-Za-z0-9_]{1,30}|(__.*__))$
 
 # In-line variable name regex
 inlinevar-rgx=[A-Za-z_][A-Za-z0-9_]*$

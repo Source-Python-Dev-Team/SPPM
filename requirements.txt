@@ -9,8 +9,8 @@ django-model-utils==3.0.0
 django-precise-bbcode==1.2.8
 djangorestframework==3.6.4
 path.py==10.4
-pep257==0.7.0
 pep8==1.7.0
 postmarkup==1.2.2
+pydocstyle==2.0.0
 pyflakes==1.6.0
-pylint==1.7.2
+pylint==1.7.3
