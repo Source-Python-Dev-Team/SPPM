@@ -7,6 +7,7 @@
 from django.contrib import admin
 
 # App
+from project_manager.common.admin import ProjectAdmin
 from ..models import Plugin, PluginImage, PluginRelease
 from ..paths.admin import SubPluginPathAdmin
 
@@ -24,6 +25,11 @@ __all__ = (
 # =============================================================================
 # >> ADMINS
 # =============================================================================
+@admin.register(Plugin)
+class PluginAdmin(ProjectAdmin):
+    """Plugin admin."""
+
+
 @admin.register(PluginRelease)
 class PluginReleaseAdmin(admin.ModelAdmin):
     """PluginRelease admin."""
@@ -39,35 +45,6 @@ class PluginReleaseAdmin(admin.ModelAdmin):
         'plugin__basename',
         'plugin__owner__user__username',
         'plugin__contributors__user__username',
-    )
-
-
-@admin.register(Plugin)
-class PluginAdmin(admin.ModelAdmin):
-    """Plugin admin."""
-
-    exclude = (
-        'slug',
-    )
-    list_display = (
-        'name',
-        'basename',
-        'owner',
-    )
-    list_select_related = (
-        'owner',
-    )
-    raw_id_fields = (
-        'owner',
-    )
-    readonly_fields = (
-        'basename',
-    )
-    search_fields = (
-        'name',
-        'basename',
-        'owner__user__username',
-        'contributors__user__username',
     )
 
 

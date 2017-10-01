@@ -3,10 +3,15 @@
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
+# Python
+import copy
+
 # Django
 from django.contrib import admin
 
 # App
+from project_manager.common.admin import ProjectAdmin
+from .forms import SubPluginAdminForm
 from ..models import SubPluginRelease
 from ..models import SubPlugin
 from ..models import SubPluginImage
@@ -23,8 +28,33 @@ __all__ = (
 
 
 # =============================================================================
+# >> GLOBALS
+# =============================================================================
+_project_fieldsets = copy.deepcopy(ProjectAdmin.fieldsets)
+_project_fieldsets[0][1]['fields'] += ('plugin',)
+
+
+# =============================================================================
 # >> ADMINS
 # =============================================================================
+@admin.register(SubPlugin)
+class SubPluginAdmin(ProjectAdmin):
+    """SubPlugin admin."""
+
+    fieldsets = _project_fieldsets
+    form = SubPluginAdminForm
+    list_display = ProjectAdmin.list_display + (
+        'plugin',
+    )
+    raw_id_fields = ProjectAdmin.raw_id_fields + (
+        'plugin',
+    )
+    search_fields = ProjectAdmin.search_fields + (
+        'plugin__name',
+        'plugin__basename',
+    )
+
+
 @admin.register(SubPluginRelease)
 class SubPluginReleaseAdmin(admin.ModelAdmin):
     """SubPluginRelease admin."""
@@ -42,38 +72,6 @@ class SubPluginReleaseAdmin(admin.ModelAdmin):
         'sub_plugin__contributors__user__username',
         'sub_plugin__plugin__basename',
         'sub_plugin__plugin__name',
-    )
-
-
-@admin.register(SubPlugin)
-class SubPluginAdmin(admin.ModelAdmin):
-    """SubPlugin admin."""
-
-    exclude = (
-        'slug',
-    )
-    list_display = (
-        'name',
-        'basename',
-        'owner',
-        'plugin',
-    )
-    list_select_related = (
-        'owner',
-    )
-    raw_id_fields = (
-        'owner',
-    )
-    readonly_fields = (
-        'basename',
-    )
-    search_fields = (
-        'name',
-        'basename',
-        'owner__user__username',
-        'contributors__user__username',
-        'plugin__name',
-        'plugin__basename',
     )
 
 

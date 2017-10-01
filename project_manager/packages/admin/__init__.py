@@ -7,6 +7,7 @@
 from django.contrib import admin
 
 # App
+from project_manager.common.admin import ProjectAdmin
 from ..models import PackageRelease
 from ..models import Package
 from ..models import PackageImage
@@ -25,6 +26,11 @@ __all__ = (
 # =============================================================================
 # >> ADMINS
 # =============================================================================
+@admin.register(Package)
+class PackageAdmin(ProjectAdmin):
+    """Package admin."""
+
+
 @admin.register(PackageRelease)
 class PackageReleaseAdmin(admin.ModelAdmin):
     """PackageRelease admin."""
@@ -40,35 +46,6 @@ class PackageReleaseAdmin(admin.ModelAdmin):
         'package__basename',
         'package__owner__user__username',
         'package__contributors__user__username',
-    )
-
-
-@admin.register(Package)
-class PackageAdmin(admin.ModelAdmin):
-    """Package admin."""
-
-    exclude = (
-        'slug',
-    )
-    list_display = (
-        'name',
-        'basename',
-        'owner',
-    )
-    list_select_related = (
-        'owner__user',
-    )
-    raw_id_fields = (
-        'owner',
-    )
-    readonly_fields = (
-        'basename',
-    )
-    search_fields = (
-        'name',
-        'basename',
-        'owner__user__username',
-        'contributors__user__username',
     )
 
 
