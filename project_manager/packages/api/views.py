@@ -130,7 +130,7 @@ class PackageContributorsViewSet(ProjectContributorViewSet):
 
     http_method_names = ('get', 'post', 'delete', 'options')
     queryset = PackageContributor.objects.select_related(
-        'user',
+        'user__user',
         'package',
     )
     serializer_class = PackageContributorSerializer

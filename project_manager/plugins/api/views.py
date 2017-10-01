@@ -130,7 +130,7 @@ class PluginContributorViewSet(ProjectContributorViewSet):
 
     http_method_names = ('get', 'post', 'delete', 'options')
     queryset = PluginContributor.objects.select_related(
-        'user',
+        'user__user',
         'plugin',
     )
     serializer_class = PluginContributorSerializer

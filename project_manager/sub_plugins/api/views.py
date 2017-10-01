@@ -185,7 +185,7 @@ class SubPluginContributorViewSet(ProjectContributorViewSet):
 
     http_method_names = ('get', 'post', 'delete', 'options')
     queryset = SubPluginContributor.objects.select_related(
-        'user',
+        'user__user',
         'sub_plugin',
     )
     serializer_class = SubPluginContributorSerializer
