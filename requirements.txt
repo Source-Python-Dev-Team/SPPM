@@ -13,4 +13,4 @@ pep8==1.7.0
 postmarkup==1.2.2
 pydocstyle==2.0.0
 pyflakes==1.6.0
-pylint==1.7.3
+pylint==1.7.4
