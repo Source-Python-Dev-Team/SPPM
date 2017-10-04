@@ -48,9 +48,6 @@ class ProjectAdmin(admin.ModelAdmin):
         'basename',
         'owner',
     )
-    list_select_related = (
-        'owner__user',
-    )
     raw_id_fields = (
         'owner',
     )

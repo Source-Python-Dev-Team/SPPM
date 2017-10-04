@@ -12,9 +12,12 @@ from django.contrib import admin
 # App
 from project_manager.common.admin import ProjectAdmin
 from .forms import SubPluginAdminForm
-from ..models import SubPluginRelease
-from ..models import SubPlugin
-from ..models import SubPluginImage
+from .inlines import (
+    SubPluginContributorInline,
+    SubPluginGameInline,
+    SubPluginTagInline,
+)
+from ..models import SubPlugin, SubPluginImage, SubPluginRelease
 
 
 # =============================================================================
@@ -43,6 +46,11 @@ class SubPluginAdmin(ProjectAdmin):
 
     fieldsets = _project_fieldsets
     form = SubPluginAdminForm
+    inlines = (
+        SubPluginContributorInline,
+        SubPluginGameInline,
+        SubPluginTagInline,
+    )
     list_display = ProjectAdmin.list_display + (
         'plugin',
     )

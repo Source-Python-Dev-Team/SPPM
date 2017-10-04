@@ -8,6 +8,7 @@ from django.contrib import admin
 
 # App
 from project_manager.common.admin import ProjectAdmin
+from .inlines import PluginContributorInline, PluginGameInline, PluginTagInline
 from ..models import Plugin, PluginImage, PluginRelease
 from ..paths.admin import SubPluginPathAdmin
 
@@ -28,6 +29,12 @@ __all__ = (
 @admin.register(Plugin)
 class PluginAdmin(ProjectAdmin):
     """Plugin admin."""
+
+    inlines = (
+        PluginContributorInline,
+        PluginGameInline,
+        PluginTagInline,
+    )
 
 
 @admin.register(PluginRelease)

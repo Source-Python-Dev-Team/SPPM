@@ -306,6 +306,10 @@ class ProjectContributor(AbstractUUIDPrimaryKeyModel):
     class Meta:
         abstract = True
 
+    def __str__(self):
+        """Return the base string."""
+        return 'Project Contributor'
+
 
 class ProjectGame(AbstractUUIDPrimaryKeyModel):
     """Base through model for project supported_games."""
@@ -317,6 +321,10 @@ class ProjectGame(AbstractUUIDPrimaryKeyModel):
     class Meta:
         abstract = True
 
+    def __str__(self):
+        """Return the base string."""
+        return 'Project Game'
+
 
 class ProjectTag(AbstractUUIDPrimaryKeyModel):
     """Base through model for project tags."""
@@ -327,3 +335,7 @@ class ProjectTag(AbstractUUIDPrimaryKeyModel):
 
     class Meta:
         abstract = True
+
+    def __str__(self):
+        """Return the base string."""
+        return 'Project Tag'

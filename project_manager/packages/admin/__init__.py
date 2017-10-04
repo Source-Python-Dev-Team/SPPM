@@ -8,9 +8,12 @@ from django.contrib import admin
 
 # App
 from project_manager.common.admin import ProjectAdmin
-from ..models import PackageRelease
-from ..models import Package
-from ..models import PackageImage
+from .inlines import (
+    PackageContributorInline,
+    PackageGameInline,
+    PackageTagInline,
+)
+from ..models import Package, PackageImage, PackageRelease
 
 
 # =============================================================================
@@ -29,6 +32,12 @@ __all__ = (
 @admin.register(Package)
 class PackageAdmin(ProjectAdmin):
     """Package admin."""
+
+    inlines = (
+        PackageContributorInline,
+        PackageGameInline,
+        PackageTagInline,
+    )
 
 
 @admin.register(PackageRelease)
