@@ -155,7 +155,6 @@ class SubPluginReleaseViewSet(ProjectReleaseViewSet):
 class SubPluginGameViewSet(ProjectGameViewSet):
     """Supported Games listing for SubPlugins."""
 
-    http_method_names = ('get', 'post', 'delete', 'options')
     queryset = SubPluginGame.objects.select_related(
         'game',
         'sub_plugin',
@@ -169,7 +168,6 @@ class SubPluginGameViewSet(ProjectGameViewSet):
 class SubPluginTagViewSet(ProjectTagViewSet):
     """Tags listing for SubPlugins."""
 
-    http_method_names = ('get', 'post', 'delete', 'options')
     queryset = SubPluginTag.objects.select_related(
         'tag',
         'sub_plugin',
@@ -183,7 +181,6 @@ class SubPluginTagViewSet(ProjectTagViewSet):
 class SubPluginContributorViewSet(ProjectContributorViewSet):
     """Contributors listing for SubPlugins."""
 
-    http_method_names = ('get', 'post', 'delete', 'options')
     queryset = SubPluginContributor.objects.select_related(
         'user__user',
         'sub_plugin',

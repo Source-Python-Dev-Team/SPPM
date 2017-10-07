@@ -114,7 +114,6 @@ class PluginReleaseViewSet(ProjectReleaseViewSet):
 class PluginGameViewSet(ProjectGameViewSet):
     """Supported Games listing for Plugins."""
 
-    http_method_names = ('get', 'post', 'delete', 'options')
     queryset = PluginGame.objects.select_related(
         'game',
         'plugin',
@@ -128,7 +127,6 @@ class PluginGameViewSet(ProjectGameViewSet):
 class PluginTagViewSet(ProjectTagViewSet):
     """Tags listing for Plugins."""
 
-    http_method_names = ('get', 'post', 'delete', 'options')
     queryset = PluginTag.objects.select_related(
         'tag',
         'plugin',
@@ -142,7 +140,6 @@ class PluginTagViewSet(ProjectTagViewSet):
 class PluginContributorViewSet(ProjectContributorViewSet):
     """Contributors listing for Plugins."""
 
-    http_method_names = ('get', 'post', 'delete', 'options')
     queryset = PluginContributor.objects.select_related(
         'user__user',
         'plugin',
@@ -156,7 +153,7 @@ class PluginContributorViewSet(ProjectContributorViewSet):
 class SubPluginPathViewSet(ProjectThroughModelMixin):
     """"""
 
-    http_method_names = ('get', 'post', 'delete', 'options')
+    http_method_names = ('get', 'post', 'patch', 'delete', 'options')
     ordering = ('path',)
     queryset = SubPluginPath.objects.select_related(
         'plugin',

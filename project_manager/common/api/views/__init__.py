@@ -158,7 +158,6 @@ class ProjectViewSet(ModelViewSet):
 class ProjectImageViewSet(ProjectThroughModelMixin):
     """Base Image View."""
 
-    http_method_names = ('get', 'post', 'delete', 'options')
     ordering = ('-created',)
     ordering_fields = ('created',)
 
@@ -178,7 +177,6 @@ class ProjectReleaseViewSet(ProjectRelatedInfoMixin):
 class ProjectGameViewSet(ProjectThroughModelMixin):
     """Base Game Support ViewSet."""
 
-    http_method_names = ('get', 'post', 'delete', 'options')
     ordering = ('-game',)
     ordering_fields = ('game',)
 
@@ -188,7 +186,6 @@ class ProjectGameViewSet(ProjectThroughModelMixin):
 class ProjectTagViewSet(ProjectThroughModelMixin):
     """Base Project Tag ViewSet."""
 
-    http_method_names = ('get', 'post', 'delete', 'options')
     ordering = ('-tag',)
     ordering_fields = ('tag',)
 
@@ -198,7 +195,6 @@ class ProjectTagViewSet(ProjectThroughModelMixin):
 class ProjectContributorViewSet(ProjectThroughModelMixin):
     """Base Project Contributor ViewSet."""
 
-    http_method_names = ('get', 'post', 'delete', 'options')
     ordering = ('-user',)
     ordering_fields = ('user',)
 

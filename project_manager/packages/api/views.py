@@ -100,7 +100,6 @@ class PackageReleaseViewSet(ProjectReleaseViewSet):
 class PackageGameViewSet(ProjectGameViewSet):
     """Supported Games listing for Packages."""
 
-    http_method_names = ('get', 'post', 'delete', 'options')
     queryset = PackageGame.objects.select_related(
         'game',
         'package',
@@ -114,7 +113,6 @@ class PackageGameViewSet(ProjectGameViewSet):
 class PackageTagViewSet(ProjectTagViewSet):
     """Tags listing for Packages."""
 
-    http_method_names = ('get', 'post', 'delete', 'options')
     queryset = PackageTag.objects.select_related(
         'tag',
         'package',
@@ -128,7 +126,6 @@ class PackageTagViewSet(ProjectTagViewSet):
 class PackageContributorsViewSet(ProjectContributorViewSet):
     """Contributors listing for Packages."""
 
-    http_method_names = ('get', 'post', 'delete', 'options')
     queryset = PackageContributor.objects.select_related(
         'user__user',
         'package',

@@ -95,6 +95,7 @@ class ProjectThroughModelMixin(ProjectRelatedInfoMixin):
     """Mixin for through model ViewSets."""
 
     authentication_classes = (SessionAuthentication,)
+    http_method_names = ('get', 'post', 'delete', 'options')
     permission_classes = (IsAuthenticatedOrReadOnly,)
 
     owner_only = False

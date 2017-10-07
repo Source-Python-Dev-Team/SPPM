@@ -127,6 +127,18 @@ class SubPluginPathSerializer(ProjectThroughMixin):
             'path',
         )
 
+    def get_field_names(self, declared_fields, info):
+        """"""
+        field_names = super().get_field_names(
+            declared_fields=declared_fields,
+            info=info,
+        )
+        if self.context['request'].method == 'PATCH':
+            field_names = list(field_names)
+            field_names.remove('path')
+            field_names = tuple(field_names)
+        return field_names
+
     def validate(self, attrs):
         """"""
         if not any([
