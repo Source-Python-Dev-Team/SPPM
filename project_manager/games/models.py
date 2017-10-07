@@ -41,6 +41,7 @@ class Game(models.Model):
     slug = models.CharField(
         max_length=GAME_SLUG_MAX_LENGTH,
         unique=True,
+        primary_key=True,
         blank=True,
     )
     icon = models.ImageField()
@@ -51,7 +52,7 @@ class Game(models.Model):
 
     def save(self, *args, **kwargs):
         """Store the slug."""
-        self.slug = slugify(self.basename)
+        self.slug = slugify(self.basename).replace('_', '-')
         super().save(*args, **kwargs)
 
     def get_absolute_url(self):

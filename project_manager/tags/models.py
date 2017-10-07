@@ -38,3 +38,11 @@ class Tag(models.Model):
     def __str__(self):
         """Return the tag's name."""
         return self.name
+
+    def save(self, *args, **kwargs):
+        """Remove all through model instances if black-listed."""
+        if self.black_listed:
+            self.plugintag_set.all().delete()
+            self.packagetag_set.all().delete()
+            self.subplugintag_set.all().delete()
+        return super().save(*args, **kwargs)

@@ -347,7 +347,7 @@ class ProjectTagSerializer(ProjectThroughMixin):
         tag, created = Tag.objects.get_or_create(name=name)
         if tag.black_listed:
             raise ValidationError({
-                'tag': f'Tag "{name}" is black-listed, unable to add.',
+                'tag': f"Tag '{name}' is black-listed, unable to add.",
             })
         attrs['tag'] = tag
         return super().validate(attrs=attrs)
