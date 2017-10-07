@@ -8,6 +8,10 @@ from django.core.urlresolvers import reverse
 from django.db import models
 
 # App
+from project_manager.common.constants import (
+    PROJECT_BASENAME_MAX_LENGTH,
+    PROJECT_SLUG_MAX_LENGTH,
+)
 from project_manager.common.models import (
     ProjectBase,
     ProjectContributor,
@@ -17,8 +21,9 @@ from project_manager.common.models import (
     ProjectTag,
 )
 from project_manager.common.validators import basename_validator
-from .constants import SUB_PLUGIN_LOGO_URL
-from .helpers import (
+from .abstract import SubPluginThroughBase
+from ..constants import SUB_PLUGIN_LOGO_URL
+from ..helpers import (
     handle_sub_plugin_image_upload,
     handle_sub_plugin_logo_upload,
     handle_sub_plugin_zip_upload,
@@ -45,12 +50,12 @@ class SubPlugin(ProjectBase):
     """SubPlugin project type model."""
 
     id = models.CharField(
-        max_length=65,
+        max_length=PROJECT_SLUG_MAX_LENGTH * 2 + 1,
         blank=True,
         primary_key=True,
     )
     basename = models.CharField(
-        max_length=32,
+        max_length=PROJECT_BASENAME_MAX_LENGTH,
         validators=[basename_validator],
         blank=True,
     )
@@ -60,7 +65,7 @@ class SubPlugin(ProjectBase):
         through='sub_plugins.SubPluginContributor',
     )
     slug = models.SlugField(
-        max_length=32,
+        max_length=PROJECT_SLUG_MAX_LENGTH,
         blank=True,
     )
     plugin = models.ForeignKey(
@@ -143,34 +148,22 @@ class SubPluginImage(ProjectImage):
     handle_image_upload = handle_sub_plugin_image_upload
 
 
-class SubPluginContributor(ProjectContributor):
+class SubPluginContributor(ProjectContributor, SubPluginThroughBase):
     """SubPlugin contributors through model."""
-
-    sub_plugin = models.ForeignKey(
-        to='sub_plugins.SubPlugin',
-    )
 
     class Meta:
         unique_together = ('sub_plugin', 'user')
 
 
-class SubPluginGame(ProjectGame):
+class SubPluginGame(ProjectGame, SubPluginThroughBase):
     """SubPlugin supported_games through model."""
-
-    sub_plugin = models.ForeignKey(
-        to='sub_plugins.SubPlugin',
-    )
 
     class Meta:
         unique_together = ('sub_plugin', 'game')
 
 
-class SubPluginTag(ProjectTag):
+class SubPluginTag(ProjectTag, SubPluginThroughBase):
     """SubPlugin tags through model."""
-
-    sub_plugin = models.ForeignKey(
-        to='sub_plugins.SubPlugin',
-    )
 
     class Meta:
         unique_together = ('sub_plugin', 'tag')

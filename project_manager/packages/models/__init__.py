@@ -8,6 +8,10 @@ from django.core.urlresolvers import reverse
 from django.db import models
 
 # App
+from project_manager.common.constants import (
+    PROJECT_BASENAME_MAX_LENGTH,
+    PROJECT_SLUG_MAX_LENGTH,
+)
 from project_manager.common.models import (
     ProjectBase,
     ProjectContributor,
@@ -17,10 +21,13 @@ from project_manager.common.models import (
     ProjectTag,
 )
 from project_manager.common.validators import basename_validator
-from .constants import PACKAGE_LOGO_URL
-from .helpers import handle_package_image_upload
-from .helpers import handle_package_logo_upload
-from .helpers import handle_package_zip_upload
+from .abstract import PackageThroughBase
+from ..constants import PACKAGE_LOGO_URL
+from ..helpers import (
+    handle_package_image_upload,
+    handle_package_logo_upload,
+    handle_package_zip_upload,
+)
 
 
 # =============================================================================
@@ -43,7 +50,7 @@ class Package(ProjectBase):
     """Package project type model."""
 
     basename = models.CharField(
-        max_length=32,
+        max_length=PROJECT_BASENAME_MAX_LENGTH,
         validators=[basename_validator],
         unique=True,
         blank=True,
@@ -54,7 +61,7 @@ class Package(ProjectBase):
         through='packages.PackageContributor',
     )
     slug = models.SlugField(
-        max_length=32,
+        max_length=PROJECT_SLUG_MAX_LENGTH,
         unique=True,
         blank=True,
         primary_key=True,
@@ -115,34 +122,22 @@ class PackageImage(ProjectImage):
     handle_image_upload = handle_package_image_upload
 
 
-class PackageContributor(ProjectContributor):
+class PackageContributor(ProjectContributor, PackageThroughBase):
     """Package contributors through model."""
-
-    package = models.ForeignKey(
-        to='packages.Package',
-    )
 
     class Meta:
         unique_together = ('package', 'user')
 
 
-class PackageGame(ProjectGame):
+class PackageGame(ProjectGame, PackageThroughBase):
     """Package supported_games through model."""
-
-    package = models.ForeignKey(
-        to='packages.Package',
-    )
 
     class Meta:
         unique_together = ('package', 'game')
 
 
-class PackageTag(ProjectTag):
+class PackageTag(ProjectTag, PackageThroughBase):
     """Package tags through model."""
-
-    package = models.ForeignKey(
-        to='packages.Package',
-    )
 
     class Meta:
         unique_together = ('package', 'tag')

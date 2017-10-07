@@ -8,6 +8,10 @@ from django.core.urlresolvers import reverse
 from django.db import models
 
 # App
+from project_manager.common.constants import (
+    PROJECT_BASENAME_MAX_LENGTH,
+    PROJECT_SLUG_MAX_LENGTH,
+)
 from project_manager.common.models import (
     ProjectBase,
     ProjectContributor,
@@ -17,8 +21,9 @@ from project_manager.common.models import (
     ProjectTag,
 )
 from project_manager.common.validators import basename_validator
-from .constants import PLUGIN_LOGO_URL
-from .helpers import (
+from .abstract import PluginThroughBase
+from ..constants import PLUGIN_LOGO_URL
+from ..helpers import (
     handle_plugin_image_upload,
     handle_plugin_logo_upload,
     handle_plugin_zip_upload,
@@ -45,7 +50,7 @@ class Plugin(ProjectBase):
     """Plugin project type model."""
 
     basename = models.CharField(
-        max_length=32,
+        max_length=PROJECT_BASENAME_MAX_LENGTH,
         validators=[basename_validator],
         unique=True,
         blank=True,
@@ -56,7 +61,7 @@ class Plugin(ProjectBase):
         through='plugins.PluginContributor',
     )
     slug = models.SlugField(
-        max_length=32,
+        max_length=PROJECT_SLUG_MAX_LENGTH,
         unique=True,
         blank=True,
         primary_key=True,
@@ -120,34 +125,22 @@ class PluginImage(ProjectImage):
     handle_image_upload = handle_plugin_image_upload
 
 
-class PluginContributor(ProjectContributor):
+class PluginContributor(ProjectContributor, PluginThroughBase):
     """Plugin contributors through model."""
-
-    plugin = models.ForeignKey(
-        to='plugins.Plugin',
-    )
 
     class Meta:
         unique_together = ('plugin', 'user')
 
 
-class PluginGame(ProjectGame):
+class PluginGame(ProjectGame, PluginThroughBase):
     """Plugin supported_games through model."""
-
-    plugin = models.ForeignKey(
-        to='plugins.Plugin',
-    )
 
     class Meta:
         unique_together = ('plugin', 'game')
 
 
-class PluginTag(ProjectTag):
+class PluginTag(ProjectTag, PluginThroughBase):
     """Plugin tags through model."""
-
-    plugin = models.ForeignKey(
-        to='plugins.Plugin',
-    )
 
     class Meta:
         unique_together = ('plugin', 'tag')
