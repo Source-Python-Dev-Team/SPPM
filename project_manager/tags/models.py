@@ -27,6 +27,7 @@ class Tag(models.Model):
 
     name = models.CharField(
         max_length=TAG_NAME_MAX_LENGTH,
+        primary_key=True,
         unique=True,
         validators=[tag_name_validator],
     )
