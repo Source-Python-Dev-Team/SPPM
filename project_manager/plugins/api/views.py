@@ -64,6 +64,7 @@ class PluginAPIView(ProjectAPIView):
     project_type = 'plugin'
 
     def get(self, request):
+        """Add the 'paths' route and return all of the routes."""
         response = super().get(request=request)
         response.data['paths'] = reverse(
             viewname=f'api:{self.project_type}s:endpoints',

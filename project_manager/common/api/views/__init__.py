@@ -96,7 +96,7 @@ class ProjectViewSet(ModelViewSet):
 
     @property
     def creation_serializer_class(self):
-        """The serializer class to use ONLY when creating a project."""
+        """Return the serializer class to use ONLY when creating a project."""
         raise NotImplementedError(
             f'Class {self.__class__.__name__} must implement a '
             '"creation_serializer_class" attribute.'
@@ -146,11 +146,13 @@ class ProjectViewSet(ModelViewSet):
         return super().update(request, *args, **kwargs)
 
     def get_view_name(self):
+        """Return the project so it's name is in the view."""
         if self._obj is not None:
             return self._obj
         return super().get_view_name()
 
     def get_object(self):
+        """Store the project so it can easily be retrieved."""
         self._obj = super().get_object()
         return self._obj
 

@@ -251,9 +251,17 @@ class ProjectReleaseSerializer(
 class ProjectCreateReleaseSerializer(ProjectReleaseCreationMixin):
     """Base ProjectRelease Serializer for creating and retrieving."""
 
-    notes = CharField(max_length=RELEASE_NOTES_MAX_LENGTH, allow_blank=True)
-    version = CharField(max_length=RELEASE_VERSION_MAX_LENGTH, allow_blank=True)
-    zip_file = FileField(allow_null=True)
+    notes = CharField(
+        max_length=RELEASE_NOTES_MAX_LENGTH,
+        allow_blank=True,
+    )
+    version = CharField(
+        max_length=RELEASE_VERSION_MAX_LENGTH,
+        allow_blank=True,
+    )
+    zip_file = FileField(
+        allow_null=True,
+    )
 
     class Meta:
         model = None
@@ -282,10 +290,15 @@ class ProjectImageSerializer(ProjectThroughMixin):
 
 
 class ProjectGameSerializer(ProjectThroughMixin):
-    """Base ProjectGame Serializer"""
+    """Base ProjectGame Serializer."""
 
-    game_slug = CharField(max_length=GAME_SLUG_MAX_LENGTH, write_only=True)
-    game = GameSerializer(read_only=True)
+    game_slug = CharField(
+        max_length=GAME_SLUG_MAX_LENGTH,
+        write_only=True,
+    )
+    game = GameSerializer(
+        read_only=True,
+    )
 
     class Meta:
         fields = (
@@ -294,6 +307,7 @@ class ProjectGameSerializer(ProjectThroughMixin):
         )
 
     def validate(self, attrs):
+        """Validate the given game."""
         name = attrs.pop('game_slug')
         view = self.context['view']
         if name in view.project.supported_games.values_list('slug', flat=True):
@@ -313,7 +327,9 @@ class ProjectGameSerializer(ProjectThroughMixin):
 class ProjectTagSerializer(ProjectThroughMixin):
     """Base ProjectTag Serializer."""
 
-    tag = CharField(max_length=TAG_NAME_MAX_LENGTH)
+    tag = CharField(
+        max_length=TAG_NAME_MAX_LENGTH,
+    )
 
     class Meta:
         fields = (
@@ -321,6 +337,7 @@ class ProjectTagSerializer(ProjectThroughMixin):
         )
 
     def validate(self, attrs):
+        """Validate the given tag."""
         name = attrs['tag']
         view = self.context['view']
         if name in view.project.tags.values_list('name', flat=True):
@@ -339,8 +356,13 @@ class ProjectTagSerializer(ProjectThroughMixin):
 class ProjectContributorSerializer(ProjectThroughMixin):
     """Base ProjectContributor Serializer."""
 
-    username = CharField(max_length=USER_USERNAME_MAX_LENGTH, write_only=True)
-    user = ForumUserContributorSerializer(read_only=True)
+    username = CharField(
+        max_length=USER_USERNAME_MAX_LENGTH,
+        write_only=True,
+    )
+    user = ForumUserContributorSerializer(
+        read_only=True,
+    )
 
     class Meta:
         fields = (
@@ -349,6 +371,7 @@ class ProjectContributorSerializer(ProjectThroughMixin):
         )
 
     def validate(self, attrs):
+        """Validate the given username."""
         username = attrs.pop('username')
         view = self.context['view']
         if username in view.project.contributors.values_list(

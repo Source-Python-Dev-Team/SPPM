@@ -73,7 +73,9 @@ class ProjectAdmin(admin.ModelAdmin):
     )
 
     def has_delete_permission(self, request, obj=None):
+        """Disallow deletion of Project in the Admin."""
         return False
 
     def has_add_permission(self, request):
+        """Disallow creation of a Project in the Admin."""
         return False
