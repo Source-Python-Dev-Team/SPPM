@@ -8,6 +8,13 @@ from django.core.urlresolvers import reverse
 from django.db import models
 from django.utils.text import slugify
 
+# App
+from .constants import (
+    GAME_BASENAME_MAX_LENGTH,
+    GAME_NAME_MAX_LENGTH,
+    GAME_SLUG_MAX_LENGTH,
+)
+
 
 # =============================================================================
 # >> ALL DECLARATION
@@ -24,15 +31,15 @@ class Game(models.Model):
     """Game model."""
 
     name = models.CharField(
-        max_length=16,
+        max_length=GAME_NAME_MAX_LENGTH,
         unique=True,
     )
     basename = models.CharField(
-        max_length=16,
+        max_length=GAME_BASENAME_MAX_LENGTH,
         unique=True,
     )
     slug = models.CharField(
-        max_length=16,
+        max_length=GAME_SLUG_MAX_LENGTH,
         unique=True,
         blank=True,
     )

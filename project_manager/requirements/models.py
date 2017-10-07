@@ -9,6 +9,14 @@ from django.core.urlresolvers import reverse
 from django.db import models
 from django.utils.text import slugify
 
+# App
+from .constants import (
+    REQUIREMENT_DESCRIPTION_MAX_LENGTH,
+    REQUIREMENT_NAME_MAX_LENGTH,
+    REQUIREMENT_SLUG_MAX_LENGTH,
+    REQUIREMENT_URL_MAX_LENGTH,
+)
+
 
 # =============================================================================
 # >> ALL DECLARATION
@@ -27,13 +35,13 @@ class DownloadRequirement(models.Model):
     """Download requirement model."""
 
     name = models.CharField(
-        max_length=64,
+        max_length=REQUIREMENT_NAME_MAX_LENGTH,
     )
     url = models.CharField(
-        max_length=128,
+        max_length=REQUIREMENT_URL_MAX_LENGTH,
     )
     description = models.CharField(
-        max_length=256,
+        max_length=REQUIREMENT_DESCRIPTION_MAX_LENGTH,
         blank=True,
         null=True,
     )
@@ -47,11 +55,11 @@ class PyPiRequirement(models.Model):
     """PyPi requirement model."""
 
     name = models.CharField(
-        max_length=32,
+        max_length=REQUIREMENT_NAME_MAX_LENGTH,
         unique=True,
     )
     slug = models.SlugField(
-        max_length=32,
+        max_length=REQUIREMENT_SLUG_MAX_LENGTH,
         unique=True,
     )
 
@@ -98,7 +106,7 @@ class VersionControlRequirement(models.Model):
     }
 
     name = models.CharField(
-        max_length=64,
+        max_length=REQUIREMENT_NAME_MAX_LENGTH,
     )
     vcs_type = models.PositiveSmallIntegerField(
         choices=tuple(SUPPORTED_VCS_TYPES.items()),
@@ -108,7 +116,7 @@ class VersionControlRequirement(models.Model):
         null=True,
     )
     url = models.CharField(
-        max_length=128,
+        max_length=REQUIREMENT_URL_MAX_LENGTH,
     )
 
     class Meta:

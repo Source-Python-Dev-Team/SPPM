@@ -8,6 +8,7 @@ from django.core.urlresolvers import reverse
 from django.db import models
 
 # App
+from .constants import PATH_MAX_LENGTH
 from .validators import sub_plugin_path_validator
 
 
@@ -30,7 +31,7 @@ class SubPluginPath(models.Model):
         related_name='paths',
     )
     path = models.CharField(
-        max_length=256,
+        max_length=PATH_MAX_LENGTH,
         validators=[sub_plugin_path_validator],
     )
 

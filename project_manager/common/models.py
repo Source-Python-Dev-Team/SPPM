@@ -19,7 +19,17 @@ from PIL import Image
 from precise_bbcode.fields import BBCodeTextField
 
 # App
-from .constants import FORUM_THREAD_URL, LOGO_MAX_HEIGHT, LOGO_MAX_WIDTH
+from .constants import (
+    FORUM_THREAD_URL,
+    LOGO_MAX_HEIGHT,
+    LOGO_MAX_WIDTH,
+    PROJECT_CONFIGURATION_MAX_LENGTH,
+    PROJECT_DESCRIPTION_MAX_LENGTH,
+    PROJECT_NAME_MAX_LENGTH,
+    PROJECT_SYNOPSIS_MAX_LENGTH,
+    RELEASE_NOTES_MAX_LENGTH,
+    RELEASE_VERSION_MAX_LENGTH,
+)
 from .helpers import (
     handle_project_image_upload,
     handle_project_logo_upload,
@@ -49,14 +59,14 @@ class ProjectBase(models.Model):
     """Base model for projects."""
 
     name = models.CharField(
-        max_length=64,
+        max_length=PROJECT_NAME_MAX_LENGTH,
         help_text=(
             "The name of the project. Do not include the version, as that is "
             "added dynamically to the project's page."
         ),
     )
     configuration = BBCodeTextField(
-        max_length=1024,
+        max_length=PROJECT_CONFIGURATION_MAX_LENGTH,
         blank=True,
         null=True,
         help_text=(
@@ -65,7 +75,7 @@ class ProjectBase(models.Model):
         )
     )
     description = BBCodeTextField(
-        max_length=1024,
+        max_length=PROJECT_DESCRIPTION_MAX_LENGTH,
         blank=True,
         null=True,
         help_text=(
@@ -96,7 +106,7 @@ class ProjectBase(models.Model):
         related_name='required_in_%(class)ss',
     )
     synopsis = BBCodeTextField(
-        max_length=128,
+        max_length=PROJECT_SYNOPSIS_MAX_LENGTH,
         blank=True,
         null=True,
         help_text=(
@@ -219,12 +229,12 @@ class ProjectRelease(models.Model):
     """Base model for project releases."""
 
     version = models.CharField(
-        max_length=8,
+        max_length=RELEASE_VERSION_MAX_LENGTH,
         validators=[version_validator],
         help_text='The version for this release of the project.',
     )
     notes = BBCodeTextField(
-        max_length=512,
+        max_length=RELEASE_NOTES_MAX_LENGTH,
         blank=True,
         null=True,
         help_text='The notes for this particular release of the project.',
@@ -309,6 +319,25 @@ class ProjectContributor(AbstractUUIDPrimaryKeyModel):
     def __str__(self):
         """Return the base string."""
         return 'Project Contributor'
+
+    @property
+    def project(self):
+        """Return the project."""
+        raise NotImplementedError(
+            f'Class {self.__class__.__name__} must implement a '
+            '"project" attribute.'
+        )
+
+    def clean(self):
+        """Validate that the project's owner cannot be a contributor."""
+        if self.project.owner == self.user:
+            raise ValidationError({
+                'user': (
+                    f'{self.user} is the owner and cannot be added '
+                    f'as a contributor.'
+                )
+            })
+        return super().clean()
 
 
 class ProjectGame(AbstractUUIDPrimaryKeyModel):

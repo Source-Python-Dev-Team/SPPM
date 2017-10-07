@@ -16,7 +16,12 @@ from rest_framework.reverse import reverse
 from rest_framework.serializers import ModelSerializer
 
 # App
+from project_manager.common.constants import (
+    RELEASE_NOTES_MAX_LENGTH,
+    RELEASE_VERSION_MAX_LENGTH,
+)
 from project_manager.games.api.serializers import GameSerializer
+from project_manager.games.constants import GAME_SLUG_MAX_LENGTH
 from project_manager.games.models import Game
 from project_manager.packages.api.serializers.common import (
     PackageRequirementSerializer
@@ -26,10 +31,12 @@ from project_manager.requirements.api.serializers.common import (
     RequiredPyPiSerializer,
     RequiredVersionControlSerializer,
 )
+from project_manager.tags.constants import TAG_NAME_MAX_LENGTH
 from project_manager.tags.models import Tag
 from project_manager.users.api.serializers.common import (
     ForumUserContributorSerializer,
 )
+from project_manager.constants import USER_USERNAME_MAX_LENGTH
 from project_manager.users.models import ForumUser
 from .mixins import (
     ProjectLocaleMixin,
@@ -244,8 +251,8 @@ class ProjectReleaseSerializer(
 class ProjectCreateReleaseSerializer(ProjectReleaseCreationMixin):
     """Base ProjectRelease Serializer for creating and retrieving."""
 
-    notes = CharField(max_length=512, allow_blank=True)
-    version = CharField(max_length=8, allow_blank=True)
+    notes = CharField(max_length=RELEASE_NOTES_MAX_LENGTH, allow_blank=True)
+    version = CharField(max_length=RELEASE_VERSION_MAX_LENGTH, allow_blank=True)
     zip_file = FileField(allow_null=True)
 
     class Meta:
@@ -277,7 +284,7 @@ class ProjectImageSerializer(ProjectThroughMixin):
 class ProjectGameSerializer(ProjectThroughMixin):
     """Base ProjectGame Serializer"""
 
-    game_slug = CharField(max_length=16, write_only=True)
+    game_slug = CharField(max_length=GAME_SLUG_MAX_LENGTH, write_only=True)
     game = GameSerializer(read_only=True)
 
     class Meta:
@@ -306,7 +313,7 @@ class ProjectGameSerializer(ProjectThroughMixin):
 class ProjectTagSerializer(ProjectThroughMixin):
     """Base ProjectTag Serializer."""
 
-    tag = CharField(max_length=16)
+    tag = CharField(max_length=TAG_NAME_MAX_LENGTH)
 
     class Meta:
         fields = (
@@ -332,7 +339,7 @@ class ProjectTagSerializer(ProjectThroughMixin):
 class ProjectContributorSerializer(ProjectThroughMixin):
     """Base ProjectContributor Serializer."""
 
-    username = CharField(max_length=30, write_only=True)
+    username = CharField(max_length=USER_USERNAME_MAX_LENGTH, write_only=True)
     user = ForumUserContributorSerializer(read_only=True)
 
     class Meta:

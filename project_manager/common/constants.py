@@ -27,6 +27,16 @@ __all__ = (
 # =============================================================================
 # >> GLOBAL VARIABLES
 # =============================================================================
+# Max length constants
+PROJECT_BASENAME_MAX_LENGTH = 32
+PROJECT_CONFIGURATION_MAX_LENGTH = 1024
+PROJECT_DESCRIPTION_MAX_LENGTH = 1024
+PROJECT_NAME_MAX_LENGTH = 64
+PROJECT_SLUG_MAX_LENGTH = 32
+PROJECT_SYNOPSIS_MAX_LENGTH = 128
+RELEASE_NOTES_MAX_LENGTH = 512
+RELEASE_VERSION_MAX_LENGTH = 8
+
 # Base URL for project thread
 FORUM_THREAD_URL = settings.FORUM_URL + 'viewtopic.php?t={topic}'
 

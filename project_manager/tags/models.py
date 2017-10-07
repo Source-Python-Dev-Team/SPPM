@@ -7,6 +7,7 @@
 from django.db import models
 
 # App
+from .constants import TAG_NAME_MAX_LENGTH
 from .validators import tag_name_validator
 
 
@@ -25,7 +26,7 @@ class Tag(models.Model):
     """Model used to store tags for projects."""
 
     name = models.CharField(
-        max_length=16,
+        max_length=TAG_NAME_MAX_LENGTH,
         unique=True,
         validators=[tag_name_validator],
     )
