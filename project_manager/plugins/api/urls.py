@@ -18,6 +18,7 @@ from .views import (
     PluginReleaseViewSet,
     PluginTagViewSet,
     PluginViewSet,
+    SubPluginPathViewSet,
 )
 
 
@@ -54,6 +55,11 @@ router.register(
     prefix=r'^contributors/(?P<plugin_slug>[\w-]+)',
     viewset=PluginContributorViewSet,
     base_name='contributors',
+)
+router.register(
+    prefix=r'^paths/(?P<plugin_slug>[\w-]+)',
+    viewset=SubPluginPathViewSet,
+    base_name='paths',
 )
 
 

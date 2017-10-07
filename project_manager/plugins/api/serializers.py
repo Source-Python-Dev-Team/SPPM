@@ -3,6 +3,9 @@
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
+# 3rd-Party Django
+from rest_framework.exceptions import ValidationError
+
 # App
 from project_manager.common.api.serializers import (
     ProjectContributorSerializer,
@@ -13,6 +16,7 @@ from project_manager.common.api.serializers import (
     ProjectSerializer,
     ProjectTagSerializer,
 )
+from project_manager.common.api.serializers.mixins import ProjectThroughMixin
 from project_manager.plugins.models import (
     Plugin,
     PluginContributor,
@@ -20,6 +24,7 @@ from project_manager.plugins.models import (
     PluginImage,
     PluginRelease,
     PluginTag,
+    SubPluginPath,
 )
 from .mixins import PluginReleaseBase
 
@@ -108,3 +113,31 @@ class PluginContributorSerializer(ProjectContributorSerializer):
 
     class Meta(ProjectContributorSerializer.Meta):
         model = PluginContributor
+
+
+class SubPluginPathSerializer(ProjectThroughMixin):
+    """"""
+
+    class Meta:
+        model = SubPluginPath
+        fields = (
+            'allow_module',
+            'allow_package_using_basename',
+            'allow_package_using_init',
+            'path',
+        )
+
+    def validate(self, attrs):
+        """"""
+        if not any([
+            attrs['allow_module'],
+            attrs['allow_package_using_basename'],
+            attrs['allow_package_using_init'],
+        ]):
+            message = "At least one of the 'Allow' fields must be True."
+            raise ValidationError({
+                'allow_module': message,
+                'allow_package_using_basename': message,
+                'allow_package_using_init': message,
+            })
+        return super().validate(attrs=attrs)
