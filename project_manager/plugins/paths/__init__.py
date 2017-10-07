@@ -1,1 +1,0 @@
-"""SubPluginPath functionality."""

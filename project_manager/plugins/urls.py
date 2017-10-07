@@ -8,8 +8,17 @@ from django.conf.urls import include, url
 
 # App
 from .views import (
-    PluginCreateView, PluginEditView, PluginListView, PluginReleaseListView,
-    PluginSelectGamesView, PluginUpdateView, PluginView,
+    PluginCreateView,
+    PluginEditView,
+    PluginListView,
+    PluginReleaseListView,
+    PluginSelectGamesView,
+    PluginUpdateView,
+    PluginView,
+    SubPluginPathCreateView,
+    SubPluginPathDeleteView,
+    SubPluginPathEditView,
+    SubPluginPathListView,
 )
 
 
@@ -69,11 +78,27 @@ urlpatterns = [
     ),
     url(
         # /plugins/<slug>/paths/
-        regex=r'^(?P<slug>[\w-]+)/paths/',
-        view=include(
-            'project_manager.plugins.paths.urls',
-            namespace='paths',
-        ),
+        regex=r'^(?P<slug>[\w-]+)/paths/$',
+        view=SubPluginPathListView.as_view(),
+        name='path_list',
+    ),
+    url(
+        # /plugins/<slug>/paths/create/
+        regex=r'^(?P<slug>[\w-]+)/paths/create/$',
+        view=SubPluginPathCreateView.as_view(),
+        name='path_create',
+    ),
+    url(
+        # /plugins/<slug>/paths/edit/<id>/
+        regex=r'^(?P<slug>[\w-]+)/paths/edit/(?P<id>[0-9]+)/',
+        view=SubPluginPathEditView.as_view(),
+        name='path_edit',
+    ),
+    url(
+        # /plugins/<slug>/paths/delete/<id>/
+        regex=r'^(?P<slug>[\w-]+)/paths/delete/(?P<id>\d+)/',
+        view=SubPluginPathDeleteView.as_view(),
+        name='path_delete',
     ),
     url(
         # /plugins/<slug>/sub-plugins/

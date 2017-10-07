@@ -10,7 +10,7 @@ from django.core.exceptions import ValidationError
 # App
 from project_manager.common.mixins import SubmitButtonMixin
 from .helpers import get_plugin_basename
-from .models import Plugin, PluginRelease
+from .models import Plugin, PluginRelease, SubPluginPath
 
 
 # =============================================================================
@@ -21,6 +21,8 @@ __all__ = (
     'PluginEditForm',
     'PluginSelectGamesForm',
     'PluginUpdateForm',
+    'SubPluginPathCreateForm',
+    'SubPluginPathEditForm',
 )
 
 
@@ -216,3 +218,27 @@ class PluginUpdateForm(SubmitButtonMixin):
                 code='mismatch',
             )
         return zip_file
+
+
+class SubPluginPathCreateForm(SubmitButtonMixin):
+    """SubPluginPath creation form."""
+
+    class Meta:
+        model = SubPluginPath
+        fields = (
+            'path',
+            'plugin',
+        )
+        widgets = {
+            'plugin': forms.HiddenInput(),
+        }
+
+
+class SubPluginPathEditForm(SubmitButtonMixin):
+    """SubPluginPath update form."""
+
+    class Meta:
+        model = SubPluginPath
+        fields = (
+            'path',
+        )

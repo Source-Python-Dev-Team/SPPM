@@ -9,8 +9,7 @@ from django.contrib import admin
 # App
 from project_manager.common.admin import ProjectAdmin
 from .inlines import PluginContributorInline, PluginGameInline, PluginTagInline
-from ..models import Plugin, PluginImage, PluginRelease
-from ..paths.admin import SubPluginPathAdmin
+from ..models import Plugin, PluginImage, PluginRelease, SubPluginPath
 
 
 # =============================================================================
@@ -20,6 +19,7 @@ __all__ = (
     'PluginAdmin',
     'PluginImageAdmin',
     'PluginReleaseAdmin',
+    'SubPluginPathAdmin',
 )
 
 
@@ -67,6 +67,24 @@ class PluginImageAdmin(admin.ModelAdmin):
         'plugin',
     )
     search_fields = (
+        'plugin__name',
+        'plugin__basename',
+    )
+
+
+@admin.register(SubPluginPath)
+class SubPluginPathAdmin(admin.ModelAdmin):
+    """SubPluginPath admin."""
+
+    list_display = (
+        'path',
+        'plugin',
+    )
+    readonly_fields = (
+        'plugin',
+    )
+    search_fields = (
+        'path',
         'plugin__name',
         'plugin__basename',
     )

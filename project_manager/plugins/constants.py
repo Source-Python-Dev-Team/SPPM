@@ -5,7 +5,10 @@
 # =============================================================================
 # App
 from project_manager.common.constants import (
-    ALLOWED_FILE_TYPES, IMAGE_URL, LOGO_URL, READABLE_DATA_FILE_TYPES,
+    ALLOWED_FILE_TYPES,
+    IMAGE_URL,
+    LOGO_URL,
+    READABLE_DATA_FILE_TYPES,
     RELEASE_URL,
 )
 
@@ -37,3 +40,5 @@ PLUGIN_ALLOWED_FILE_TYPES.update({
 PLUGIN_IMAGE_URL = IMAGE_URL + 'plugins/'
 PLUGIN_LOGO_URL = LOGO_URL + 'plugins/'
 PLUGIN_RELEASE_URL = RELEASE_URL + 'plugins/'
+
+PATH_MAX_LENGTH = 256

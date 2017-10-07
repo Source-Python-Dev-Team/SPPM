@@ -4,7 +4,13 @@
 # >> IMPORTS
 # =============================================================================
 # Django
-from django.views.generic import CreateView, DetailView, ListView, UpdateView
+from django.views.generic import (
+    CreateView,
+    DeleteView,
+    DetailView,
+    ListView,
+    UpdateView,
+)
 
 # App
 from project_manager.common.mixins import (
@@ -14,10 +20,15 @@ from project_manager.common.mixins import (
 from project_manager.games.mixins import GameSpecificOrderablePaginatedListView
 from .constants import PLUGIN_PATH, PLUGIN_RELEASE_URL
 from .forms import (
-    PluginCreateForm, PluginEditForm, PluginSelectGamesForm, PluginUpdateForm,
+    PluginCreateForm,
+    PluginEditForm,
+    PluginSelectGamesForm,
+    PluginUpdateForm,
+    SubPluginPathCreateForm,
+    SubPluginPathEditForm,
 )
 from .mixins import RetrievePluginMixin
-from .models import Plugin, PluginRelease
+from .models import Plugin, PluginRelease, SubPluginPath
 
 
 # =============================================================================
@@ -32,6 +43,10 @@ __all__ = (
     'PluginSelectGamesView',
     'PluginUpdateView',
     'PluginView',
+    'SubPluginPathCreateView',
+    'SubPluginPathDeleteView',
+    'SubPluginPathEditView',
+    'SubPluginPathListView',
 )
 
 
@@ -168,3 +183,67 @@ class PluginReleaseListView(RetrievePluginMixin, ListView):
         return PluginRelease.objects.filter(
             plugin=self.plugin,
         ).order_by('-created')
+
+
+class SubPluginPathListView(RetrievePluginMixin, ListView):
+    """SubPluginPath listing view."""
+
+    model = SubPluginPath
+    template_name = 'plugins/paths/list.html'
+
+    def get_context_data(self, **kwargs):
+        """Add the plugin to the context for the template."""
+        context = super().get_context_data(**kwargs)
+        context.update({
+            'plugin': self.plugin,
+        })
+        return context
+
+    def get_queryset(self):
+        """Filter down to SubPluginPaths for the given plugin."""
+        return super().get_queryset().filter(
+            plugin=self.plugin,
+        )
+
+
+class SubPluginPathCreateView(RetrievePluginMixin, CreateView):
+    """SubPluginPath creation view."""
+
+    model = SubPluginPath
+    form_class = SubPluginPathCreateForm
+    template_name = 'plugins/paths/create.html'
+
+    def get_initial(self):
+        """Add the plugin to the initial."""
+        initial = super().get_initial()
+        initial.update({
+            'plugin': self.plugin,
+        })
+        return initial
+
+
+class SubPluginPathEditView(RetrievePluginMixin, UpdateView):
+    """SubPluginPath update view."""
+
+    model = SubPluginPath
+    form_class = SubPluginPathEditForm
+    template_name = 'plugins/paths/edit.html'
+    pk_url_kwarg = 'path_pk'
+
+    def get_context_data(self, **kwargs):
+        """Add the plugin to the context for the template."""
+        context = super().get_context_data(**kwargs)
+        context.update({
+            'plugin': self.plugin,
+        })
+        return context
+
+
+class SubPluginPathDeleteView(DeleteView):
+    """SubPluginPath deletion view."""
+
+    model = SubPluginPath
+
+    def get_object(self, queryset=None):
+        """Return the object for the view."""
+        return SubPluginPath.objects.get(pk=self.kwargs.get('path_pk'))
