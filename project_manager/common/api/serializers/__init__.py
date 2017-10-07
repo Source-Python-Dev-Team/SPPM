@@ -7,10 +7,10 @@
 from contextlib import suppress
 
 # Django
-from django.core.exceptions import ValidationError
 from django.utils.timezone import now
 
 # 3rd-Party Django
+from rest_framework.exceptions import ValidationError
 from rest_framework.fields import CharField, FileField, SerializerMethodField
 from rest_framework.reverse import reverse
 from rest_framework.serializers import ModelSerializer

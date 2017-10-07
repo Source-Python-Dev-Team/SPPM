@@ -3,8 +3,8 @@
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
-# Django
-from django.core.exceptions import ValidationError
+# 3rd-Party Django
+from rest_framework.exceptions import ValidationError
 
 # App
 from project_manager.common.api.serializers import (

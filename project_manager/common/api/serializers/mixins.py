@@ -4,10 +4,10 @@
 # >> IMPORTS
 # =============================================================================
 # Django
-from django.core.exceptions import ValidationError
 from django.utils import formats
 
 # 3rd-Party Django
+from rest_framework.exceptions import ValidationError
 from rest_framework.serializers import ModelSerializer
 
 
@@ -166,12 +166,13 @@ class ProjectThroughMixin(ModelSerializer):
         )
         request = self.context['request']
         if request.method == 'GET':
-            view = self.context['view']
-            user = request.user.id
-            if view.owner == user:
-                return field_names + ('id',)
-            if user in view.contributors and not view.owner_only:
-                return field_names + ('id',)
+            if 'view' in self.context:
+                view = self.context['view']
+                user = request.user.id
+                if view.owner == user:
+                    return field_names + ('id',)
+                if user in view.contributors and not view.owner_only:
+                    return field_names + ('id',)
         return field_names
 
     def validate(self, attrs):
