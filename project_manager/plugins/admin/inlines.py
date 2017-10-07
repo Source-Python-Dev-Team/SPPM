@@ -13,6 +13,16 @@ from ..models import PluginContributor, PluginGame, PluginTag
 
 
 # =============================================================================
+# >> ALL DECLARATION
+# =============================================================================
+__all__ = (
+    'PluginContributorInline',
+    'PluginGameInline',
+    'PluginTagInline',
+)
+
+
+# =============================================================================
 # >> INLINES
 # =============================================================================
 class PluginContributorInline(ProjectContributorInline):

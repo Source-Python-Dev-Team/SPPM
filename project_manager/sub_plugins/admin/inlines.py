@@ -13,6 +13,16 @@ from ..models import SubPluginContributor, SubPluginGame, SubPluginTag
 
 
 # =============================================================================
+# >> ALL DECLARATION
+# =============================================================================
+__all__ = (
+    'SubPluginContributorInline',
+    'SubPluginGameInline',
+    'SubPluginTagInline',
+)
+
+
+# =============================================================================
 # >> INLINES
 # =============================================================================
 class SubPluginContributorInline(ProjectContributorInline):

@@ -13,6 +13,16 @@ from ..models import PackageContributor, PackageGame, PackageTag
 
 
 # =============================================================================
+# >> ALL DECLARATION
+# =============================================================================
+__all__ = (
+    'PackageContributorInline',
+    'PackageGameInline',
+    'PackageTagInline',
+)
+
+
+# =============================================================================
 # >> INLINES
 # =============================================================================
 class PackageContributorInline(ProjectContributorInline):

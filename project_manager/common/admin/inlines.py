@@ -8,6 +8,16 @@ from django.contrib import admin
 
 
 # =============================================================================
+# >> ALL DECLARATION
+# =============================================================================
+__all__ = (
+    'ProjectContributorInline',
+    'ProjectGameInline',
+    'ProjectTagInline',
+)
+
+
+# =============================================================================
 # >> INLINES
 # =============================================================================
 class ProjectContributorInline(admin.TabularInline):
