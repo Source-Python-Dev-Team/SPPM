@@ -4,6 +4,7 @@
 # >> IMPORTS
 # =============================================================================
 # Django
+from django.core.exceptions import ValidationError
 from django.core.urlresolvers import reverse
 from django.db import models
 
@@ -13,6 +14,7 @@ from project_manager.common.constants import (
     PROJECT_SLUG_MAX_LENGTH,
 )
 from project_manager.common.models import (
+    AbstractUUIDPrimaryKeyModel,
     ProjectBase,
     ProjectContributor,
     ProjectGame,
@@ -148,7 +150,7 @@ class PluginTag(ProjectTag, PluginThroughBase):
         unique_together = ('plugin', 'tag')
 
 
-class SubPluginPath(models.Model):
+class SubPluginPath(AbstractUUIDPrimaryKeyModel):
     """Model to store SubPlugin paths for a Plugin."""
 
     plugin = models.ForeignKey(
@@ -159,17 +161,39 @@ class SubPluginPath(models.Model):
         max_length=PATH_MAX_LENGTH,
         validators=[sub_plugin_path_validator],
     )
+    allow_module = models.BooleanField(
+        default=False,
+    )
+    allow_package_using_basename = models.BooleanField(
+        default=False,
+    )
+    allow_package_using_init = models.BooleanField(
+        default=False,
+    )
 
     class Meta:
         verbose_name = 'SubPlugin Path'
         verbose_name_plural = 'SubPlugin Paths'
-        unique_together = (
-            'path', 'plugin',
-        )
+        unique_together = ('path', 'plugin')
 
     def __str__(self):
         """Return the path."""
         return self.path
+
+    def clean(self):
+        """Validate that at least one of the Allow fields is True."""
+        if not any([
+            self.allow_module,
+            self.allow_package_using_basename,
+            self.allow_package_using_init,
+        ]):
+            message = 'At least one of the "Allow" fields must be True.'
+            raise ValidationError({
+                'allow_module': message,
+                'allow_package_using_basename': message,
+                'allow_package_using_init': message,
+            })
+        return super().clean()
 
     def get_absolute_url(self):
         """Return the SubPluginPath listing URL for the Plugin."""
