@@ -4,6 +4,8 @@
 # >> ALL DECLARATION
 # =============================================================================
 __all__ = (
+    'USER_EMAIL_MAX_LENGTH',
+    'USER_USERNAME_MAX_LENGTH',
 )
 
 

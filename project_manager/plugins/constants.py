@@ -17,6 +17,7 @@ from project_manager.common.constants import (
 # >> ALL DECLARATION
 # =============================================================================
 __all__ = (
+    'PATH_MAX_LENGTH',
     'PLUGIN_ALLOWED_FILE_TYPES',
     'PLUGIN_IMAGE_URL',
     'PLUGIN_LOGO_URL',
