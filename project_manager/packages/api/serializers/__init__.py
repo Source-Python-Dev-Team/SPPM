@@ -21,7 +21,7 @@ from project_manager.packages.models import (
     PackageRelease,
     PackageTag,
 )
-from ..mixins import PackageReleaseBase
+from .mixins import PackageReleaseBase
 
 
 # =============================================================================
