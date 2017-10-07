@@ -41,6 +41,7 @@ __all__ = (
     'PluginReleaseSerializer',
     'PluginSerializer',
     'PluginTagSerializer',
+    'SubPluginPathSerializer',
 )
 
 
@@ -116,7 +117,7 @@ class PluginContributorSerializer(ProjectContributorSerializer):
 
 
 class SubPluginPathSerializer(ProjectThroughMixin):
-    """"""
+    """Sub-Plugin Paths Serializer."""
 
     class Meta:
         model = SubPluginPath
@@ -128,7 +129,7 @@ class SubPluginPathSerializer(ProjectThroughMixin):
         )
 
     def get_field_names(self, declared_fields, info):
-        """"""
+        """Remove 'path' from the PATCH field names."""
         field_names = super().get_field_names(
             declared_fields=declared_fields,
             info=info,
@@ -140,7 +141,7 @@ class SubPluginPathSerializer(ProjectThroughMixin):
         return field_names
 
     def validate(self, attrs):
-        """"""
+        """Validate that at least one of the 'Allow' fields is True."""
         if not any([
             attrs['allow_module'],
             attrs['allow_package_using_basename'],

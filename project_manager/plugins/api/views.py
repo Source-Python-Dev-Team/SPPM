@@ -51,6 +51,7 @@ __all__ = (
     'PluginReleaseViewSet',
     'PluginTagViewSet',
     'PluginViewSet',
+    'SubPluginPathViewSet',
 )
 
 
@@ -151,7 +152,7 @@ class PluginContributorViewSet(ProjectContributorViewSet):
 
 
 class SubPluginPathViewSet(ProjectThroughModelMixin):
-    """"""
+    """Sub-Plugin Paths listing."""
 
     http_method_names = ('get', 'post', 'patch', 'delete', 'options')
     ordering = ('path',)
