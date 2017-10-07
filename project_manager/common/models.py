@@ -320,17 +320,9 @@ class ProjectContributor(AbstractUUIDPrimaryKeyModel):
         """Return the base string."""
         return 'Project Contributor'
 
-    @property
-    def project(self):
-        """Return the project."""
-        raise NotImplementedError(
-            f'Class {self.__class__.__name__} must implement a '
-            '"project" attribute.'
-        )
-
     def clean(self):
         """Validate that the project's owner cannot be a contributor."""
-        if self.project.owner == self.user:
+        if hasattr(self, 'user') and self.project.owner == self.user:
             raise ValidationError({
                 'user': (
                     f'{self.user} is the owner and cannot be added '

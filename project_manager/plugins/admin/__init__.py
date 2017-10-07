@@ -76,11 +76,13 @@ class PluginImageAdmin(admin.ModelAdmin):
 class SubPluginPathAdmin(admin.ModelAdmin):
     """SubPluginPath admin."""
 
+    actions = None
     list_display = (
-        'path',
         'plugin',
+        'path',
     )
     readonly_fields = (
+        'path',
         'plugin',
     )
     search_fields = (
@@ -88,3 +90,8 @@ class SubPluginPathAdmin(admin.ModelAdmin):
         'plugin__name',
         'plugin__basename',
     )
+    view_on_site = False
+
+    def has_add_permission(self, request):
+        """Disallow adding a SubPluginPath in the Admin."""
+        return False
