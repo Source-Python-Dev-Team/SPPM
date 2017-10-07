@@ -315,7 +315,7 @@ class ProjectGameSerializer(ProjectThroughMixin):
                 'game': f'Game already linked to {view.project_type}.',
             })
         try:
-            game = Game.objects.get(slug=name)
+            game = Game.objects.get(basename=name)
         except Game.DoesNotExist:
             raise ValidationError({
                 'game': f'Invalid game "{name}".'

@@ -29,7 +29,15 @@ class GameAdmin(admin.ModelAdmin):
         'slug',
     )
     list_display = (
+        'basename',
         'name',
+        'icon',
+    )
+    list_editable = (
+        'name',
+        'icon',
+    )
+    readonly_fields = (
         'basename',
     )
     search_fields = (
