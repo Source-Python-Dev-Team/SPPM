@@ -64,6 +64,12 @@ class PackageCreateView(RequirementsParserMixin, CreateView):
         """Return the path for the requirements file."""
         return f'{PACKAGE_PATH}{form.instance.basename}/requirements.ini'
 
+    def get_form_kwargs(self):
+        """Add the owner to the form."""
+        kwargs = super().get_form_kwargs()
+        kwargs['owner'] = self.request.user.forum_user
+        return kwargs
+
 
 class PackageEditView(UpdateView):
     """Package field editing view."""

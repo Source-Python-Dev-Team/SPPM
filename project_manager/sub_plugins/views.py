@@ -108,6 +108,12 @@ class SubPluginCreateView(
         })
         return initial
 
+    def get_form_kwargs(self):
+        """Add the owner to the form."""
+        kwargs = super().get_form_kwargs()
+        kwargs['owner'] = self.request.user.forum_user
+        return kwargs
+
 
 class SubPluginEditView(UpdateView):
     """Plugin field editing view."""

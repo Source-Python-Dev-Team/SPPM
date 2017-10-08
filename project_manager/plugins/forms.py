@@ -6,6 +6,7 @@
 # Django
 from django import forms
 from django.core.exceptions import ValidationError
+from django.utils.timezone import now
 
 # App
 from project_manager.common.mixins import SubmitButtonMixin
@@ -85,6 +86,7 @@ class PluginCreateForm(SubmitButtonMixin):
 
     def __init__(self, *args, **kwargs):
         """Initialize the form."""
+        self.owner = kwargs.pop('owner')
         super().__init__(*args, **kwargs)
         old_fields = self.fields
         self.fields = {
@@ -97,9 +99,13 @@ class PluginCreateForm(SubmitButtonMixin):
 
     def save(self, commit=True):
         """Save the plugin and create the release."""
+        created = now()
+        self.instance.created = self.instance.updated = created
+        self.instance.owner = self.owner
         instance = super().save(commit)
         PluginRelease.objects.create(
             plugin=instance,
+            created=created,
             version=self.cleaned_data['version'],
             notes=self.cleaned_data['version_notes'],
             zip_file=self.cleaned_data['zip_file'],

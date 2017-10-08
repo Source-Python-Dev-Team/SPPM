@@ -77,6 +77,12 @@ class PluginCreateView(RequirementsParserMixin, CreateView):
         """Return the path for the requirements file."""
         return f'{PLUGIN_PATH}{form.instance.basename}/requirements.ini'
 
+    def get_form_kwargs(self):
+        """Add the owner to the form."""
+        kwargs = super().get_form_kwargs()
+        kwargs['owner'] = self.request.user.forum_user
+        return kwargs
+
 
 class PluginEditView(UpdateView):
     """Plugin field editing view."""
