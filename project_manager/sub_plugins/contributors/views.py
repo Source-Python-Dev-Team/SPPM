@@ -16,6 +16,7 @@ from project_manager.users.filtersets import ForumUserFilterSet
 from project_manager.users.models import ForumUser
 from .forms import SubPluginAddContributorConfirmationForm
 from ..mixins import RetrieveSubPluginMixin
+from ..models import SubPluginContributor
 
 
 # =============================================================================
@@ -116,5 +117,8 @@ class SubPluginAddContributorConfirmationView(
 
     def form_valid(self, form):
         """Add the contributors to the sub-plugin."""
-        self.sub_plugin.contributors.add(form.cleaned_data['forum_id'])
+        SubPluginContributor.objects.create(
+            user_id=form.cleaned_data['forum_id'],
+            sub_plugin=self.sub_plugin,
+        )
         return HttpResponseRedirect(self.sub_plugin.get_absolute_url())

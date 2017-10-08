@@ -198,7 +198,7 @@ class SubPluginPath(AbstractUUIDPrimaryKeyModel):
     def get_absolute_url(self):
         """Return the SubPluginPath listing URL for the Plugin."""
         return reverse(
-            viewname='plugins:paths:list',
+            viewname='plugins:path_list',
             kwargs={
                 'slug': self.plugin.slug,
             }

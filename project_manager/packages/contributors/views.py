@@ -16,6 +16,7 @@ from project_manager.packages.mixins import RetrievePackageMixin
 from project_manager.users.filtersets import ForumUserFilterSet
 from project_manager.users.models import ForumUser
 from .forms import PackageAddContributorConfirmationForm
+from ..models import PackageContributor
 
 
 # =============================================================================
@@ -112,5 +113,8 @@ class PackageAddContributorConfirmationView(RetrievePackageMixin, FormView):
 
     def form_valid(self, form):
         """Add the contributors to the package."""
-        self.package.contributors.add(form.cleaned_data['forum_id'])
+        PackageContributor.objects.create(
+            user_id=form.cleaned_data['forum_id'],
+            package=self.package,
+        )
         return HttpResponseRedirect(self.package.get_absolute_url())

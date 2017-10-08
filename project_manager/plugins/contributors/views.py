@@ -16,6 +16,7 @@ from project_manager.users.filtersets import ForumUserFilterSet
 from project_manager.users.models import ForumUser
 from .forms import PluginAddContributorConfirmationForm
 from ..mixins import RetrievePluginMixin
+from ..models import PluginContributor
 
 
 # =============================================================================
@@ -112,5 +113,8 @@ class PluginAddContributorConfirmationView(RetrievePluginMixin, FormView):
 
     def form_valid(self, form):
         """Add the contributors to the plugin."""
-        self.plugin.contributors.add(form.cleaned_data['forum_id'])
+        PluginContributor.objects.create(
+            user_id=form.cleaned_data['forum_id'],
+            plugin=self.plugin,
+        )
         return HttpResponseRedirect(self.plugin.get_absolute_url())

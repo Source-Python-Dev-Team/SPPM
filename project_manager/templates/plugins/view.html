@@ -16,7 +16,7 @@
         <b><a href="{% url 'plugins:edit' slug=plugin.slug %}">Edit Page</a></b> |
         <b><a href="{% url 'plugins:update' slug=plugin.slug %}">Update Plugin</a></b> |
         <b><a href="{% url 'plugins:select-games' slug=plugin.slug %}">Select games</a></b> |
-        <b><a href="{% url 'plugins:paths:list' slug=plugin.slug %}">Sub-Plugin Paths</a></b>
+        <b><a href="{% url 'plugins:path_list' slug=plugin.slug %}">Sub-Plugin Paths</a></b>
     </ul>
 
     <h4><a href="{{ current_release.get_absolute_url }}"><u>Download current version</u></a> &nbsp; <span style="font-size: small;">( <a href="{% url 'plugins:releases' slug=plugin.slug %}"><u>View all releases</u></a> )</span> &nbsp; Total downloads: {{ plugin.total_downloads }}</h4>
