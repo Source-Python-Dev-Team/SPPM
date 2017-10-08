@@ -124,6 +124,12 @@ class SubPluginRelease(ProjectRelease):
     )
 
     handle_zip_file_upload = handle_sub_plugin_zip_upload
+    project_class = SubPlugin
+
+    @property
+    def project(self):
+        """Return the SubPlugin."""
+        return self.sub_plugin
 
     def get_absolute_url(self):
         """Return the URL for the SubPluginRelease."""

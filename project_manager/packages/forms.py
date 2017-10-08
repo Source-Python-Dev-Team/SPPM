@@ -209,7 +209,7 @@ class PackageUpdateForm(SubmitButtonMixin):
     def clean_zip_file(self):
         """Verify the zip file contents."""
         zip_file = self.cleaned_data['zip_file']
-        basename, is_module = get_package_basename(zip_file)
+        basename = get_package_basename(zip_file)
         if basename != self.instance.basename:
             raise ValidationError(
                 'Uploaded package does not match current package.',

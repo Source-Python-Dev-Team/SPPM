@@ -267,6 +267,17 @@ class ProjectRelease(models.Model):
             '"handle_zip_file_upload" attribute.'
         )
 
+    def save(self, *args, **kwargs):
+        """Update the Project's 'updated' value to the releases 'created'."""
+        pk = self.pk
+        super().save(*args, **kwargs)
+        if pk is None:
+            self.project_class.objects.filter(
+                pk=self.project.pk,
+            ).update(
+                updated=self.created,
+            )
+
 
 class AbstractUUIDPrimaryKeyModel(models.Model):
     """Abstract model that creates an non-editable UUID primary key."""

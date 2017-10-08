@@ -142,14 +142,14 @@ def flush_requirements():
         required_in_subplugins__isnull=True,
     ).delete()
     VersionControlRequirement.objects.filter(
-        packages__isnull=True,
-        plugins__isnull=True,
-        sub_plugins__isnull=True,
+        required_in_packages__isnull=True,
+        required_in_plugins__isnull=True,
+        required_in_subplugins__isnull=True,
     ).delete()
     DownloadRequirement.objects.filter(
-        packages__isnull=True,
-        plugins__isnull=True,
-        sub_plugins__isnull=True,
+        required_in_packages__isnull=True,
+        required_in_plugins__isnull=True,
+        required_in_subplugins__isnull=True,
     ).delete()
 
 

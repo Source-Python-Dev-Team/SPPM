@@ -27,9 +27,9 @@
     {% endif %}
 
     <br />
-    <p>Created on {{ package.datetime_created }}</p>
-    {% if package.datetime_last_updated %}
-        <p>Last updated on {{ package.datetime_last_updated }}</p>
+    <p>Created on {{ package.created }}</p>
+    {% if package.updated %}
+        <p>Last updated on {{ package.updated }}</p>
     {% endif %}
 
     <br />

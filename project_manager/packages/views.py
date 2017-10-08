@@ -132,7 +132,7 @@ class PackageView(DetailView):
         """Add the necessary info to the context."""
         context = super().get_context_data(**kwargs)
         context.update({
-            'current_version': self.object.current_version,
+            'current_release': self.object.releases.order_by('-created')[0],
             'contributors': self.object.contributors.all(),
             'package_requirements': self.object.package_requirements.all(),
             'pypi_requirements': self.object.pypi_requirements.all(),

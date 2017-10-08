@@ -99,6 +99,12 @@ class PackageRelease(ProjectRelease):
     )
 
     handle_zip_file_upload = handle_package_zip_upload
+    project_class = Package
+
+    @property
+    def project(self):
+        """Return the Package."""
+        return self.package
 
     def get_absolute_url(self):
         """Return the URL for the PackageRelease."""

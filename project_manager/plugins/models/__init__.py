@@ -103,6 +103,12 @@ class PluginRelease(ProjectRelease):
     )
 
     handle_zip_file_upload = handle_plugin_zip_upload
+    project_class = Plugin
+
+    @property
+    def project(self):
+        """Return the Plugin."""
+        return self.plugin
 
     class Meta(ProjectRelease.Meta):
         unique_together = ('plugin', 'version')
