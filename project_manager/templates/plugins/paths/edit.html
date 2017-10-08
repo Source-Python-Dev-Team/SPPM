@@ -2,12 +2,12 @@
 {% load crispy_forms_tags %}
 
 {% block title %}
-    Edit {{ plugin }} Sub-Plugin Path
+    Edit {{ plugin }} Sub-Plugin Path ({{ object.path }})
 {% endblock title %}
 
 {% block content %}
     <div class="container">
-        <h1>Edit {{ plugin }} Sub-Plugin Path</h1>
+        <h2><b>Edit {{ plugin }} Sub-Plugin Path ( <span style="color: darkorange">{{ object.path }}</span> )</b></h2>
         {% crispy form %}
     </div>
 {% endblock content %}

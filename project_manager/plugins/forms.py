@@ -227,6 +227,9 @@ class SubPluginPathCreateForm(SubmitButtonMixin):
         model = SubPluginPath
         fields = (
             'path',
+            'allow_module',
+            'allow_package_using_init',
+            'allow_package_using_basename',
             'plugin',
         )
         widgets = {
@@ -240,5 +243,7 @@ class SubPluginPathEditForm(SubmitButtonMixin):
     class Meta:
         model = SubPluginPath
         fields = (
-            'path',
+            'allow_module',
+            'allow_package_using_init',
+            'allow_package_using_basename',
         )
