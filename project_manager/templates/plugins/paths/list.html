@@ -11,7 +11,7 @@
                 <div class="panel-heading panel-heading-custom">
                     <h3 class="panel-title">Sub-Plugin Paths for {{ plugin }}</h3>
                     <span class="pull-right" style="margin-top: -20px">
-                        <a href="{% url 'plugins:paths:create' slug=plugin.slug %}">
+                        <a href="{% url 'plugins:path_create' slug=plugin.slug %}">
                             <button type="button" class="btn btn-xs btn-default">Add Path</button>
                         </a>
                     </span>
@@ -29,7 +29,7 @@
                                 <td>{{ path }}</td>
 
                                 <td class="text-right">
-                                    <a href="{% url 'plugins:paths:edit' slug=plugin.slug path_pk=path.pk %}">
+                                    <a href="{% url 'plugins:path_edit' slug=plugin.slug path_pk=path.pk %}">
                                         <button class="btn btn-primary btn-xs" data-toggle="tooltip" title="Edit Path: {{ path }}">
                                             <i class="fa fa-pencil-square-o fa-lg fa-fw"></i>
                                         </button>
@@ -52,7 +52,7 @@
                                             Are you sure you want to remove the path?
                                         </div>
                                         <div class="modal-footer">
-                                            <form action="{% url 'plugins:paths:delete' slug=plugin.slug path_pk=path.pk %}" method="post">
+                                            <form action="{% url 'plugins:path_delete' slug=plugin.slug path_pk=path.pk %}" method="post">
                                                 {% csrf_token %}
                                                 <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
                                                 <button type="submit" class="btn btn-danger"><i class="fa fa-trash-o fa-lg"></i>Delete</button>

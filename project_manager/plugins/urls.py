@@ -7,6 +7,7 @@
 from django.conf.urls import include, url
 
 # App
+from .constants import UUID_RE_STRING
 from .views import (
     PluginCreateView,
     PluginEditView,
@@ -90,13 +91,17 @@ urlpatterns = [
     ),
     url(
         # /plugins/<slug>/paths/edit/<id>/
-        regex=r'^(?P<slug>[\w-]+)/paths/edit/(?P<id>[0-9]+)/',
+        regex=r'^(?P<slug>[\w-]+)/paths/edit/(?P<path_pk>{uuid})/'.format(
+            uuid=UUID_RE_STRING,
+        ),
         view=SubPluginPathEditView.as_view(),
         name='path_edit',
     ),
     url(
         # /plugins/<slug>/paths/delete/<id>/
-        regex=r'^(?P<slug>[\w-]+)/paths/delete/(?P<id>\d+)/',
+        regex=r'^(?P<slug>[\w-]+)/paths/delete/(?P<path_pk>{uuid})/'.format(
+            uuid=UUID_RE_STRING,
+        ),
         view=SubPluginPathDeleteView.as_view(),
         name='path_delete',
     ),

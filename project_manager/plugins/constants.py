@@ -23,6 +23,7 @@ __all__ = (
     'PLUGIN_LOGO_URL',
     'PLUGIN_PATH',
     'PLUGIN_RELEASE_URL',
+    'UUID_RE_STRING',
 )
 
 
@@ -43,3 +44,5 @@ PLUGIN_LOGO_URL = LOGO_URL + 'plugins/'
 PLUGIN_RELEASE_URL = RELEASE_URL + 'plugins/'
 
 PATH_MAX_LENGTH = 256
+
+UUID_RE_STRING = '[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}'

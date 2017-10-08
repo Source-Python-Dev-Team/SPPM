@@ -80,7 +80,7 @@ def handle_project_image_upload(instance, filename):
 
 def handle_project_logo_upload(instance, filename):
     """Handle uploading the logo by directing to the proper directory."""
-    return instance.handle_logo_upload(instance, filename)
+    return instance.handle_logo_upload(filename)
 
 
 def handle_release_zip_file_upload(instance, filename):
