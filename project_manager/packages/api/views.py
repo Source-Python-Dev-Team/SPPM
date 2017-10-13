@@ -58,7 +58,44 @@ class PackageAPIView(ProjectAPIView):
 
 
 class PackageViewSet(ProjectViewSet):
-    """ViewSet for creating, updating, and listing Packages."""
+    """ViewSet for creating, updating, and listing Packages.
+
+    ###Available Filters:
+    *  **game**=*{game}*
+        * Filters on supported games with exact match to slug.
+
+        ####Example:
+        `?game=csgo`
+
+        `?game=cstrike`
+
+    *  **tag**=*{tag}*
+        * Filters on tags using exact match.
+
+        ####Example:
+        `?tag=wcs`
+
+        `?tag=sounds`
+
+    *  **user**=*{username}*
+        * Filters on username using exact match with owner/contributors.
+
+        ####Example:
+        `?user=satoon101`
+
+        `?user=Ayuto`
+
+    ###Available Ordering:
+
+    *  **name** (descending) or **-name** (ascending)
+    *  **basename** (descending) or **-basename** (ascending)
+    *  **updated** (descending) or **-updated** (ascending)
+
+        ####Example:
+        `?ordering=basename`
+
+        `?ordering=-updated`
+    """
 
     filter_class = PackageFilter
     queryset = Package.objects.prefetch_related(

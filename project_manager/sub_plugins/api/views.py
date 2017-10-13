@@ -62,7 +62,44 @@ class SubPluginAPIView(ProjectAPIView):
 
 
 class SubPluginViewSet(ProjectViewSet):
-    """ViewSet for creating, updating, and listing SubPlugins."""
+    """ViewSet for creating, updating, and listing SubPlugins.
+
+    ###Available Filters:
+    *  **game**=*{game}*
+        * Filters on supported games with exact match to slug.
+
+        ####Example:
+        `?game=csgo`
+
+        `?game=cstrike`
+
+    *  **tag**=*{tag}*
+        * Filters on tags using exact match.
+
+        ####Example:
+        `?tag=wcs`
+
+        `?tag=sounds`
+
+    *  **user**=*{username}*
+        * Filters on username using exact match with owner/contributors.
+
+        ####Example:
+        `?user=satoon101`
+
+        `?user=Ayuto`
+
+    ###Available Ordering:
+
+    *  **name** (descending) or **-name** (ascending)
+    *  **basename** (descending) or **-basename** (ascending)
+    *  **updated** (descending) or **-updated** (ascending)
+
+        ####Example:
+        `?ordering=basename`
+
+        `?ordering=-updated`
+    """
 
     filter_class = SubPluginFilter
     queryset = SubPlugin.objects.prefetch_related(
