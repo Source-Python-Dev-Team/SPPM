@@ -34,6 +34,11 @@ class Tag(models.Model):
     black_listed = models.BooleanField(
         default=False,
     )
+    creator = models.ForeignKey(
+        to='users.ForumUser',
+        related_name='created_tags',
+        blank=True,
+    )
 
     def __str__(self):
         """Return the tag's name."""

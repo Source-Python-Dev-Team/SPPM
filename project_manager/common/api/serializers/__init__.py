@@ -62,8 +62,6 @@ __all__ = (
 # =============================================================================
 # >> SERIALIZERS
 # =============================================================================
-# TODO: APIs for adding/removing
-# TODO:     contributors
 class ProjectSerializer(ModelSerializer, ProjectLocaleMixin):
     """Base Project Serializer."""
 
@@ -241,6 +239,7 @@ class ProjectReleaseSerializer(
             'zip_file',
             'version',
             'created',
+            'download_count',
         )
 
     def get_created(self, obj):
@@ -344,7 +343,12 @@ class ProjectTagSerializer(ProjectThroughMixin):
             raise ValidationError({
                 'tag': f'Tag already linked to {view.project_type}.',
             })
-        tag, created = Tag.objects.get_or_create(name=name)
+        tag, created = Tag.objects.get_or_create(
+            name=name,
+            defaults={
+                'creator': view.request.user.forum_user,
+            }
+        )
         if tag.black_listed:
             raise ValidationError({
                 'tag': f"Tag '{name}' is black-listed, unable to add.",
