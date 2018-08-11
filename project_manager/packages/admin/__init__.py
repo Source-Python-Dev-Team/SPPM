@@ -44,8 +44,17 @@ class PackageAdmin(ProjectAdmin):
 class PackageReleaseAdmin(admin.ModelAdmin):
     """PackageRelease admin."""
 
+    actions = None
+    fields = (
+        'package',
+        'version',
+        'notes',
+        'zip_file',
+    )
     list_display = (
         'package',
+        'version',
+        'notes',
     )
     readonly_fields = (
         'package',
@@ -56,6 +65,7 @@ class PackageReleaseAdmin(admin.ModelAdmin):
         'package__owner__user__username',
         'package__contributors__user__username',
     )
+    view_on_site = False
 
 
 @admin.register(PackageImage)
