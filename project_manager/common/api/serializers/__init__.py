@@ -71,22 +71,6 @@ class ProjectSerializer(ModelSerializer, ProjectLocaleMixin):
     )
     created = SerializerMethodField()
     updated = SerializerMethodField()
-    package_requirements = PackageRequirementSerializer(
-        many=True,
-        read_only=True,
-    )
-    download_requirements = RequiredDownloadSerializer(
-        many=True,
-        read_only=True,
-    )
-    pypi_requirements = RequiredPyPiSerializer(
-        many=True,
-        read_only=True,
-    )
-    vcs_requirements = RequiredVersionControlSerializer(
-        many=True,
-        read_only=True,
-    )
 
     release_dict = {}
 
@@ -103,10 +87,6 @@ class ProjectSerializer(ModelSerializer, ProjectLocaleMixin):
             'configuration',
             'logo',
             'owner',
-            'package_requirements',
-            'download_requirements',
-            'pypi_requirements',
-            'vcs_requirements',
         )
         read_only_fields = (
             'slug',
