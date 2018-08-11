@@ -5,7 +5,7 @@
 # =============================================================================
 # Django
 from django.shortcuts import HttpResponseRedirect
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.views.generic import FormView
 
 # 3rd-Party Django
