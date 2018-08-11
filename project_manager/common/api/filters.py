@@ -25,9 +25,9 @@ __all__ = (
 class ProjectFilter(FilterSet):
     """Filters for Projects."""
 
-    game = CharFilter(name='supported_games__basename')
+    game = CharFilter(field_name='supported_games__basename')
     user = CharFilter(method='filter_user')
-    tag = CharFilter(name='tags__name')
+    tag = CharFilter(field_name='tags__name')
 
     class Meta:
         fields = (
