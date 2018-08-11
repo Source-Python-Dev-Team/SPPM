@@ -3,8 +3,10 @@
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
+# Django
+from django.db.models import Prefetch
+
 # App
-from project_manager.common.api.helpers import get_prefetch
 from project_manager.common.api.views import (
     ProjectAPIView,
     ProjectContributorViewSet,
@@ -99,9 +101,12 @@ class PackageViewSet(ProjectViewSet):
 
     filter_class = PackageFilter
     queryset = Package.objects.prefetch_related(
-        *get_prefetch(
-            release_class=PackageRelease,
-        )
+        Prefetch(
+            lookup='releases',
+            queryset=PackageRelease.objects.order_by(
+                '-created',
+            ),
+        ),
     ).select_related(
         'owner__user',
     )

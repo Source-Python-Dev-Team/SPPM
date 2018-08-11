@@ -3,10 +3,13 @@
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
+# Django
+from django.db.models import Prefetch
+
+# 3rd-Party Django
 from rest_framework.parsers import ParseError
 
 # App
-from project_manager.common.api.helpers import get_prefetch
 from project_manager.common.api.views import (
     ProjectAPIView,
     ProjectContributorViewSet,
@@ -103,9 +106,12 @@ class SubPluginViewSet(ProjectViewSet):
 
     filter_class = SubPluginFilter
     queryset = SubPlugin.objects.prefetch_related(
-        *get_prefetch(
-            release_class=SubPluginRelease,
-        )
+        Prefetch(
+            lookup='releases',
+            queryset=SubPluginRelease.objects.order_by(
+                '-created',
+            ),
+        ),
     ).select_related(
         'owner__user',
         'plugin',

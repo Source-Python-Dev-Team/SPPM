@@ -3,11 +3,13 @@
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
+# Django
+from django.db.models import Prefetch
+
 # 3rd-Party Django
 from rest_framework.reverse import reverse
 
 # App
-from project_manager.common.api.helpers import get_prefetch
 from project_manager.common.api.views.mixins import ProjectThroughModelMixin
 from project_manager.common.api.views import (
     ProjectAPIView,
@@ -115,9 +117,12 @@ class PluginViewSet(ProjectViewSet):
 
     filter_class = PluginFilter
     queryset = Plugin.objects.prefetch_related(
-        *get_prefetch(
-            release_class=PluginRelease,
-        )
+        Prefetch(
+            lookup='releases',
+            queryset=PluginRelease.objects.order_by(
+                '-created',
+            ),
+        ),
     ).select_related(
         'owner__user',
     )
