@@ -15,30 +15,19 @@ from django.core.exceptions import ValidationError
 
 # App
 from project_manager.common.constants import CANNOT_BE_NAMED, CANNOT_START_WITH
-from project_manager.requirements.models import (
-    DownloadRequirement,
-    PyPiRequirement,
-    VersionControlRequirement,
-)
 
 
 # =============================================================================
 # >> ALL DECLARATION
 # =============================================================================
 __all__ = (
-    'add_download_requirement',
-    'add_package_requirement',
-    'add_pypi_requirement',
-    'add_vcs_requirement',
     'find_image_number',
-    'flush_requirements',
     'get_file_list',
     'get_groups',
     'get_requirements',
     'handle_project_image_upload',
     'handle_project_logo_upload',
     'handle_release_zip_file_upload',
-    'reset_requirements',
     'validate_basename',
 )
 
@@ -86,71 +75,6 @@ def handle_project_logo_upload(instance, filename):
 def handle_release_zip_file_upload(instance, filename):
     """Handle uploading the zip file by directing to the proper directory."""
     return instance.handle_zip_file_upload(filename)
-
-
-def add_package_requirement(package_basename, project):
-    """Add a Package requirement to a project."""
-    from project_manager.packages.models import Package
-    try:
-        package = Package.objects.get(basename=package_basename)
-    except Package.DoesNotExist:
-        return False
-    project.package_requirements.add(package)
-    return True
-
-
-def add_pypi_requirement(package_basename, project):
-    """Add a PyPi requirement to a project."""
-    package, created = PyPiRequirement.objects.get_or_create(
-        name=package_basename,
-    )
-    project.pypi_requirements.add(package)
-
-
-def add_vcs_requirement(name, url, project):
-    """Add a VCS requirement to a project."""
-    package, created = VersionControlRequirement.objects.get_or_create(
-        name=name,
-        url=url,
-    )
-    project.vcs_requirements.add(package)
-
-
-def add_download_requirement(name, url, desc, project):
-    """Add a Download requirement to a project."""
-    package, created = DownloadRequirement.objects.get_or_create(
-        name=name,
-        url=url,
-        description=desc,
-    )
-    project.download_requirements.add(package)
-
-
-def reset_requirements(project):
-    """Clear all requirements for the given project."""
-    project.package_requirements.clear()
-    project.pypi_requirements.clear()
-    project.vcs_requirements.clear()
-    project.download_requirements.clear()
-
-
-def flush_requirements():
-    """Remove any requirements that no longer are required by any projects."""
-    PyPiRequirement.objects.filter(
-        required_in_packages__isnull=True,
-        required_in_plugins__isnull=True,
-        required_in_subplugins__isnull=True,
-    ).delete()
-    VersionControlRequirement.objects.filter(
-        required_in_packages__isnull=True,
-        required_in_plugins__isnull=True,
-        required_in_subplugins__isnull=True,
-    ).delete()
-    DownloadRequirement.objects.filter(
-        required_in_packages__isnull=True,
-        required_in_plugins__isnull=True,
-        required_in_subplugins__isnull=True,
-    ).delete()
 
 
 def get_file_list(zip_file):
