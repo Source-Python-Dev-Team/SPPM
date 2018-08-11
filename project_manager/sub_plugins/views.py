@@ -7,10 +7,7 @@
 from django.views.generic import CreateView, DetailView, ListView, UpdateView
 
 # App
-from project_manager.common.mixins import (
-    DownloadMixin,
-    RequirementsParserMixin,
-)
+from project_manager.common.mixins import DownloadMixin
 from project_manager.games.mixins import GameSpecificOrderablePaginatedListView
 from project_manager.plugins.constants import PLUGIN_PATH
 from project_manager.plugins.models import Plugin
@@ -72,9 +69,7 @@ class SubPluginListView(
         return context
 
 
-class SubPluginCreateView(
-    RequirementsParserMixin, RetrieveSubPluginMixin, CreateView
-):
+class SubPluginCreateView(RetrieveSubPluginMixin, CreateView):
     """SubPlugin creation view."""
 
     model = SubPlugin
@@ -140,9 +135,7 @@ class SubPluginEditView(UpdateView):
         return context
 
 
-class SubPluginUpdateView(
-    RequirementsParserMixin, RetrieveSubPluginMixin, UpdateView
-):
+class SubPluginUpdateView(RetrieveSubPluginMixin, UpdateView):
     """SubPlugin Release creation view."""
 
     model = SubPlugin

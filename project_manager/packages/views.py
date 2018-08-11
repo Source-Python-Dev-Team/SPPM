@@ -8,10 +8,7 @@ from django.views.generic import CreateView, DetailView, ListView, UpdateView
 
 # App
 from project_manager.common.helpers import get_groups
-from project_manager.common.mixins import (
-    DownloadMixin,
-    RequirementsParserMixin,
-)
+from project_manager.common.mixins import DownloadMixin
 from project_manager.games.mixins import GameSpecificOrderablePaginatedListView
 from .constants import PACKAGE_PATH, PACKAGE_RELEASE_URL
 from .forms import (
@@ -53,7 +50,7 @@ class PackageListView(GameSpecificOrderablePaginatedListView):
     template_name = 'packages/list.html'
 
 
-class PackageCreateView(RequirementsParserMixin, CreateView):
+class PackageCreateView(CreateView):
     """Package creation view."""
 
     model = Package
@@ -87,9 +84,7 @@ class PackageEditView(UpdateView):
         return initial
 
 
-class PackageUpdateView(
-    RequirementsParserMixin, RetrievePackageMixin, UpdateView
-):
+class PackageUpdateView(RetrievePackageMixin, UpdateView):
     """Package release creation view."""
 
     model = Package

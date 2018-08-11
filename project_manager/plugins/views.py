@@ -13,10 +13,7 @@ from django.views.generic import (
 )
 
 # App
-from project_manager.common.mixins import (
-    DownloadMixin,
-    RequirementsParserMixin,
-)
+from project_manager.common.mixins import DownloadMixin
 from project_manager.games.mixins import GameSpecificOrderablePaginatedListView
 from .constants import PLUGIN_PATH, PLUGIN_RELEASE_URL
 from .forms import (
@@ -66,7 +63,7 @@ class PluginListView(GameSpecificOrderablePaginatedListView):
     template_name = 'plugins/list.html'
 
 
-class PluginCreateView(RequirementsParserMixin, CreateView):
+class PluginCreateView(CreateView):
     """Plugin creation view."""
 
     model = Plugin
@@ -100,9 +97,7 @@ class PluginEditView(UpdateView):
         return initial
 
 
-class PluginUpdateView(
-    RequirementsParserMixin, RetrievePluginMixin, UpdateView
-):
+class PluginUpdateView(RetrievePluginMixin, UpdateView):
     """Plugin release creation view."""
 
     model = Plugin
