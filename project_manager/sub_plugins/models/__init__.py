@@ -4,7 +4,7 @@
 # >> IMPORTS
 # =============================================================================
 # Django
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.db import models
 
 # App
@@ -71,6 +71,7 @@ class SubPlugin(ProjectBase):
     plugin = models.ForeignKey(
         to='plugins.Plugin',
         related_name='sub_plugins',
+        on_delete=models.CASCADE,
     )
     supported_games = models.ManyToManyField(
         to='games.Game',
@@ -121,6 +122,7 @@ class SubPluginRelease(ProjectRelease):
     sub_plugin = models.ForeignKey(
         to='sub_plugins.SubPlugin',
         related_name='releases',
+        on_delete=models.CASCADE,
     )
 
     handle_zip_file_upload = handle_sub_plugin_zip_upload
@@ -149,6 +151,7 @@ class SubPluginImage(ProjectImage):
     sub_plugin = models.ForeignKey(
         to='sub_plugins.SubPlugin',
         related_name='images',
+        on_delete=models.CASCADE,
     )
 
     handle_image_upload = handle_sub_plugin_image_upload

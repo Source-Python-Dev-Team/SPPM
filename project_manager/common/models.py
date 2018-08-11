@@ -5,7 +5,6 @@
 # =============================================================================
 # Python
 from operator import attrgetter
-import uuid
 
 # Django
 from django.conf import settings
@@ -19,6 +18,7 @@ from PIL import Image
 from precise_bbcode.fields import BBCodeTextField
 
 # App
+from project_manager.models import AbstractUUIDPrimaryKeyModel
 from .constants import (
     FORUM_THREAD_URL,
     LOGO_MAX_HEIGHT,
@@ -28,6 +28,7 @@ from .constants import (
     PROJECT_NAME_MAX_LENGTH,
     PROJECT_SYNOPSIS_MAX_LENGTH,
     RELEASE_NOTES_MAX_LENGTH,
+    RELEASE_REQUIREMENT_ERRORS_MAX_LENGTH,
     RELEASE_VERSION_MAX_LENGTH,
 )
 from .helpers import (
@@ -42,12 +43,15 @@ from .validators import version_validator
 # >> ALL DECLARATION
 # =============================================================================
 __all__ = (
-    'AbstractUUIDPrimaryKeyModel',
     'ProjectBase',
     'ProjectContributor',
     'ProjectGame',
     'ProjectImage',
     'ProjectRelease',
+    'ProjectReleaseDownloadRequirement',
+    'ProjectReleasePackageRequirement',
+    'ProjectReleasePyPiRequirement',
+    'ProjectReleaseVersionControlRequirement',
     'ProjectTag',
 )
 
@@ -83,10 +87,6 @@ class ProjectBase(models.Model):
             '1024 char limit.'
         )
     )
-    download_requirements = models.ManyToManyField(
-        to='requirements.DownloadRequirement',
-        related_name='required_in_%(class)ss',
-    )
     logo = models.ImageField(
         upload_to=handle_project_logo_upload,
         blank=True,
@@ -96,14 +96,7 @@ class ProjectBase(models.Model):
     owner = models.ForeignKey(
         to='users.ForumUser',
         related_name='%(class)ss',
-    )
-    package_requirements = models.ManyToManyField(
-        to='packages.Package',
-        related_name='required_in_%(class)ss',
-    )
-    pypi_requirements = models.ManyToManyField(
-        to='requirements.PyPiRequirement',
-        related_name='required_in_%(class)ss',
+        on_delete=models.CASCADE,
     )
     synopsis = BBCodeTextField(
         max_length=PROJECT_SYNOPSIS_MAX_LENGTH,
@@ -118,10 +111,6 @@ class ProjectBase(models.Model):
         unique=True,
         blank=True,
         null=True,
-    )
-    vcs_requirements = models.ManyToManyField(
-        to='requirements.VersionControlRequirement',
-        related_name='required_in_%(class)ss',
     )
     created = models.DateTimeField(
         verbose_name='created',
@@ -225,7 +214,7 @@ class ProjectBase(models.Model):
         return slugify(self.basename).replace('_', '-')
 
 
-class ProjectRelease(models.Model):
+class ProjectRelease(AbstractUUIDPrimaryKeyModel):
     """Base model for project releases."""
 
     version = models.CharField(
@@ -244,6 +233,15 @@ class ProjectRelease(models.Model):
     )
     download_count = models.PositiveIntegerField(
         default=0,
+    )
+    requirement_errors = models.TextField(
+        max_length=RELEASE_REQUIREMENT_ERRORS_MAX_LENGTH,
+        blank=True,
+        null=True,
+        help_text=(
+            'The configuration of the project. If too long, post on the forum '
+            'and provide the link here. BBCode is allowed. 1024 char limit.'
+        )
     )
     created = AutoCreatedField(
         verbose_name='created',
@@ -279,20 +277,6 @@ class ProjectRelease(models.Model):
             )
 
 
-class AbstractUUIDPrimaryKeyModel(models.Model):
-    """Abstract model that creates an non-editable UUID primary key."""
-
-    id = models.UUIDField(
-        verbose_name='ID',
-        primary_key=True,
-        default=uuid.uuid4,
-        editable=False,
-    )
-
-    class Meta:
-        abstract = True
-
-
 class ProjectImage(AbstractUUIDPrimaryKeyModel):
     """Base model for project images."""
 
@@ -322,6 +306,7 @@ class ProjectContributor(AbstractUUIDPrimaryKeyModel):
 
     user = models.ForeignKey(
         to='users.ForumUser',
+        on_delete=models.CASCADE,
     )
 
     class Meta:
@@ -348,6 +333,7 @@ class ProjectGame(AbstractUUIDPrimaryKeyModel):
 
     game = models.ForeignKey(
         to='games.Game',
+        on_delete=models.CASCADE,
     )
 
     class Meta:
@@ -363,6 +349,7 @@ class ProjectTag(AbstractUUIDPrimaryKeyModel):
 
     tag = models.ForeignKey(
         to='tags.Tag',
+        on_delete=models.CASCADE,
     )
 
     class Meta:
@@ -371,3 +358,101 @@ class ProjectTag(AbstractUUIDPrimaryKeyModel):
     def __str__(self):
         """Return the base string."""
         return 'Project Tag'
+
+
+class ProjectReleasePackageRequirement(AbstractUUIDPrimaryKeyModel):
+    """"""
+
+    package_requirement = models.ForeignKey(
+        to='packages.Package',
+        on_delete=models.CASCADE,
+    )
+    version = models.CharField(
+        max_length=RELEASE_VERSION_MAX_LENGTH,
+        validators=[version_validator],
+        help_text=(
+            'The version of the custom package for this release '
+            'of the project.'
+        ),
+    )
+    optional = models.BooleanField(
+        default=False,
+    )
+
+    class Meta:
+        abstract = True
+
+    def __str__(self):
+        """"""
+        return 'Project Package Requirement'
+
+
+class ProjectReleasePyPiRequirement(AbstractUUIDPrimaryKeyModel):
+    """"""
+
+    pypi_requirement = models.ForeignKey(
+        to='requirements.PyPiRequirement',
+        on_delete=models.CASCADE,
+    )
+    version = models.CharField(
+        max_length=RELEASE_VERSION_MAX_LENGTH,
+        validators=[version_validator],
+        help_text=(
+            'The version of the PyPi package for this release of the project.'
+        ),
+    )
+    optional = models.BooleanField(
+        default=False,
+    )
+
+    class Meta:
+        abstract = True
+
+    def __str__(self):
+        """"""
+        return 'Project PyPi Requirement'
+
+
+class ProjectReleaseVersionControlRequirement(AbstractUUIDPrimaryKeyModel):
+    """"""
+
+    vcs_requirement = models.ForeignKey(
+        to='requirements.VersionControlRequirement',
+        on_delete=models.CASCADE,
+    )
+    version = models.CharField(
+        max_length=RELEASE_VERSION_MAX_LENGTH,
+        validators=[version_validator],
+        help_text=(
+            'The version of the VCS package for this release of the project.'
+        ),
+    )
+    optional = models.BooleanField(
+        default=False,
+    )
+
+    class Meta:
+        abstract = True
+
+    def __str__(self):
+        """"""
+        return 'Project Version Control Requirement'
+
+
+class ProjectReleaseDownloadRequirement(AbstractUUIDPrimaryKeyModel):
+    """"""
+
+    download_requirement = models.ForeignKey(
+        to='requirements.DownloadRequirement',
+        on_delete=models.CASCADE,
+    )
+    optional = models.BooleanField(
+        default=False,
+    )
+
+    class Meta:
+        abstract = True
+
+    def __str__(self):
+        """"""
+        return 'Project Download Requirement'

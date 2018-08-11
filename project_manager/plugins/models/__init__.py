@@ -5,7 +5,7 @@
 # =============================================================================
 # Django
 from django.core.exceptions import ValidationError
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.db import models
 
 # App
@@ -14,7 +14,6 @@ from project_manager.common.constants import (
     PROJECT_SLUG_MAX_LENGTH,
 )
 from project_manager.common.models import (
-    AbstractUUIDPrimaryKeyModel,
     ProjectBase,
     ProjectContributor,
     ProjectGame,
@@ -23,6 +22,7 @@ from project_manager.common.models import (
     ProjectTag,
 )
 from project_manager.common.validators import basename_validator
+from project_manager.models import AbstractUUIDPrimaryKeyModel
 from .abstract import PluginThroughBase
 from ..constants import PLUGIN_LOGO_URL, PATH_MAX_LENGTH
 from ..helpers import (
@@ -100,6 +100,7 @@ class PluginRelease(ProjectRelease):
     plugin = models.ForeignKey(
         to='plugins.Plugin',
         related_name='releases',
+        on_delete=models.CASCADE,
     )
 
     handle_zip_file_upload = handle_plugin_zip_upload
@@ -130,6 +131,7 @@ class PluginImage(ProjectImage):
     plugin = models.ForeignKey(
         to='plugins.Plugin',
         related_name='images',
+        on_delete=models.CASCADE,
     )
 
     handle_image_upload = handle_plugin_image_upload
@@ -162,6 +164,7 @@ class SubPluginPath(AbstractUUIDPrimaryKeyModel):
     plugin = models.ForeignKey(
         to='plugins.Plugin',
         related_name='paths',
+        on_delete=models.CASCADE,
     )
     path = models.CharField(
         max_length=PATH_MAX_LENGTH,

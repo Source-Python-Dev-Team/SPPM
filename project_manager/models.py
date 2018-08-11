@@ -3,6 +3,9 @@
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
+# Python
+import uuid
+
 # Django
 from django.contrib.auth.models import (
     AbstractBaseUser,
@@ -19,6 +22,7 @@ from .constants import USER_EMAIL_MAX_LENGTH, USER_USERNAME_MAX_LENGTH
 # >> ALL DECLARATION
 # =============================================================================
 __all__ = (
+    'AbstractUUIDPrimaryKeyModel',
     'User',
 )
 
@@ -52,3 +56,17 @@ class User(AbstractBaseUser, PermissionsMixin):
     def get_full_name(self):
         """Return the full name for the user."""
         return self.username
+
+
+class AbstractUUIDPrimaryKeyModel(models.Model):
+    """Abstract model that creates an non-editable UUID primary key."""
+
+    id = models.UUIDField(
+        verbose_name='ID',
+        primary_key=True,
+        default=uuid.uuid4,
+        editable=False,
+    )
+
+    class Meta:
+        abstract = True

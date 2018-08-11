@@ -23,6 +23,7 @@ class PluginThroughBase(models.Model):
 
     plugin = models.ForeignKey(
         to='plugins.Plugin',
+        on_delete=models.CASCADE,
     )
 
     @property

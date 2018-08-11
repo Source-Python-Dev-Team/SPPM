@@ -23,6 +23,7 @@ class SubPluginThroughBase(models.Model):
 
     sub_plugin = models.ForeignKey(
         to='sub_plugins.SubPlugin',
+        on_delete=models.CASCADE,
     )
 
     @property

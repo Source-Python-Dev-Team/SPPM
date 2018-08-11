@@ -4,7 +4,7 @@
 # >> IMPORTS
 # =============================================================================
 # Django
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.db import models
 
 # App
@@ -18,10 +18,14 @@ from project_manager.common.models import (
     ProjectGame,
     ProjectImage,
     ProjectRelease,
+    ProjectReleaseDownloadRequirement,
+    ProjectReleasePackageRequirement,
+    ProjectReleasePyPiRequirement,
+    ProjectReleaseVersionControlRequirement,
     ProjectTag,
 )
 from project_manager.common.validators import basename_validator
-from .abstract import PackageThroughBase
+from .abstract import PackageThroughBase, PackageReleaseThroughBase
 from ..constants import PACKAGE_LOGO_URL
 from ..helpers import (
     handle_package_image_upload,
@@ -39,6 +43,10 @@ __all__ = (
     'PackageGame',
     'PackageImage',
     'PackageRelease',
+    'PackageReleaseDownloadRequirement',
+    'PackageReleasePackageRequirement',
+    'PackageReleasePyPiRequirement',
+    'PackageReleaseVersionControlRequirement',
     'PackageTag',
 )
 
@@ -96,6 +104,27 @@ class PackageRelease(ProjectRelease):
     package = models.ForeignKey(
         to='packages.Package',
         related_name='releases',
+        on_delete=models.CASCADE,
+    )
+    download_requirements = models.ManyToManyField(
+        to='requirements.DownloadRequirement',
+        related_name='required_in_package_releases',
+        through='packages.PackageReleaseDownloadRequirement',
+    )
+    package_requirements = models.ManyToManyField(
+        to='packages.Package',
+        related_name='required_in_package_releases',
+        through='packages.PackageReleasePackageRequirement',
+    )
+    pypi_requirements = models.ManyToManyField(
+        to='requirements.PyPiRequirement',
+        related_name='required_in_package_releases',
+        through='packages.PackageReleasePyPiRequirement',
+    )
+    vcs_requirements = models.ManyToManyField(
+        to='requirements.VersionControlRequirement',
+        related_name='required_in_package_releases',
+        through='PackageReleaseVersionControlRequirement',
     )
 
     handle_zip_file_upload = handle_package_zip_upload
@@ -123,6 +152,7 @@ class PackageImage(ProjectImage):
     package = models.ForeignKey(
         to='packages.Package',
         related_name='images',
+        on_delete=models.CASCADE,
     )
 
     handle_image_upload = handle_package_image_upload
@@ -147,3 +177,39 @@ class PackageTag(ProjectTag, PackageThroughBase):
 
     class Meta:
         unique_together = ('package', 'tag')
+
+
+class PackageReleaseDownloadRequirement(
+    ProjectReleaseDownloadRequirement, PackageReleaseThroughBase
+):
+    """"""
+
+    class Meta:
+        unique_together = ('package_release', 'download_requirement')
+
+
+class PackageReleasePackageRequirement(
+    ProjectReleasePackageRequirement, PackageReleaseThroughBase
+):
+    """"""
+
+    class Meta:
+        unique_together = ('package_release', 'package_requirement')
+
+
+class PackageReleasePyPiRequirement(
+    ProjectReleasePyPiRequirement, PackageReleaseThroughBase
+):
+    """"""
+
+    class Meta:
+        unique_together = ('package_release', 'pypi_requirement')
+
+
+class PackageReleaseVersionControlRequirement(
+    ProjectReleaseVersionControlRequirement, PackageReleaseThroughBase
+):
+    """"""
+
+    class Meta:
+        unique_together = ('package_release', 'vcs_requirement')

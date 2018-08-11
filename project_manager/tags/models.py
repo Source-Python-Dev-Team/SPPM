@@ -38,6 +38,7 @@ class Tag(models.Model):
         to='users.ForumUser',
         related_name='created_tags',
         blank=True,
+        on_delete=models.CASCADE,
     )
 
     def __str__(self):

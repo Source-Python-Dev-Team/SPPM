@@ -5,7 +5,7 @@
 # =============================================================================
 # Django
 from django.conf import settings
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.db import models
 
 # App
@@ -29,6 +29,7 @@ class ForumUser(models.Model):
     user = models.OneToOneField(
         to=settings.AUTH_USER_MODEL,
         related_name='forum_user',
+        on_delete=models.CASCADE,
     )
     forum_id = models.IntegerField(
         primary_key=True,
