@@ -13,6 +13,8 @@ from .views import PyPiListView, PyPiView
 # =============================================================================
 # >> GLOBAL VARIABLES
 # =============================================================================
+app_name = 'requirements'
+
 urlpatterns = [
     url(
         # /pypi/

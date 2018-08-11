@@ -13,6 +13,8 @@ from .views import GameListView, GameView
 # =============================================================================
 # >> GLOBAL VARIABLES
 # =============================================================================
+app_name = 'games'
+
 urlpatterns = [
     url(
         # /games/

@@ -13,6 +13,8 @@ from .views import ProjectManagerAPIView
 # =============================================================================
 # >> GLOBAL VARIABLES
 # =============================================================================
+app_name = 'api'
+
 urlpatterns = [
     url(
         regex=r'^packages/',

@@ -15,6 +15,8 @@ from .views import (
 # =============================================================================
 # >> GLOBAL VARIABLES
 # =============================================================================
+app_name = 'contributors'
+
 urlpatterns = [
     url(
         # /packages/<slug>/contributors/add/

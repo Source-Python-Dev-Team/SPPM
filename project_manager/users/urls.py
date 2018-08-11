@@ -13,6 +13,8 @@ from .views import UserListView, UserView
 # =============================================================================
 # >> GLOBAL VARIABLES
 # =============================================================================
+app_name = 'users'
+
 urlpatterns = [
     url(
         # /users/
