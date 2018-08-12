@@ -11,7 +11,7 @@ from django.utils.timezone import now
 
 # 3rd-Party Django
 from rest_framework.exceptions import ValidationError
-from rest_framework.fields import CharField, FileField, SerializerMethodField
+from rest_framework.fields import CharField, FileField, IntegerField, SerializerMethodField
 from rest_framework.reverse import reverse
 from rest_framework.serializers import ModelSerializer
 
@@ -86,6 +86,7 @@ class ProjectSerializer(ModelSerializer, ProjectLocaleMixin):
             'description',
             'configuration',
             'logo',
+            'video',
             'owner',
         )
         read_only_fields = (
@@ -211,6 +212,7 @@ class ProjectReleaseSerializer(
     """Base ProjectRelease Serializer for listing."""
 
     created = SerializerMethodField()
+    download_count = IntegerField(read_only=True)
 
     class Meta:
         model = None
