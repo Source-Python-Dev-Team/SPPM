@@ -38,7 +38,10 @@ def get_sub_plugin_basename(zip_file, plugin):
     file_list = get_file_list(zip_file)
     basename, path = _find_basename_and_path(file_list, plugin)
     validate_basename(basename=basename, project_type='sub-plugin')
-    return basename, path
+
+    # TODO: see if 'path' is needed for anything at this point
+    # return basename, path
+    return basename
 
 
 def handle_sub_plugin_zip_upload(instance, filename):
@@ -114,13 +117,13 @@ def _validate_plugin_name(file_list, plugin):
 # =============================================================================
 def _find_basename_and_path(file_list, plugin):
     plugin_name = _validate_plugin_name(file_list, plugin)
+    file_path_start = f'{PLUGIN_PATH}{plugin_name}/'
     path = None
-    paths = [x[0] for x in plugin.paths.values_list('path')]
     basename = None
+    paths = [x[0] for x in plugin.paths.values_list('path')]
     for file_path in file_list:
         if not file_path.endswith('.py'):
             continue
-        file_path_start = f'{PLUGIN_PATH}{plugin_name}/'
         if not file_path.startswith(file_path_start):
             continue
         current = file_path.split(file_path_start, 1)[1]
