@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'rest_framework',
     # 'phpbb',
     'debug_toolbar',
+    'embed_video',
     'precise_bbcode',
     'crispy_forms',
     'django_filters',
@@ -144,6 +145,10 @@ REST_FRAMEWORK = {
         'rest_framework.pagination.PageNumberPagination'
     ),
 }
+
+EMBED_VIDEO_BACKENDS = (
+    'embed_video.backends.YoutubeBackend',
+)
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.9/topics/i18n/

@@ -13,6 +13,7 @@ from django.db import models
 from django.utils.text import slugify
 
 # 3rd-Party Django
+from embed_video.fields import EmbedVideoField
 from model_utils.fields import AutoCreatedField
 from PIL import Image
 from precise_bbcode.fields import BBCodeTextField
@@ -92,6 +93,10 @@ class ProjectBase(models.Model):
         blank=True,
         null=True,
         help_text="The project's logo image.",
+    )
+    video = EmbedVideoField(
+        null=True,
+        help_text="The project's video."
     )
     owner = models.ForeignKey(
         to='users.ForumUser',
