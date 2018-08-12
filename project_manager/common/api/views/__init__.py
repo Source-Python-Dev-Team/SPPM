@@ -3,6 +3,9 @@
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
+# Django
+from django.db import IntegrityError
+
 # 3rd-Party Django
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.authentication import SessionAuthentication
@@ -11,6 +14,7 @@ from rest_framework.filters import OrderingFilter
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, SAFE_METHODS
 from rest_framework.response import Response
 from rest_framework.reverse import reverse
+from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 
@@ -126,7 +130,18 @@ class ProjectViewSet(ModelViewSet):
     def create(self, request, *args, **kwargs):
         """Store the many-to-many fields before creation."""
         self.store_many_to_many_fields(request=request)
-        return super().create(request, *args, **kwargs)
+        try:
+            return super().create(request, *args, **kwargs)
+        except IntegrityError:
+            return Response(
+                data={
+                    'error': (
+                        f'{self.queryset.model.__name__} already exists. '
+                        'Cannot create.'
+                    )
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
     def get_serializer_class(self):
         """Return the serializer class for the current method."""
