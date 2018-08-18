@@ -34,13 +34,12 @@ __all__ = (
 # =============================================================================
 def get_sub_plugin_basename(zip_file, plugin):
     """Return the sub-plugin's basename."""
-    # TODO: add 'path' validation
     file_list = get_file_list(zip_file)
     basename, path = _find_basename_and_path(file_list, plugin)
+
+    # TODO: add 'path' validation
     validate_basename(basename=basename, project_type='sub-plugin')
 
-    # TODO: see if 'path' is needed for anything at this point
-    # return basename, path
     return basename
 
 
@@ -120,7 +119,7 @@ def _find_basename_and_path(file_list, plugin):
     file_path_start = f'{PLUGIN_PATH}{plugin_name}/'
     path = None
     basename = None
-    paths = [x[0] for x in plugin.paths.values_list('path')]
+    paths = list(plugin.paths.values_list('path', flat=True))
     for file_path in file_list:
         if not file_path.endswith('.py'):
             continue
