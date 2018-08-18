@@ -18,10 +18,14 @@ from project_manager.common.models import (
     ProjectGame,
     ProjectImage,
     ProjectRelease,
+    ProjectReleaseDownloadRequirement,
+    ProjectReleasePackageRequirement,
+    ProjectReleasePyPiRequirement,
+    ProjectReleaseVersionControlRequirement,
     ProjectTag,
 )
 from project_manager.common.validators import basename_validator
-from .abstract import SubPluginThroughBase
+from .abstract import SubPluginReleaseThroughBase, SubPluginThroughBase
 from ..constants import SUB_PLUGIN_LOGO_URL
 from ..helpers import (
     handle_sub_plugin_image_upload,
@@ -124,6 +128,26 @@ class SubPluginRelease(ProjectRelease):
         related_name='releases',
         on_delete=models.CASCADE,
     )
+    download_requirements = models.ManyToManyField(
+        to='requirements.DownloadRequirement',
+        related_name='required_in_sub_plugin_releases',
+        through='sub_plugins.SubPluginReleaseDownloadRequirement',
+    )
+    package_requirements = models.ManyToManyField(
+        to='packages.Package',
+        related_name='required_in_sub_plugin_releases',
+        through='sub_plugins.SubPluginReleasePackageRequirement',
+    )
+    pypi_requirements = models.ManyToManyField(
+        to='requirements.PyPiRequirement',
+        related_name='required_in_sub_plugin_releases',
+        through='sub_plugins.SubPluginReleasePyPiRequirement',
+    )
+    vcs_requirements = models.ManyToManyField(
+        to='requirements.VersionControlRequirement',
+        related_name='required_in_sub_plugin_releases',
+        through='sub_plugins.SubPluginReleaseVersionControlRequirement',
+    )
 
     handle_zip_file_upload = handle_sub_plugin_zip_upload
     project_class = SubPlugin
@@ -176,3 +200,39 @@ class SubPluginTag(ProjectTag, SubPluginThroughBase):
 
     class Meta:
         unique_together = ('sub_plugin', 'tag')
+
+
+class SubPluginReleaseDownloadRequirement(
+    ProjectReleaseDownloadRequirement, SubPluginReleaseThroughBase
+):
+    """"""
+
+    class Meta:
+        unique_together = ('sub_plugin_release', 'download_requirement')
+
+
+class SubPluginReleasePackageRequirement(
+    ProjectReleasePackageRequirement, SubPluginReleaseThroughBase
+):
+    """"""
+
+    class Meta:
+        unique_together = ('sub_plugin_release', 'package_requirement')
+
+
+class SubPluginReleasePyPiRequirement(
+    ProjectReleasePyPiRequirement, SubPluginReleaseThroughBase
+):
+    """"""
+
+    class Meta:
+        unique_together = ('sub_plugin_release', 'pypi_requirement')
+
+
+class SubPluginReleaseVersionControlRequirement(
+    ProjectReleaseVersionControlRequirement, SubPluginReleaseThroughBase
+):
+    """"""
+
+    class Meta:
+        unique_together = ('sub_plugin_release', 'vcs_requirement')

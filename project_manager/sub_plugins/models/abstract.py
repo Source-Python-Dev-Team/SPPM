@@ -11,6 +11,7 @@ from django.db import models
 # >> ALL DECLARATION
 # =============================================================================
 __all__ = (
+    'SubPluginReleaseThroughBase',
     'SubPluginThroughBase',
 )
 
@@ -30,6 +31,18 @@ class SubPluginThroughBase(models.Model):
     def project(self):
         """Return the SubPlugin."""
         return self.sub_plugin
+
+    class Meta:
+        abstract = True
+
+
+class SubPluginReleaseThroughBase(models.Model):
+    """Base through model class for Packages."""
+
+    sub_plugin_release = models.ForeignKey(
+        to='sub_plugins.SubPluginRelease',
+        on_delete=models.CASCADE,
+    )
 
     class Meta:
         abstract = True

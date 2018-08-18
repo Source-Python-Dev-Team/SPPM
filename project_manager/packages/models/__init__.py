@@ -25,7 +25,7 @@ from project_manager.common.models import (
     ProjectTag,
 )
 from project_manager.common.validators import basename_validator
-from .abstract import PackageThroughBase, PackageReleaseThroughBase
+from .abstract import PackageReleaseThroughBase, PackageThroughBase
 from ..constants import PACKAGE_LOGO_URL
 from ..helpers import (
     handle_package_image_upload,
@@ -124,7 +124,7 @@ class PackageRelease(ProjectRelease):
     vcs_requirements = models.ManyToManyField(
         to='requirements.VersionControlRequirement',
         related_name='required_in_package_releases',
-        through='PackageReleaseVersionControlRequirement',
+        through='packages.PackageReleaseVersionControlRequirement',
     )
 
     handle_zip_file_upload = handle_package_zip_upload

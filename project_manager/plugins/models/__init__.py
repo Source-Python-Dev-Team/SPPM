@@ -19,11 +19,15 @@ from project_manager.common.models import (
     ProjectGame,
     ProjectImage,
     ProjectRelease,
+    ProjectReleaseDownloadRequirement,
+    ProjectReleasePackageRequirement,
+    ProjectReleasePyPiRequirement,
+    ProjectReleaseVersionControlRequirement,
     ProjectTag,
 )
 from project_manager.common.validators import basename_validator
 from project_manager.models import AbstractUUIDPrimaryKeyModel
-from .abstract import PluginThroughBase
+from .abstract import PluginReleaseThroughBase, PluginThroughBase
 from ..constants import PLUGIN_LOGO_URL, PATH_MAX_LENGTH
 from ..helpers import (
     handle_plugin_image_upload,
@@ -42,6 +46,10 @@ __all__ = (
     'PluginGame',
     'PluginImage',
     'PluginRelease',
+    'PluginReleaseDownloadRequirement',
+    'PluginReleasePackageRequirement',
+    'PluginReleasePyPiRequirement',
+    'PluginReleaseVersionControlRequirement',
     'PluginTag',
     'SubPluginPath',
 )
@@ -101,6 +109,26 @@ class PluginRelease(ProjectRelease):
         to='plugins.Plugin',
         related_name='releases',
         on_delete=models.CASCADE,
+    )
+    download_requirements = models.ManyToManyField(
+        to='requirements.DownloadRequirement',
+        related_name='required_in_plugin_releases',
+        through='plugins.PluginReleaseDownloadRequirement',
+    )
+    package_requirements = models.ManyToManyField(
+        to='packages.Package',
+        related_name='required_in_plugin_releases',
+        through='plugins.PluginReleasePackageRequirement',
+    )
+    pypi_requirements = models.ManyToManyField(
+        to='requirements.PyPiRequirement',
+        related_name='required_in_plugin_releases',
+        through='plugins.PluginReleasePyPiRequirement',
+    )
+    vcs_requirements = models.ManyToManyField(
+        to='requirements.VersionControlRequirement',
+        related_name='required_in_plugin_releases',
+        through='plugins.PluginReleaseVersionControlRequirement',
     )
 
     handle_zip_file_upload = handle_plugin_zip_upload
@@ -212,3 +240,39 @@ class SubPluginPath(AbstractUUIDPrimaryKeyModel):
                 'slug': self.plugin.slug,
             }
         )
+
+
+class PluginReleaseDownloadRequirement(
+    ProjectReleaseDownloadRequirement, PluginReleaseThroughBase
+):
+    """"""
+
+    class Meta:
+        unique_together = ('plugin_release', 'download_requirement')
+
+
+class PluginReleasePackageRequirement(
+    ProjectReleasePackageRequirement, PluginReleaseThroughBase
+):
+    """"""
+
+    class Meta:
+        unique_together = ('plugin_release', 'package_requirement')
+
+
+class PluginReleasePyPiRequirement(
+    ProjectReleasePyPiRequirement, PluginReleaseThroughBase
+):
+    """"""
+
+    class Meta:
+        unique_together = ('plugin_release', 'pypi_requirement')
+
+
+class PluginReleaseVersionControlRequirement(
+    ProjectReleaseVersionControlRequirement, PluginReleaseThroughBase
+):
+    """"""
+
+    class Meta:
+        unique_together = ('plugin_release', 'vcs_requirement')
