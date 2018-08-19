@@ -69,6 +69,6 @@ class ProjectTagInline(admin.TabularInline):
         'tag',
     )
 
-    def has_add_permission(self, request):
+    def has_add_permission(self, request, obj):
         """Disallow adding new tags in the Admin."""
         return False

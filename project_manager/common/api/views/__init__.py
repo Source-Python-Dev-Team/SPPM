@@ -166,11 +166,6 @@ class ProjectViewSet(ModelViewSet):
             return self._obj
         return super().get_view_name()
 
-    def get_object(self):
-        """Store the project so it can easily be retrieved."""
-        self._obj = super().get_object()
-        return self._obj
-
 
 class ProjectImageViewSet(ProjectThroughModelMixin):
     """Base Image View."""

@@ -7,7 +7,7 @@ django-debug-toolbar==1.9.1
 django-embed-video==1.1.2
 django-filter==2.0.0
 django-model-utils==3.1.2
-django-precise-bbcode==1.2.9
+django-precise-bbcode==1.2.10
 djangorestframework==3.8.2
 markdown==2.6.11
 path.py==11.0.1
