@@ -37,6 +37,10 @@ from ..models import (
     PluginGame,
     PluginImage,
     PluginRelease,
+    PluginReleaseDownloadRequirement,
+    PluginReleasePackageRequirement,
+    PluginReleasePyPiRequirement,
+    PluginReleaseVersionControlRequirement,
     PluginTag,
     SubPluginPath,
 )
@@ -148,6 +152,39 @@ class PluginReleaseViewSet(ProjectReleaseViewSet):
 
     queryset = PluginRelease.objects.select_related(
         'plugin',
+    ).prefetch_related(
+        Prefetch(
+            lookup='pluginreleasepackagerequirement_set',
+            queryset=PluginReleasePackageRequirement.objects.order_by(
+                'package_requirement__name',
+            ).select_related(
+                'package_requirement',
+            )
+        ),
+        Prefetch(
+            lookup='pluginreleasedownloadrequirement_set',
+            queryset=PluginReleaseDownloadRequirement.objects.order_by(
+                'download_requirement__url',
+            ).select_related(
+                'download_requirement',
+            )
+        ),
+        Prefetch(
+            lookup='pluginreleasepypirequirement_set',
+            queryset=PluginReleasePyPiRequirement.objects.order_by(
+                'pypi_requirement__name',
+            ).select_related(
+                'pypi_requirement',
+            )
+        ),
+        Prefetch(
+            lookup='pluginreleaseversioncontrolrequirement_set',
+            queryset=PluginReleaseVersionControlRequirement.objects.order_by(
+                'vcs_requirement__name',
+            ).select_related(
+                'vcs_requirement',
+            )
+        ),
     )
     serializer_class = PluginReleaseSerializer
 

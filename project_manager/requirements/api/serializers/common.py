@@ -4,58 +4,63 @@
 # >> IMPORTS
 # =============================================================================
 # 3rd-Party Django
+from rest_framework.fields import ReadOnlyField
 from rest_framework.serializers import ModelSerializer
-
-# App
-from project_manager.requirements.models import (
-    DownloadRequirement,
-    PyPiRequirement,
-    VersionControlRequirement,
-)
 
 
 # =============================================================================
 # >> ALL DECLARATION
 # =============================================================================
 __all__ = (
-    'RequiredDownloadSerializer',
-    'RequiredPyPiSerializer',
-    'RequiredVersionControlSerializer',
+    'ReleaseDownloadRequirementSerializer',
+    'ReleasePyPiRequirementSerializer',
+    'ReleaseVersionControlRequirementSerializer',
 )
 
 
 # =============================================================================
 # >> SERIALIZERS
 # =============================================================================
-class RequiredDownloadSerializer(ModelSerializer):
-    """Serializer for listing required Downloads for projects."""
+class ReleaseDownloadRequirementSerializer(ModelSerializer):
+    """"""
+
+    url = ReadOnlyField(source='download_requirement.url')
 
     class Meta:
-        model = DownloadRequirement
         fields = (
-            'name',
-            'description',
             'url',
         )
 
 
-class RequiredPyPiSerializer(ModelSerializer):
+class ReleasePyPiRequirementSerializer(ModelSerializer):
     """Serializer for listing required PyPis for projects."""
 
+    name = ReadOnlyField(source='pypi_requirement.name')
+    slug = ReadOnlyField(source='pypi_requirement.slug')
+    version = ReadOnlyField()
+
     class Meta:
-        model = PyPiRequirement
         fields = (
             'name',
+            'slug',
+            'version',
+            'optional',
         )
 
 
-class RequiredVersionControlSerializer(ModelSerializer):
+class ReleaseVersionControlRequirementSerializer(ModelSerializer):
     """Serializer for listing required VCS for projects."""
 
+    name = ReadOnlyField(source='vcs_requirement.name')
+    type = ReadOnlyField(source='vcs_requirement.vcs_type')
+    url = ReadOnlyField(source='vcs_requirement.url')
+    version = ReadOnlyField()
+
     class Meta:
-        model = VersionControlRequirement
         fields = (
             'name',
-            'vcs_type',
-            'url'
+            'type',
+            'url',
+            'version',
+            'optional',
         )

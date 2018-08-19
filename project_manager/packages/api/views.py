@@ -32,6 +32,10 @@ from ..models import (
     PackageGame,
     PackageImage,
     PackageRelease,
+    PackageReleaseDownloadRequirement,
+    PackageReleasePackageRequirement,
+    PackageReleasePyPiRequirement,
+    PackageReleaseVersionControlRequirement,
     PackageTag,
 )
 
@@ -132,6 +136,39 @@ class PackageReleaseViewSet(ProjectReleaseViewSet):
 
     queryset = PackageRelease.objects.select_related(
         'package',
+    ).prefetch_related(
+        Prefetch(
+            lookup='packagereleasepackagerequirement_set',
+            queryset=PackageReleasePackageRequirement.objects.order_by(
+                'package_requirement__name',
+            ).select_related(
+                'package_requirement',
+            )
+        ),
+        Prefetch(
+            lookup='packagereleasedownloadrequirement_set',
+            queryset=PackageReleaseDownloadRequirement.objects.order_by(
+                'download_requirement__url',
+            ).select_related(
+                'download_requirement',
+            )
+        ),
+        Prefetch(
+            lookup='packagereleasepypirequirement_set',
+            queryset=PackageReleasePyPiRequirement.objects.order_by(
+                'pypi_requirement__name',
+            ).select_related(
+                'pypi_requirement',
+            )
+        ),
+        Prefetch(
+            lookup='packagereleaseversioncontrolrequirement_set',
+            queryset=PackageReleaseVersionControlRequirement.objects.order_by(
+                'vcs_requirement__name',
+            ).select_related(
+                'vcs_requirement',
+            )
+        ),
     )
     serializer_class = PackageReleaseSerializer
 

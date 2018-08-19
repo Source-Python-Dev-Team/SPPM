@@ -17,14 +17,26 @@ from project_manager.common.api.serializers import (
     ProjectTagSerializer,
 )
 from project_manager.common.api.serializers.mixins import ProjectThroughMixin
+from project_manager.packages.api.serializers.common import (
+    ReleasePackageRequirementSerializer,
+)
 from project_manager.plugins.models import (
     Plugin,
     PluginContributor,
     PluginGame,
     PluginImage,
     PluginRelease,
+    PluginReleaseDownloadRequirement,
+    PluginReleasePackageRequirement,
+    PluginReleasePyPiRequirement,
+    PluginReleaseVersionControlRequirement,
     PluginTag,
     SubPluginPath,
+)
+from project_manager.requirements.api.serializers.common import (
+    ReleaseDownloadRequirementSerializer,
+    ReleasePyPiRequirementSerializer,
+    ReleaseVersionControlRequirementSerializer,
 )
 from .mixins import PluginReleaseBase
 
@@ -56,8 +68,63 @@ class PluginImageSerializer(ProjectImageSerializer):
         model = PluginImage
 
 
+class PluginReleasePackageRequirementSerializer(
+    ReleasePackageRequirementSerializer
+):
+    """"""
+
+    class Meta(ReleasePackageRequirementSerializer.Meta):
+        model = PluginReleasePackageRequirement
+
+
+class PluginReleaseDownloadRequirementSerializer(
+    ReleaseDownloadRequirementSerializer
+):
+    """"""
+
+    class Meta(ReleaseDownloadRequirementSerializer.Meta):
+        model = PluginReleaseDownloadRequirement
+
+
+class PluginReleasePyPiRequirementSerializer(ReleasePyPiRequirementSerializer):
+    """"""
+
+    class Meta(ReleasePyPiRequirementSerializer.Meta):
+        model = PluginReleasePyPiRequirement
+
+
+class PluginReleaseVersionControlRequirementSerializer(
+    ReleaseVersionControlRequirementSerializer
+):
+    """"""
+
+    class Meta(ReleaseVersionControlRequirementSerializer.Meta):
+        model = PluginReleaseVersionControlRequirement
+
+
 class PluginReleaseSerializer(PluginReleaseBase, ProjectReleaseSerializer):
     """Serializer for listing Plugin releases."""
+
+    download_requirements = PluginReleaseDownloadRequirementSerializer(
+        source='pluginreleasedownloadrequirement_set',
+        read_only=True,
+        many=True,
+    )
+    package_requirements = PluginReleasePackageRequirementSerializer(
+        source='pluginreleasepackagerequirement_set',
+        read_only=True,
+        many=True,
+    )
+    pypi_requirements = PluginReleasePyPiRequirementSerializer(
+        source='pluginreleasepypirequirement_set',
+        read_only=True,
+        many=True,
+    )
+    vcs_requirements = PluginReleaseVersionControlRequirementSerializer(
+        source='pluginreleaseversioncontrolrequirement_set',
+        read_only=True,
+        many=True,
+    )
 
     class Meta(ProjectReleaseSerializer.Meta):
         model = PluginRelease

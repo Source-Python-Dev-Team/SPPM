@@ -11,7 +11,12 @@ from django.utils.timezone import now
 
 # 3rd-Party Django
 from rest_framework.exceptions import ValidationError
-from rest_framework.fields import CharField, FileField, IntegerField, SerializerMethodField
+from rest_framework.fields import (
+    CharField,
+    FileField,
+    IntegerField,
+    SerializerMethodField,
+)
 from rest_framework.reverse import reverse
 from rest_framework.serializers import ModelSerializer
 
@@ -23,14 +28,6 @@ from project_manager.common.constants import (
 from project_manager.games.api.serializers import GameSerializer
 from project_manager.games.constants import GAME_SLUG_MAX_LENGTH
 from project_manager.games.models import Game
-from project_manager.packages.api.serializers.common import (
-    PackageRequirementSerializer
-)
-from project_manager.requirements.api.serializers.common import (
-    RequiredDownloadSerializer,
-    RequiredPyPiSerializer,
-    RequiredVersionControlSerializer,
-)
 from project_manager.tags.constants import TAG_NAME_MAX_LENGTH
 from project_manager.tags.models import Tag
 from project_manager.users.api.serializers.common import (

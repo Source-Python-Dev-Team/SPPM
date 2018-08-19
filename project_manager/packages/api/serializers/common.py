@@ -4,6 +4,7 @@
 # >> IMPORTS
 # =============================================================================
 # 3rd-Party Django
+from rest_framework.fields import ReadOnlyField
 from rest_framework.serializers import ModelSerializer
 
 # App
@@ -14,19 +15,24 @@ from project_manager.packages.models import Package
 # >> ALL DECLARATION
 # =============================================================================
 __all__ = (
-    'PackageRequirementSerializer',
+    'ReleasePackageRequirementSerializer',
 )
 
 
 # =============================================================================
 # >> SERIALIZERS
 # =============================================================================
-class PackageRequirementSerializer(ModelSerializer):
+class ReleasePackageRequirementSerializer(ModelSerializer):
     """Serializer for Package requirements."""
 
+    name = ReadOnlyField(source='package_requirement.name')
+    slug = ReadOnlyField(source='package_requirement.slug')
+    version = ReadOnlyField()
+
     class Meta:
-        model = Package
         fields = (
             'name',
             'slug',
+            'version',
+            'optional',
         )

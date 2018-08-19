@@ -36,6 +36,10 @@ from ..models import (
     SubPluginGame,
     SubPluginImage,
     SubPluginRelease,
+    SubPluginReleaseDownloadRequirement,
+    SubPluginReleasePackageRequirement,
+    SubPluginReleasePyPiRequirement,
+    SubPluginReleaseVersionControlRequirement,
     SubPluginTag,
 )
 
@@ -170,6 +174,39 @@ class SubPluginReleaseViewSet(ProjectReleaseViewSet):
 
     queryset = SubPluginRelease.objects.select_related(
         'sub_plugin',
+    ).prefetch_related(
+        Prefetch(
+            lookup='subpluginreleasepackagerequirement_set',
+            queryset=SubPluginReleasePackageRequirement.objects.order_by(
+                'package_requirement__name',
+            ).select_related(
+                'package_requirement',
+            )
+        ),
+        Prefetch(
+            lookup='subpluginreleasedownloadrequirement_set',
+            queryset=SubPluginReleaseDownloadRequirement.objects.order_by(
+                'download_requirement__url',
+            ).select_related(
+                'download_requirement',
+            )
+        ),
+        Prefetch(
+            lookup='subpluginreleasepypirequirement_set',
+            queryset=SubPluginReleasePyPiRequirement.objects.order_by(
+                'pypi_requirement__name',
+            ).select_related(
+                'pypi_requirement',
+            )
+        ),
+        Prefetch(
+            lookup='subpluginreleaseversioncontrolrequirement_set',
+            queryset=SubPluginReleaseVersionControlRequirement.objects.order_by(
+                'vcs_requirement__name',
+            ).select_related(
+                'vcs_requirement',
+            )
+        ),
     )
     serializer_class = SubPluginReleaseSerializer
 

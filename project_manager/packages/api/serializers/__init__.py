@@ -13,13 +13,25 @@ from project_manager.common.api.serializers import (
     ProjectSerializer,
     ProjectTagSerializer,
 )
+from project_manager.packages.api.serializers.common import (
+    ReleasePackageRequirementSerializer,
+)
 from project_manager.packages.models import (
     Package,
     PackageContributor,
     PackageGame,
     PackageImage,
     PackageRelease,
+    PackageReleaseDownloadRequirement,
+    PackageReleasePackageRequirement,
+    PackageReleasePyPiRequirement,
+    PackageReleaseVersionControlRequirement,
     PackageTag,
+)
+from project_manager.requirements.api.serializers.common import (
+    ReleaseDownloadRequirementSerializer,
+    ReleasePyPiRequirementSerializer,
+    ReleaseVersionControlRequirementSerializer,
 )
 from .mixins import PackageReleaseBase
 
@@ -49,8 +61,63 @@ class PackageImageSerializer(ProjectImageSerializer):
         model = PackageImage
 
 
+class PackageReleasePackageRequirementSerializer(
+    ReleasePackageRequirementSerializer
+):
+    """"""
+
+    class Meta(ReleasePackageRequirementSerializer.Meta):
+        model = PackageReleasePackageRequirement
+
+
+class PackageReleaseDownloadRequirementSerializer(
+    ReleaseDownloadRequirementSerializer
+):
+    """"""
+
+    class Meta(ReleaseDownloadRequirementSerializer.Meta):
+        model = PackageReleaseDownloadRequirement
+
+
+class PackageReleasePyPiRequirementSerializer(ReleasePyPiRequirementSerializer):
+    """"""
+
+    class Meta(ReleasePyPiRequirementSerializer.Meta):
+        model = PackageReleasePyPiRequirement
+
+
+class PackageReleaseVersionControlRequirementSerializer(
+    ReleaseVersionControlRequirementSerializer
+):
+    """"""
+
+    class Meta(ReleaseVersionControlRequirementSerializer.Meta):
+        model = PackageReleaseVersionControlRequirement
+
+
 class PackageReleaseSerializer(PackageReleaseBase, ProjectReleaseSerializer):
     """Serializer for listing Package releases."""
+
+    download_requirements = PackageReleaseDownloadRequirementSerializer(
+        source='packagereleasedownloadrequirement_set',
+        read_only=True,
+        many=True,
+    )
+    package_requirements = PackageReleasePackageRequirementSerializer(
+        source='packagereleasepackagerequirement_set',
+        read_only=True,
+        many=True,
+    )
+    pypi_requirements = PackageReleasePyPiRequirementSerializer(
+        source='packagereleasepypirequirement_set',
+        read_only=True,
+        many=True,
+    )
+    vcs_requirements = PackageReleaseVersionControlRequirementSerializer(
+        source='packagereleaseversioncontrolrequirement_set',
+        read_only=True,
+        many=True,
+    )
 
     class Meta(ProjectReleaseSerializer.Meta):
         model = PackageRelease

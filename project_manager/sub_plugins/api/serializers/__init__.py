@@ -16,13 +16,25 @@ from project_manager.common.api.serializers import (
     ProjectSerializer,
     ProjectTagSerializer,
 )
+from project_manager.packages.api.serializers.common import (
+    ReleasePackageRequirementSerializer,
+)
 from project_manager.plugins.models import Plugin
+from project_manager.requirements.api.serializers.common import (
+    ReleaseDownloadRequirementSerializer,
+    ReleasePyPiRequirementSerializer,
+    ReleaseVersionControlRequirementSerializer,
+)
 from project_manager.sub_plugins.models import (
     SubPlugin,
     SubPluginContributor,
     SubPluginGame,
     SubPluginImage,
     SubPluginRelease,
+    SubPluginReleaseDownloadRequirement,
+    SubPluginReleasePackageRequirement,
+    SubPluginReleasePyPiRequirement,
+    SubPluginReleaseVersionControlRequirement,
     SubPluginTag,
 )
 from .mixins import SubPluginReleaseBase
@@ -53,10 +65,63 @@ class SubPluginImageSerializer(ProjectImageSerializer):
         model = SubPluginImage
 
 
+class SubPluginReleasePackageRequirementSerializer(
+    ReleasePackageRequirementSerializer
+):
+    """"""
+
+    class Meta(ReleasePackageRequirementSerializer.Meta):
+        model = SubPluginReleasePackageRequirement
+
+
+class SubPluginReleaseDownloadRequirementSerializer(ReleaseDownloadRequirementSerializer):
+    """"""
+
+    class Meta(ReleaseDownloadRequirementSerializer.Meta):
+        model = SubPluginReleaseDownloadRequirement
+
+
+class SubPluginReleasePyPiRequirementSerializer(ReleasePyPiRequirementSerializer):
+    """"""
+
+    class Meta(ReleasePyPiRequirementSerializer.Meta):
+        model = SubPluginReleasePyPiRequirement
+
+
+class SubPluginReleaseVersionControlRequirementSerializer(
+    ReleaseVersionControlRequirementSerializer
+):
+    """"""
+
+    class Meta(ReleaseVersionControlRequirementSerializer.Meta):
+        model = SubPluginReleaseVersionControlRequirement
+
+
 class SubPluginReleaseSerializer(
     SubPluginReleaseBase, ProjectReleaseSerializer
 ):
     """Serializer for listing Plugin releases."""
+
+    download_requirements = SubPluginReleaseDownloadRequirementSerializer(
+        source='subpluginreleasedownloadrequirement_set',
+        read_only=True,
+        many=True,
+    )
+    package_requirements = SubPluginReleasePackageRequirementSerializer(
+        source='subpluginreleasepackagerequirement_set',
+        read_only=True,
+        many=True,
+    )
+    pypi_requirements = SubPluginReleasePyPiRequirementSerializer(
+        source='subpluginreleasepypirequirement_set',
+        read_only=True,
+        many=True,
+    )
+    vcs_requirements = SubPluginReleaseVersionControlRequirementSerializer(
+        source='subpluginreleaseversioncontrolrequirement_set',
+        read_only=True,
+        many=True,
+    )
 
     class Meta(ProjectReleaseSerializer.Meta):
         model = SubPluginRelease
