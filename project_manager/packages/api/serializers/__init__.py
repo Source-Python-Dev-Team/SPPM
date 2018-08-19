@@ -64,7 +64,7 @@ class PackageImageSerializer(ProjectImageSerializer):
 class PackageReleasePackageRequirementSerializer(
     ReleasePackageRequirementSerializer
 ):
-    """"""
+    """Serializer for Package Release Package requirements."""
 
     class Meta(ReleasePackageRequirementSerializer.Meta):
         model = PackageReleasePackageRequirement
@@ -73,14 +73,16 @@ class PackageReleasePackageRequirementSerializer(
 class PackageReleaseDownloadRequirementSerializer(
     ReleaseDownloadRequirementSerializer
 ):
-    """"""
+    """Serializer for Package Release Download requirements."""
 
     class Meta(ReleaseDownloadRequirementSerializer.Meta):
         model = PackageReleaseDownloadRequirement
 
 
-class PackageReleasePyPiRequirementSerializer(ReleasePyPiRequirementSerializer):
-    """"""
+class PackageReleasePyPiRequirementSerializer(
+    ReleasePyPiRequirementSerializer
+):
+    """Serializer for Package Release PyPi requirements."""
 
     class Meta(ReleasePyPiRequirementSerializer.Meta):
         model = PackageReleasePyPiRequirement
@@ -89,7 +91,7 @@ class PackageReleasePyPiRequirementSerializer(ReleasePyPiRequirementSerializer):
 class PackageReleaseVersionControlRequirementSerializer(
     ReleaseVersionControlRequirementSerializer
 ):
-    """"""
+    """Serializer for Package Release VCS requirements."""
 
     class Meta(ReleaseVersionControlRequirementSerializer.Meta):
         model = PackageReleaseVersionControlRequirement

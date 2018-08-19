@@ -18,7 +18,7 @@ __all__ = (
 # =============================================================================
 # >> MIX-INS
 # =============================================================================
-class RetrievePackageMixin(object):
+class RetrievePackageMixin:
     """Mixin to retrieve the Package for the view."""
 
     _package = None

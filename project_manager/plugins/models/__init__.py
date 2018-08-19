@@ -245,7 +245,7 @@ class SubPluginPath(AbstractUUIDPrimaryKeyModel):
 class PluginReleaseDownloadRequirement(
     ProjectReleaseDownloadRequirement, PluginReleaseThroughBase
 ):
-    """"""
+    """Plugin Download Requirement for Release model."""
 
     class Meta:
         unique_together = ('plugin_release', 'download_requirement')
@@ -254,7 +254,7 @@ class PluginReleaseDownloadRequirement(
 class PluginReleasePackageRequirement(
     ProjectReleasePackageRequirement, PluginReleaseThroughBase
 ):
-    """"""
+    """Plugin Package Requirement for Release model."""
 
     class Meta:
         unique_together = ('plugin_release', 'package_requirement')
@@ -263,7 +263,7 @@ class PluginReleasePackageRequirement(
 class PluginReleasePyPiRequirement(
     ProjectReleasePyPiRequirement, PluginReleaseThroughBase
 ):
-    """"""
+    """Plugin PyPi Requirement for Release model."""
 
     class Meta:
         unique_together = ('plugin_release', 'pypi_requirement')
@@ -272,7 +272,7 @@ class PluginReleasePyPiRequirement(
 class PluginReleaseVersionControlRequirement(
     ProjectReleaseVersionControlRequirement, PluginReleaseThroughBase
 ):
-    """"""
+    """Plugin VCS Requirement for Release model."""
 
     class Meta:
         unique_together = ('plugin_release', 'vcs_requirement')

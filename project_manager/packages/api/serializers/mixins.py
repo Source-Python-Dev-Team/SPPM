@@ -19,7 +19,7 @@ __all__ = (
 # =============================================================================
 # >> MIXINS
 # =============================================================================
-class PackageReleaseBase(object):
+class PackageReleaseBase:
     """Serializer for listing Package releases."""
 
     project_class = Package

@@ -24,7 +24,7 @@ __all__ = (
 # =============================================================================
 # >> MIXINS
 # =============================================================================
-class ProjectLocaleMixin(object):
+class ProjectLocaleMixin:
     """Mixin for getting the locale for timestamps."""
 
     def get_date_time_dict(self, timestamp):

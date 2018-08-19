@@ -19,7 +19,7 @@ __all__ = (
 # =============================================================================
 # >> MIXINS
 # =============================================================================
-class PluginReleaseBase(object):
+class PluginReleaseBase:
     """Serializer for listing Plugin releases."""
 
     project_class = Plugin

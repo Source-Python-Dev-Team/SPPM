@@ -7,9 +7,6 @@
 from rest_framework.fields import ReadOnlyField
 from rest_framework.serializers import ModelSerializer
 
-# App
-from project_manager.packages.models import Package
-
 
 # =============================================================================
 # >> ALL DECLARATION

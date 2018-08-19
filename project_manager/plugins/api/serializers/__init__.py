@@ -71,7 +71,7 @@ class PluginImageSerializer(ProjectImageSerializer):
 class PluginReleasePackageRequirementSerializer(
     ReleasePackageRequirementSerializer
 ):
-    """"""
+    """Serializer for Plugin Release Package requirements."""
 
     class Meta(ReleasePackageRequirementSerializer.Meta):
         model = PluginReleasePackageRequirement
@@ -80,14 +80,14 @@ class PluginReleasePackageRequirementSerializer(
 class PluginReleaseDownloadRequirementSerializer(
     ReleaseDownloadRequirementSerializer
 ):
-    """"""
+    """Serializer for Plugin Release Download requirements."""
 
     class Meta(ReleaseDownloadRequirementSerializer.Meta):
         model = PluginReleaseDownloadRequirement
 
 
 class PluginReleasePyPiRequirementSerializer(ReleasePyPiRequirementSerializer):
-    """"""
+    """Serializer for Plugin Release PyPi requirements."""
 
     class Meta(ReleasePyPiRequirementSerializer.Meta):
         model = PluginReleasePyPiRequirement
@@ -96,7 +96,7 @@ class PluginReleasePyPiRequirementSerializer(ReleasePyPiRequirementSerializer):
 class PluginReleaseVersionControlRequirementSerializer(
     ReleaseVersionControlRequirementSerializer
 ):
-    """"""
+    """Serializer for Plugin Release VCS requirements."""
 
     class Meta(ReleaseVersionControlRequirementSerializer.Meta):
         model = PluginReleaseVersionControlRequirement

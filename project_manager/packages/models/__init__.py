@@ -182,7 +182,7 @@ class PackageTag(ProjectTag, PackageThroughBase):
 class PackageReleaseDownloadRequirement(
     ProjectReleaseDownloadRequirement, PackageReleaseThroughBase
 ):
-    """"""
+    """Package Download Requirement for Release model."""
 
     class Meta:
         unique_together = ('package_release', 'download_requirement')
@@ -191,7 +191,7 @@ class PackageReleaseDownloadRequirement(
 class PackageReleasePackageRequirement(
     ProjectReleasePackageRequirement, PackageReleaseThroughBase
 ):
-    """"""
+    """Package Package Requirement for Release model."""
 
     class Meta:
         unique_together = ('package_release', 'package_requirement')
@@ -200,7 +200,7 @@ class PackageReleasePackageRequirement(
 class PackageReleasePyPiRequirement(
     ProjectReleasePyPiRequirement, PackageReleaseThroughBase
 ):
-    """"""
+    """Package PyPi Requirement for Release model."""
 
     class Meta:
         unique_together = ('package_release', 'pypi_requirement')
@@ -209,7 +209,7 @@ class PackageReleasePyPiRequirement(
 class PackageReleaseVersionControlRequirement(
     ProjectReleaseVersionControlRequirement, PackageReleaseThroughBase
 ):
-    """"""
+    """Package VCS Requirement for Release model."""
 
     class Meta:
         unique_together = ('package_release', 'vcs_requirement')

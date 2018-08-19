@@ -22,13 +22,14 @@ __all__ = (
 # >> SERIALIZERS
 # =============================================================================
 class ReleaseDownloadRequirementSerializer(ModelSerializer):
-    """"""
+    """Serializer for listing required downloads for projects."""
 
     url = ReadOnlyField(source='download_requirement.url')
 
     class Meta:
         fields = (
             'url',
+            'optional',
         )
 
 

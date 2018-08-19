@@ -23,7 +23,7 @@ __all__ = (
 # =============================================================================
 # >> HELPERS
 # =============================================================================
-class _PageObject(object):
+class _PageObject:
     def __init__(self, display, url):
         self.display = display
         self.url = url

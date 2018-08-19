@@ -366,7 +366,7 @@ class ProjectTag(AbstractUUIDPrimaryKeyModel):
 
 
 class ProjectReleasePackageRequirement(AbstractUUIDPrimaryKeyModel):
-    """"""
+    """Base Package requirement model."""
 
     package_requirement = models.ForeignKey(
         to='packages.Package',
@@ -388,12 +388,12 @@ class ProjectReleasePackageRequirement(AbstractUUIDPrimaryKeyModel):
         abstract = True
 
     def __str__(self):
-        """"""
-        return 'Project Package Requirement'
+        """Return the requirement's name and version."""
+        return f'{self.package_requirement.name} - {self.version}'
 
 
 class ProjectReleasePyPiRequirement(AbstractUUIDPrimaryKeyModel):
-    """"""
+    """Base PyPi requirement model."""
 
     pypi_requirement = models.ForeignKey(
         to='requirements.PyPiRequirement',
@@ -414,12 +414,12 @@ class ProjectReleasePyPiRequirement(AbstractUUIDPrimaryKeyModel):
         abstract = True
 
     def __str__(self):
-        """"""
-        return 'Project PyPi Requirement'
+        """Return the requirement's name and version."""
+        return f'{self.pypi_requirement.name} - {self.version}'
 
 
 class ProjectReleaseVersionControlRequirement(AbstractUUIDPrimaryKeyModel):
-    """"""
+    """Base VCS requirement model."""
 
     vcs_requirement = models.ForeignKey(
         to='requirements.VersionControlRequirement',
@@ -440,12 +440,12 @@ class ProjectReleaseVersionControlRequirement(AbstractUUIDPrimaryKeyModel):
         abstract = True
 
     def __str__(self):
-        """"""
-        return 'Project Version Control Requirement'
+        """Return the requirement's name and version."""
+        return f'{self.vcs_requirement.name} - {self.version}'
 
 
 class ProjectReleaseDownloadRequirement(AbstractUUIDPrimaryKeyModel):
-    """"""
+    """Base Download requirement model."""
 
     download_requirement = models.ForeignKey(
         to='requirements.DownloadRequirement',
@@ -459,5 +459,5 @@ class ProjectReleaseDownloadRequirement(AbstractUUIDPrimaryKeyModel):
         abstract = True
 
     def __str__(self):
-        """"""
-        return 'Project Download Requirement'
+        """Return the requirement's url."""
+        return self.download_requirement.url

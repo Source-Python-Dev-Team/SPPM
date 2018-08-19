@@ -18,7 +18,7 @@ __all__ = (
 # =============================================================================
 # >> MIX-INS
 # =============================================================================
-class RetrievePluginMixin(object):
+class RetrievePluginMixin:
     """Mixin to retrieve the Plugin for the view."""
 
     _plugin = None

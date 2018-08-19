@@ -67,7 +67,6 @@ class DownloadMixin(View):
                 f'Class {self.__class__.__name__} must implement a '
                 '"super_kwarg" attribute.'
             )
-        return None
 
     @property
     def full_path(self):

@@ -205,7 +205,7 @@ class SubPluginTag(ProjectTag, SubPluginThroughBase):
 class SubPluginReleaseDownloadRequirement(
     ProjectReleaseDownloadRequirement, SubPluginReleaseThroughBase
 ):
-    """"""
+    """SubPlugin Download Requirement for Release model."""
 
     class Meta:
         unique_together = ('sub_plugin_release', 'download_requirement')
@@ -214,7 +214,7 @@ class SubPluginReleaseDownloadRequirement(
 class SubPluginReleasePackageRequirement(
     ProjectReleasePackageRequirement, SubPluginReleaseThroughBase
 ):
-    """"""
+    """SubPlugin Package Requirement for Release model."""
 
     class Meta:
         unique_together = ('sub_plugin_release', 'package_requirement')
@@ -223,7 +223,7 @@ class SubPluginReleasePackageRequirement(
 class SubPluginReleasePyPiRequirement(
     ProjectReleasePyPiRequirement, SubPluginReleaseThroughBase
 ):
-    """"""
+    """SubPlugin PyPi Requirement for Release model."""
 
     class Meta:
         unique_together = ('sub_plugin_release', 'pypi_requirement')
@@ -232,7 +232,7 @@ class SubPluginReleasePyPiRequirement(
 class SubPluginReleaseVersionControlRequirement(
     ProjectReleaseVersionControlRequirement, SubPluginReleaseThroughBase
 ):
-    """"""
+    """SubPlugin VCS Requirement for Release model."""
 
     class Meta:
         unique_together = ('sub_plugin_release', 'vcs_requirement')

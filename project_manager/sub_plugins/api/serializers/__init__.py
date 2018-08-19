@@ -68,21 +68,25 @@ class SubPluginImageSerializer(ProjectImageSerializer):
 class SubPluginReleasePackageRequirementSerializer(
     ReleasePackageRequirementSerializer
 ):
-    """"""
+    """Serializer for SubPlugin Release Package requirements."""
 
     class Meta(ReleasePackageRequirementSerializer.Meta):
         model = SubPluginReleasePackageRequirement
 
 
-class SubPluginReleaseDownloadRequirementSerializer(ReleaseDownloadRequirementSerializer):
-    """"""
+class SubPluginReleaseDownloadRequirementSerializer(
+    ReleaseDownloadRequirementSerializer
+):
+    """Serializer for SubPlugin Release Download requirements."""
 
     class Meta(ReleaseDownloadRequirementSerializer.Meta):
         model = SubPluginReleaseDownloadRequirement
 
 
-class SubPluginReleasePyPiRequirementSerializer(ReleasePyPiRequirementSerializer):
-    """"""
+class SubPluginReleasePyPiRequirementSerializer(
+    ReleasePyPiRequirementSerializer
+):
+    """Serializer for SubPlugin Release PyPi requirements."""
 
     class Meta(ReleasePyPiRequirementSerializer.Meta):
         model = SubPluginReleasePyPiRequirement
@@ -91,7 +95,7 @@ class SubPluginReleasePyPiRequirementSerializer(ReleasePyPiRequirementSerializer
 class SubPluginReleaseVersionControlRequirementSerializer(
     ReleaseVersionControlRequirementSerializer
 ):
-    """"""
+    """Serializer for SubPlugin Release VCS requirements."""
 
     class Meta(ReleaseVersionControlRequirementSerializer.Meta):
         model = SubPluginReleaseVersionControlRequirement
