@@ -85,7 +85,5 @@ class VersionControlRequirementSerializer(RequirementSerializer):
     class Meta(RequirementSerializer):
         model = VersionControlRequirement
         fields = (
-            'name',
-            'vcs_type',
             'url',
         ) + RequirementSerializer.Meta.fields

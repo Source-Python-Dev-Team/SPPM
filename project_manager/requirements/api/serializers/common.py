@@ -52,8 +52,6 @@ class ReleasePyPiRequirementSerializer(ModelSerializer):
 class ReleaseVersionControlRequirementSerializer(ModelSerializer):
     """Serializer for listing required VCS for projects."""
 
-    name = ReadOnlyField(source='vcs_requirement.name')
-    type = ReadOnlyField(source='vcs_requirement.vcs_type')
     url = ReadOnlyField(source='vcs_requirement.url')
     version = ReadOnlyField()
 

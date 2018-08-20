@@ -239,15 +239,6 @@ class ProjectRelease(AbstractUUIDPrimaryKeyModel):
     download_count = models.PositiveIntegerField(
         default=0,
     )
-    requirement_errors = models.TextField(
-        max_length=RELEASE_REQUIREMENT_ERRORS_MAX_LENGTH,
-        blank=True,
-        null=True,
-        help_text=(
-            'The configuration of the project. If too long, post on the forum '
-            'and provide the link here. BBCode is allowed. 1024 char limit.'
-        )
-    )
     created = AutoCreatedField(
         verbose_name='created',
     )
