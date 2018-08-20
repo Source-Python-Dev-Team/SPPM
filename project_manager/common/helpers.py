@@ -4,10 +4,8 @@
 # >> IMPORTS
 # =============================================================================
 # Python
+import json
 from zipfile import ZipFile, BadZipfile
-
-# 3rd-Party Python
-from configobj import ConfigObj
 
 # Django
 from django.conf import settings
@@ -15,6 +13,7 @@ from django.core.exceptions import ValidationError
 
 # App
 from project_manager.common.constants import CANNOT_BE_NAMED, CANNOT_START_WITH
+from project_manager.packages.models import Package
 
 
 # =============================================================================
@@ -54,12 +53,74 @@ def get_groups(iterable, count=3):
 
 def get_requirements(zip_file, requirement_path):
     """Return the requirements for the release."""
-    for zipped_file in zip_file.filelist:
-        if zipped_file.filename != requirement_path:
+    try:
+        with zip_file.open(requirement_path) as requirement_file:
+            contents = json.load(requirement_file)
+    except KeyError:
+        return
+    except json.JSONDecodeError:
+        raise ValidationError({
+            'zip_file': 'Requirements json file cannot be decoded.'
+        })
+    if not isinstance(contents, dict):
+        raise ValidationError({
+            'zip_file': 'Invalid requirements json file.'
+        })
+    requirements = {
+        'custom': [],
+        'pypi': [],
+        'vcs': [],
+        'download': [],
+    }
+    errors = []
+    for group_type, group in contents.items():
+        if group_type not in requirements:
+            errors.append(
+                f'Invalid group name "{group_type} found in requirements '
+                f'json file.'
+            )
             continue
-        ini = zip_file.open(zipped_file)
-        return ConfigObj(ini)
-    return {}
+        if not isinstance(group, list):
+            errors.append(
+                f'Invalid group values for "{group_type}" found in '
+                f'requirements json file.'
+            )
+            continue
+        for item in group:
+            if not isinstance(item, dict):
+                errors.append(
+                    f'Invalid object found in "{group_type}" listing in '
+                    f'requirements json file.'
+                )
+                continue
+            if group_type == 'custom':
+                _validate_custom_requirement(
+                    item=item,
+                    custom_requirements=requirements[group_type],
+                    errors=errors,
+                )
+            elif group_type == 'pypi':
+                _validate_requirement(
+                    item=item,
+                    group_requirements=requirements[group_type],
+                    group_type=group_type,
+                    field='name',
+                    errors=errors,
+                    include_version=True,
+                )
+            else:
+                _validate_requirement(
+                    item=item,
+                    group_requirements=requirements[group_type],
+                    group_type=group_type,
+                    field='url',
+                    errors=errors,
+                )
+    if errors:
+        raise ValidationError({
+            'zip_file': errors,
+        })
+    return requirements
 
 
 def handle_project_image_upload(instance, filename):
@@ -110,3 +171,59 @@ def validate_basename(basename, project_type):
                 ),
                 code='invalid',
             )
+
+
+def _validate_custom_requirement(item, custom_requirements, errors):
+    basename = item.get('basename')
+    if basename is None:
+        errors.append(
+            f'No basename found for object in "custom" '
+            f'listing in requirements json file.'
+        )
+        return
+    try:
+        package = Package.objects.get(basename=basename)
+    except Package.DoesNotExist:
+        errors.append(
+            f'Custom Package "{basename}" from requirements '
+            f'json file not found.'
+        )
+        return
+    version = item.get('version')
+    # TODO: update this logic to work with all version operators
+    available_versions = package.releases.values_list(
+        'version',
+        flat=True,
+    )
+    if version is not None and version not in available_versions:
+        errors.append(
+            f'Custom Package "{basename}" version "{version}", '
+            f'from requirements json file, not found.'
+        )
+        return
+    custom_requirements.append({
+        'basename': basename,
+        'version': version,
+        'optional': item.get('optional', False),
+    })
+
+
+def _validate_requirement(
+    item, group_requirements, group_type, field, errors, include_version=False
+):
+    value = item.get(field)
+    if value is None:
+        errors.append(
+            f'No {field} found for object in "{group_type}" listing in '
+            f'requirements json file.'
+        )
+        return
+    requirement_dict = {
+        field: value,
+        'optional': item.get('optional', False),
+    }
+    if include_version:
+        requirement_dict.update({
+            'version': item.get('version'),
+        })
+    group_requirements.append(requirement_dict)
