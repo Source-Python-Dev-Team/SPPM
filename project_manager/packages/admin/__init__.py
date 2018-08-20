@@ -8,12 +8,16 @@ from django.contrib import admin
 
 # App
 from project_manager.common.admin import ProjectAdmin
-from .inlines import (
+from project_manager.packages.admin.inlines import (
     PackageContributorInline,
     PackageGameInline,
     PackageTagInline,
 )
-from ..models import Package, PackageImage, PackageRelease
+from project_manager.packages.models import (
+    Package,
+    PackageImage,
+    PackageRelease,
+)
 
 
 # =============================================================================

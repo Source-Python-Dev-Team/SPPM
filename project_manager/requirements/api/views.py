@@ -17,17 +17,17 @@ from rest_framework.viewsets import ModelViewSet
 # App
 from project_manager.packages.models import Package
 from project_manager.plugins.models import Plugin
+from project_manager.requirements.api.serializers import (
+    DownloadRequirementSerializer,
+    PyPiRequirementSerializer,
+    VersionControlRequirementSerializer,
+)
 from project_manager.requirements.models import (
     DownloadRequirement,
     PyPiRequirement,
     VersionControlRequirement,
 )
 from project_manager.sub_plugins.models import SubPlugin
-from .serializers import (
-    DownloadRequirementSerializer,
-    PyPiRequirementSerializer,
-    VersionControlRequirementSerializer,
-)
 
 
 # =============================================================================

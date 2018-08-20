@@ -7,7 +7,7 @@
 from django.conf.urls import url
 
 # App
-from .views import PyPiListView, PyPiView
+from project_manager.requirements.views import PyPiListView, PyPiView
 
 
 # =============================================================================

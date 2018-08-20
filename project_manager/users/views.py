@@ -9,7 +9,7 @@ from django.views.generic import DetailView
 
 # App
 from project_manager.common.views import PaginatedListView
-from .models import ForumUser
+from project_manager.users.models import ForumUser
 
 
 # =============================================================================

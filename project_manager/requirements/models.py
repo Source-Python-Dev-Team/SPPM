@@ -10,7 +10,7 @@ from django.db import models
 from django.utils.text import slugify
 
 # App
-from .constants import (
+from project_manager.requirements.constants import (
     REQUIREMENT_NAME_MAX_LENGTH,
     REQUIREMENT_SLUG_MAX_LENGTH,
     REQUIREMENT_URL_MAX_LENGTH,

@@ -4,7 +4,7 @@
 # >> IMPORTS
 # =============================================================================
 # App
-from .models import Package
+from project_manager.packages.models import Package
 
 
 # =============================================================================

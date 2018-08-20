@@ -19,8 +19,7 @@ from PIL import Image
 from precise_bbcode.fields import BBCodeTextField
 
 # App
-from project_manager.models import AbstractUUIDPrimaryKeyModel
-from .constants import (
+from project_manager.common.constants import (
     FORUM_THREAD_URL,
     LOGO_MAX_HEIGHT,
     LOGO_MAX_WIDTH,
@@ -29,15 +28,15 @@ from .constants import (
     PROJECT_NAME_MAX_LENGTH,
     PROJECT_SYNOPSIS_MAX_LENGTH,
     RELEASE_NOTES_MAX_LENGTH,
-    RELEASE_REQUIREMENT_ERRORS_MAX_LENGTH,
     RELEASE_VERSION_MAX_LENGTH,
 )
-from .helpers import (
+from project_manager.common.helpers import (
     handle_project_image_upload,
     handle_project_logo_upload,
     handle_release_zip_file_upload,
 )
-from .validators import version_validator
+from project_manager.common.validators import version_validator
+from project_manager.models import AbstractUUIDPrimaryKeyModel
 
 
 # =============================================================================

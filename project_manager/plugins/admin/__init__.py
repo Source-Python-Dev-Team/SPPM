@@ -8,8 +8,17 @@ from django.contrib import admin
 
 # App
 from project_manager.common.admin import ProjectAdmin
-from .inlines import PluginContributorInline, PluginGameInline, PluginTagInline
-from ..models import Plugin, PluginImage, PluginRelease, SubPluginPath
+from project_manager.plugins.admin.inlines import (
+    PluginContributorInline,
+    PluginGameInline,
+    PluginTagInline,
+)
+from project_manager.plugins.models import (
+    Plugin,
+    PluginImage,
+    PluginRelease,
+    SubPluginPath,
+)
 
 
 # =============================================================================

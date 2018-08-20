@@ -8,8 +8,8 @@ from django import forms
 from django.contrib.admin.sites import site
 
 # App
-from .widgets import PluginRawIdWidget
-from ..models import SubPlugin
+from project_manager.sub_plugins.admin.widgets import PluginRawIdWidget
+from project_manager.sub_plugins.models import SubPlugin
 
 
 # =============================================================================

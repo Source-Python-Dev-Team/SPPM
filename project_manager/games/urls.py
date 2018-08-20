@@ -7,7 +7,7 @@
 from django.conf.urls import url
 
 # App
-from .views import GameListView, GameView
+from project_manager.games.views import GameListView, GameView
 
 
 # =============================================================================

@@ -11,13 +11,17 @@ from django.contrib import admin
 
 # App
 from project_manager.common.admin import ProjectAdmin
-from .forms import SubPluginAdminForm
-from .inlines import (
+from project_manager.sub_plugins.admin.forms import SubPluginAdminForm
+from project_manager.sub_plugins.admin.inlines import (
     SubPluginContributorInline,
     SubPluginGameInline,
     SubPluginTagInline,
 )
-from ..models import SubPlugin, SubPluginImage, SubPluginRelease
+from project_manager.sub_plugins.models import (
+    SubPlugin,
+    SubPluginImage,
+    SubPluginRelease,
+)
 
 
 # =============================================================================

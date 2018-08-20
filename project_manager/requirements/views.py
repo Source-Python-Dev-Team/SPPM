@@ -9,7 +9,7 @@ from django.views.generic import DetailView
 # App
 from project_manager.common.helpers import get_groups
 from project_manager.common.views import PaginatedListView
-from .models import PyPiRequirement
+from project_manager.requirements.models import PyPiRequirement
 
 
 # =============================================================================

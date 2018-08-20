@@ -24,10 +24,10 @@ from django.contrib import admin
 from django.views.generic.base import RedirectView
 
 # App
-from .views import StatisticsView
-from .packages.views import PackageReleaseDownloadView
-from .plugins.views import PluginReleaseDownloadView
-from .sub_plugins.views import SubPluginReleaseDownloadView
+from project_manager.packages.views import PackageReleaseDownloadView
+from project_manager.plugins.views import PluginReleaseDownloadView
+from project_manager.sub_plugins.views import SubPluginReleaseDownloadView
+from project_manager.views import StatisticsView
 
 
 # =============================================================================

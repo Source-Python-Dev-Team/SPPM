@@ -7,7 +7,7 @@
 from django.contrib import admin
 
 # App
-from .models import Game
+from project_manager.games.models import Game
 
 
 # =============================================================================

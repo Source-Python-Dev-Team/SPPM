@@ -21,10 +21,16 @@ from rest_framework.reverse import reverse
 from rest_framework.serializers import ModelSerializer
 
 # App
+from project_manager.common.api.serializers.mixins import (
+    ProjectLocaleMixin,
+    ProjectReleaseCreationMixin,
+    ProjectThroughMixin,
+)
 from project_manager.common.constants import (
     RELEASE_NOTES_MAX_LENGTH,
     RELEASE_VERSION_MAX_LENGTH,
 )
+from project_manager.constants import USER_USERNAME_MAX_LENGTH
 from project_manager.games.api.serializers import GameSerializer
 from project_manager.games.constants import GAME_SLUG_MAX_LENGTH
 from project_manager.games.models import Game
@@ -33,13 +39,7 @@ from project_manager.tags.models import Tag
 from project_manager.users.api.serializers.common import (
     ForumUserContributorSerializer,
 )
-from project_manager.constants import USER_USERNAME_MAX_LENGTH
 from project_manager.users.models import ForumUser
-from .mixins import (
-    ProjectLocaleMixin,
-    ProjectReleaseCreationMixin,
-    ProjectThroughMixin,
-)
 
 
 # =============================================================================

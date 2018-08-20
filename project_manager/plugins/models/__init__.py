@@ -27,14 +27,17 @@ from project_manager.common.models import (
 )
 from project_manager.common.validators import basename_validator
 from project_manager.models import AbstractUUIDPrimaryKeyModel
-from .abstract import PluginReleaseThroughBase, PluginThroughBase
-from ..constants import PLUGIN_LOGO_URL, PATH_MAX_LENGTH
-from ..helpers import (
+from project_manager.plugins.constants import PLUGIN_LOGO_URL, PATH_MAX_LENGTH
+from project_manager.plugins.helpers import (
     handle_plugin_image_upload,
     handle_plugin_logo_upload,
     handle_plugin_zip_upload,
 )
-from ..validators import sub_plugin_path_validator
+from project_manager.plugins.models.abstract import (
+    PluginReleaseThroughBase,
+    PluginThroughBase,
+)
+from project_manager.plugins.validators import sub_plugin_path_validator
 
 
 # =============================================================================

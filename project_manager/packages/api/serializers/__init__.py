@@ -16,6 +16,7 @@ from project_manager.common.api.serializers import (
 from project_manager.packages.api.serializers.common import (
     ReleasePackageRequirementSerializer,
 )
+from project_manager.packages.api.serializers.mixins import PackageReleaseBase
 from project_manager.packages.models import (
     Package,
     PackageContributor,
@@ -33,7 +34,6 @@ from project_manager.requirements.api.serializers.common import (
     ReleasePyPiRequirementSerializer,
     ReleaseVersionControlRequirementSerializer,
 )
-from .mixins import PackageReleaseBase
 
 
 # =============================================================================

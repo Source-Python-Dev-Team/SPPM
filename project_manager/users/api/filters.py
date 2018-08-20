@@ -10,7 +10,7 @@ from django.db.models import Count, Q
 from django_filters.filters import BooleanFilter
 from django_filters.filterset import FilterSet
 
-from ..models import ForumUser
+from project_manager.users.models import ForumUser
 
 
 # =============================================================================

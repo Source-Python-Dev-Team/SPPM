@@ -5,7 +5,7 @@
 # =============================================================================
 # App
 from project_manager.plugins.mixins import RetrievePluginMixin
-from .models import SubPlugin
+from project_manager.sub_plugins.models import SubPlugin
 
 
 # =============================================================================

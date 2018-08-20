@@ -9,7 +9,7 @@ from django.db import models
 from django.utils.text import slugify
 
 # App
-from .constants import (
+from project_manager.games.constants import (
     GAME_BASENAME_MAX_LENGTH,
     GAME_NAME_MAX_LENGTH,
     GAME_SLUG_MAX_LENGTH,

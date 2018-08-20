@@ -7,7 +7,7 @@
 from django.conf.urls import url
 
 # App
-from .views import TagListView
+from project_manager.tags.views import TagListView
 
 
 # =============================================================================

@@ -7,7 +7,7 @@
 from django.conf.urls import url
 
 # App
-from .views import UserListView, UserView
+from project_manager.users.views import UserListView, UserView
 
 
 # =============================================================================

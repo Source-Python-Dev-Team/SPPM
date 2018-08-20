@@ -10,13 +10,18 @@ from django.views.generic import CreateView, DetailView, ListView, UpdateView
 from project_manager.common.helpers import get_groups
 from project_manager.common.mixins import DownloadMixin
 from project_manager.games.mixins import GameSpecificOrderablePaginatedListView
-from .constants import PACKAGE_PATH, PACKAGE_RELEASE_URL
-from .forms import (
-    PackageCreateForm, PackageEditForm, PackageSelectGamesForm,
+from project_manager.packages.constants import (
+    PACKAGE_PATH,
+    PACKAGE_RELEASE_URL,
+)
+from project_manager.packages.forms import (
+    PackageCreateForm,
+    PackageEditForm,
+    PackageSelectGamesForm,
     PackageUpdateForm,
 )
-from .mixins import RetrievePackageMixin
-from .models import Package, PackageRelease
+from project_manager.packages.mixins import RetrievePackageMixin
+from project_manager.packages.models import Package, PackageRelease
 
 
 # =============================================================================

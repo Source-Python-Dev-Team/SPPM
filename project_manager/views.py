@@ -7,10 +7,10 @@
 from django.views.generic import TemplateView
 
 # App
-from .packages.models import Package, PackageRelease
-from .plugins.models import Plugin, PluginRelease
-from .sub_plugins.models import SubPlugin, SubPluginRelease
-from .users.models import ForumUser
+from project_manager.packages.models import Package, PackageRelease
+from project_manager.plugins.models import Plugin, PluginRelease
+from project_manager.sub_plugins.models import SubPlugin, SubPluginRelease
+from project_manager.users.models import ForumUser
 
 
 # =============================================================================

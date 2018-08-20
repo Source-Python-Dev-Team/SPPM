@@ -7,8 +7,8 @@
 from django.db import models
 
 # App
-from .constants import TAG_NAME_MAX_LENGTH
-from .validators import tag_name_validator
+from project_manager.tags.constants import TAG_NAME_MAX_LENGTH
+from project_manager.tags.validators import tag_name_validator
 
 
 # =============================================================================

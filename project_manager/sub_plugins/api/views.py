@@ -20,8 +20,8 @@ from project_manager.common.api.views import (
     ProjectViewSet,
 )
 from project_manager.plugins.models import Plugin
-from .filters import SubPluginFilter
-from .serializers import (
+from project_manager.sub_plugins.api.filters import SubPluginFilter
+from project_manager.sub_plugins.api.serializers import (
     SubPluginContributorSerializer,
     SubPluginCreateSerializer,
     SubPluginGameSerializer,
@@ -30,7 +30,7 @@ from .serializers import (
     SubPluginSerializer,
     SubPluginTagSerializer,
 )
-from ..models import (
+from project_manager.sub_plugins.models import (
     SubPlugin,
     SubPluginContributor,
     SubPluginGame,

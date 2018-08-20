@@ -7,8 +7,8 @@
 from django.conf.urls import include, url
 
 # App
-from .constants import UUID_RE_STRING
-from .views import (
+from project_manager.plugins.constants import UUID_RE_STRING
+from project_manager.plugins.views import (
     PluginCreateView,
     PluginEditView,
     PluginListView,

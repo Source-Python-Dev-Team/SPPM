@@ -12,8 +12,11 @@ from project_manager.common.helpers import (
     get_file_list,
     validate_basename,
 )
-from .constants import (
-    PLUGIN_PATH, PLUGIN_IMAGE_URL, PLUGIN_LOGO_URL, PLUGIN_RELEASE_URL,
+from project_manager.plugins.constants import (
+    PLUGIN_PATH,
+    PLUGIN_IMAGE_URL,
+    PLUGIN_LOGO_URL,
+    PLUGIN_RELEASE_URL,
 )
 
 

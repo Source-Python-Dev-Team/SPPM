@@ -7,9 +7,13 @@
 from django.conf.urls import include, url
 
 # App
-from .views import (
-    SubPluginCreateView, SubPluginEditView, SubPluginListView,
-    SubPluginReleaseListView, SubPluginSelectGamesView, SubPluginUpdateView,
+from project_manager.sub_plugins.views import (
+    SubPluginCreateView,
+    SubPluginEditView,
+    SubPluginListView,
+    SubPluginReleaseListView,
+    SubPluginSelectGamesView,
+    SubPluginUpdateView,
     SubPluginView,
 )
 

@@ -7,7 +7,7 @@
 from django.contrib import admin
 
 # App
-from .models import Tag
+from project_manager.tags.models import Tag
 
 
 # =============================================================================
