@@ -15,8 +15,8 @@ from django.views.generic import (
 # App
 from project_manager.common.mixins import DownloadMixin
 from project_manager.games.mixins import GameSpecificOrderablePaginatedListView
-from .constants import PLUGIN_PATH, PLUGIN_RELEASE_URL
-from .forms import (
+from project_manager.plugins.constants import PLUGIN_PATH, PLUGIN_RELEASE_URL
+from project_manager.plugins.forms import (
     PluginCreateForm,
     PluginEditForm,
     PluginSelectGamesForm,
@@ -24,8 +24,8 @@ from .forms import (
     SubPluginPathCreateForm,
     SubPluginPathEditForm,
 )
-from .mixins import RetrievePluginMixin
-from .models import Plugin, PluginRelease, SubPluginPath
+from project_manager.plugins.mixins import RetrievePluginMixin
+from project_manager.plugins.models import Plugin, PluginRelease, SubPluginPath
 
 
 # =============================================================================

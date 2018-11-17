@@ -10,7 +10,7 @@ from django.conf.urls import url
 from rest_framework import routers
 
 # App
-from .views import (
+from project_manager.plugins.api.views import (
     PluginAPIView,
     PluginContributorViewSet,
     PluginGameViewSet,

@@ -25,12 +25,15 @@ from project_manager.common.models import (
     ProjectTag,
 )
 from project_manager.common.validators import basename_validator
-from .abstract import SubPluginReleaseThroughBase, SubPluginThroughBase
-from ..constants import SUB_PLUGIN_LOGO_URL
-from ..helpers import (
+from project_manager.sub_plugins.constants import SUB_PLUGIN_LOGO_URL
+from project_manager.sub_plugins.helpers import (
     handle_sub_plugin_image_upload,
     handle_sub_plugin_logo_upload,
     handle_sub_plugin_zip_upload,
+)
+from project_manager.sub_plugins.models.abstract import (
+    SubPluginReleaseThroughBase,
+    SubPluginThroughBase,
 )
 
 
@@ -43,6 +46,10 @@ __all__ = (
     'SubPluginGame',
     'SubPluginImage',
     'SubPluginRelease',
+    'SubPluginReleaseDownloadRequirement',
+    'SubPluginReleasePackageRequirement',
+    'SubPluginReleasePyPiRequirement',
+    'SubPluginReleaseVersionControlRequirement',
     'SubPluginTag',
 )
 

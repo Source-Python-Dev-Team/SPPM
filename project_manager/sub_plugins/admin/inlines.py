@@ -9,7 +9,11 @@ from project_manager.common.admin.inlines import (
     ProjectGameInline,
     ProjectTagInline,
 )
-from ..models import SubPluginContributor, SubPluginGame, SubPluginTag
+from project_manager.sub_plugins.models import (
+    SubPluginContributor,
+    SubPluginGame,
+    SubPluginTag,
+)
 
 
 # =============================================================================

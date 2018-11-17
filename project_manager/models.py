@@ -15,7 +15,10 @@ from django.contrib.auth.models import (
 from django.db import models
 
 # App
-from .constants import USER_EMAIL_MAX_LENGTH, USER_USERNAME_MAX_LENGTH
+from project_manager.constants import (
+    USER_EMAIL_MAX_LENGTH,
+    USER_USERNAME_MAX_LENGTH,
+)
 
 
 # =============================================================================

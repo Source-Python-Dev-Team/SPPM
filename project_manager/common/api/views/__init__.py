@@ -19,7 +19,10 @@ from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 
 # App
-from .mixins import ProjectRelatedInfoMixin, ProjectThroughModelMixin
+from project_manager.common.api.views.mixins import (
+    ProjectRelatedInfoMixin,
+    ProjectThroughModelMixin,
+)
 
 
 # =============================================================================

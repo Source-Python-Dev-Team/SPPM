@@ -7,14 +7,16 @@
 from django.core.exceptions import ValidationError
 
 # App
-from project_manager.plugins.constants import PLUGIN_PATH
 from project_manager.common.helpers import (
     find_image_number,
     get_file_list,
     validate_basename,
 )
-from .constants import (
-    SUB_PLUGIN_IMAGE_URL, SUB_PLUGIN_LOGO_URL, SUB_PLUGIN_RELEASE_URL,
+from project_manager.plugins.constants import PLUGIN_PATH
+from project_manager.sub_plugins.constants import (
+    SUB_PLUGIN_IMAGE_URL,
+    SUB_PLUGIN_LOGO_URL,
+    SUB_PLUGIN_RELEASE_URL,
 )
 
 

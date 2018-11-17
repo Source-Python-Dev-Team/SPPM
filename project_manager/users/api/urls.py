@@ -10,7 +10,7 @@ from django.conf.urls import include, url
 from rest_framework import routers
 
 # App
-from .views import ForumUserViewSet
+from project_manager.users.api.views import ForumUserViewSet
 
 
 # =============================================================================

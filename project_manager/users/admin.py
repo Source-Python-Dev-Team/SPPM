@@ -7,7 +7,7 @@
 from django.contrib import admin
 
 # App
-from .models import ForumUser
+from project_manager.users.models import ForumUser
 
 
 # =============================================================================

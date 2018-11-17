@@ -8,7 +8,7 @@ from django_filters.filters import CharFilter
 from django_filters.filterset import FilterSet
 
 # App
-from .models import ForumUser
+from project_manager.users.models import ForumUser
 
 
 # =============================================================================

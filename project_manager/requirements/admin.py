@@ -7,7 +7,7 @@
 from django.contrib import admin
 
 # App
-from .models import (
+from project_manager.requirements.models import (
     DownloadRequirement,
     PyPiRequirement,
     VersionControlRequirement,

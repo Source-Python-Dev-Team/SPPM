@@ -16,8 +16,8 @@ from project_manager.common.api.views import (
     ProjectTagViewSet,
     ProjectViewSet,
 )
-from .filters import PackageFilter
-from .serializers import (
+from project_manager.packages.api.filters import PackageFilter
+from project_manager.packages.api.serializers import (
     PackageContributorSerializer,
     PackageCreateSerializer,
     PackageGameSerializer,
@@ -26,7 +26,7 @@ from .serializers import (
     PackageSerializer,
     PackageTagSerializer,
 )
-from ..models import (
+from project_manager.packages.models import (
     Package,
     PackageContributor,
     PackageGame,

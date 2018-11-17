@@ -5,7 +5,7 @@
 # =============================================================================
 # App
 from project_manager.common.api.filters import ProjectFilter
-from ..models import SubPlugin
+from project_manager.sub_plugins.models import SubPlugin
 
 
 # =============================================================================

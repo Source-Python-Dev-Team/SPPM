@@ -8,7 +8,7 @@ from django.views.generic import DetailView, ListView
 
 # App
 from project_manager.common.helpers import get_groups
-from .models import Game
+from project_manager.games.models import Game
 
 
 # =============================================================================

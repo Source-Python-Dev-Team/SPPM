@@ -10,8 +10,8 @@ from django.utils.timezone import now
 
 # App
 from project_manager.common.mixins import SubmitButtonMixin
-from .helpers import get_package_basename
-from .models import Package, PackageRelease
+from project_manager.packages.helpers import get_package_basename
+from project_manager.packages.models import Package, PackageRelease
 
 
 # =============================================================================

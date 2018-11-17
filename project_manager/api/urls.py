@@ -7,7 +7,7 @@
 from django.conf.urls import include, url
 
 # App
-from .views import ProjectManagerAPIView
+from project_manager.api.views import ProjectManagerAPIView
 
 
 # =============================================================================

@@ -9,7 +9,11 @@ from project_manager.common.admin.inlines import (
     ProjectGameInline,
     ProjectTagInline,
 )
-from ..models import PackageContributor, PackageGame, PackageTag
+from project_manager.packages.models import (
+    PackageContributor,
+    PackageGame,
+    PackageTag,
+)
 
 
 # =============================================================================

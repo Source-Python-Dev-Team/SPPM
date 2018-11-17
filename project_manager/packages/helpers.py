@@ -12,8 +12,11 @@ from project_manager.common.helpers import (
     get_file_list,
     validate_basename,
 )
-from .constants import (
-    PACKAGE_PATH, PACKAGE_IMAGE_URL, PACKAGE_LOGO_URL, PACKAGE_RELEASE_URL,
+from project_manager.packages.constants import (
+    PACKAGE_PATH,
+    PACKAGE_IMAGE_URL,
+    PACKAGE_LOGO_URL,
+    PACKAGE_RELEASE_URL,
 )
 
 

@@ -9,7 +9,7 @@ from django.urls import reverse
 from django.db import models
 
 # App
-from .constants import FORUM_MEMBER_URL
+from project_manager.users.constants import FORUM_MEMBER_URL
 
 
 # =============================================================================

@@ -5,7 +5,7 @@
 # =============================================================================
 # App
 from project_manager.common.api.filters import ProjectFilter
-from ..models import Package
+from project_manager.packages.models import Package
 
 
 # =============================================================================

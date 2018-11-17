@@ -7,9 +7,13 @@
 from django.conf.urls import include, url
 
 # App
-from .views import (
-    PackageCreateView, PackageEditView, PackageListView,
-    PackageReleaseListView, PackageSelectGamesView, PackageUpdateView,
+from project_manager.packages.views import (
+    PackageCreateView,
+    PackageEditView,
+    PackageListView,
+    PackageReleaseListView,
+    PackageSelectGamesView,
+    PackageUpdateView,
     PackageView,
 )
 

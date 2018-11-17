@@ -5,7 +5,7 @@
 # =============================================================================
 # App
 from project_manager.common.views import PaginatedListView
-from .models import Tag
+from project_manager.tags.models import Tag
 
 
 # =============================================================================

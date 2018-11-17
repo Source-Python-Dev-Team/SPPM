@@ -7,7 +7,7 @@
 from rest_framework.serializers import ModelSerializer
 
 # App
-from ..models import Game
+from project_manager.games.models import Game
 
 
 # =============================================================================

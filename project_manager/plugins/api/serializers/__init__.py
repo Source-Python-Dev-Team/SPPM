@@ -20,6 +20,7 @@ from project_manager.common.api.serializers.mixins import ProjectThroughMixin
 from project_manager.packages.api.serializers.common import (
     ReleasePackageRequirementSerializer,
 )
+from project_manager.plugins.api.serializers.mixins import PluginReleaseBase
 from project_manager.plugins.models import (
     Plugin,
     PluginContributor,
@@ -38,7 +39,6 @@ from project_manager.requirements.api.serializers.common import (
     ReleasePyPiRequirementSerializer,
     ReleaseVersionControlRequirementSerializer,
 )
-from .mixins import PluginReleaseBase
 
 
 # =============================================================================

@@ -7,7 +7,7 @@
 from rest_framework.serializers import ModelSerializer
 
 # App
-from ..models import Tag
+from project_manager.tags.models import Tag
 
 
 # =============================================================================

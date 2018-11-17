@@ -25,12 +25,15 @@ from project_manager.common.models import (
     ProjectTag,
 )
 from project_manager.common.validators import basename_validator
-from .abstract import PackageReleaseThroughBase, PackageThroughBase
-from ..constants import PACKAGE_LOGO_URL
-from ..helpers import (
+from project_manager.packages.constants import PACKAGE_LOGO_URL
+from project_manager.packages.helpers import (
     handle_package_image_upload,
     handle_package_logo_upload,
     handle_package_zip_upload,
+)
+from project_manager.packages.models.abstract import (
+    PackageReleaseThroughBase,
+    PackageThroughBase,
 )
 
 

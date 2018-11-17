@@ -10,8 +10,7 @@ from django.db import models
 from django.utils.text import slugify
 
 # App
-from .constants import (
-    REQUIREMENT_DESCRIPTION_MAX_LENGTH,
+from project_manager.requirements.constants import (
     REQUIREMENT_NAME_MAX_LENGTH,
     REQUIREMENT_SLUG_MAX_LENGTH,
     REQUIREMENT_URL_MAX_LENGTH,
@@ -34,16 +33,8 @@ __all__ = (
 class DownloadRequirement(models.Model):
     """Download requirement model."""
 
-    name = models.CharField(
-        max_length=REQUIREMENT_NAME_MAX_LENGTH,
-    )
     url = models.CharField(
         max_length=REQUIREMENT_URL_MAX_LENGTH,
-    )
-    description = models.CharField(
-        max_length=REQUIREMENT_DESCRIPTION_MAX_LENGTH,
-        blank=True,
-        null=True,
     )
 
     class Meta:
@@ -93,28 +84,6 @@ class PyPiRequirement(models.Model):
 class VersionControlRequirement(models.Model):
     """VCS requirement model."""
 
-    GIT = 0
-    MERCURIAL = 1
-    SUBVERSION = 2
-    BAZAAR = 3
-
-    SUPPORTED_VCS_TYPES = {
-        GIT: 'git',
-        MERCURIAL: 'hg',
-        SUBVERSION: 'svn',
-        BAZAAR: 'bzr',
-    }
-
-    name = models.CharField(
-        max_length=REQUIREMENT_NAME_MAX_LENGTH,
-    )
-    vcs_type = models.PositiveSmallIntegerField(
-        choices=tuple(SUPPORTED_VCS_TYPES.items()),
-        help_text='The type of Version Control used in the url.',
-        db_index=True,
-        editable=False,
-        null=True,
-    )
     url = models.CharField(
         max_length=REQUIREMENT_URL_MAX_LENGTH,
     )

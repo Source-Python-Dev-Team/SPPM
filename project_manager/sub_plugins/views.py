@@ -11,13 +11,15 @@ from project_manager.common.mixins import DownloadMixin
 from project_manager.games.mixins import GameSpecificOrderablePaginatedListView
 from project_manager.plugins.constants import PLUGIN_PATH
 from project_manager.plugins.models import Plugin
-from .constants import SUB_PLUGIN_RELEASE_URL
-from .forms import (
-    SubPluginCreateForm, SubPluginEditForm, SubPluginSelectGamesForm,
+from project_manager.sub_plugins.constants import SUB_PLUGIN_RELEASE_URL
+from project_manager.sub_plugins.forms import (
+    SubPluginCreateForm,
+    SubPluginEditForm,
+    SubPluginSelectGamesForm,
     SubPluginUpdateForm,
 )
-from .mixins import RetrieveSubPluginMixin
-from .models import SubPlugin, SubPluginRelease
+from project_manager.sub_plugins.mixins import RetrieveSubPluginMixin
+from project_manager.sub_plugins.models import SubPlugin, SubPluginRelease
 
 
 # =============================================================================

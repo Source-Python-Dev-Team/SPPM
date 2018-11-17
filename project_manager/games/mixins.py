@@ -5,7 +5,7 @@
 # =============================================================================
 # App
 from project_manager.common.views import OrderablePaginatedListView
-from .models import Game
+from project_manager.games.models import Game
 
 
 # =============================================================================

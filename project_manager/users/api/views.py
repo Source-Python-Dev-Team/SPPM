@@ -15,9 +15,9 @@ from rest_framework.viewsets import ModelViewSet
 from project_manager.packages.models import Package
 from project_manager.plugins.models import Plugin
 from project_manager.sub_plugins.models import SubPlugin
-from .filters import ForumUserFilter
-from .serializers import ForumUserSerializer
-from ..models import ForumUser
+from project_manager.users.api.filters import ForumUserFilter
+from project_manager.users.api.serializers import ForumUserSerializer
+from project_manager.users.models import ForumUser
 
 
 # =============================================================================

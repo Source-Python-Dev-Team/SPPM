@@ -25,6 +25,9 @@ from project_manager.requirements.api.serializers.common import (
     ReleasePyPiRequirementSerializer,
     ReleaseVersionControlRequirementSerializer,
 )
+from project_manager.sub_plugins.api.serializers.mixins import (
+    SubPluginReleaseBase,
+)
 from project_manager.sub_plugins.models import (
     SubPlugin,
     SubPluginContributor,
@@ -37,7 +40,6 @@ from project_manager.sub_plugins.models import (
     SubPluginReleaseVersionControlRequirement,
     SubPluginTag,
 )
-from .mixins import SubPluginReleaseBase
 
 
 # =============================================================================

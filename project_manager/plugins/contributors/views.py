@@ -12,11 +12,13 @@ from django.views.generic import FormView
 from django_filters.views import FilterView
 
 # App
+from project_manager.plugins.contributors.forms import (
+    PluginAddContributorConfirmationForm,
+)
+from project_manager.plugins.mixins import RetrievePluginMixin
+from project_manager.plugins.models import PluginContributor
 from project_manager.users.filtersets import ForumUserFilterSet
 from project_manager.users.models import ForumUser
-from .forms import PluginAddContributorConfirmationForm
-from ..mixins import RetrievePluginMixin
-from ..models import PluginContributor
 
 
 # =============================================================================

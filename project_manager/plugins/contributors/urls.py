@@ -7,7 +7,7 @@
 from django.conf.urls import url
 
 # App
-from .views import (
+from project_manager.plugins.contributors.views import (
     PluginAddContributorView, PluginAddContributorConfirmationView,
 )
 
