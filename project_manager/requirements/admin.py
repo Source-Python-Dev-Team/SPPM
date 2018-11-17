@@ -32,12 +32,9 @@ class DownloadRequirementAdmin(admin.ModelAdmin):
     """DownloadRequirement admin."""
 
     list_display = (
-        'name',
         'url',
-        'description',
     )
     search_fields = (
-        'name',
         'url',
     )
 
@@ -59,10 +56,8 @@ class VersionControlRequirementAdmin(admin.ModelAdmin):
     """VersionControlRequirement admin."""
 
     list_display = (
-        'name',
         'url',
     )
     search_fields = (
-        'name',
         'url',
     )
