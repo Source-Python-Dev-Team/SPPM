@@ -36,24 +36,24 @@ __all__ = (
 class RequirementSerializer(ModelSerializer):
     """Base serializer for listing requirements."""
 
-    required_in_packages = PackageContributionSerializer(
+    required_in_package_releases = PackageContributionSerializer(
         many=True,
         read_only=True,
     )
-    required_in_plugins = PluginContributionSerializer(
+    required_in_plugin_releases = PluginContributionSerializer(
         many=True,
         read_only=True,
     )
-    required_in_subplugins = SubPluginContributionSerializer(
+    required_in_sub_plugin_releases = SubPluginContributionSerializer(
         many=True,
         read_only=True,
     )
 
     class Meta:
         fields = (
-            'required_in_packages',
-            'required_in_plugins',
-            'required_in_subplugins',
+            'required_in_package_releases',
+            'required_in_plugin_releases',
+            'required_in_sub_plugin_releases',
         )
 
 

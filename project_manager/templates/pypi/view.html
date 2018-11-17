@@ -10,10 +10,10 @@
 
     <p><a href="{{ pypirequirement.get_pypi_url }}">PyPi URL</a></p>
 
-    {% if required_in_plugins or required_in_sub_plugins or required_in_packages %}
+    {% if required_in_plugin_releases or required_in_sub_plugin_releases or required_in_package_releases %}
         <h3>Usage Lists</h3>
         <ul>
-            {% if required_in_plugins %}
+            {% if required_in_plugin_releases %}
                 <br />
                 <div class="row">
                     <div class="col-sm-12">
@@ -23,7 +23,7 @@
                             </div>
                             <table class="table">
                                 <tbody>
-                                    {% for group in required_in_plugins %}
+                                    {% for group in required_in_plugin_releases %}
                                         <tr>
                                             {% for plugin in group %}
                                                 {% if plugin %}
@@ -39,7 +39,7 @@
                 </div>
             {% endif %}
 
-            {% if required_in_sub_plugins %}
+            {% if required_in_sub_plugin_releases %}
                 <br />
                 <div class="row">
                     <div class="col-sm-12">
@@ -49,7 +49,7 @@
                             </div>
                             <table class="table">
                                 <tbody>
-                                    {% for group in required_in_sub_plugins %}
+                                    {% for group in required_in_sub_plugin_releases %}
                                         <tr>
                                             {% for sub_plugin in group %}
                                                 {% if sub_plugin %}
@@ -65,7 +65,7 @@
                 </div>
             {% endif %}
 
-            {% if required_in_packages %}
+            {% if required_in_package_releases %}
                 <br />
                 <div class="row">
                     <div class="col-sm-12">
@@ -75,7 +75,7 @@
                             </div>
                             <table class="table">
                                 <tbody>
-                                    {% for group in required_in_packages %}
+                                    {% for group in required_in_package_releases %}
                                         <tr>
                                             {% for package in group %}
                                                 {% if package %}

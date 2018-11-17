@@ -138,15 +138,15 @@ class PackageView(DetailView):
             'package_requirements': self.object.package_requirements.all(),
             'pypi_requirements': self.object.pypi_requirements.all(),
             'supported_games': self.object.supported_games.all(),
-            'required_in_plugins': get_groups(
-                self.object.required_in_plugins.all()),
-            'required_in_sub_plugins': get_groups(
-                self.object.required_in_subplugins.all().select_related(
+            'required_in_plugin_releases': get_groups(
+                self.object.required_in_plugin_releases.all()),
+            'required_in_sub_plugin_releases': get_groups(
+                self.object.required_in_sub_plugin_releases.all().select_related(
                     'plugin',
                 )
             ),
-            'required_in_packages': get_groups(
-                self.object.required_in_packages.all()),
+            'required_in_package_releases': get_groups(
+                self.object.required_in_package_releases.all()),
         })
         return context
 

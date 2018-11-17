@@ -42,14 +42,14 @@ class PyPiView(DetailView):
         """Add necessary context for the template."""
         context = super().get_context_data(**kwargs)
         context.update({
-            'required_in_plugins': get_groups(
-                self.object.required_in_plugins.all()),
-            'required_in_sub_plugins': get_groups(
-                self.object.required_in_subplugins.all().select_related(
+            'required_in_plugin_releases': get_groups(
+                self.object.required_in_plugin_releases.all()),
+            'required_in_sub_plugin_releases': get_groups(
+                self.object.required_in_sub_plugin_releases.all().select_related(
                     'plugin',
                 )
             ),
-            'required_in_packages': get_groups(
-                self.object.required_in_packages.all()),
+            'required_in_package_releases': get_groups(
+                self.object.required_in_package_releases.all()),
         })
         return context

@@ -15,14 +15,14 @@ from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 
 # App
-from project_manager.packages.models import Package
-from project_manager.plugins.models import Plugin
+from project_manager.packages.models import PackageRelease
+from project_manager.plugins.models import PluginRelease
 from project_manager.requirements.models import (
     DownloadRequirement,
     PyPiRequirement,
     VersionControlRequirement,
 )
-from project_manager.sub_plugins.models import SubPlugin
+from project_manager.sub_plugins.models import SubPluginRelease
 from .serializers import (
     DownloadRequirementSerializer,
     PyPiRequirementSerializer,
@@ -46,23 +46,23 @@ __all__ = (
 # =============================================================================
 _project_prefetch = (
     Prefetch(
-        lookup='required_in_packages',
-        queryset=Package.objects.order_by(
-            'name',
+        lookup='required_in_package_releases',
+        queryset=PackageRelease.objects.order_by(
+            'package__name',
         )
     ),
     Prefetch(
-        lookup='required_in_plugins',
-        queryset=Plugin.objects.order_by(
-            'name',
+        lookup='required_in_plugin_releases',
+        queryset=PluginRelease.objects.order_by(
+            'plugin__name',
         )
     ),
     Prefetch(
-        lookup='required_in_subplugins',
-        queryset=SubPlugin.objects.order_by(
-            'name',
+        lookup='required_in_sub_plugin_releases',
+        queryset=SubPluginRelease.objects.order_by(
+            'sub_plugin__name',
         ).select_related(
-            'plugin'
+            'sub_plugin__plugin'
         )
     ),
 )
