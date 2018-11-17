@@ -13,7 +13,6 @@ from django.core.exceptions import ValidationError
 
 # App
 from project_manager.common.constants import CANNOT_BE_NAMED, CANNOT_START_WITH
-from project_manager.packages.models import Package
 
 
 # =============================================================================
@@ -174,6 +173,7 @@ def validate_basename(basename, project_type):
 
 
 def _validate_custom_requirement(item, custom_requirements, errors):
+    from project_manager.packages.models import Package
     basename = item.get('basename')
     if basename is None:
         errors.append(
