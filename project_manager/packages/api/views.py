@@ -164,7 +164,7 @@ class PackageReleaseViewSet(ProjectReleaseViewSet):
         Prefetch(
             lookup='packagereleaseversioncontrolrequirement_set',
             queryset=PackageReleaseVersionControlRequirement.objects.order_by(
-                'vcs_requirement__name',
+                'vcs_requirement__url',
             ).select_related(
                 'vcs_requirement',
             )

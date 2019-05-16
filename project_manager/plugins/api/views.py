@@ -180,7 +180,7 @@ class PluginReleaseViewSet(ProjectReleaseViewSet):
         Prefetch(
             lookup='pluginreleaseversioncontrolrequirement_set',
             queryset=PluginReleaseVersionControlRequirement.objects.order_by(
-                'vcs_requirement__name',
+                'vcs_requirement__url',
             ).select_related(
                 'vcs_requirement',
             )
