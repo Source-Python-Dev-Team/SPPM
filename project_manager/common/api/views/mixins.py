@@ -86,6 +86,7 @@ class ProjectRelatedInfoMixin(ModelViewSet):
         return queryset.filter(**kwargs)
 
     def get_view_name(self):
+        """Return the name for the view."""
         if hasattr(self, 'kwargs') and self.api_type is not None:
             return f'{self.project} - {self.api_type}'
         return super().get_view_name()

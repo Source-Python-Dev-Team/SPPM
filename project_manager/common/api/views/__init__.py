@@ -57,15 +57,17 @@ class ProjectAPIView(APIView):
                 'contributors': reverse(
                     viewname=f'api:{self.project_type}s:endpoints',
                     request=request,
-                ) + f'contributors/{self.extra_params}<{self.project_type}>/',
+                ) + (
+                    f'contributors/{self.extra_params}{{{self.project_type}}}/'
+                ),
                 'games': reverse(
                     viewname=f'api:{self.project_type}s:endpoints',
                     request=request,
-                ) + f'games/{self.extra_params}<{self.project_type}>/',
+                ) + f'games/{self.extra_params}{{{self.project_type}}}/',
                 'images': reverse(
                     viewname=f'api:{self.project_type}s:endpoints',
                     request=request,
-                ) + f'images/{self.extra_params}<{self.project_type}>/',
+                ) + f'images/{self.extra_params}{{{self.project_type}}}/',
                 'projects': reverse(
                     viewname=f'api:{self.project_type}s:endpoints',
                     request=request,
@@ -73,11 +75,11 @@ class ProjectAPIView(APIView):
                 'releases': reverse(
                     viewname=f'api:{self.project_type}s:endpoints',
                     request=request,
-                ) + f'releases/{self.extra_params}<{self.project_type}>/',
+                ) + f'releases/{self.extra_params}{{{self.project_type}}}/',
                 'tags': reverse(
                     viewname=f'api:{self.project_type}s:endpoints',
                     request=request,
-                ) + f'tags/{self.extra_params}<{self.project_type}>/',
+                ) + f'tags/{self.extra_params}{{{self.project_type}}}/',
             }
         )
 

@@ -201,10 +201,12 @@ class SubPluginReleaseViewSet(ProjectReleaseViewSet):
         ),
         Prefetch(
             lookup='subpluginreleaseversioncontrolrequirement_set',
-            queryset=SubPluginReleaseVersionControlRequirement.objects.order_by(
-                'vcs_requirement__name',
-            ).select_related(
-                'vcs_requirement',
+            queryset=(
+                SubPluginReleaseVersionControlRequirement.objects.order_by(
+                    'vcs_requirement__name',
+                ).select_related(
+                    'vcs_requirement',
+                )
             )
         ),
     )

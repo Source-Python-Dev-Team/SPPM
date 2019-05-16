@@ -35,10 +35,6 @@ class ProjectManagerAPIView(APIView):
                 viewname='api:plugins:endpoints',
                 request=request,
             ),
-            'requirements': reverse(
-                viewname='api:requirements:endpoints',
-                request=request,
-            ),
             'sub-plugins': reverse(
                 viewname='api:sub-plugins:endpoints',
                 request=request,

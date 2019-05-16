@@ -56,7 +56,7 @@ def get_requirements(zip_file, requirement_path):
         with zip_file.open(requirement_path) as requirement_file:
             contents = json.load(requirement_file)
     except KeyError:
-        return
+        return {}
     except json.JSONDecodeError:
         raise ValidationError({
             'zip_file': 'Requirements json file cannot be decoded.'

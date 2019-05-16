@@ -38,13 +38,6 @@ urlpatterns = [
         ),
     ),
     url(
-        regex=r'^requirements/',
-        view=include(
-            'project_manager.requirements.api.urls',
-            namespace='requirements',
-        ),
-    ),
-    url(
         regex=r'^users/',
         view=include(
             'project_manager.users.api.urls',

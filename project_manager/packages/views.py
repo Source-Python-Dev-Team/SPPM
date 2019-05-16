@@ -146,7 +146,7 @@ class PackageView(DetailView):
             'required_in_plugin_releases': get_groups(
                 self.object.required_in_plugin_releases.all()),
             'required_in_sub_plugin_releases': get_groups(
-                self.object.required_in_sub_plugin_releases.all().select_related(
+                self.object.required_in_sub_plugin_releases.select_related(
                     'plugin',
                 )
             ),
