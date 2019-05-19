@@ -4,7 +4,7 @@
 # IMPORTS
 # =============================================================================
 # App
-from project_manager.packages.helpers import get_package_basename
+from project_manager.packages.helpers import PackageZipFile
 from project_manager.packages.models import Package
 
 
@@ -28,7 +28,7 @@ class PackageReleaseBase:
     @property
     def zip_parser(self):
         """Return the Package zip parsing function."""
-        return get_package_basename
+        return PackageZipFile
 
     def get_project_kwargs(self, parent_project=None):
         """Return kwargs for the project."""

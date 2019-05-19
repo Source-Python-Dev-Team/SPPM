@@ -115,7 +115,7 @@ class PackageCreateForm(SubmitButtonMixin):
         basename = get_package_basename(zip_file)
         if Package.objects.filter(basename=basename).exists():
             raise ValidationError(
-                f'Package {basename} is already registered.',
+                message=f'Package {basename} is already registered.',
                 code='duplicate',
             )
         self.instance.basename = basename
@@ -206,7 +206,7 @@ class PackageUpdateForm(SubmitButtonMixin):
         version = self.cleaned_data['version']
         if version in all_versions:
             raise ValidationError(
-                f'Release version "{version}" already exists.',
+                message=f'Release version "{version}" already exists.',
                 code='duplicate',
             )
         return version
@@ -217,7 +217,7 @@ class PackageUpdateForm(SubmitButtonMixin):
         basename = get_package_basename(zip_file)
         if basename != self.instance.basename:
             raise ValidationError(
-                'Uploaded package does not match current package.',
+                message='Uploaded package does not match current package.',
                 code='mismatch',
             )
         return zip_file

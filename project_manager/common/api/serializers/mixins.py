@@ -121,20 +121,37 @@ class ProjectReleaseCreationMixin(ModelSerializer):
         args = (zip_file,)
         if parent_project is not None:
             args += (parent_project,)
-        basename = self.zip_parser(*args)
-        if project_basename not in (basename, None):
+        zip_validator = self.zip_parser(*args)
+        zip_validator.find_base_info()
+        zip_validator.validate_basename()
+        zip_validator.validate_base_file_in_zip()
+        zip_validator.validate_requirements()
+        """
+            Requirements:
+                Plugins:
+                    ../plugins/<basename>/requirements.json
+                Packages:
+                    ../packages/custom/<package>/requirements.json
+                    ../packages/custom/<module>_requirements.json
+                SubPlugins:
+                    ../plugins/<plugin>/<path>/<sub_plugin>/requirements.json
+                    ../plugins/<plugin>/<path>/<sub_plugin>_requirements.json
+        """
+        if project_basename not in (zip_validator.basename, None):
             raise ValidationError({
                 'zip_file': (
-                    f"Basename in zip '{basename}' does not match basename "
-                    f"for {self.project_type} '{project_basename}'"
+                    f"Basename in zip '{zip_validator.basename}' does "
+                    f"not match basename for {self.project_type} "
+                    f"'{project_basename}'"
                 )
             })
 
         # This needs added for project creation
-        attrs['basename'] = basename
+        attrs['basename'] = zip_validator.basename
 
         if project is not None:
             attrs[self.project_type.replace('-', '_')] = project
+        # TODO: add creating requirements
         return attrs
 
     def create(self, validated_data):

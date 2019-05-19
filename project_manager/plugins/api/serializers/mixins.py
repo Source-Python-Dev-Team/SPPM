@@ -4,7 +4,7 @@
 # IMPORTS
 # =============================================================================
 # App
-from project_manager.plugins.helpers import get_plugin_basename
+from project_manager.plugins.helpers import PluginZipFile
 from project_manager.plugins.models import Plugin
 
 
@@ -28,7 +28,7 @@ class PluginReleaseBase:
     @property
     def zip_parser(self):
         """Return the Plugin zip parsing function."""
-        return get_plugin_basename
+        return PluginZipFile
 
     def get_project_kwargs(self, parent_project=None):
         """Return kwargs for the project."""

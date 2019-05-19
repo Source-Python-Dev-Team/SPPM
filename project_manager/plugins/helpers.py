@@ -7,11 +7,7 @@
 from django.core.exceptions import ValidationError
 
 # App
-from project_manager.common.helpers import (
-    find_image_number,
-    get_file_list,
-    validate_basename,
-)
+from project_manager.common.helpers import ProjectZipFile, find_image_number
 from project_manager.plugins.constants import (
     PLUGIN_PATH,
     PLUGIN_IMAGE_URL,
@@ -24,6 +20,7 @@ from project_manager.plugins.constants import (
 # >> ALL DECLARATION
 # =============================================================================
 __all__ = (
+    'PluginZipFile',
     'get_plugin_basename',
     'handle_plugin_image_upload',
     'handle_plugin_logo_upload',
@@ -32,20 +29,56 @@ __all__ = (
 
 
 # =============================================================================
+# >> CLASSES
+# =============================================================================
+class PluginZipFile(ProjectZipFile):
+    """Plugin ZipFile parsing class."""
+
+    project_type = 'Plugin'
+
+    def find_base_info(self):
+        """Store all base information for the zip file."""
+        for file_path in self.file_list:
+            if not file_path.endswith('.py'):
+                continue
+
+            if not file_path.startswith(PLUGIN_PATH):
+                # TODO: raise error if PACKAGE_PATH
+                continue
+
+            current = file_path.split(PLUGIN_PATH, 1)[1]
+            if not current:
+                continue
+
+            current = current.split('/', 1)[0]
+
+            if self.basename is None:
+                self.basename = current
+            elif self.basename != current:
+                raise ValidationError(
+                    message='Multiple base directories found for plugin.',
+                    code='multiple',
+                )
+
+    def get_base_paths(self):
+        """Return a list of base paths to check against."""
+        return [f'{PLUGIN_PATH}{self.basename}/{self.basename}.py']
+
+    def get_requirement_path(self):
+        """Return the path for the requirements json file."""
+        return f'{PLUGIN_PATH}{self.basename}/requirements.json'
+
+
+# =============================================================================
 # >> FUNCTIONS
 # =============================================================================
 def get_plugin_basename(zip_file):
     """Return the plugin's basename."""
-    file_list = get_file_list(zip_file)
-    basename = _find_basename(file_list)
-    validate_basename(basename=basename, project_type='plugin')
-    if f'{PLUGIN_PATH}{basename}/{basename}.py' not in file_list:
-        raise ValidationError(
-            'No primary file found in zip.  ' +
-            'Perhaps you are attempting to upload a sub-plugin.',
-            code='not-found',
-        )
-    return basename
+    instance = PluginZipFile(zip_file)
+    instance.find_base_info()
+    instance.validate_basename()
+    instance.validate_base_file_in_zip()
+    return instance.basename
 
 
 def handle_plugin_zip_upload(instance, filename):
@@ -69,27 +102,3 @@ def handle_plugin_image_upload(instance, filename):
     )
     extension = filename.rsplit('.', 1)[1]
     return f'{PLUGIN_IMAGE_URL}{slug}/{image_number}.{extension}'
-
-
-# =============================================================================
-# >> HELPER FUNCTIONS
-# =============================================================================
-def _find_basename(file_list):
-    basename = None
-    for file_path in file_list:
-        if not file_path.endswith('.py'):
-            continue
-        if not file_path.startswith(PLUGIN_PATH):
-            continue
-        current = file_path.split(PLUGIN_PATH, 1)[1]
-        if not current:
-            continue
-        current = current.split('/', 1)[0]
-        if basename is None:
-            basename = current
-        elif basename != current:
-            raise ValidationError(
-                'Multiple base directories found for plugin',
-                code='multiple',
-            )
-    return basename

@@ -119,8 +119,10 @@ class SubPluginCreateForm(SubmitButtonMixin):
         current = SubPlugin.objects.filter(plugin=plugin, basename=basename)
         if current:
             raise ValidationError(
-                f'Sub-plugin {basename} has already been uploaded for '
-                f'plugin {plugin.name}.',
+                message=(
+                    f'Sub-plugin {basename} has already been uploaded for '
+                    f'plugin {plugin.name}.'
+                ),
                 code='duplicate',
             )
         self.instance.basename = basename
@@ -212,7 +214,7 @@ class SubPluginUpdateForm(SubmitButtonMixin):
         version = self.cleaned_data['version']
         if version in all_versions:
             raise ValidationError(
-                f'Release version "{version}" already exists.',
+                message=f'Release version "{version}" already exists.',
                 code='duplicate',
             )
         return version
@@ -224,7 +226,9 @@ class SubPluginUpdateForm(SubmitButtonMixin):
         basename, path = get_sub_plugin_basename(zip_file, plugin)
         if basename != self.instance.basename:
             raise ValidationError(
-                'Uploaded sub-plugin does not match current sub-plugin.',
+                message=(
+                    'Uploaded sub-plugin does not match current sub-plugin.'
+                ),
                 code='mismatch',
             )
         self.cleaned_data['path'] = path

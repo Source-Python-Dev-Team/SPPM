@@ -7,11 +7,7 @@
 from django.core.exceptions import ValidationError
 
 # App
-from project_manager.common.helpers import (
-    find_image_number,
-    get_file_list,
-    validate_basename,
-)
+from project_manager.common.helpers import ProjectZipFile, find_image_number
 from project_manager.packages.constants import (
     PACKAGE_PATH,
     PACKAGE_IMAGE_URL,
@@ -24,6 +20,7 @@ from project_manager.packages.constants import (
 # >> ALL DECLARATION
 # =============================================================================
 __all__ = (
+    'PackageZipFile',
     'get_package_basename',
     'handle_package_image_upload',
     'handle_package_logo_upload',
@@ -32,15 +29,71 @@ __all__ = (
 
 
 # =============================================================================
+# >> CLASSES
+# =============================================================================
+class PackageZipFile(ProjectZipFile):
+    """Package ZipFile parsing class."""
+
+    project_type = 'Package'
+    is_module = False
+
+    def find_base_info(self):
+        """Store all base information for the zip file."""
+        for file_path in self.file_list:
+            if not file_path.endswith('.py'):
+                continue
+            if not file_path.startswith(PACKAGE_PATH):
+                # TODO: raise error if PLUGIN_PATH
+                continue
+
+            current = file_path.split(PACKAGE_PATH, 1)[1]
+            if not current:
+                continue
+
+            if '/' not in current:
+                current = current.rsplit('.', 1)[0]
+                self.is_module = True
+
+            else:
+                current = current.split('/', 1)[0]
+
+            if self.basename is None:
+                self.basename = current
+
+            elif self.basename != current:
+                raise ValidationError(
+                    message='Multiple base directories found for package.',
+                    code='multiple',
+                )
+
+    def get_base_paths(self):
+        """Return a list of base paths to check against."""
+        if self.is_module:
+            return [f'{PACKAGE_PATH}{self.basename}.py']
+
+        return [
+            f'{PACKAGE_PATH}{self.basename}/{self.basename}.py',
+            f'{PACKAGE_PATH}{self.basename}/__init__.py',
+        ]
+
+    def get_requirement_path(self):
+        """Return the path for the requirements json file."""
+        if self.is_module:
+            return f'{PACKAGE_PATH}{self.basename}_requirements.json'
+        return f'{PACKAGE_PATH}{self.basename}/requirements.json'
+
+
+# =============================================================================
 # >> FUNCTIONS
 # =============================================================================
 def get_package_basename(zip_file):
     """Return the package's basename."""
     # TODO: add module/package validation
-    file_list = get_file_list(zip_file)
-    basename, is_module = _find_basename_and_is_module(file_list)
-    validate_basename(basename=basename, project_type='package')
-    return basename
+    instance = PackageZipFile(zip_file)
+    instance.find_base_info()
+    instance.validate_basename()
+    instance.validate_base_file_in_zip()
+    return instance.basename
 
 
 def handle_package_zip_upload(instance, filename):
@@ -64,32 +117,3 @@ def handle_package_image_upload(instance, filename):
     )
     extension = filename.rsplit('.', 1)[1]
     return f'{PACKAGE_IMAGE_URL}{slug}/{image_number}.{extension}'
-
-
-# =============================================================================
-# >> HELPER FUNCTIONS
-# =============================================================================
-def _find_basename_and_is_module(file_list):
-    basename = None
-    is_module = False
-    for file_path in file_list:
-        if not file_path.endswith('.py'):
-            continue
-        if not file_path.startswith(PACKAGE_PATH):
-            continue
-        current = file_path.split(PACKAGE_PATH, 1)[1]
-        if not current:
-            continue
-        if '/' not in current:
-            current = current.rsplit('.', 1)[0]
-            is_module = True
-        else:
-            current = current.split('/', 1)[0]
-        if basename is None:
-            basename = current
-        elif basename != current:
-            raise ValidationError(
-                'Multiple base directories found for package.',
-                code='multiple',
-            )
-    return basename, is_module

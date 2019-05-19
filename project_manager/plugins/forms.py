@@ -118,7 +118,7 @@ class PluginCreateForm(SubmitButtonMixin):
         basename = get_plugin_basename(zip_file)
         if Plugin.objects.filter(basename=basename).exists():
             raise ValidationError(
-                f'Plugin {basename} already registered.',
+                message=f'Plugin {basename} already registered.',
                 code='duplicate',
             )
         self.instance.basename = basename
@@ -209,7 +209,7 @@ class PluginUpdateForm(SubmitButtonMixin):
         ).values_list('version', flat=True)
         if version in all_versions:
             raise ValidationError(
-                f'Release version "{version}" already exists.',
+                message=f'Release version "{version}" already exists.',
                 code='duplicate',
             )
         return version
@@ -220,7 +220,7 @@ class PluginUpdateForm(SubmitButtonMixin):
         basename = get_plugin_basename(zip_file)
         if basename != self.instance.basename:
             raise ValidationError(
-                'Uploaded plugin does not match current plugin.',
+                message='Uploaded plugin does not match current plugin.',
                 code='mismatch',
             )
         return zip_file

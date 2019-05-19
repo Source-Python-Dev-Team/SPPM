@@ -8,7 +8,7 @@ from rest_framework.exceptions import ValidationError
 
 # App
 from project_manager.plugins.models import Plugin
-from project_manager.sub_plugins.helpers import get_sub_plugin_basename
+from project_manager.sub_plugins.helpers import SubPluginZipFile
 from project_manager.sub_plugins.models import SubPlugin
 
 
@@ -43,7 +43,7 @@ class SubPluginReleaseBase:
     @property
     def zip_parser(self):
         """Return the SubPlugin zip parsing function."""
-        return get_sub_plugin_basename
+        return SubPluginZipFile
 
     def get_project_kwargs(self, parent_project=None):
         """Return kwargs for the project."""

@@ -7,11 +7,7 @@
 from django.core.exceptions import ValidationError
 
 # App
-from project_manager.common.helpers import (
-    find_image_number,
-    get_file_list,
-    validate_basename,
-)
+from project_manager.common.helpers import ProjectZipFile, find_image_number
 from project_manager.plugins.constants import PLUGIN_PATH
 from project_manager.sub_plugins.constants import (
     SUB_PLUGIN_IMAGE_URL,
@@ -24,6 +20,7 @@ from project_manager.sub_plugins.constants import (
 # >> ALL DECLARATION
 # =============================================================================
 __all__ = (
+    'SubPluginZipFile',
     'get_sub_plugin_basename',
     'handle_sub_plugin_image_upload',
     'handle_sub_plugin_logo_upload',
@@ -32,17 +29,139 @@ __all__ = (
 
 
 # =============================================================================
+# >> CLASSES
+# =============================================================================
+class SubPluginZipFile(ProjectZipFile):
+    """SubPlugin ZipFile parsing class."""
+
+    project_type = 'SubPlugin'
+    paths = set()
+    is_module = False
+
+    def __init__(self, zip_file, plugin):
+        """Store the base attributes and the plugin."""
+        self.plugin = plugin
+        super().__init__(zip_file)
+
+    def find_base_info(self):
+        """Store all base information for the zip file."""
+        plugin_path = str(PLUGIN_PATH / self.plugin.basename) + '/'
+        paths = list(self.plugin.paths.values_list('path', flat=True))
+        for file_path in self.file_list:
+            if not file_path.endswith('.py'):
+                continue
+
+            if not file_path.startswith(plugin_path):
+                # TODO: validate not another plugin path or package
+                continue
+
+            current = file_path.split(plugin_path, 1)[1]
+            if not current:
+                continue
+
+            for current_path in paths:
+                if not current.startswith(current_path):
+                    continue
+
+                current = current.split(current_path, 1)[1]
+                if current.startswith('/'):
+                    current = current[1:]
+
+                current = current.split('/', 1)[0]
+                if not current:
+                    continue
+
+                if self.basename is None:
+                    self.basename = current
+
+                elif self.basename != current:
+                    raise ValidationError(
+                        message='Multiple sub-plugins found in zip.',
+                        code='multiple',
+                    )
+
+                self.paths.add(current_path)
+
+    def validate_base_file_in_zip(self):
+        """Verify that there is a base file within the zip file."""
+        plugin_paths = {
+            values['path']: {
+                'allow_module': values['allow_module'],
+                'allow_package_using_basename': values[
+                    'allow_package_using_basename'
+                ],
+                'allow_package_using_init': values['allow_package_using_init'],
+            } for values in self.plugin.paths.filter(
+                path__in=self.paths,
+            ).values(
+                'path',
+                'allow_module',
+                'allow_package_using_basename',
+                'allow_package_using_init',
+            )
+        }
+        for path in self.paths:
+            self._validate_base_file_in_zip(
+                base_path=path,
+                path_values=plugin_paths[path]
+            )
+
+    def _validate_base_file_in_zip(self, base_path, path_values):
+        """Verify a base file is found in the given path."""
+        if not base_path.startswith('/'):
+            base_path = '/' + base_path
+        if not base_path.endswith('/'):
+            base_path += '/'
+        sub_path = f'{PLUGIN_PATH}{self.plugin.basename}{base_path}'
+        module_found = package_found = False
+        if path_values['allow_module']:
+            check_path = f'{sub_path}{self.basename}.py'
+            module_found = check_path in self.file_list
+
+        if path_values['allow_package_using_basename']:
+            check_path = f'{sub_path}{self.basename}/{self.basename}.py'
+            package_found = check_path in self.file_list
+
+        if path_values['allow_package_using_init']:
+            check_path = f'{sub_path}{self.basename}/__init__.py'
+            package_found = check_path in self.file_list or package_found
+
+        if package_found and module_found:
+            # TODO: refine this error
+            raise ValidationError(
+                message=(
+                    'SubPlugin found as both a module and package in the same '
+                    'path.'
+                )
+            )
+
+        if package_found or module_found:
+            return
+
+        # TODO: refine this error
+        raise ValidationError(
+            message=(
+                'SubPlugin not found in path, though files found within zip '
+                'for directory.'
+            )
+        )
+
+    def get_requirement_path(self):
+        """Return the path for the requirements json file."""
+        # TODO: this could be in one of a few different locations
+        return f'{PLUGIN_PATH}{self.basename}/requirements.json'
+
+
+# =============================================================================
 # >> FUNCTIONS
 # =============================================================================
 def get_sub_plugin_basename(zip_file, plugin):
     """Return the sub-plugin's basename."""
-    file_list = get_file_list(zip_file)
-    basename, path = _find_basename_and_path(file_list, plugin)
-
-    # TODO: add 'path' validation
-    validate_basename(basename=basename, project_type='sub-plugin')
-
-    return basename
+    instance = SubPluginZipFile(zip_file, plugin)
+    instance.find_base_info()
+    instance.validate_basename()
+    instance.validate_base_file_in_zip()
+    return instance.basename
 
 
 def handle_sub_plugin_zip_upload(instance, filename):
@@ -76,75 +195,3 @@ def handle_sub_plugin_image_upload(instance, filename):
         f'{SUB_PLUGIN_IMAGE_URL}{plugin_slug}/{slug}/'
         f'{image_number}.{extension}'
     )
-
-
-# =============================================================================
-# >> HELPER FUNCTIONS
-# =============================================================================
-def _validate_plugin_name(file_list, plugin):
-    """Return the basename of the plugin."""
-    plugin_name = None
-    for file_path in file_list:
-        if not file_path.endswith('.py'):
-            continue
-        if not file_path.startswith(PLUGIN_PATH):
-            continue
-        current = file_path.split(PLUGIN_PATH, 1)[1]
-        if not current:
-            continue
-        current = current.split('/', 1)[0]
-        if plugin_name is None:
-            plugin_name = current
-        elif plugin_name != current:
-            raise ValidationError(
-                'Multiple plugins found in zip.',
-                code='multiple',
-            )
-    if plugin_name is None:
-        raise ValidationError(
-            'No plugin base directory found in zip.',
-            code='not-found',
-        )
-    if plugin_name != plugin.basename:
-        raise ValidationError(
-            'Wrong plugin base directory found in zip.',
-            code='invalid',
-        )
-    return plugin_name
-
-
-# =============================================================================
-# >> HELPER FUNCTIONS
-# =============================================================================
-def _find_basename_and_path(file_list, plugin):
-    plugin_name = _validate_plugin_name(file_list, plugin)
-    file_path_start = f'{PLUGIN_PATH}{plugin_name}/'
-    path = None
-    basename = None
-    paths = list(plugin.paths.values_list('path', flat=True))
-    for file_path in file_list:
-        if not file_path.endswith('.py'):
-            continue
-        if not file_path.startswith(file_path_start):
-            continue
-        current = file_path.split(file_path_start, 1)[1]
-        if not current:
-            continue
-        for current_path in paths:
-            if not current.startswith(current_path):
-                continue
-            current = current.split(current_path, 1)[1]
-            if current.startswith('/'):
-                current = current[1:]
-            current = current.split('/', 1)[0]
-            if not current:
-                continue
-            if basename is None:
-                basename = current
-                path = current_path
-            elif basename != current:
-                raise ValidationError(
-                    'Multiple sub-plugins found in zip.',
-                    code='multiple',
-                )
-    return basename, path
