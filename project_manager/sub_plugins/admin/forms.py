@@ -27,6 +27,7 @@ class SubPluginAdminForm(forms.ModelForm):
     """Form to use for selecting the Plugin for a SubPlugin."""
 
     def __init__(self, *args, **kwargs):
+        """Set the widget."""
         super().__init__(*args, **kwargs)
         self.fields['plugin'].queryset = self.fields['plugin'].queryset.filter(
             paths__isnull=False,

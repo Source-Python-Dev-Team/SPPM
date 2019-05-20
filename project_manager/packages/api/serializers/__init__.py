@@ -58,6 +58,8 @@ class PackageImageSerializer(ProjectImageSerializer):
     """Serializer for adding, removing, and listing Package images."""
 
     class Meta(ProjectImageSerializer.Meta):
+        """Define metaclass attributes."""
+
         model = PackageImage
 
 
@@ -67,6 +69,8 @@ class PackageReleasePackageRequirementSerializer(
     """Serializer for Package Release Package requirements."""
 
     class Meta(ReleasePackageRequirementSerializer.Meta):
+        """Define metaclass attributes."""
+
         model = PackageReleasePackageRequirement
 
 
@@ -76,6 +80,8 @@ class PackageReleaseDownloadRequirementSerializer(
     """Serializer for Package Release Download requirements."""
 
     class Meta(ReleaseDownloadRequirementSerializer.Meta):
+        """Define metaclass attributes."""
+
         model = PackageReleaseDownloadRequirement
 
 
@@ -85,6 +91,8 @@ class PackageReleasePyPiRequirementSerializer(
     """Serializer for Package Release PyPi requirements."""
 
     class Meta(ReleasePyPiRequirementSerializer.Meta):
+        """Define metaclass attributes."""
+
         model = PackageReleasePyPiRequirement
 
 
@@ -94,6 +102,8 @@ class PackageReleaseVersionControlRequirementSerializer(
     """Serializer for Package Release VCS requirements."""
 
     class Meta(ReleaseVersionControlRequirementSerializer.Meta):
+        """Define metaclass attributes."""
+
         model = PackageReleaseVersionControlRequirement
 
 
@@ -122,6 +132,8 @@ class PackageReleaseSerializer(PackageReleaseBase, ProjectReleaseSerializer):
     )
 
     class Meta(ProjectReleaseSerializer.Meta):
+        """Define metaclass attributes."""
+
         model = PackageRelease
 
 
@@ -131,6 +143,8 @@ class PackageCreateReleaseSerializer(
     """Serializer for creating and listing Package releases."""
 
     class Meta(ProjectCreateReleaseSerializer.Meta):
+        """Define metaclass attributes."""
+
         model = PackageRelease
 
 
@@ -141,6 +155,8 @@ class PackageSerializer(ProjectSerializer):
     release_model = PackageRelease
 
     class Meta(ProjectSerializer.Meta):
+        """Define metaclass attributes."""
+
         model = Package
 
 
@@ -152,6 +168,8 @@ class PackageCreateSerializer(PackageSerializer):
     )
 
     class Meta(PackageSerializer.Meta):
+        """Define metaclass attributes."""
+
         fields = PackageSerializer.Meta.fields + (
             'releases',
         )
@@ -161,6 +179,8 @@ class PackageGameSerializer(ProjectGameSerializer):
     """Supported Games Serializer for Packages."""
 
     class Meta(ProjectGameSerializer.Meta):
+        """Define metaclass attributes."""
+
         model = PackageGame
 
 
@@ -168,6 +188,8 @@ class PackageTagSerializer(ProjectTagSerializer):
     """Tags Serializer for Packages."""
 
     class Meta(ProjectTagSerializer.Meta):
+        """Define metaclass attributes."""
+
         model = PackageTag
 
 
@@ -175,4 +197,6 @@ class PackageContributorSerializer(ProjectContributorSerializer):
     """Contributors Serializer for Packages."""
 
     class Meta(ProjectContributorSerializer.Meta):
+        """Define metaclass attributes."""
+
         model = PackageContributor

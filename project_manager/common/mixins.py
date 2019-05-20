@@ -88,7 +88,7 @@ class DownloadMixin(View):
             raise Http404
         return super().dispatch(request, *args, **kwargs)
 
-    def get(self, request, *args, **kwargs):
+    def get(self, request, **kwargs):
         """Handle the download and download counter."""
         zip_file = kwargs['zip_file']
         with self.full_path.open('rb') as open_file:

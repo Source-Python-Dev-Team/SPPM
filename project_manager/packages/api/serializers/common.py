@@ -27,6 +27,8 @@ class ReleasePackageRequirementSerializer(ModelSerializer):
     version = ReadOnlyField()
 
     class Meta:
+        """Define metaclass attributes."""
+
         fields = (
             'name',
             'slug',

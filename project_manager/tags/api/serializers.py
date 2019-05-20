@@ -25,6 +25,8 @@ class TagSerializer(ModelSerializer):
     """Serializer for project Tags."""
 
     class Meta:
+        """Define metaclass attributes."""
+
         model = Tag
         fields = (
             'name',

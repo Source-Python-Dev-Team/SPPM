@@ -72,6 +72,8 @@ class ProjectSerializer(ModelSerializer, ProjectLocaleMixin):
     release_dict = {}
 
     class Meta:
+        """Define metaclass attributes."""
+
         fields = (
             'name',
             'slug',
@@ -145,6 +147,34 @@ class ProjectSerializer(ModelSerializer, ProjectLocaleMixin):
             ),
             request=self.context['request']
         )
+        package_requirements = (
+            release.pluginreleasepackagerequirement_set.values_list(
+                'package_requirement__name',
+                flat=True,
+            )
+        )
+        print(package_requirements)
+        pypi_requirements = (
+            release.pluginreleasepypirequirement_set.values_list(
+                'pypi_requirement__name',
+                flat=True,
+            )
+        )
+        print(pypi_requirements)
+        vcs_requirements = (
+            release.pluginreleaseversioncontrolrequirement_set.values_list(
+                'vcs_requirement__url',
+                flat=True,
+            )
+        )
+        print(vcs_requirements)
+        download_requirements = (
+            release.pluginreleasedownloadrequirement_set.values_list(
+                'download_requirement__url',
+                flat=True,
+            )
+        )
+        print(download_requirements)
         return {
             'version': release.version,
             'notes': str(release.notes) if release.notes else release.notes,
@@ -212,6 +242,8 @@ class ProjectReleaseSerializer(
     download_count = IntegerField(read_only=True)
 
     class Meta:
+        """Define metaclass attributes."""
+
         model = None
         fields = (
             'notes',
@@ -246,6 +278,8 @@ class ProjectCreateReleaseSerializer(ProjectReleaseCreationMixin):
     )
 
     class Meta:
+        """Define metaclass attributes."""
+
         model = None
         fields = (
             'notes',
@@ -260,6 +294,8 @@ class ProjectImageSerializer(ProjectThroughMixin):
     add_project = False
 
     class Meta:
+        """Define metaclass attributes."""
+
         fields = (
             'image',
         )
@@ -283,6 +319,8 @@ class ProjectGameSerializer(ProjectThroughMixin):
     )
 
     class Meta:
+        """Define metaclass attributes."""
+
         fields = (
             'game_slug',
             'game',
@@ -314,6 +352,8 @@ class ProjectTagSerializer(ProjectThroughMixin):
     )
 
     class Meta:
+        """Define metaclass attributes."""
+
         fields = (
             'tag',
         )
@@ -352,6 +392,8 @@ class ProjectContributorSerializer(ProjectThroughMixin):
     )
 
     class Meta:
+        """Define metaclass attributes."""
+
         fields = (
             'username',
             'user',

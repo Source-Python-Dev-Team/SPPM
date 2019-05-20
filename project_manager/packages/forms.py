@@ -51,6 +51,8 @@ class PackageCreateForm(SubmitButtonMixin):
     )
 
     class Meta:
+        """Define metaclass attributes."""
+
         model = Package
         fields = (
             'name',
@@ -126,6 +128,8 @@ class PackageEditForm(SubmitButtonMixin):
     """Package field editing form."""
 
     class Meta:
+        """Define metaclass attributes."""
+
         model = Package
         fields = (
             'synopsis',
@@ -159,6 +163,8 @@ class PackageSelectGamesForm(SubmitButtonMixin):
     """Package Game selection form."""
 
     class Meta:
+        """Define metaclass attributes."""
+
         model = Package
         fields = (
             'supported_games',
@@ -172,6 +178,8 @@ class PackageUpdateForm(SubmitButtonMixin):
     """Package release creation form."""
 
     class Meta:
+        """Define metaclass attributes."""
+
         model = PackageRelease
         fields = (
             'version',

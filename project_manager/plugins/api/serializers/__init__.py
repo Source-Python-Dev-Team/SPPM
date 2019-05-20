@@ -65,6 +65,8 @@ class PluginImageSerializer(ProjectImageSerializer):
     """Serializer for adding, removing, and listing Plugin images."""
 
     class Meta(ProjectImageSerializer.Meta):
+        """Define metaclass attributes."""
+
         model = PluginImage
 
 
@@ -74,6 +76,8 @@ class PluginReleasePackageRequirementSerializer(
     """Serializer for Plugin Release Package requirements."""
 
     class Meta(ReleasePackageRequirementSerializer.Meta):
+        """Define metaclass attributes."""
+
         model = PluginReleasePackageRequirement
 
 
@@ -83,6 +87,8 @@ class PluginReleaseDownloadRequirementSerializer(
     """Serializer for Plugin Release Download requirements."""
 
     class Meta(ReleaseDownloadRequirementSerializer.Meta):
+        """Define metaclass attributes."""
+
         model = PluginReleaseDownloadRequirement
 
 
@@ -90,6 +96,8 @@ class PluginReleasePyPiRequirementSerializer(ReleasePyPiRequirementSerializer):
     """Serializer for Plugin Release PyPi requirements."""
 
     class Meta(ReleasePyPiRequirementSerializer.Meta):
+        """Define metaclass attributes."""
+
         model = PluginReleasePyPiRequirement
 
 
@@ -99,6 +107,8 @@ class PluginReleaseVersionControlRequirementSerializer(
     """Serializer for Plugin Release VCS requirements."""
 
     class Meta(ReleaseVersionControlRequirementSerializer.Meta):
+        """Define metaclass attributes."""
+
         model = PluginReleaseVersionControlRequirement
 
 
@@ -127,6 +137,8 @@ class PluginReleaseSerializer(PluginReleaseBase, ProjectReleaseSerializer):
     )
 
     class Meta(ProjectReleaseSerializer.Meta):
+        """Define metaclass attributes."""
+
         model = PluginRelease
 
 
@@ -136,6 +148,8 @@ class PluginCreateReleaseSerializer(
     """Serializer for creating and retrieving Plugin releases."""
 
     class Meta(ProjectCreateReleaseSerializer.Meta):
+        """Define metaclass attributes."""
+
         model = PluginRelease
 
 
@@ -146,6 +160,8 @@ class PluginSerializer(ProjectSerializer):
     release_model = PluginRelease
 
     class Meta(ProjectSerializer.Meta):
+        """Define metaclass attributes."""
+
         model = Plugin
 
 
@@ -157,6 +173,8 @@ class PluginCreateSerializer(PluginSerializer):
     )
 
     class Meta(PluginSerializer.Meta):
+        """Define metaclass attributes."""
+
         fields = PluginSerializer.Meta.fields + (
             'releases',
         )
@@ -166,6 +184,8 @@ class PluginGameSerializer(ProjectGameSerializer):
     """Supported Games Serializer for Plugins."""
 
     class Meta(ProjectGameSerializer.Meta):
+        """Define metaclass attributes."""
+
         model = PluginGame
 
 
@@ -173,6 +193,8 @@ class PluginTagSerializer(ProjectTagSerializer):
     """Tags Serializer for Plugins."""
 
     class Meta(ProjectTagSerializer.Meta):
+        """Define metaclass attributes."""
+
         model = PluginTag
 
 
@@ -180,6 +202,8 @@ class PluginContributorSerializer(ProjectContributorSerializer):
     """Contributors Serializer for Plugins."""
 
     class Meta(ProjectContributorSerializer.Meta):
+        """Define metaclass attributes."""
+
         model = PluginContributor
 
 
@@ -187,6 +211,8 @@ class SubPluginPathSerializer(ProjectThroughMixin):
     """Sub-Plugin Paths Serializer."""
 
     class Meta:
+        """Define metaclass attributes."""
+
         model = SubPluginPath
         fields = (
             'allow_module',

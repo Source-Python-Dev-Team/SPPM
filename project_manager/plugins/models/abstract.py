@@ -33,6 +33,8 @@ class PluginThroughBase(models.Model):
         return self.plugin
 
     class Meta:
+        """Define metaclass attributes."""
+
         abstract = True
 
 
@@ -45,4 +47,6 @@ class PluginReleaseThroughBase(models.Model):
     )
 
     class Meta:
+        """Define metaclass attributes."""
+
         abstract = True

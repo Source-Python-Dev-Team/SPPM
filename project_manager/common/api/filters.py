@@ -30,6 +30,8 @@ class ProjectFilter(FilterSet):
     tag = CharFilter(field_name='tags__name')
 
     class Meta:
+        """Define metaclass attributes."""
+
         fields = (
             'game',
             'tag',

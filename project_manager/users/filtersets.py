@@ -30,6 +30,8 @@ class ForumUserFilterSet(FilterSet):
     )
 
     class Meta:
+        """Define metaclass attributes."""
+
         model = ForumUser
         fields = (
             'username',

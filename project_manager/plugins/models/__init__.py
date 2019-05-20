@@ -143,6 +143,8 @@ class PluginRelease(ProjectRelease):
         return self.plugin
 
     class Meta(ProjectRelease.Meta):
+        """Define metaclass attributes."""
+
         unique_together = ('plugin', 'version')
 
     def get_absolute_url(self):
@@ -172,6 +174,8 @@ class PluginContributor(ProjectContributor, PluginThroughBase):
     """Plugin contributors through model."""
 
     class Meta:
+        """Define metaclass attributes."""
+
         unique_together = ('plugin', 'user')
 
 
@@ -179,6 +183,8 @@ class PluginGame(ProjectGame, PluginThroughBase):
     """Plugin supported_games through model."""
 
     class Meta:
+        """Define metaclass attributes."""
+
         unique_together = ('plugin', 'game')
 
 
@@ -186,6 +192,8 @@ class PluginTag(ProjectTag, PluginThroughBase):
     """Plugin tags through model."""
 
     class Meta:
+        """Define metaclass attributes."""
+
         unique_together = ('plugin', 'tag')
 
 
@@ -212,6 +220,8 @@ class SubPluginPath(AbstractUUIDPrimaryKeyModel):
     )
 
     class Meta:
+        """Define metaclass attributes."""
+
         verbose_name = 'SubPlugin Path'
         verbose_name_plural = 'SubPlugin Paths'
         unique_together = ('path', 'plugin')
@@ -251,6 +261,8 @@ class PluginReleaseDownloadRequirement(
     """Plugin Download Requirement for Release model."""
 
     class Meta:
+        """Define metaclass attributes."""
+
         unique_together = ('plugin_release', 'download_requirement')
 
 
@@ -260,6 +272,8 @@ class PluginReleasePackageRequirement(
     """Plugin Package Requirement for Release model."""
 
     class Meta:
+        """Define metaclass attributes."""
+
         unique_together = ('plugin_release', 'package_requirement')
 
 
@@ -269,6 +283,8 @@ class PluginReleasePyPiRequirement(
     """Plugin PyPi Requirement for Release model."""
 
     class Meta:
+        """Define metaclass attributes."""
+
         unique_together = ('plugin_release', 'pypi_requirement')
 
 
@@ -278,4 +294,6 @@ class PluginReleaseVersionControlRequirement(
     """Plugin VCS Requirement for Release model."""
 
     class Meta:
+        """Define metaclass attributes."""
+
         unique_together = ('plugin_release', 'vcs_requirement')

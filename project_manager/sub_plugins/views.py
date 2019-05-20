@@ -78,7 +78,8 @@ class SubPluginCreateView(RetrieveSubPluginMixin, CreateView):
     form_class = SubPluginCreateForm
     template_name = 'sub_plugins/create.html'
 
-    def get_requirements_path(self, form):
+    @staticmethod
+    def get_requirements_path(form):
         """Return the path for the requirements file."""
         plugin_basename = form.instance.plugin.basename
         path = form.cleaned_data['path']
@@ -145,7 +146,8 @@ class SubPluginUpdateView(RetrieveSubPluginMixin, UpdateView):
     template_name = 'sub_plugins/update.html'
     slug_url_kwarg = 'sub_plugin_slug'
 
-    def get_requirements_path(self, form):
+    @staticmethod
+    def get_requirements_path(form):
         """Return the path for the requirements file."""
         plugin_basename = form.instance.plugin.basename
         path = form.cleaned_data['path']
@@ -248,9 +250,9 @@ class SubPluginReleaseListView(RetrieveSubPluginMixin, ListView):
     model = SubPluginRelease
     template_name = 'sub_plugins/releases.html'
 
-    def get_context_data(self, **kwargs):
+    def get_context_data(self, *, object_list=None, **kwargs):
         """Add the sub_plugin to the context."""
-        context = super().get_context_data(**kwargs)
+        context = super().get_context_data(object_list=object_list, **kwargs)
         context.update({
             'sub_plugin': self.sub_plugin,
         })

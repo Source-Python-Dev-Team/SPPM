@@ -23,4 +23,6 @@ class SubPluginFilter(ProjectFilter):
     """Filters for SubPlugins."""
 
     class Meta(ProjectFilter.Meta):
+        """Define metaclass attributes."""
+
         model = SubPlugin

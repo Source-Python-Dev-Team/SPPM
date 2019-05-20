@@ -23,4 +23,6 @@ class PluginFilter(ProjectFilter):
     """Filters for Plugins."""
 
     class Meta(ProjectFilter.Meta):
+        """Define metaclass attributes."""
+
         model = Plugin

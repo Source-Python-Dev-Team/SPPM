@@ -25,6 +25,8 @@ class PluginAddContributorConfirmationForm(forms.ModelForm):
     """Form for confirming adding a contributor to a Plugin."""
 
     class Meta:
+        """Define metaclass attributes."""
+
         model = ForumUser
         fields = (
             'forum_id',
@@ -35,4 +37,3 @@ class PluginAddContributorConfirmationForm(forms.ModelForm):
 
     def validate_unique(self):
         """Override validate_unique to do nothing."""
-        pass

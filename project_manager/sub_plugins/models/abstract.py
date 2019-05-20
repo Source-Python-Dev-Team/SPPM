@@ -33,6 +33,8 @@ class SubPluginThroughBase(models.Model):
         return self.sub_plugin
 
     class Meta:
+        """Define metaclass attributes."""
+
         abstract = True
 
 
@@ -45,4 +47,6 @@ class SubPluginReleaseThroughBase(models.Model):
     )
 
     class Meta:
+        """Define metaclass attributes."""
+
         abstract = True

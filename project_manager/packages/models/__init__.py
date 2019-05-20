@@ -165,6 +165,8 @@ class PackageContributor(ProjectContributor, PackageThroughBase):
     """Package contributors through model."""
 
     class Meta:
+        """Define metaclass attributes."""
+
         unique_together = ('package', 'user')
 
 
@@ -172,6 +174,8 @@ class PackageGame(ProjectGame, PackageThroughBase):
     """Package supported_games through model."""
 
     class Meta:
+        """Define metaclass attributes."""
+
         unique_together = ('package', 'game')
 
 
@@ -179,6 +183,8 @@ class PackageTag(ProjectTag, PackageThroughBase):
     """Package tags through model."""
 
     class Meta:
+        """Define metaclass attributes."""
+
         unique_together = ('package', 'tag')
 
 
@@ -188,6 +194,8 @@ class PackageReleaseDownloadRequirement(
     """Package Download Requirement for Release model."""
 
     class Meta:
+        """Define metaclass attributes."""
+
         unique_together = ('package_release', 'download_requirement')
 
 
@@ -197,6 +205,8 @@ class PackageReleasePackageRequirement(
     """Package Package Requirement for Release model."""
 
     class Meta:
+        """Define metaclass attributes."""
+
         unique_together = ('package_release', 'package_requirement')
 
 
@@ -206,6 +216,8 @@ class PackageReleasePyPiRequirement(
     """Package PyPi Requirement for Release model."""
 
     class Meta:
+        """Define metaclass attributes."""
+
         unique_together = ('package_release', 'pypi_requirement')
 
 
@@ -215,4 +227,6 @@ class PackageReleaseVersionControlRequirement(
     """Package VCS Requirement for Release model."""
 
     class Meta:
+        """Define metaclass attributes."""
+
         unique_together = ('package_release', 'vcs_requirement')

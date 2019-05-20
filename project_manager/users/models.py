@@ -37,6 +37,8 @@ class ForumUser(models.Model):
     )
 
     class Meta:
+        """Define metaclass attributes."""
+
         verbose_name = 'Forum User'
         verbose_name_plural = 'Forum Users'
 

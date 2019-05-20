@@ -38,6 +38,8 @@ class DownloadRequirement(models.Model):
     )
 
     class Meta:
+        """Define metaclass attributes."""
+
         verbose_name = 'Download Requirement'
         verbose_name_plural = 'Download Requirements'
 
@@ -55,6 +57,8 @@ class PyPiRequirement(models.Model):
     )
 
     class Meta:
+        """Define metaclass attributes."""
+
         verbose_name = 'PyPi Requirement'
         verbose_name_plural = 'PyPi Requirements'
 
@@ -62,10 +66,18 @@ class PyPiRequirement(models.Model):
         """Return the object's name when str cast."""
         return self.name
 
-    def save(self, *args, **kwargs):
+    def save(
+        self, force_insert=False, force_update=False, using=None,
+        update_fields=None
+    ):
         """Set the slug and save the Requirement."""
         self.slug = slugify(self.name)
-        super().save(*args, **kwargs)
+        super().save(
+            force_insert=force_insert,
+            force_update=force_update,
+            using=using,
+            update_fields=update_fields,
+        )
 
     def get_absolute_url(self):
         """Return the URL for the PyPiRequirement."""
@@ -89,5 +101,7 @@ class VersionControlRequirement(models.Model):
     )
 
     class Meta:
+        """Define metaclass attributes."""
+
         verbose_name = 'Version Control Requirement'
         verbose_name_plural = 'Version Control Requirements'

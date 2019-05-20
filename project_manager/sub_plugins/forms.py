@@ -51,6 +51,8 @@ class SubPluginCreateForm(SubmitButtonMixin):
     )
 
     class Meta:
+        """Define metaclass attributes."""
+
         model = SubPlugin
         fields = (
             'name',
@@ -134,6 +136,8 @@ class SubPluginEditForm(SubmitButtonMixin):
     """SubPlugin field editing form."""
 
     class Meta:
+        """Define metaclass attributes."""
+
         model = SubPlugin
         fields = (
             'synopsis',
@@ -167,6 +171,8 @@ class SubPluginSelectGamesForm(SubmitButtonMixin):
     """SubPlugin Game selection form."""
 
     class Meta:
+        """Define metaclass attributes."""
+
         model = SubPlugin
         fields = (
             'supported_games',
@@ -180,6 +186,8 @@ class SubPluginUpdateForm(SubmitButtonMixin):
     """SubPlugin release creation form."""
 
     class Meta:
+        """Define metaclass attributes."""
+
         model = SubPluginRelease
         fields = (
             'version',

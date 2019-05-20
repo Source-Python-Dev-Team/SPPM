@@ -64,6 +64,8 @@ class SubPluginImageSerializer(ProjectImageSerializer):
     """Serializer for adding, removing, and listing SubPlugin images."""
 
     class Meta(ProjectImageSerializer.Meta):
+        """Define metaclass attributes."""
+
         model = SubPluginImage
 
 
@@ -73,6 +75,8 @@ class SubPluginReleasePackageRequirementSerializer(
     """Serializer for SubPlugin Release Package requirements."""
 
     class Meta(ReleasePackageRequirementSerializer.Meta):
+        """Define metaclass attributes."""
+
         model = SubPluginReleasePackageRequirement
 
 
@@ -82,6 +86,8 @@ class SubPluginReleaseDownloadRequirementSerializer(
     """Serializer for SubPlugin Release Download requirements."""
 
     class Meta(ReleaseDownloadRequirementSerializer.Meta):
+        """Define metaclass attributes."""
+
         model = SubPluginReleaseDownloadRequirement
 
 
@@ -91,6 +97,8 @@ class SubPluginReleasePyPiRequirementSerializer(
     """Serializer for SubPlugin Release PyPi requirements."""
 
     class Meta(ReleasePyPiRequirementSerializer.Meta):
+        """Define metaclass attributes."""
+
         model = SubPluginReleasePyPiRequirement
 
 
@@ -100,6 +108,8 @@ class SubPluginReleaseVersionControlRequirementSerializer(
     """Serializer for SubPlugin Release VCS requirements."""
 
     class Meta(ReleaseVersionControlRequirementSerializer.Meta):
+        """Define metaclass attributes."""
+
         model = SubPluginReleaseVersionControlRequirement
 
 
@@ -130,6 +140,8 @@ class SubPluginReleaseSerializer(
     )
 
     class Meta(ProjectReleaseSerializer.Meta):
+        """Define metaclass attributes."""
+
         model = SubPluginRelease
 
 
@@ -139,6 +151,8 @@ class SubPluginCreateReleaseSerializer(
     """Serializer for creating and listing SubPlugin releases."""
 
     class Meta(ProjectCreateReleaseSerializer.Meta):
+        """Define metaclass attributes."""
+
         model = SubPluginRelease
 
 
@@ -149,6 +163,8 @@ class SubPluginSerializer(ProjectSerializer):
     release_model = SubPluginRelease
 
     class Meta(ProjectSerializer.Meta):
+        """Define metaclass attributes."""
+
         model = SubPlugin
 
     @property
@@ -186,6 +202,8 @@ class SubPluginCreateSerializer(SubPluginSerializer):
     )
 
     class Meta(SubPluginSerializer.Meta):
+        """Define metaclass attributes."""
+
         fields = SubPluginSerializer.Meta.fields + (
             'releases',
         )
@@ -195,6 +213,8 @@ class SubPluginGameSerializer(ProjectGameSerializer):
     """Supported Games Serializer for SubPlugins."""
 
     class Meta(ProjectGameSerializer.Meta):
+        """Define metaclass attributes."""
+
         model = SubPluginGame
 
 
@@ -202,6 +222,8 @@ class SubPluginTagSerializer(ProjectTagSerializer):
     """Tags Serializer for SubPlugins."""
 
     class Meta(ProjectTagSerializer.Meta):
+        """Define metaclass attributes."""
+
         model = SubPluginTag
 
 
@@ -209,4 +231,6 @@ class SubPluginContributorSerializer(ProjectContributorSerializer):
     """Contributors Serializer for SubPlugins."""
 
     class Meta(ProjectContributorSerializer.Meta):
+        """Define metaclass attributes."""
+
         model = SubPluginContributor

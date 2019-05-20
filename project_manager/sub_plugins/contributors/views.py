@@ -57,9 +57,9 @@ class SubPluginAddContributorView(RetrieveSubPluginMixin, FilterView):
             )
         return value
 
-    def get_context_data(self, **kwargs):
+    def get_context_data(self, *, object_list=None, **kwargs):
         """Update the view's context for the template."""
-        context = super().get_context_data(**kwargs)
+        context = super().get_context_data(object_list=object_list, **kwargs)
         message = ''
         forum_user = None
         if 'username' in self.request.GET:

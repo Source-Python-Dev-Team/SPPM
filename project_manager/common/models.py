@@ -126,6 +126,8 @@ class ProjectBase(models.Model):
     logo_path = None
 
     class Meta:
+        """Define metaclass attributes."""
+
         abstract = True
 
     def __str__(self):
@@ -192,7 +194,10 @@ class ProjectBase(models.Model):
             )
         return errors
 
-    def save(self, *args, **kwargs):
+    def save(
+        self, force_insert=False, force_update=False, using=None,
+        update_fields=None
+    ):
         """Store the slug and remove old logo if necessary."""
         self.slug = self.get_slug_value()
         if all([
@@ -205,7 +210,12 @@ class ProjectBase(models.Model):
                 logo = [x for x in path.files() if x.namebase == self.slug]
                 if logo:
                     logo[0].remove()
-        super().save(*args, **kwargs)
+        super().save(
+            force_insert=force_insert,
+            force_update=force_update,
+            using=using,
+            update_fields=update_fields,
+        )
 
     def get_forum_url(self):
         """Return the forum topic URL."""
@@ -243,9 +253,27 @@ class ProjectRelease(AbstractUUIDPrimaryKeyModel):
     )
 
     class Meta:
+        """Define metaclass attributes."""
+
         abstract = True
         verbose_name = 'Release'
         verbose_name_plural = 'Releases'
+
+    @property
+    def project_class(self):
+        """Return the project's class."""
+        raise NotImplementedError(
+            f'Class {self.__class__.__name__} must implement a '
+            '"project_class" attribute.'
+        )
+
+    @property
+    def project(self):
+        """Return the project's class."""
+        raise NotImplementedError(
+            f'Class {self.__class__.__name__} must implement a '
+            '"project" property.'
+        )
 
     @property
     def file_name(self):
@@ -260,10 +288,18 @@ class ProjectRelease(AbstractUUIDPrimaryKeyModel):
             '"handle_zip_file_upload" attribute.'
         )
 
-    def save(self, *args, **kwargs):
+    def save(
+        self, force_insert=False, force_update=False, using=None,
+        update_fields=None
+    ):
         """Update the Project's 'updated' value to the releases 'created'."""
         pk = self.pk
-        super().save(*args, **kwargs)
+        super().save(
+            force_insert=force_insert,
+            force_update=force_update,
+            using=using,
+            update_fields=update_fields,
+        )
         if pk is None:
             self.project_class.objects.filter(
                 pk=self.project.pk,
@@ -283,6 +319,8 @@ class ProjectImage(AbstractUUIDPrimaryKeyModel):
     )
 
     class Meta:
+        """Define metaclass attributes."""
+
         abstract = True
         verbose_name = 'Image'
         verbose_name_plural = 'Images'
@@ -305,11 +343,21 @@ class ProjectContributor(AbstractUUIDPrimaryKeyModel):
     )
 
     class Meta:
+        """Define metaclass attributes."""
+
         abstract = True
 
     def __str__(self):
         """Return the base string."""
         return 'Project Contributor'
+
+    @property
+    def project(self):
+        """Return the project's class."""
+        raise NotImplementedError(
+            f'Class {self.__class__.__name__} must implement a '
+            f'"project" property.'
+        )
 
     def clean(self):
         """Validate that the project's owner cannot be a contributor."""
@@ -332,6 +380,8 @@ class ProjectGame(AbstractUUIDPrimaryKeyModel):
     )
 
     class Meta:
+        """Define metaclass attributes."""
+
         abstract = True
 
     def __str__(self):
@@ -348,6 +398,8 @@ class ProjectTag(AbstractUUIDPrimaryKeyModel):
     )
 
     class Meta:
+        """Define metaclass attributes."""
+
         abstract = True
 
     def __str__(self):
@@ -375,6 +427,8 @@ class ProjectReleasePackageRequirement(AbstractUUIDPrimaryKeyModel):
     )
 
     class Meta:
+        """Define metaclass attributes."""
+
         abstract = True
 
     def __str__(self):
@@ -401,6 +455,8 @@ class ProjectReleasePyPiRequirement(AbstractUUIDPrimaryKeyModel):
     )
 
     class Meta:
+        """Define metaclass attributes."""
+
         abstract = True
 
     def __str__(self):
@@ -427,11 +483,13 @@ class ProjectReleaseVersionControlRequirement(AbstractUUIDPrimaryKeyModel):
     )
 
     class Meta:
+        """Define metaclass attributes."""
+
         abstract = True
 
     def __str__(self):
         """Return the requirement's name and version."""
-        return f'{self.vcs_requirement.name} - {self.version}'
+        return f'{self.vcs_requirement.url} - {self.version}'
 
 
 class ProjectReleaseDownloadRequirement(AbstractUUIDPrimaryKeyModel):
@@ -446,6 +504,8 @@ class ProjectReleaseDownloadRequirement(AbstractUUIDPrimaryKeyModel):
     )
 
     class Meta:
+        """Define metaclass attributes."""
+
         abstract = True
 
     def __str__(self):

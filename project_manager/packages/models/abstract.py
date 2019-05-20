@@ -33,6 +33,8 @@ class PackageThroughBase(models.Model):
         return self.package
 
     class Meta:
+        """Define metaclass attributes."""
+
         abstract = True
 
 
@@ -45,4 +47,6 @@ class PackageReleaseThroughBase(models.Model):
     )
 
     class Meta:
+        """Define metaclass attributes."""
+
         abstract = True

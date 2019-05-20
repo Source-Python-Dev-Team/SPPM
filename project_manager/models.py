@@ -72,4 +72,6 @@ class AbstractUUIDPrimaryKeyModel(models.Model):
     )
 
     class Meta:
+        """Define metaclass attributes."""
+
         abstract = True

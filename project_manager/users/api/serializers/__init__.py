@@ -33,6 +33,8 @@ class ProjectContributionSerializer(ModelSerializer):
     """Base class for Project contributions."""
 
     class Meta:
+        """Define metaclass attributes."""
+
         fields = (
             'name',
             'slug',
@@ -43,6 +45,8 @@ class PackageContributionSerializer(ProjectContributionSerializer):
     """Serializer for Package Contributions."""
 
     class Meta(ProjectContributionSerializer.Meta):
+        """Define metaclass attributes."""
+
         model = Package
 
 
@@ -50,6 +54,8 @@ class PluginContributionSerializer(ProjectContributionSerializer):
     """Serializer for Plugin Contributions."""
 
     class Meta(ProjectContributionSerializer.Meta):
+        """Define metaclass attributes."""
+
         model = Plugin
 
 
@@ -59,6 +65,8 @@ class SubPluginContributionSerializer(ModelSerializer):
     plugin = PluginContributionSerializer()
 
     class Meta:
+        """Define metaclass attributes."""
+
         model = SubPlugin
         fields = (
             'name',
@@ -97,6 +105,8 @@ class ForumUserSerializer(ModelSerializer):
     )
 
     class Meta:
+        """Define metaclass attributes."""
+
         model = ForumUser
         fields = (
             'forum_id',

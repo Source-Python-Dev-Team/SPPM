@@ -25,6 +25,8 @@ class GameSerializer(ModelSerializer):
     """Serializer for supported games for projects."""
 
     class Meta:
+        """Define metaclass attributes."""
+
         model = Game
         fields = (
             'name',

@@ -30,6 +30,8 @@ class ForumUserFilter(FilterSet):
     has_contributions = BooleanFilter(method='filter_has_contributions')
 
     class Meta:
+        """Define metaclass attributes."""
+
         model = ForumUser
         fields = (
             'has_contributions',

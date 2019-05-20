@@ -53,6 +53,8 @@ class PluginCreateForm(SubmitButtonMixin):
     )
 
     class Meta:
+        """Define metaclass attributes."""
+
         model = Plugin
         fields = (
             'name',
@@ -129,6 +131,8 @@ class PluginEditForm(SubmitButtonMixin):
     """Plugin field editing form."""
 
     class Meta:
+        """Define metaclass attributes."""
+
         model = Plugin
         fields = (
             'synopsis',
@@ -162,6 +166,8 @@ class PluginSelectGamesForm(SubmitButtonMixin):
     """Plugin Game selection form."""
 
     class Meta:
+        """Define metaclass attributes."""
+
         model = Plugin
         fields = (
             'supported_games',
@@ -175,6 +181,8 @@ class PluginUpdateForm(SubmitButtonMixin):
     """Plugin release creation form."""
 
     class Meta:
+        """Define metaclass attributes."""
+
         model = PluginRelease
         fields = (
             'version',
@@ -230,6 +238,8 @@ class SubPluginPathCreateForm(SubmitButtonMixin):
     """SubPluginPath creation form."""
 
     class Meta:
+        """Define metaclass attributes."""
+
         model = SubPluginPath
         fields = (
             'path',
@@ -247,6 +257,8 @@ class SubPluginPathEditForm(SubmitButtonMixin):
     """SubPluginPath update form."""
 
     class Meta:
+        """Define metaclass attributes."""
+
         model = SubPluginPath
         fields = (
             'allow_module',

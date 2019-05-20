@@ -27,6 +27,8 @@ class ReleaseDownloadRequirementSerializer(ModelSerializer):
     url = ReadOnlyField(source='download_requirement.url')
 
     class Meta:
+        """Define metaclass attributes."""
+
         fields = (
             'url',
             'optional',
@@ -41,6 +43,8 @@ class ReleasePyPiRequirementSerializer(ModelSerializer):
     version = ReadOnlyField()
 
     class Meta:
+        """Define metaclass attributes."""
+
         fields = (
             'name',
             'slug',
@@ -56,6 +60,8 @@ class ReleaseVersionControlRequirementSerializer(ModelSerializer):
     version = ReadOnlyField()
 
     class Meta:
+        """Define metaclass attributes."""
+
         fields = (
             'name',
             'type',

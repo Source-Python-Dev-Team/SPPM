@@ -70,7 +70,8 @@ class PluginCreateView(CreateView):
     form_class = PluginCreateForm
     template_name = 'plugins/create.html'
 
-    def get_requirements_path(self, form):
+    @staticmethod
+    def get_requirements_path(form):
         """Return the path for the requirements file."""
         return f'{PLUGIN_PATH}{form.instance.basename}/requirements.ini'
 
@@ -104,7 +105,8 @@ class PluginUpdateView(RetrievePluginMixin, UpdateView):
     form_class = PluginUpdateForm
     template_name = 'plugins/update.html'
 
-    def get_requirements_path(self, form):
+    @staticmethod
+    def get_requirements_path(form):
         """Return the path for the requirements file."""
         return f'{PLUGIN_PATH}{form.instance.basename}/requirements.ini'
 
@@ -171,9 +173,9 @@ class PluginReleaseListView(RetrievePluginMixin, ListView):
     model = PluginRelease
     template_name = 'plugins/releases.html'
 
-    def get_context_data(self, **kwargs):
+    def get_context_data(self, *, object_list=None, **kwargs):
         """Add the plugin to the context."""
-        context = super().get_context_data(**kwargs)
+        context = super().get_context_data(object_list=object_list, **kwargs)
         context.update({
             'plugin': self.plugin,
         })
@@ -192,9 +194,9 @@ class SubPluginPathListView(RetrievePluginMixin, ListView):
     model = SubPluginPath
     template_name = 'plugins/paths/list.html'
 
-    def get_context_data(self, **kwargs):
+    def get_context_data(self, *, object_list=None, **kwargs):
         """Add the plugin to the context for the template."""
-        context = super().get_context_data(**kwargs)
+        context = super().get_context_data(object_list=object_list, **kwargs)
         context.update({
             'plugin': self.plugin,
         })

@@ -28,6 +28,8 @@ class ForumUserContributorSerializer(ModelSerializer):
     username = SerializerMethodField()
 
     class Meta:
+        """Define metaclass attributes."""
+
         model = ForumUser
         fields = (
             'forum_id',

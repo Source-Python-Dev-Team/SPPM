@@ -99,6 +99,8 @@ class SubPlugin(ProjectBase):
     logo_path = SUB_PLUGIN_LOGO_URL
 
     class Meta:
+        """Define metaclass attributes."""
+
         verbose_name = 'SubPlugin'
         verbose_name_plural = 'SubPlugins'
         unique_together = (
@@ -121,10 +123,18 @@ class SubPlugin(ProjectBase):
             }
         )
 
-    def save(self, *args, **kwargs):
+    def save(
+        self, force_insert=False, force_update=False, using=None,
+        update_fields=None
+    ):
         """Set the id using the plugin's slug and the project's slug."""
         self.id = f'{self.plugin.slug}.{self.get_slug_value()}'
-        super().save(*args, **kwargs)
+        super().save(
+            force_insert=force_insert,
+            force_update=force_update,
+            using=using,
+            update_fields=update_fields,
+        )
 
 
 class SubPluginRelease(ProjectRelease):
@@ -192,6 +202,8 @@ class SubPluginContributor(ProjectContributor, SubPluginThroughBase):
     """SubPlugin contributors through model."""
 
     class Meta:
+        """Define metaclass attributes."""
+
         unique_together = ('sub_plugin', 'user')
 
 
@@ -199,6 +211,8 @@ class SubPluginGame(ProjectGame, SubPluginThroughBase):
     """SubPlugin supported_games through model."""
 
     class Meta:
+        """Define metaclass attributes."""
+
         unique_together = ('sub_plugin', 'game')
 
 
@@ -206,6 +220,8 @@ class SubPluginTag(ProjectTag, SubPluginThroughBase):
     """SubPlugin tags through model."""
 
     class Meta:
+        """Define metaclass attributes."""
+
         unique_together = ('sub_plugin', 'tag')
 
 
@@ -215,6 +231,8 @@ class SubPluginReleaseDownloadRequirement(
     """SubPlugin Download Requirement for Release model."""
 
     class Meta:
+        """Define metaclass attributes."""
+
         unique_together = ('sub_plugin_release', 'download_requirement')
 
 
@@ -224,6 +242,8 @@ class SubPluginReleasePackageRequirement(
     """SubPlugin Package Requirement for Release model."""
 
     class Meta:
+        """Define metaclass attributes."""
+
         unique_together = ('sub_plugin_release', 'package_requirement')
 
 
@@ -233,6 +253,8 @@ class SubPluginReleasePyPiRequirement(
     """SubPlugin PyPi Requirement for Release model."""
 
     class Meta:
+        """Define metaclass attributes."""
+
         unique_together = ('sub_plugin_release', 'pypi_requirement')
 
 
@@ -242,4 +264,6 @@ class SubPluginReleaseVersionControlRequirement(
     """SubPlugin VCS Requirement for Release model."""
 
     class Meta:
+        """Define metaclass attributes."""
+
         unique_together = ('sub_plugin_release', 'vcs_requirement')

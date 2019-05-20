@@ -23,4 +23,6 @@ class PackageFilter(ProjectFilter):
     """Filters for Packages."""
 
     class Meta(ProjectFilter.Meta):
+        """Define metaclass attributes."""
+
         model = Package

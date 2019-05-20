@@ -50,10 +50,18 @@ class Game(models.Model):
         """Return the object's name when str cast."""
         return self.name
 
-    def save(self, *args, **kwargs):
+    def save(
+        self, force_insert=False, force_update=False, using=None,
+        update_fields=None
+    ):
         """Store the slug."""
         self.slug = slugify(self.basename).replace('_', '-')
-        super().save(*args, **kwargs)
+        super().save(
+            force_insert=force_insert,
+            force_update=force_update,
+            using=using,
+            update_fields=update_fields,
+        )
 
     def get_absolute_url(self):
         """Return the URL for the Game."""

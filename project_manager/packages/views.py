@@ -62,7 +62,8 @@ class PackageCreateView(CreateView):
     form_class = PackageCreateForm
     template_name = 'packages/create.html'
 
-    def get_requirements_path(self, form):
+    @staticmethod
+    def get_requirements_path(form):
         """Return the path for the requirements file."""
         return f'{PACKAGE_PATH}{form.instance.basename}/requirements.ini'
 
@@ -96,7 +97,8 @@ class PackageUpdateView(RetrievePackageMixin, UpdateView):
     form_class = PackageUpdateForm
     template_name = 'packages/update.html'
 
-    def get_requirements_path(self, form):
+    @staticmethod
+    def get_requirements_path(form):
         """Return the path for the requirements file."""
         return f'{PACKAGE_PATH}{form.instance.basename}/requirements.ini'
 
@@ -171,9 +173,9 @@ class PackageReleaseListView(RetrievePackageMixin, ListView):
     model = PackageRelease
     template_name = 'packages/releases.html'
 
-    def get_context_data(self, **kwargs):
+    def get_context_data(self, *, object_list=None, **kwargs):
         """Add the package to the context."""
-        context = super().get_context_data(**kwargs)
+        context = super().get_context_data(object_list=object_list, **kwargs)
         context.update({
             'package': self.package,
         })
