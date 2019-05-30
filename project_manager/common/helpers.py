@@ -71,7 +71,21 @@ class ProjectZipFile:
             f'"get_base_paths" method.'
         )
 
-    def validate_path(self, path):
+    def validate_file_paths(self):
+        """Validate all paths in the zip file for their extension."""
+        invalid_paths = []
+        for file_path in self.file_list:
+            if not self._validate_path(file_path):
+                invalid_paths.append(file_path)
+
+        if invalid_paths:
+            raise ValidationError({
+                'zip_file': (
+                    f'Invalid paths found in zip: {", ".join(invalid_paths)}'
+                )
+            })
+
+    def _validate_path(self, path):
         """Validate the given path is ok for the extension."""
         if self.file_types is None:
             # TODO: add proper error

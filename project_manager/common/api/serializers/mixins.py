@@ -124,6 +124,7 @@ class ProjectReleaseCreationMixin(ModelSerializer):
             args += (parent_project,)
         zip_validator = self.zip_parser(*args)
         zip_validator.find_base_info()
+        zip_validator.validate_file_paths()
         zip_validator.validate_basename()
         zip_validator.validate_base_file_in_zip()
         zip_validator.validate_requirements()

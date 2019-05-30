@@ -60,7 +60,6 @@ __all__ = (
 # =============================================================================
 # >> SERIALIZERS
 # =============================================================================
-# TODO: APIs for adding/removing paths
 class PluginImageSerializer(ProjectImageSerializer):
     """Serializer for adding, removing, and listing Plugin images."""
 
