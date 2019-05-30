@@ -63,8 +63,6 @@ class ReleaseVersionControlRequirementSerializer(ModelSerializer):
         """Define metaclass attributes."""
 
         fields = (
-            'name',
-            'type',
             'url',
             'version',
             'optional',
