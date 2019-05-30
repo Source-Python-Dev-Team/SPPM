@@ -106,6 +106,7 @@ READABLE_DATA_FILE_TYPES = [
     'txt',
     'vdf',
     'xml',
+    'md',
 ]
 
 # Allowed file types by directory
@@ -116,7 +117,7 @@ ALLOWED_FILE_TYPES = {
         'md',
     ],
 
-    'log/source-python/': [
+    'logs/source-python/': [
         'md',
         'txt',
     ],
