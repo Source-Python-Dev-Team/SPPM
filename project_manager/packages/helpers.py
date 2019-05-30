@@ -9,9 +9,10 @@ from django.core.exceptions import ValidationError
 # App
 from project_manager.common.helpers import ProjectZipFile, find_image_number
 from project_manager.packages.constants import (
-    PACKAGE_PATH,
+    PACKAGE_ALLOWED_FILE_TYPES,
     PACKAGE_IMAGE_URL,
     PACKAGE_LOGO_URL,
+    PACKAGE_PATH,
     PACKAGE_RELEASE_URL,
 )
 
@@ -35,6 +36,7 @@ class PackageZipFile(ProjectZipFile):
     """Package ZipFile parsing class."""
 
     project_type = 'Package'
+    file_types = PACKAGE_ALLOWED_FILE_TYPES
     is_module = False
 
     def find_base_info(self):
@@ -43,7 +45,6 @@ class PackageZipFile(ProjectZipFile):
             if not file_path.endswith('.py'):
                 continue
             if not file_path.startswith(PACKAGE_PATH):
-                # TODO: raise error if PLUGIN_PATH
                 continue
 
             current = file_path.split(PACKAGE_PATH, 1)[1]

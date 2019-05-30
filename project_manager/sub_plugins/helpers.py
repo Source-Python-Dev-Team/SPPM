@@ -10,6 +10,7 @@ from django.core.exceptions import ValidationError
 from project_manager.common.helpers import ProjectZipFile, find_image_number
 from project_manager.plugins.constants import PLUGIN_PATH
 from project_manager.sub_plugins.constants import (
+    SUB_PLUGIN_ALLOWED_FILE_TYPES,
     SUB_PLUGIN_IMAGE_URL,
     SUB_PLUGIN_LOGO_URL,
     SUB_PLUGIN_RELEASE_URL,
@@ -35,6 +36,7 @@ class SubPluginZipFile(ProjectZipFile):
     """SubPlugin ZipFile parsing class."""
 
     project_type = 'SubPlugin'
+    file_types = SUB_PLUGIN_ALLOWED_FILE_TYPES
     paths = set()
     is_module = False
 
