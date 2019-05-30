@@ -421,6 +421,8 @@ class ProjectReleasePackageRequirement(AbstractUUIDPrimaryKeyModel):
             'The version of the custom package for this release '
             'of the project.'
         ),
+        blank=True,
+        null=True,
     )
     optional = models.BooleanField(
         default=False,
@@ -449,6 +451,8 @@ class ProjectReleasePyPiRequirement(AbstractUUIDPrimaryKeyModel):
         help_text=(
             'The version of the PyPi package for this release of the project.'
         ),
+        blank=True,
+        null=True,
     )
     optional = models.BooleanField(
         default=False,
@@ -477,6 +481,8 @@ class ProjectReleaseVersionControlRequirement(AbstractUUIDPrimaryKeyModel):
         help_text=(
             'The version of the VCS package for this release of the project.'
         ),
+        blank=True,
+        null=True,
     )
     optional = models.BooleanField(
         default=False,
