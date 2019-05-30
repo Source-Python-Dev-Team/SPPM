@@ -54,6 +54,7 @@ class ProjectReleaseCreationMixin(ModelSerializer):
     """Mixin for validation/creation of a project release."""
 
     parent_project = None
+    requirements = None
 
     @property
     def project_class(self):
@@ -126,6 +127,7 @@ class ProjectReleaseCreationMixin(ModelSerializer):
         zip_validator.validate_basename()
         zip_validator.validate_base_file_in_zip()
         zip_validator.validate_requirements()
+        self.requirements = zip_validator.requirements
         """
             Requirements:
                 Plugins:
@@ -167,7 +169,50 @@ class ProjectReleaseCreationMixin(ModelSerializer):
         ).update(
             updated=instance.created,
         )
+        self._create_requirements(instance)
         return instance
+
+    def _create_requirements(self, release):
+        """Create all requirements for the release."""
+        if self.requirements is None:
+            return
+
+        # TODO: look into bulk_create
+        for group_type, group in self.requirements.items():
+            if group_type == 'custom':
+                for item in group:
+                    self._create_package_requirement(release, item)
+            elif group_type == 'pypi':
+                for item in group:
+                    self._create_pypi_requirement(release, item)
+            elif group_type == 'vcs':
+                for item in group:
+                    self._create_vcs_requirement(release, item)
+            else:
+                for item in group:
+                    self._create_download_requirement(release, item)
+
+    @staticmethod
+    def _create_package_requirement(release, requirement):
+        """Create the Package requirement for the release."""
+        release.pluginreleasepackagerequirement_set.create(**requirement)
+
+    @staticmethod
+    def _create_pypi_requirement(release, requirement):
+        """Create the PyPi requirement for the release."""
+        release.pluginreleasepypirequirement_set.create(**requirement)
+
+    @staticmethod
+    def _create_vcs_requirement(release, requirement):
+        """Create the Version Control requirement for the release."""
+        release.pluginreleaseversioncontrolrequirement_set.create(
+            **requirement
+        )
+
+    @staticmethod
+    def _create_download_requirement(release, requirement):
+        """Create the Download requirement for the release."""
+        release.pluginreleasedownloadrequirement_set.create(**requirement)
 
 
 class ProjectThroughMixin(ModelSerializer):

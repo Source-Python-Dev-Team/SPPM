@@ -34,6 +34,8 @@ __all__ = (
 class ProjectZipFile:
     """Base ZipFile parsing class."""
 
+    file_types = None
+
     def __init__(self, zip_file):
         """Store the base attributes for the zip file."""
         self.zip_file = ZipFile(zip_file)
@@ -68,6 +70,25 @@ class ProjectZipFile:
             f'Class {self.__class__.__name__} must implement a '
             f'"get_base_paths" method.'
         )
+
+    def validate_path(self, path):
+        """Validate the given path is ok for the extension."""
+        if self.file_types is None:
+            # TODO: add proper error
+            raise NotImplementedError()
+
+        extension = path.rsplit('.')[1]
+        if '/' in extension:
+            return True
+
+        for base_path, allowed_extensions in self.file_types.items():
+            if not path.startswith(base_path.format(self=self)):
+                continue
+            if extension in allowed_extensions:
+                return True
+            return False
+
+        return False
 
     def get_file_list(self):
         """Return a list of all files in the given zip file."""
@@ -204,18 +225,18 @@ class ProjectZipFile:
             return
         version = item.get('version')
         # TODO: update this logic to work with all version operators
-        avalable_versions = package.releases.values_list(
+        available_versions = package.releases.values_list(
             'version',
             flat=True,
         )
-        if version is not None and version not in avalable_versions:
+        if version is not None and version not in available_versions:
             self.requirements_errors.append(
                 f'Custom Package "{basename}" version "{version}", '
                 f'from requirements json file, not found.'
             )
             return
         self.requirements['custom'].append({
-            'basename': basename,
+            'package_requirement': package,
             'version': version,
             'optional': item.get('optional', False),
         })
@@ -224,7 +245,21 @@ class ProjectZipFile:
         self, item, group_type, field, include_version=False
     ):
         """Verify that the given requirement is valid."""
+        # TODO: validate pypi requirements?
+        # TODO: validate vcs requirements?
+        from project_manager.requirements.models import (
+            DownloadRequirement,
+            PyPiRequirement,
+            VersionControlRequirement,
+        )
+        model = {
+            'download': DownloadRequirement,
+            'pypi': PyPiRequirement,
+            'vcs': VersionControlRequirement,
+        }.get(group_type)
         value = item.get(field)
+        instance, created = model.objects.get_or_create(**{field: value})
+        key = f'{group_type}_requirement'
         if value is None:
             self.requirements_errors.append(
                 f'No {field} found for object in "{group_type}" listing in '
@@ -232,7 +267,7 @@ class ProjectZipFile:
             )
             return
         requirement_dict = {
-            field: value,
+            key: instance,
             'optional': item.get('optional', False),
         }
         if include_version:

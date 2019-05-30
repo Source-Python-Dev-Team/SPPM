@@ -135,10 +135,7 @@ class ProjectSerializer(ModelSerializer, ProjectLocaleMixin):
 
     def get_current_release(self, obj):
         """Return the current release info."""
-        try:
-            release = obj.releases.all()[0]
-        except IndexError:
-            return {}
+        release = obj.releases.first()
         zip_url = reverse(
             viewname=f'{self.project_type}-download',
             kwargs=self.get_download_kwargs(
@@ -147,38 +144,69 @@ class ProjectSerializer(ModelSerializer, ProjectLocaleMixin):
             ),
             request=self.context['request']
         )
-        package_requirements = (
-            release.pluginreleasepackagerequirement_set.values_list(
-                'package_requirement__name',
-                flat=True,
-            )
-        )
-        print(package_requirements)
-        pypi_requirements = (
-            release.pluginreleasepypirequirement_set.values_list(
-                'pypi_requirement__name',
-                flat=True,
-            )
-        )
-        print(pypi_requirements)
-        vcs_requirements = (
-            release.pluginreleaseversioncontrolrequirement_set.values_list(
-                'vcs_requirement__url',
-                flat=True,
-            )
-        )
-        print(vcs_requirements)
-        download_requirements = (
-            release.pluginreleasedownloadrequirement_set.values_list(
-                'download_requirement__url',
-                flat=True,
-            )
-        )
-        print(download_requirements)
-        return {
+        release_dict = {
             'version': release.version,
             'notes': str(release.notes) if release.notes else release.notes,
             'zip_file': zip_url,
+        }
+        if self.context['view'].action == 'retrieve':
+            release_dict.update(self.get_requirements(release))
+        return release_dict
+
+    @staticmethod
+    def get_requirements(release):
+        """Return a dictionary of requirements for the given release."""
+        package_requirements = [
+            {
+                'name': item['package_requirement__name'],
+                'version': item['version'],
+                'optional': item['optional'],
+            } for item in
+            release.pluginreleasepackagerequirement_set.values(
+                'package_requirement__name',
+                'version',
+                'optional',
+            )
+        ]
+        pypi_requirements = [
+            {
+                'name': item['pypi_requirement__name'],
+                'version': item['version'],
+                'optional': item['optional'],
+            } for item in
+            release.pluginreleasepypirequirement_set.values(
+                'pypi_requirement__name',
+                'version',
+                'optional',
+            )
+        ]
+        vcs_requirements = [
+            {
+                'url': item['vcs_requirement__url'],
+                'version': item['version'],
+                'optional': item['optional'],
+            } for item in
+            release.pluginreleaseversioncontrolrequirement_set.values(
+                'vcs_requirement__url',
+                'version',
+                'optional',
+            )
+        ]
+        download_requirements = [
+            {
+                'url': item['download_requirement__url'],
+                'optional': item['optional'],
+            } for item in
+            release.pluginreleasedownloadrequirement_set.values(
+                'download_requirement__url',
+                'optional',
+            )
+        ]
+        return {
+            'package_requirements': package_requirements,
+            'pypi_requirements': pypi_requirements,
+            'version_control_requirements': vcs_requirements,
+            'download_requirements': download_requirements,
         }
 
     def get_extra_kwargs(self):
@@ -255,6 +283,7 @@ class ProjectReleaseSerializer(
             'package_requirements',
             'pypi_requirements',
             'vcs_requirements',
+            'id',
         )
 
     def get_created(self, obj):
