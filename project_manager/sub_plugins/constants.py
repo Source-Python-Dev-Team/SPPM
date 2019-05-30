@@ -8,7 +8,7 @@ from project_manager.common.constants import (
     ALLOWED_FILE_TYPES, IMAGE_URL, LOGO_URL, READABLE_DATA_FILE_TYPES,
     RELEASE_URL,
 )
-from project_manager.plugins.constants import PLUGIN_PATH
+from project_manager.plugins.constants import PLUGIN_PATH, PLUGIN_DATA_PATH
 
 
 # =============================================================================
@@ -30,6 +30,9 @@ SUB_PLUGIN_ALLOWED_FILE_TYPES = dict(ALLOWED_FILE_TYPES)
 SUB_PLUGIN_ALLOWED_FILE_TYPES.update({
     PLUGIN_PATH + '{self.plugin.basename}/{sub_plugin_path}/'
     '{self.basename}/': ['py'] + READABLE_DATA_FILE_TYPES,
+})
+SUB_PLUGIN_ALLOWED_FILE_TYPES.update({
+    PLUGIN_DATA_PATH: READABLE_DATA_FILE_TYPES,
 })
 
 SUB_PLUGIN_IMAGE_URL = IMAGE_URL + 'sub-plugins/'

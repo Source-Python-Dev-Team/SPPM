@@ -27,6 +27,7 @@ __all__ = (
 # =============================================================================
 # The base path for packages
 PACKAGE_PATH = 'addons/source-python/packages/custom/'
+PACKAGE_DATA_PATH = 'addons/source-python/data/custom/'
 
 # The allowed file types by directory for packages
 PACKAGE_ALLOWED_FILE_TYPES = dict(ALLOWED_FILE_TYPES)
@@ -36,6 +37,9 @@ PACKAGE_ALLOWED_FILE_TYPES.update({
 
     # Other files allowed if in a package
     PACKAGE_PATH + '{self.basename}/': ['py'] + READABLE_DATA_FILE_TYPES,
+})
+PACKAGE_ALLOWED_FILE_TYPES.update({
+    PACKAGE_DATA_PATH: READABLE_DATA_FILE_TYPES,
 })
 
 PACKAGE_IMAGE_URL = IMAGE_URL + 'packages/'
