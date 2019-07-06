@@ -118,7 +118,7 @@ class SubPluginZipFile(ProjectZipFile):
         module_found = package_found = False
         if path_values['allow_module']:
             check_path = f'{sub_path}{self.basename}.py'
-            module_found = check_path in self.file_list
+            self.is_module = module_found = check_path in self.file_list
 
         if path_values['allow_package_using_basename']:
             check_path = f'{sub_path}{self.basename}/{self.basename}.py'
@@ -150,8 +150,15 @@ class SubPluginZipFile(ProjectZipFile):
 
     def get_requirement_path(self):
         """Return the path for the requirements json file."""
-        # TODO: this could be in one of a few different locations
-        return f'{PLUGIN_PATH}{self.basename}/requirements.json'
+        if self.is_module:
+            return (
+                f'{PLUGIN_PATH}{self.plugin.basename}/'
+                f'{self.basename}_requirements.json'
+            )
+        return (
+            f'{PLUGIN_PATH}{self.plugin.basename}/'
+            f'{self.basename}/requirements.json'
+        )
 
 
 # =============================================================================
