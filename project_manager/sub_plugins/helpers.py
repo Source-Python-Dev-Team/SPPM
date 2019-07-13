@@ -45,9 +45,29 @@ class SubPluginZipFile(ProjectZipFile):
         self.plugin = plugin
         super().__init__(zip_file)
 
+    def _validate_path(self, path):
+        """Validate the given path is ok for the extension."""
+        if self.file_types is None:
+            # TODO: add proper error
+            raise NotImplementedError()
+
+        extension = path.rsplit('.')[1]
+        if '/' in extension:
+            return True
+
+        for base_path, allowed_extensions in self.file_types.items():
+            for sub_plugin_path in self.plugin.paths.values_list('path', flat=True):
+                if not path.startswith(base_path.format(self=self, sub_plugin_path=sub_plugin_path)):
+                    continue
+                if extension in allowed_extensions:
+                    return True
+                return False
+
+        return False
+
     def find_base_info(self):
         """Store all base information for the zip file."""
-        plugin_path = str(PLUGIN_PATH / self.plugin.basename) + '/'
+        plugin_path = f'{PLUGIN_PATH}{self.plugin.basename}/'
         paths = list(self.plugin.paths.values_list('path', flat=True))
         for file_path in self.file_list:
             if not file_path.endswith('.py'):

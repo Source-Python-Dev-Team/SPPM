@@ -154,7 +154,6 @@ class ProjectReleaseCreationMixin(ModelSerializer):
 
         if project is not None:
             attrs[self.project_type.replace('-', '_')] = project
-        # TODO: add creating requirements
         return attrs
 
     def create(self, validated_data):
