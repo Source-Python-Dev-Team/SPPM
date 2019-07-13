@@ -167,41 +167,72 @@ class ProjectReleaseCreationMixin(ModelSerializer):
             return
 
         # TODO: look into bulk_create
+        project_type = release.__class__.__name__.lower()
         for group_type, group in self.requirements.items():
             if group_type == 'custom':
                 for item in group:
-                    self._create_package_requirement(release, item)
+                    self._create_package_requirement(
+                        release=release,
+                        project_type=project_type,
+                        requirement=item,
+                    )
             elif group_type == 'pypi':
                 for item in group:
-                    self._create_pypi_requirement(release, item)
+                    self._create_pypi_requirement(
+                        release=release,
+                        project_type=project_type,
+                        requirement=item,
+                    )
             elif group_type == 'vcs':
                 for item in group:
-                    self._create_vcs_requirement(release, item)
+                    self._create_vcs_requirement(
+                        release=release,
+                        project_type=project_type,
+                        requirement=item,
+                    )
             else:
                 for item in group:
-                    self._create_download_requirement(release, item)
+                    self._create_download_requirement(
+                        release=release,
+                        project_type=project_type,
+                        requirement=item,
+                    )
 
     @staticmethod
-    def _create_package_requirement(release, requirement):
+    def _create_package_requirement(release, project_type, requirement):
         """Create the Package requirement for the release."""
-        release.pluginreleasepackagerequirement_set.create(**requirement)
-
-    @staticmethod
-    def _create_pypi_requirement(release, requirement):
-        """Create the PyPi requirement for the release."""
-        release.pluginreleasepypirequirement_set.create(**requirement)
-
-    @staticmethod
-    def _create_vcs_requirement(release, requirement):
-        """Create the Version Control requirement for the release."""
-        release.pluginreleaseversioncontrolrequirement_set.create(
-            **requirement
+        requirement_set = getattr(
+            release,
+            f'{project_type}packagerequirement_set'
         )
+        requirement_set.create(**requirement)
 
     @staticmethod
-    def _create_download_requirement(release, requirement):
+    def _create_pypi_requirement(release, project_type, requirement):
+        """Create the PyPi requirement for the release."""
+        requirement_set = getattr(
+            release,
+            f'{project_type}pypirequirement_set'
+        )
+        requirement_set.create(**requirement)
+
+    @staticmethod
+    def _create_vcs_requirement(release, project_type, requirement):
+        """Create the Version Control requirement for the release."""
+        requirement_set = getattr(
+            release,
+            f'{project_type}versioncontrolrequirement_set'
+        )
+        requirement_set.create(**requirement)
+
+    @staticmethod
+    def _create_download_requirement(release, project_type, requirement):
         """Create the Download requirement for the release."""
-        release.pluginreleasedownloadrequirement_set.create(**requirement)
+        requirement_set = getattr(
+            release,
+            f'{project_type}downloadrequirement_set'
+        )
+        requirement_set.create(**requirement)
 
 
 class ProjectThroughMixin(ModelSerializer):
