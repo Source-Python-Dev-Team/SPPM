@@ -156,13 +156,14 @@ class ProjectSerializer(ModelSerializer, ProjectLocaleMixin):
     @staticmethod
     def get_requirements(release):
         """Return a dictionary of requirements for the given release."""
+        project_type = release.__class__.__name__.lower()
         package_requirements = [
             {
                 'name': item['package_requirement__name'],
                 'version': item['version'],
                 'optional': item['optional'],
             } for item in
-            release.pluginreleasepackagerequirement_set.values(
+            getattr(release, f'{project_type}packagerequirement_set').values(
                 'package_requirement__name',
                 'version',
                 'optional',
@@ -174,7 +175,7 @@ class ProjectSerializer(ModelSerializer, ProjectLocaleMixin):
                 'version': item['version'],
                 'optional': item['optional'],
             } for item in
-            release.pluginreleasepypirequirement_set.values(
+            getattr(release, f'{project_type}pypirequirement_set').values(
                 'pypi_requirement__name',
                 'version',
                 'optional',
@@ -186,7 +187,10 @@ class ProjectSerializer(ModelSerializer, ProjectLocaleMixin):
                 'version': item['version'],
                 'optional': item['optional'],
             } for item in
-            release.pluginreleaseversioncontrolrequirement_set.values(
+            getattr(
+                release,
+                f'{project_type}versioncontrolrequirement_set'
+            ).values(
                 'vcs_requirement__url',
                 'version',
                 'optional',
@@ -197,7 +201,7 @@ class ProjectSerializer(ModelSerializer, ProjectLocaleMixin):
                 'url': item['download_requirement__url'],
                 'optional': item['optional'],
             } for item in
-            release.pluginreleasedownloadrequirement_set.values(
+            getattr(release, f'{project_type}downloadrequirement_set').values(
                 'download_requirement__url',
                 'optional',
             )
