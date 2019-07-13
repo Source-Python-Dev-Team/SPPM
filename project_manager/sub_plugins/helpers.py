@@ -48,8 +48,9 @@ class SubPluginZipFile(ProjectZipFile):
     def _validate_path(self, path):
         """Validate the given path is ok for the extension."""
         if self.file_types is None:
-            # TODO: add proper error
-            raise NotImplementedError()
+            raise NotImplementedError(
+                f'File types not set for {self.__class__.__name__}.'
+            )
 
         extension = path.rsplit('.')[1]
         if '/' in extension:
@@ -149,22 +150,20 @@ class SubPluginZipFile(ProjectZipFile):
             package_found = check_path in self.file_list or package_found
 
         if package_found and module_found:
-            # TODO: refine this error
             raise ValidationError(
                 message=(
-                    'SubPlugin found as both a module and package in the same '
-                    'path.'
+                    f'SubPlugin found as both a module and package in the same'
+                    f' path: "{sub_path}".'
                 )
             )
 
         if package_found or module_found:
             return
 
-        # TODO: refine this error
         raise ValidationError(
             message=(
-                'SubPlugin not found in path, though files found within zip '
-                'for directory.'
+                f'SubPlugin not found in path, though files found within zip '
+                f'for directory: "{sub_path}".'
             )
         )
 

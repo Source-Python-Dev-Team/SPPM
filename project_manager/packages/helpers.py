@@ -89,7 +89,6 @@ class PackageZipFile(ProjectZipFile):
 # =============================================================================
 def get_package_basename(zip_file):
     """Return the package's basename."""
-    # TODO: add module/package validation
     instance = PackageZipFile(zip_file)
     instance.find_base_info()
     instance.validate_basename()

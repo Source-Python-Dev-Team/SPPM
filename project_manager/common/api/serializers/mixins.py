@@ -129,17 +129,6 @@ class ProjectReleaseCreationMixin(ModelSerializer):
         zip_validator.validate_base_file_in_zip()
         zip_validator.validate_requirements()
         self.requirements = zip_validator.requirements
-        """
-            Requirements:
-                Plugins:
-                    ../plugins/<basename>/requirements.json
-                Packages:
-                    ../packages/custom/<package>/requirements.json
-                    ../packages/custom/<module>_requirements.json
-                SubPlugins:
-                    ../plugins/<plugin>/<path>/<sub_plugin>/requirements.json
-                    ../plugins/<plugin>/<path>/<sub_plugin>_requirements.json
-        """
         if project_basename not in (zip_validator.basename, None):
             raise ValidationError({
                 'zip_file': (

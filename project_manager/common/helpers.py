@@ -88,8 +88,9 @@ class ProjectZipFile:
     def _validate_path(self, path):
         """Validate the given path is ok for the extension."""
         if self.file_types is None:
-            # TODO: add proper error
-            raise NotImplementedError()
+            raise NotImplementedError(
+                f'File types not set for {self.__class__.__name__}.'
+            )
 
         extension = path.rsplit('.')[1]
         if '/' in extension:
