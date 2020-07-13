@@ -28,34 +28,34 @@ router = routers.SimpleRouter()
 router.register(
     prefix=r'^projects/(?P<plugin_slug>[\w-]+)',
     viewset=SubPluginViewSet,
-    base_name='projects',
+    basename='projects',
 )
 router.register(
     prefix=r'^images/(?P<plugin_slug>[\w-]+)/(?P<sub_plugin_slug>[\w-]+)',
     viewset=SubPluginImageViewSet,
-    base_name='images',
+    basename='images',
 )
 router.register(
     prefix=r'^releases/(?P<plugin_slug>[\w-]+)/(?P<sub_plugin_slug>[\w-]+)',
     viewset=SubPluginReleaseViewSet,
-    base_name='releases',
+    basename='releases',
 )
 router.register(
     prefix=r'^games/(?P<plugin_slug>[\w-]+)/(?P<sub_plugin_slug>[\w-]+)',
     viewset=SubPluginGameViewSet,
-    base_name='games',
+    basename='games',
 )
 router.register(
     prefix=r'^tags/(?P<plugin_slug>[\w-]+)/(?P<sub_plugin_slug>[\w-]+)',
     viewset=SubPluginTagViewSet,
-    base_name='tags',
+    basename='tags',
 )
 router.register(
     prefix=(
         r'^contributors/(?P<plugin_slug>[\w-]+)/(?P<sub_plugin_slug>[\w-]+)'
     ),
     viewset=SubPluginContributorViewSet,
-    base_name='contributors',
+    basename='contributors',
 )
 
 

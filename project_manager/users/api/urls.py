@@ -20,7 +20,7 @@ router = routers.SimpleRouter()
 router.register(
     prefix=r'',
     viewset=ForumUserViewSet,
-    base_name='users'
+    basename='users'
 )
 
 

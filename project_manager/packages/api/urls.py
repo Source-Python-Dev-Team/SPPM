@@ -28,32 +28,32 @@ router = routers.SimpleRouter()
 router.register(
     prefix=r'projects',
     viewset=PackageViewSet,
-    base_name='projects',
+    basename='projects',
 )
 router.register(
     prefix=r'^images/(?P<package_slug>[\w-]+)',
     viewset=PackageImageViewSet,
-    base_name='images',
+    basename='images',
 )
 router.register(
     prefix=r'^releases/(?P<package_slug>[\w-]+)',
     viewset=PackageReleaseViewSet,
-    base_name='releases',
+    basename='releases',
 )
 router.register(
     prefix=r'^games/(?P<package_slug>[\w-]+)',
     viewset=PackageGameViewSet,
-    base_name='games',
+    basename='games',
 )
 router.register(
     prefix=r'^tags/(?P<package_slug>[\w-]+)',
     viewset=PackageTagViewSet,
-    base_name='tags',
+    basename='tags',
 )
 router.register(
     prefix=r'^contributors/(?P<package_slug>[\w-]+)',
     viewset=PackageContributorsViewSet,
-    base_name='contributors',
+    basename='contributors',
 )
 
 
