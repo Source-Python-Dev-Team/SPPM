@@ -17,17 +17,20 @@ from project_manager.users.models import ForumUser
 # >> ALL DECLARATION
 # =============================================================================
 __all__ = (
-    'ForumUserFilter',
+    'ForumUserFilterSet',
 )
 
 
 # =============================================================================
 # >> FILTERS
 # =============================================================================
-class ForumUserFilter(FilterSet):
+class ForumUserFilterSet(FilterSet):
     """Filters for ForumUsers."""
 
-    has_contributions = BooleanFilter(method='filter_has_contributions')
+    has_contributions = BooleanFilter(
+        method='filter_has_contributions',
+        label='Has Contributions',
+    )
 
     class Meta:
         """Define metaclass attributes."""

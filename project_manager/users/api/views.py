@@ -15,7 +15,7 @@ from rest_framework.viewsets import ModelViewSet
 from project_manager.packages.models import Package
 from project_manager.plugins.models import Plugin
 from project_manager.sub_plugins.models import SubPlugin
-from project_manager.users.api.filters import ForumUserFilter
+from project_manager.users.api.filtersets import ForumUserFilterSet
 from project_manager.users.api.serializers import ForumUserSerializer
 from project_manager.users.models import ForumUser
 
@@ -35,7 +35,7 @@ class ForumUserViewSet(ModelViewSet):
     """ForumUser API view."""
 
     filter_backends = (OrderingFilter, DjangoFilterBackend)
-    filter_class = ForumUserFilter
+    filter_class = ForumUserFilterSet
     http_method_names = ('get', 'options')
     ordering = ('user__username',)
     ordering_fields = ('forum_id', 'user__username')

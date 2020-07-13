@@ -1,28 +1,28 @@
-"""Package API filters."""
+"""Plugin API filters."""
 
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
 # App
-from project_manager.common.api.filters import ProjectFilter
-from project_manager.packages.models import Package
+from project_manager.common.api.filtersets import ProjectFilterSet
+from project_manager.plugins.models import Plugin
 
 
 # =============================================================================
 # >> ALL DECLARATION
 # =============================================================================
 __all__ = (
-    'PackageFilter',
+    'PluginFilterSet',
 )
 
 
 # =============================================================================
 # >> FILTERS
 # =============================================================================
-class PackageFilter(ProjectFilter):
-    """Filters for Packages."""
+class PluginFilterSet(ProjectFilterSet):
+    """Filters for Plugins."""
 
-    class Meta(ProjectFilter.Meta):
+    class Meta(ProjectFilterSet.Meta):
         """Define metaclass attributes."""
 
-        model = Package
+        model = Plugin

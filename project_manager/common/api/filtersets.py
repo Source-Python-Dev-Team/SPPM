@@ -15,19 +15,28 @@ from django_filters.filterset import FilterSet
 # >> ALL DECLARATION
 # =============================================================================
 __all__ = (
-    'ProjectFilter',
+    'ProjectFilterSet',
 )
 
 
 # =============================================================================
 # >> FILTERS
 # =============================================================================
-class ProjectFilter(FilterSet):
+class ProjectFilterSet(FilterSet):
     """Filters for Projects."""
 
-    game = CharFilter(field_name='supported_games__basename')
-    user = CharFilter(method='filter_user')
-    tag = CharFilter(field_name='tags__name')
+    game = CharFilter(
+        field_name='supported_games__basename',
+        label='Game',
+    )
+    tag = CharFilter(
+        field_name='tags__name',
+        label='Tag',
+    )
+    user = CharFilter(
+        method='filter_user',
+        label='User',
+    )
 
     class Meta:
         """Define metaclass attributes."""

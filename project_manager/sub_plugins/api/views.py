@@ -20,7 +20,7 @@ from project_manager.common.api.views import (
     ProjectViewSet,
 )
 from project_manager.plugins.models import Plugin
-from project_manager.sub_plugins.api.filters import SubPluginFilter
+from project_manager.sub_plugins.api.filtersets import SubPluginFilterSet
 from project_manager.sub_plugins.api.serializers import (
     SubPluginContributorSerializer,
     SubPluginCreateSerializer,
@@ -108,7 +108,7 @@ class SubPluginViewSet(ProjectViewSet):
         `?ordering=-updated`
     """
 
-    filter_class = SubPluginFilter
+    filter_class = SubPluginFilterSet
     queryset = SubPlugin.objects.prefetch_related(
         Prefetch(
             lookup='releases',

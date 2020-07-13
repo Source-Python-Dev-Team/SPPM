@@ -26,7 +26,8 @@ class ForumUserFilterSet(FilterSet):
     """Filter set for ForumUser."""
 
     username = CharFilter(
-        'user__username'
+        field_name='user__username',
+        label='Username',
     )
 
     class Meta:

@@ -16,7 +16,7 @@ from project_manager.common.api.views import (
     ProjectTagViewSet,
     ProjectViewSet,
 )
-from project_manager.packages.api.filters import PackageFilter
+from project_manager.packages.api.filtersets import PackageFilterSet
 from project_manager.packages.api.serializers import (
     PackageContributorSerializer,
     PackageCreateSerializer,
@@ -103,7 +103,7 @@ class PackageViewSet(ProjectViewSet):
         `?ordering=-updated`
     """
 
-    filter_class = PackageFilter
+    filter_class = PackageFilterSet
     queryset = Package.objects.prefetch_related(
         Prefetch(
             lookup='releases',

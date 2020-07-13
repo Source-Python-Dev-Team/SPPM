@@ -4,7 +4,7 @@
 # >> IMPORTS
 # =============================================================================
 # App
-from project_manager.common.api.filters import ProjectFilter
+from project_manager.common.api.filtersets import ProjectFilterSet
 from project_manager.sub_plugins.models import SubPlugin
 
 
@@ -12,17 +12,17 @@ from project_manager.sub_plugins.models import SubPlugin
 # >> ALL DECLARATION
 # =============================================================================
 __all__ = (
-    'SubPluginFilter',
+    'SubPluginFilterSet',
 )
 
 
 # =============================================================================
 # >> FILTERS
 # =============================================================================
-class SubPluginFilter(ProjectFilter):
+class SubPluginFilterSet(ProjectFilterSet):
     """Filters for SubPlugins."""
 
-    class Meta(ProjectFilter.Meta):
+    class Meta(ProjectFilterSet.Meta):
         """Define metaclass attributes."""
 
         model = SubPlugin
