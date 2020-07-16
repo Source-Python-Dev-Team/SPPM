@@ -33,6 +33,6 @@ class SubPluginAdminForm(forms.ModelForm):
             paths__isnull=False,
         )
         self.fields['plugin'].widget = PluginRawIdWidget(
-            rel=SubPlugin._meta.get_field('plugin').rel,
+            rel=SubPlugin._meta.get_field('plugin').remote_field,
             admin_site=site,
         )
