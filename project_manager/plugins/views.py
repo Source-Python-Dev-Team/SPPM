@@ -147,12 +147,13 @@ class PluginView(DetailView):
     def get_context_data(self, **kwargs):
         """Add the necessary info to the context."""
         context = super().get_context_data(**kwargs)
+        current_release = self.object.releases.order_by('-created')[0]
         context.update({
-            'current_release': self.object.releases.order_by('-created')[0],
+            'current_release': current_release,
             'contributors': self.object.contributors.all(),
             'paths': self.object.paths.all(),
-            'package_requirements': self.object.package_requirements.all(),
-            'pypi_requirements': self.object.pypi_requirements.all(),
+            'package_requirements': current_release.package_requirements.all(),
+            'pypi_requirements': current_release.pypi_requirements.all(),
             'supported_games': self.object.supported_games.all(),
         })
         return context
