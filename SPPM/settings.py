@@ -172,17 +172,15 @@ MEDIA_URL = '/media/'
 
 MEDIA_ROOT = BASE_DIR / 'media'
 
-FORUM_URL = 'http://forums.sourcepython.com/'
+FORUM_URL = 'https://forums.sourcepython.com/'
 
 WIKI_URL = 'http://wiki.sourcepython.com'
 
-GITHUB_URL = 'http://github.com/Source-Python-Dev-Team/Source.Python'
+GITHUB_URL = 'http://github.com/Source-Python-Dev-Team/Source.Python/'
 
 PYPI_URL = 'https://pypi.python.org/pypi'
 
-BUILD_URL = (
-    'http://builds.sourcepython.com/job/Source.Python/lastSuccessfulBuild/'
-)
+DOWNLOAD_URL = 'http://downloads.sourcepython.com/'
 
 # PHPBB_TABLE_PREFIX = 'phpbb_'
 
