@@ -111,6 +111,7 @@ class PluginViewSet(ProjectViewSet):
 
     *  **name** (descending) or **-name** (ascending)
     *  **basename** (descending) or **-basename** (ascending)
+    *  **created** (descending) or **-created** (ascending)
     *  **updated** (descending) or **-updated** (ascending)
 
         ####Example:

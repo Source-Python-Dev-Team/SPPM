@@ -95,7 +95,7 @@ class ProjectViewSet(ModelViewSet):
     filter_backends = (OrderingFilter, DjangoFilterBackend)
     http_method_names = ('get', 'post', 'patch', 'options')
     ordering = ('-releases__created',)
-    ordering_fields = ('name', 'basename', 'updated')
+    ordering_fields = ('name', 'basename', 'updated', 'created')
     permission_classes = (IsAuthenticatedOrReadOnly,)
 
     stored_contributors = None
