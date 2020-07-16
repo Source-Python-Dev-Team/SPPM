@@ -23,6 +23,7 @@ from project_manager.common.api.views.mixins import (
     ProjectRelatedInfoMixin,
     ProjectThroughModelMixin,
 )
+from project_manager.common.constants import RELEASE_VERSION_REGEX
 
 
 # =============================================================================
@@ -187,7 +188,7 @@ class ProjectReleaseViewSet(ProjectRelatedInfoMixin):
     http_method_names = ('get', 'post', 'options')
     ordering = ('-created',)
     ordering_fields = ('created',)
-    lookup_value_regex = '[0-9.]+'
+    lookup_value_regex = RELEASE_VERSION_REGEX
     lookup_field = 'version'
 
     api_type = 'Releases'
