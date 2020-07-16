@@ -21,9 +21,10 @@ __all__ = (
 def common_urls(request):
     """Expose common urls to templates."""
     return {
-        'BUILD_URL': settings.BUILD_URL,
+        'DOWNLOAD_URL': settings.DOWNLOAD_URL,
         'FORUM_URL': settings.FORUM_URL,
         'GITHUB_URL': settings.GITHUB_URL,
         'MEDIA_URL': settings.MEDIA_URL,
         'WIKI_URL': settings.WIKI_URL,
+        'username': str(request.user),
     }
