@@ -27,6 +27,10 @@ class ProjectManagerAPIView(APIView):
     def get(request):
         """Retrieve the API endpoints."""
         data = {
+            'games': reverse(
+                viewname='api:games:games-list',
+                request=request,
+            ),
             'packages': reverse(
                 viewname='api:packages:endpoints',
                 request=request,

@@ -17,6 +17,13 @@ app_name = 'api'
 
 urlpatterns = [
     url(
+        regex=r'^games/',
+        view=include(
+            'project_manager.games.api.urls',
+            namespace='games',
+        ),
+    ),
+    url(
         regex=r'^packages/',
         view=include(
             'project_manager.packages.api.urls',
