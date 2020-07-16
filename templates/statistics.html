@@ -5,14 +5,17 @@
 {% endblock title %}
 
 {% block content %}
-    <h1>Statistics</h1><br />
+{#    <h1>Statistics</h1>#}
+    <h1>User stats:</h1>
     Users with contributions: {{ users }}<br />
+    <h1>Project stats:</h1>
     Total Projects: {{ total_projects }}<br />
     Packages: {{ package_count }}<br />
     Plugins: {{ plugin_count }}<br />
     Sub-Plugins: {{ sub_plugin_count }}<br />
+    <h1>Download stats:</h1>
+    Total Downloads: {{ total_downloads }}<br />
     Package Downloads: {{ package_downloads }}<br />
     Plugin Downloads: {{ plugin_downloads }}<br />
     Sub-Plugin Downloads: {{ sub_plugin_downloads }}<br />
-    Total Downloads: {{ total_downloads }}
 {% endblock content %}
