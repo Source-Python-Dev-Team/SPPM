@@ -44,8 +44,7 @@ class ForumUserAdmin(admin.ModelAdmin):
             'user',
         )
 
-    @staticmethod
-    def get_username(obj):
+    def get_username(self, obj):
         """Return the user's username."""
         return obj.user.username
     get_username.short_description = 'Username'

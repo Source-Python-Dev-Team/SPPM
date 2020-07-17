@@ -106,8 +106,7 @@ class SubPluginImageAdmin(admin.ModelAdmin):
         'sub_plugin__plugin__basename',
     )
 
-    @staticmethod
-    def get_plugin(obj):
+    def get_plugin(self, obj):
         """Return the Plugin for the SubPlugin."""
         return obj.sub_plugin.plugin
     get_plugin.short_description = 'Plugin'
