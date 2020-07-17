@@ -43,6 +43,10 @@ class ProjectManagerAPIView(APIView):
                 viewname='api:sub-plugins:endpoints',
                 request=request,
             ),
+            'tags': reverse(
+                viewname='api:tags:tags-list',
+                request=request,
+            ),
             'users': reverse(
                 viewname='api:users:users-list',
                 request=request,

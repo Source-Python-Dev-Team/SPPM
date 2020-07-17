@@ -45,6 +45,13 @@ urlpatterns = [
         ),
     ),
     url(
+        regex=r'^tags/',
+        view=include(
+            'project_manager.tags.api.urls',
+            namespace='tags',
+        ),
+    ),
+    url(
         regex=r'^users/',
         view=include(
             'project_manager.users.api.urls',

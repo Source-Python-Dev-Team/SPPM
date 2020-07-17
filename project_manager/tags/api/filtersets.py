@@ -1,42 +1,37 @@
-"""Tag serializers for APIs."""
+"""Tag API filters."""
 
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
+# Django
+from django.db.models import Q
+
 # 3rd-Party Django
-from rest_framework.serializers import ModelSerializer
+from django_filters.filters import BooleanFilter
+from django_filters.filterset import FilterSet
 
 # App
 from project_manager.tags.models import Tag
-from project_manager.users.api.serializers.common import (
-    ForumUserContributorSerializer,
-)
 
 
 # =============================================================================
 # >> ALL DECLARATION
 # =============================================================================
 __all__ = (
-    'TagSerializer',
+    'TagFilterSet',
 )
 
 
 # =============================================================================
-# >> SERIALIZERS
+# >> FILTERS
 # =============================================================================
-class TagSerializer(ModelSerializer):
-    """Serializer for project Tags."""
-
-    creator = ForumUserContributorSerializer(
-        read_only=True,
-    )
+class TagFilterSet(FilterSet):
+    """Filters for Tags."""
 
     class Meta:
         """Define metaclass attributes."""
 
-        model = Tag
         fields = (
-            'name',
             'black_listed',
-            'creator',
         )
+        model = Tag
