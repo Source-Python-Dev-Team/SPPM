@@ -29,6 +29,7 @@ class TagAdmin(admin.ModelAdmin):
     list_display = (
         'name',
         'black_listed',
+        'creator',
     )
     list_filter = (
         'black_listed',
@@ -36,6 +37,7 @@ class TagAdmin(admin.ModelAdmin):
     list_display_links = None
     list_editable = (
         'black_listed',
+        'creator',
     )
     readonly_fields = (
         'name',
