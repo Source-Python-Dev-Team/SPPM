@@ -29,15 +29,23 @@ __all__ = (
 class TagViewSet(ListModelMixin, GenericViewSet):
     """ViewSet for listing Supported Games.
 
+    ###Available Filters:
+    *  **black_listed**=*{boolean}*
+        * Filters on blacklisted or not blacklisted.
+
+        ####Example:
+        `?game=true`
+
+        `?game=false`
+
     ###Available Ordering:
 
     *  **name** (descending) or **-name** (ascending)
-    *  **creator** (descending) or **-basename** (ascending)
 
         ####Example:
         `?ordering=name`
 
-        `?ordering=-basename`
+        `?ordering=-name`
     """
 
     filter_backends = (OrderingFilter, DjangoFilterBackend)
