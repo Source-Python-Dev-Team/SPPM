@@ -106,6 +106,7 @@ class SubPluginImageAdmin(admin.ModelAdmin):
         'sub_plugin__plugin__basename',
     )
 
+    # pylint: disable=no-self-use
     def get_plugin(self, obj):
         """Return the Plugin for the SubPlugin."""
         return obj.sub_plugin.plugin

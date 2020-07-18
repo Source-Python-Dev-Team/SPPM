@@ -222,12 +222,13 @@ class ProjectZipFile:
 
     def _validate_custom_requirement(self, item):
         """Verify that the given requirement exists."""
+        # pylint: disable=import-outside-toplevel
         from project_manager.packages.models import Package
         basename = item.get('basename')
         if basename is None:
             self.requirements_errors.append(
-                f'No basename found for object in "custom" '
-                f'listing in requirements json file.'
+                'No basename found for object in "custom" '
+                'listing in requirements json file.'
             )
             return
         try:
@@ -262,6 +263,7 @@ class ProjectZipFile:
         """Verify that the given requirement is valid."""
         # TODO: validate pypi requirements?
         # TODO: validate vcs requirements?
+        # pylint: disable=import-outside-toplevel
         from project_manager.requirements.models import (
             DownloadRequirement,
             PyPiRequirement,

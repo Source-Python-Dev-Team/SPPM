@@ -44,6 +44,7 @@ class ForumUserAdmin(admin.ModelAdmin):
             'user',
         )
 
+    # pylint: disable=no-self-use
     def get_username(self, obj):
         """Return the user's username."""
         return obj.user.username
