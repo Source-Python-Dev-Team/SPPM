@@ -228,7 +228,7 @@ class SubPluginPath(AbstractUUIDPrimaryKeyModel):
 
     def __str__(self):
         """Return the path."""
-        return self.path
+        return str(self.path)
 
     def clean(self):
         """Validate that at least one of the Allow fields is True."""

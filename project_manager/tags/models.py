@@ -43,7 +43,7 @@ class Tag(models.Model):
 
     def __str__(self):
         """Return the tag's name."""
-        return self.name
+        return str(self.name)
 
     def save(
         self, force_insert=False, force_update=False, using=None,

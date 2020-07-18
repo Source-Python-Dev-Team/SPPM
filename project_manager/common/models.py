@@ -132,7 +132,7 @@ class ProjectBase(models.Model):
 
     def __str__(self):
         """Return the object's name when str cast."""
-        return self.name
+        return str(self.name)
 
     @property
     def handle_logo_upload(self):

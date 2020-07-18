@@ -48,7 +48,7 @@ class Game(models.Model):
 
     def __str__(self):
         """Return the object's name when str cast."""
-        return self.name
+        return str(self.name)
 
     def save(
         self, force_insert=False, force_update=False, using=None,
