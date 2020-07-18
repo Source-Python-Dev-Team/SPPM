@@ -52,7 +52,11 @@ __all__ = (
     'SubPluginGameSerializer',
     'SubPluginImageSerializer',
     'SubPluginReleaseSerializer',
+    'SubPluginReleaseDownloadRequirementSerializer',
+    'SubPluginReleasePackageRequirementSerializer',
+    'SubPluginReleasePyPiRequirementSerializer',
     'SubPluginSerializer',
+    'SubPluginReleaseVersionControlRequirementSerializer',
     'SubPluginTagSerializer',
 )
 

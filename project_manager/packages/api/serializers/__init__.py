@@ -45,7 +45,11 @@ __all__ = (
     'PackageCreateSerializer',
     'PackageGameSerializer',
     'PackageImageSerializer',
+    'PackageReleaseDownloadRequirementSerializer',
+    'PackageReleasePackageRequirementSerializer',
+    'PackageReleasePyPiRequirementSerializer',
     'PackageReleaseSerializer',
+    'PackageReleaseVersionControlRequirementSerializer',
     'PackageSerializer',
     'PackageTagSerializer',
 )
