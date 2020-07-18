@@ -57,8 +57,16 @@ class SubPluginZipFile(ProjectZipFile):
             return True
 
         for base_path, allowed_extensions in self.file_types.items():
-            for sub_plugin_path in self.plugin.paths.values_list('path', flat=True):
-                if not path.startswith(base_path.format(self=self, sub_plugin_path=sub_plugin_path)):
+            for sub_plugin_path in self.plugin.paths.values_list(
+                'path',
+                flat=True,
+            ):
+                if not path.startswith(
+                    base_path.format(
+                        self=self,
+                        sub_plugin_path=sub_plugin_path,
+                    )
+                ):
                     continue
                 if extension in allowed_extensions:
                     return True
