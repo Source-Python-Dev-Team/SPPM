@@ -12,7 +12,7 @@
 
 # Local text files
 *.txt
-!requirements.txt
+!requirements/*.txt
 
 # Migrations
 */migrations/0*
