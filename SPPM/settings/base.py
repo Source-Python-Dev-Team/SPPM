@@ -21,7 +21,7 @@ from path import Path
 # >> GLOBAL VARIABLES
 # =============================================================================
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-BASE_DIR = Path(__file__).parent.parent
+BASE_DIR = Path(__file__).parent.parent.parent
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.9/howto/deployment/checklist/
@@ -80,7 +80,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'project_manager.common.context_processors.common_urls',
+                'project_manager.common.context_processors.add_common_context_processors',
             ],
         },
     },

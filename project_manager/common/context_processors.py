@@ -11,15 +11,15 @@ from django.conf import settings
 # >> ALL DECLARATION
 # =============================================================================
 __all__ = (
-    'common_urls',
+    'add_common_context_processors',
 )
 
 
 # =============================================================================
 # >> FUNCTIONS
 # =============================================================================
-def common_urls(request):
-    """Expose common urls to templates."""
+def add_common_context_processors(request):
+    """Expose some settings and other information to all contexts."""
     return {
         'DOWNLOAD_URL': settings.DOWNLOAD_URL,
         'FORUM_URL': settings.FORUM_URL,
