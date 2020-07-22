@@ -11,23 +11,14 @@ ignore=
 #   http://pylint-messages.wikidot.com/all-codes
 disable=
     abstract-method,
-    add 4 spaces,
-#    arguments-differ,
-    attribute-defined-outside-init,
+#    attribute-defined-outside-init,
     bad-continuation,
-#    cyclic-import,
     duplicate-code,
-    fixme,
-#    invalid-name,
-    missing-docstring,
+#    fixme,
     no-member,
-    protected-access,
+#    protected-access,
     too-few-public-methods,
     too-many-ancestors,
-#    too-many-branches,
-#    undefined-loop-variable,
-#    unused-argument,
-#    unused-variable,
 
 
 [BASIC]
