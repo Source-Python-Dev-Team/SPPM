@@ -207,7 +207,7 @@ class ProjectBase(models.Model):
         ]):
             path = settings.MEDIA_ROOT / self.logo_path
             if path.isdir():
-                logo = [x for x in path.files() if x.namebase == self.slug]
+                logo = [x for x in path.files() if x.stem == self.slug]
                 if logo:
                     logo[0].remove()
         super().save(

@@ -300,7 +300,7 @@ class ProjectZipFile:
 def find_image_number(directory, slug):
     """Return the next available image number."""
     path = settings.MEDIA_ROOT / 'images' / directory / slug
-    current_files = [x.namebase for x in path.files()] if path.isdir() else []
+    current_files = [x.stem for x in path.files()] if path.isdir() else []
     return '%04d' % (max(map(int, current_files or [0])) + 1)
 
 
