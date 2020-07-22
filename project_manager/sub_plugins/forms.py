@@ -33,12 +33,12 @@ class SubPluginCreateForm(SubmitButtonMixin):
 
     version = forms.CharField(
         max_length=8,
-        help_text=SubPluginRelease._meta.get_field('version').help_text,
+        help_text=getattr(SubPluginRelease.version, 'field').help_text,
     )
     version_notes = forms.CharField(
         max_length=512,
         required=False,
-        help_text=SubPluginRelease._meta.get_field('notes').help_text,
+        help_text=SubPluginRelease.notes.help_text,
         widget=forms.Textarea(
             attrs={
                 'cols': '64',
@@ -47,7 +47,7 @@ class SubPluginCreateForm(SubmitButtonMixin):
         )
     )
     zip_file = forms.FileField(
-        help_text=SubPluginRelease._meta.get_field('zip_file').help_text,
+        help_text=getattr(SubPluginRelease.zip_file, 'field').help_text,
     )
 
     class Meta:

@@ -33,12 +33,12 @@ class PackageCreateForm(SubmitButtonMixin):
 
     version = forms.CharField(
         max_length=8,
-        help_text=PackageRelease._meta.get_field('version').help_text,
+        help_text=getattr(PackageRelease.version, 'field').help_text,
     )
     version_notes = forms.CharField(
         max_length=512,
         required=False,
-        help_text=PackageRelease._meta.get_field('notes').help_text,
+        help_text=PackageRelease.notes.help_text,
         widget=forms.Textarea(
             attrs={
                 'cols': '64',
@@ -47,7 +47,7 @@ class PackageCreateForm(SubmitButtonMixin):
         )
     )
     zip_file = forms.FileField(
-        help_text=PackageRelease._meta.get_field('zip_file').help_text,
+        help_text=getattr(PackageRelease.zip_file, 'field').help_text,
     )
 
     class Meta:
