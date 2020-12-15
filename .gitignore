@@ -28,3 +28,6 @@
 
 # Static files (collect location)
 /static/
+
+# Favicon
+favicon.png
