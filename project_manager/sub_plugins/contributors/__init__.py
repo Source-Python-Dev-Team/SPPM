@@ -1,1 +1,0 @@
-"""SubPlugin contributors functionality."""
