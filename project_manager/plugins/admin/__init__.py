@@ -11,14 +11,12 @@ from project_manager.common.admin import ProjectAdmin
 from project_manager.plugins.admin.inlines import (
     PluginContributorInline,
     PluginGameInline,
+    PluginImageInline,
+    PluginReleaseInline,
     PluginTagInline,
+    SubPluginPathInline,
 )
-from project_manager.plugins.models import (
-    Plugin,
-    PluginImage,
-    PluginRelease,
-    SubPluginPath,
-)
+from project_manager.plugins.models import Plugin
 
 
 # =============================================================================
@@ -26,9 +24,6 @@ from project_manager.plugins.models import (
 # =============================================================================
 __all__ = (
     'PluginAdmin',
-    'PluginImageAdmin',
-    'PluginReleaseAdmin',
-    'SubPluginPathAdmin',
 )
 
 
@@ -41,66 +36,9 @@ class PluginAdmin(ProjectAdmin):
 
     inlines = (
         PluginContributorInline,
+        PluginReleaseInline,
         PluginGameInline,
+        PluginImageInline,
         PluginTagInline,
+        SubPluginPathInline,
     )
-
-
-@admin.register(PluginRelease)
-class PluginReleaseAdmin(admin.ModelAdmin):
-    """PluginRelease admin."""
-
-    list_display = (
-        'plugin',
-    )
-    readonly_fields = (
-        'plugin',
-    )
-    search_fields = (
-        'plugin__name',
-        'plugin__basename',
-        'plugin__owner__user__username',
-        'plugin__contributors__user__username',
-    )
-
-
-@admin.register(PluginImage)
-class PluginImageAdmin(admin.ModelAdmin):
-    """PluginImage admin."""
-
-    list_display = (
-        'plugin',
-        'image',
-    )
-    readonly_fields = (
-        'plugin',
-    )
-    search_fields = (
-        'plugin__name',
-        'plugin__basename',
-    )
-
-
-@admin.register(SubPluginPath)
-class SubPluginPathAdmin(admin.ModelAdmin):
-    """SubPluginPath admin."""
-
-    actions = None
-    list_display = (
-        'plugin',
-        'path',
-    )
-    readonly_fields = (
-        'path',
-        'plugin',
-    )
-    search_fields = (
-        'path',
-        'plugin__name',
-        'plugin__basename',
-    )
-    view_on_site = False
-
-    def has_add_permission(self, request):
-        """Disallow adding a SubPluginPath in the Admin."""
-        return False

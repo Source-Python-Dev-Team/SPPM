@@ -11,17 +11,14 @@ from django.contrib import admin
 
 # App
 from project_manager.common.admin import ProjectAdmin
-from project_manager.sub_plugins.admin.forms import SubPluginAdminForm
 from project_manager.sub_plugins.admin.inlines import (
     SubPluginContributorInline,
     SubPluginGameInline,
+    SubPluginImageInline,
+    SubPluginReleaseInline,
     SubPluginTagInline,
 )
-from project_manager.sub_plugins.models import (
-    SubPlugin,
-    SubPluginImage,
-    SubPluginRelease,
-)
+from project_manager.sub_plugins.models import SubPlugin
 
 
 # =============================================================================
@@ -29,8 +26,6 @@ from project_manager.sub_plugins.models import (
 # =============================================================================
 __all__ = (
     'SubPluginAdmin',
-    'SubPluginImageAdmin',
-    'SubPluginReleaseAdmin',
 )
 
 
@@ -38,7 +33,8 @@ __all__ = (
 # >> GLOBALS
 # =============================================================================
 _project_fieldsets = copy.deepcopy(ProjectAdmin.fieldsets)
-_project_fieldsets[0][1]['fields'] += ('plugin',)
+_fields = _project_fieldsets[0][1]['fields']
+_project_fieldsets[0][1]['fields'] = ('plugin',) + _fields
 
 
 # =============================================================================
@@ -49,66 +45,20 @@ class SubPluginAdmin(ProjectAdmin):
     """SubPlugin admin."""
 
     fieldsets = _project_fieldsets
-    form = SubPluginAdminForm
     inlines = (
         SubPluginContributorInline,
+        SubPluginReleaseInline,
         SubPluginGameInline,
+        SubPluginImageInline,
         SubPluginTagInline,
     )
     list_display = ProjectAdmin.list_display + (
         'plugin',
     )
-    raw_id_fields = ProjectAdmin.raw_id_fields + (
+    readonly_fields = ProjectAdmin.readonly_fields + (
         'plugin',
     )
     search_fields = ProjectAdmin.search_fields + (
         'plugin__name',
         'plugin__basename',
     )
-
-
-@admin.register(SubPluginRelease)
-class SubPluginReleaseAdmin(admin.ModelAdmin):
-    """SubPluginRelease admin."""
-
-    list_display = (
-        'sub_plugin',
-    )
-    readonly_fields = (
-        'sub_plugin',
-    )
-    search_fields = (
-        'sub_plugin__name',
-        'sub_plugin__basename',
-        'sub_plugin__owner__user__username',
-        'sub_plugin__contributors__user__username',
-        'sub_plugin__plugin__basename',
-        'sub_plugin__plugin__name',
-    )
-
-
-@admin.register(SubPluginImage)
-class SubPluginImageAdmin(admin.ModelAdmin):
-    """SubPluginImage admin."""
-
-    list_display = (
-        'sub_plugin',
-        'get_plugin',
-        'image',
-    )
-    readonly_fields = (
-        'sub_plugin',
-    )
-    search_fields = (
-        'sub_plugin__name',
-        'sub_plugin__basename',
-        'sub_plugin__plugin__name',
-        'sub_plugin__plugin__basename',
-    )
-
-    # pylint: disable=no-self-use
-    def get_plugin(self, obj):
-        """Return the Plugin for the SubPlugin."""
-        return obj.sub_plugin.plugin
-    get_plugin.short_description = 'Plugin'
-    get_plugin.admin_order_field = 'sub_plugin__plugin'
