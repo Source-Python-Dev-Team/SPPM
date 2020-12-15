@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
-printf "PEP 8:\n"
+printf "Python Code Style:\n"
 python -m pycodestyle --count --benchmark --exclude=migrations project_manager
 
-printf "\n\nPy Doc Style:\n"
+printf "\n\nPython Doc Style:\n"
 python -m pydocstyle project_manager --match-dir='^(?!migrations).*'
 
 printf "\n\nPyFlakes:\n"
