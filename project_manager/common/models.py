@@ -288,6 +288,10 @@ class ProjectRelease(AbstractUUIDPrimaryKeyModel):
             '"handle_zip_file_upload" attribute.'
         )
 
+    def __str__(self):
+        """Return the project name + release version."""
+        return f'{self.project} - {self.version}'
+
     def save(
         self, force_insert=False, force_update=False, using=None,
         update_fields=None
