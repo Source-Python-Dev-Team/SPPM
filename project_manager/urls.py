@@ -12,6 +12,9 @@ from django.views.generic.base import RedirectView
 
 # App
 from project_manager.views import StatisticsView
+from project_manager.packages.views import PackageReleaseDownloadView
+from project_manager.plugins.views import PluginReleaseDownloadView
+from project_manager.sub_plugins.views import SubPluginReleaseDownloadView
 
 
 # =============================================================================
@@ -51,6 +54,25 @@ urlpatterns = [
     #     view=,
     #     name='plugins',
     # ),
+    url(
+        # /media/releases/packages/<slug>/<zip_file>
+        regex=r'^media/releases/packages/(?P<slug>[\w-]+)/(?P<zip_file>.+)',
+        view=PackageReleaseDownloadView.as_view(),
+        name='package-download',
+    ),
+    url(
+        # /media/releases/plugins/<slug>/<zip_file>
+        regex=r'^media/releases/plugins/(?P<slug>[\w-]+)/(?P<zip_file>.+)',
+        view=PluginReleaseDownloadView.as_view(),
+        name='plugin-download',
+    ),
+    url(
+        # /media/releases/sub-plugins/<slug>/<sub_plugin_slug>/<zip_file>
+        regex=r'^media/releases/sub-plugins/(?P<slug>[\w-]+)/'
+              r'(?P<sub_plugin_slug>[\w-]+)/(?P<zip_file>.+)',
+        view=SubPluginReleaseDownloadView.as_view(),
+        name='sub-plugin-download',
+    ),
 ] + static(
     settings.MEDIA_URL, document_root=settings.MEDIA_ROOT
 ) + static(
