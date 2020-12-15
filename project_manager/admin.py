@@ -5,7 +5,10 @@
 # =============================================================================
 # Django
 from django.contrib import admin
-from django.contrib.auth import get_user_model
+from django.contrib.auth import get_user_model, models
+
+# Third Party Django
+from precise_bbcode.models import BBCodeTag, SmileyTag
 
 
 # =============================================================================
@@ -14,6 +17,14 @@ from django.contrib.auth import get_user_model
 __all__ = (
     'UserAdmin',
 )
+
+
+# =============================================================================
+# UNREGISTER
+# =============================================================================
+admin.site.unregister(models.Group)
+admin.site.unregister(BBCodeTag)
+admin.site.unregister(SmileyTag)
 
 
 # =============================================================================
