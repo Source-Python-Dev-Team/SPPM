@@ -180,3 +180,5 @@ DOWNLOAD_URL = 'http://downloads.sourcepython.com/'
 # PHPBB_TABLE_PREFIX = 'phpbb_'
 
 CRISPY_TEMPLATE_PACK = 'bootstrap'
+
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
