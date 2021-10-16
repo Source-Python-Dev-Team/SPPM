@@ -4,6 +4,7 @@
 # >> IMPORTS
 # =============================================================================
 # Django
+from django.db.models import Q
 from django.views.generic import TemplateView
 
 # App
@@ -50,10 +51,13 @@ class StatisticsView(TemplateView):
                 flat=True,
             )
         )
-        users = ForumUser.objects.exclude(
-            plugins__isnull=True, plugin_contributions__isnull=True,
-            subplugins__isnull=True, subplugin_contributions__isnull=True,
-            packages__isnull=True, package_contributions__isnull=True,
+        users = ForumUser.objects.filter(
+            Q(plugins__isnull=False) |
+            Q(plugin_contributions__isnull=False) |
+            Q(subplugins__isnull=False) |
+            Q(subplugin_contributions__isnull=False) |
+            Q(packages__isnull=False) |
+            Q(package_contributions__isnull=False)
         ).count()
         packages = Package.objects.count()
         plugins = Plugin.objects.count()

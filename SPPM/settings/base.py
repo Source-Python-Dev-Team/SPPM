@@ -171,13 +171,11 @@ FORUM_URL = 'https://forums.sourcepython.com/'
 
 WIKI_URL = 'http://wiki.sourcepython.com'
 
-GITHUB_URL = 'http://github.com/Source-Python-Dev-Team/Source.Python/'
+GITHUB_URL = 'https://github.com/Source-Python-Dev-Team/Source.Python'
 
 PYPI_URL = 'https://pypi.python.org/pypi'
 
 DOWNLOAD_URL = 'http://downloads.sourcepython.com/'
-
-# PHPBB_TABLE_PREFIX = 'phpbb_'
 
 CRISPY_TEMPLATE_PACK = 'bootstrap'
 
