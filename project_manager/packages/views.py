@@ -3,9 +3,6 @@
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
-# Django
-from django.views.generic import TemplateView
-
 # App
 from project_manager.common.mixins import DownloadMixin
 from project_manager.packages.constants import PACKAGE_RELEASE_URL
@@ -23,15 +20,10 @@ __all__ = (
 # =============================================================================
 # >> VIEWS
 # =============================================================================
-class PackageView(TemplateView):
-    """View for Packages."""
-    template_name = 'base.html'
-
-
 class PackageReleaseDownloadView(DownloadMixin):
     """Package download view for releases."""
 
     model = PackageRelease
-    super_model = Package
-    super_kwarg = 'package'
+    project_model = Package
+    model_kwarg = 'package'
     base_url = PACKAGE_RELEASE_URL

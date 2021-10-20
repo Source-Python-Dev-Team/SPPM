@@ -22,7 +22,6 @@ from project_manager.packages.constants import (
 # =============================================================================
 __all__ = (
     'PackageZipFile',
-    'get_package_basename',
     'handle_package_image_upload',
     'handle_package_logo_upload',
     'handle_package_zip_upload',
@@ -87,15 +86,6 @@ class PackageZipFile(ProjectZipFile):
 # =============================================================================
 # >> FUNCTIONS
 # =============================================================================
-def get_package_basename(zip_file):
-    """Return the package's basename."""
-    instance = PackageZipFile(zip_file)
-    instance.find_base_info()
-    instance.validate_basename()
-    instance.validate_base_file_in_zip()
-    return instance.basename
-
-
 def handle_package_zip_upload(instance, filename):
     """Return the path to store the zip for the current release."""
     slug = instance.package.slug

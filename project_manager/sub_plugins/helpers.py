@@ -22,7 +22,6 @@ from project_manager.sub_plugins.constants import (
 # =============================================================================
 __all__ = (
     'SubPluginZipFile',
-    'get_sub_plugin_basename',
     'handle_sub_plugin_image_upload',
     'handle_sub_plugin_logo_upload',
     'handle_sub_plugin_zip_upload',
@@ -191,15 +190,6 @@ class SubPluginZipFile(ProjectZipFile):
 # =============================================================================
 # >> FUNCTIONS
 # =============================================================================
-def get_sub_plugin_basename(zip_file, plugin):
-    """Return the sub-plugin's basename."""
-    instance = SubPluginZipFile(zip_file, plugin)
-    instance.find_base_info()
-    instance.validate_basename()
-    instance.validate_base_file_in_zip()
-    return instance.basename
-
-
 def handle_sub_plugin_zip_upload(instance, filename):
     """Return the path to store the zip for the current release."""
     slug = instance.sub_plugin.slug

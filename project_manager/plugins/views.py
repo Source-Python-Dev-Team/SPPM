@@ -24,6 +24,6 @@ class PluginReleaseDownloadView(DownloadMixin):
     """Plugin download view for releases."""
 
     model = PluginRelease
-    super_model = Plugin
-    super_kwarg = 'plugin'
+    project_model = Plugin
+    model_kwarg = 'plugin'
     base_url = PLUGIN_RELEASE_URL

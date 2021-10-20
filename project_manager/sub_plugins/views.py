@@ -25,9 +25,20 @@ class SubPluginReleaseDownloadView(DownloadMixin):
     """SubPlugin download view for releases."""
 
     model = SubPluginRelease
-    super_model = Plugin
-    sub_model = SubPlugin
-    slug_url_kwarg = 'sub_plugin_slug'
-    super_kwarg = 'plugin'
-    sub_kwarg = 'sub_plugin'
+    project_model = Plugin
+    model_kwarg = 'plugin'
     base_url = SUB_PLUGIN_RELEASE_URL
+
+    def get_instance(self, kwargs):
+        """Return the project's instance."""
+        instance = super().get_instance(kwargs)
+        return SubPlugin.objects.get(**{
+            'plugin': instance,
+            'slug': self.kwargs.get('sub_plugin_slug'),
+        })
+
+    def get_base_path(self):
+        """Returns the base path for the download."""
+        base_path = super().get_base_path()
+        slug = self.kwargs.get('sub_plugin_slug')
+        return base_path / slug
