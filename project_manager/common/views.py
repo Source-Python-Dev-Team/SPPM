@@ -102,7 +102,7 @@ class PaginatedListView(ListView):
                 current_page + 1 + next_pages
             ) if x <= total_pages
         ]
-        page_url_list = list()
+        page_url_list = []
         if context['is_paginated']:
             if current_page != 1:
                 page_url_list.append(

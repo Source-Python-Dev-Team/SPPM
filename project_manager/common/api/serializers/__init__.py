@@ -118,9 +118,7 @@ class ProjectSerializer(ModelSerializer, ProjectLocaleMixin):
         zip_file = self.release_dict['zip_file']
         notes = self.release_dict['notes']
         kwargs = {
-            '{project_type}'.format(
-                project_type=self.project_type.replace('-', '_')
-            ): instance,
+            self.project_type.replace('-', '_'): instance,
             'created': current_time,
             'notes': notes,
             'version': version,
@@ -372,7 +370,7 @@ class ProjectGameSerializer(ProjectThroughMixin):
         except Game.DoesNotExist:
             raise ValidationError({
                 'game': f'Invalid game "{name}".'
-            })
+            }) from Game.DoesNotExist
         attrs['game'] = game
         return super().validate(attrs=attrs)
 
@@ -455,6 +453,6 @@ class ProjectContributorSerializer(ProjectThroughMixin):
         except ForumUser.DoesNotExist:
             raise ValidationError({
                 'user': f'No user named "{username}".'
-            })
+            }) from ForumUser.DoesNotExist
         attrs['user'] = user
         return super().validate(attrs=attrs)

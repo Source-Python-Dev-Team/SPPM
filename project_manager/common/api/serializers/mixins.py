@@ -109,9 +109,7 @@ class ProjectReleaseCreationMixin(ModelSerializer):
             project = None
         else:
             kwargs = {
-                '{project_type}'.format(
-                    project_type=self.project_type.replace('-', '_')
-                ): project,
+                self.project_type.replace('-', '_'): project,
                 'version': version,
             }
             if self.Meta.model.objects.filter(**kwargs).exists():

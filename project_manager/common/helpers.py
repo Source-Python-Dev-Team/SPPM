@@ -115,7 +115,7 @@ class ProjectZipFile:
         except BadZipfile:
             raise ValidationError({
                 'zip_file': 'Given file is not a valid zip file.'
-            })
+            }) from BadZipfile
 
     def validate_basename(self):
         """Validate that the basename is not erroneous."""
@@ -166,7 +166,7 @@ class ProjectZipFile:
         except json.JSONDecodeError:
             raise ValidationError({
                 'zip_file': 'Requirements json file cannot be decoded.'
-            })
+            }) from json.JSONDecodeError
         if not isinstance(contents, dict):
             raise ValidationError({
                 'zip_file': 'Invalid requirements json file.'
@@ -301,7 +301,7 @@ def find_image_number(directory, slug):
     """Return the next available image number."""
     path = settings.MEDIA_ROOT / 'images' / directory / slug
     current_files = [x.stem for x in path.files()] if path.isdir() else []
-    return '%04d' % (max(map(int, current_files or [0])) + 1)
+    return f'{max(map(int, current_files or [0])) + 1}:04'
 
 
 def get_groups(iterable, count=3):

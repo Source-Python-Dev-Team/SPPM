@@ -37,7 +37,9 @@ class SubPluginReleaseBase:
         try:
             plugin = Plugin.objects.get(slug=plugin_slug)
         except Plugin.DoesNotExist:
-            raise ValidationError(f"Plugin '{plugin_slug}' not found.")
+            raise ValidationError(
+                f"Plugin '{plugin_slug}' not found."
+            ) from Plugin.DoesNotExist
         return plugin
 
     @property

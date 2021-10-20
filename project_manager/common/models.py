@@ -124,6 +124,7 @@ class ProjectBase(models.Model):
     )
     basename = None
     logo_path = None
+    slug = None
 
     class Meta:
         """Define metaclass attributes."""
@@ -172,7 +173,7 @@ class ProjectBase(models.Model):
 
     def clean(self):
         """Clean all attributes and raise any errors that occur."""
-        errors = dict()
+        errors = {}
         logo_errors = self.clean_logo()
         if logo_errors:
             errors['logo'] = logo_errors
@@ -182,7 +183,7 @@ class ProjectBase(models.Model):
 
     def clean_logo(self):
         """Verify the logo is within the proper dimensions."""
-        errors = list()
+        errors = []
         if not self.logo:
             return errors
         width, height = Image.open(self.logo).size

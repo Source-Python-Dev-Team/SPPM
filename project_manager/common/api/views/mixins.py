@@ -46,10 +46,8 @@ class ProjectRelatedInfoMixin(ModelViewSet):
             ).get(**kwargs)
         except self.project_model.DoesNotExist:
             raise ParseError(
-                'Invalid {project_type}_slug.'.format(
-                    project_type=self.project_type.replace('-', '_')
-                )
-            )
+                f"Invalid {self.project_type.replace('-', '_')}_slug."
+            ) from self.project_model.DoesNotExist
         return self._project
 
     @property
@@ -70,9 +68,7 @@ class ProjectRelatedInfoMixin(ModelViewSet):
 
     def get_project_kwargs(self, parent_project=None):
         """Return the kwargs to use to filter for the project."""
-        project_slug = '{project_type}_slug'.format(
-            project_type=self.project_type.replace('-', '_')
-        )
+        project_slug = f"{self.project_type.replace('-', '_')}_slug"
         return {
             'slug': self.kwargs.get(project_slug)
         }
@@ -101,7 +97,7 @@ class ProjectThroughModelMixin(ProjectRelatedInfoMixin):
 
     owner_only = False
     _owner = None
-    _contributors = list()
+    _contributors = []
 
     @property
     def owner(self):
