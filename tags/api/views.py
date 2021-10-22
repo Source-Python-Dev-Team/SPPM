@@ -34,9 +34,9 @@ class TagViewSet(ListModelMixin, GenericViewSet):
         * Filters on blacklisted or not blacklisted.
 
         ####Example:
-        `?game=true`
+        `?black_listed=true`
 
-        `?game=false`
+        `?black_listed=false`
 
     ###Available Ordering:
 

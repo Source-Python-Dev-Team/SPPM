@@ -29,7 +29,76 @@ If you wish to contribute to this application, follow the instructions below on 
 
 ## APIs
 ### Walkable REST APIs
-The REST APIs that the frontend will eventually be built off of can be found at `/api`. They are walkable, meaning the APIs are laid out before you on each page, so just click a link to navigate to another API. Some will require you to add a project name to the URL path.
+The REST APIs that the frontend will eventually be built off of can be found at `/api`. They are walkable, meaning the APIs are laid out before you on each page, so just click a link to navigate to another API. Some will require you to add a Project name to the URL path.
+
+Each REST API should also show a list of filters and ordering fields, along with examples.
+
+GET calls do not require the user to be logged in.
+POST calls require the user to be logged in (logging into the Django Admin will suffice for local development).
+PATCH and DELETE calls require the user to be logged in, as well as be either the owner or a contributor for the Project (ie package/plugin/sub-plugin contributor).
+DELETE cannot be called on Projects themselves, just on the associated models.
+
+#### Games
+`/api/games`
+* displays the existing games along with their slug and icon
+* allows for GET
+
+#### Packages
+`/api/packages/projects`
+* displays all Packages
+* allows for GET, POST, and PATCH
+* POST not only requires base information for the &lt;package&gt;, but also information for the first release (ie notes, version, and zip file).
+* PATCH requires the package to be added to the URL path (ie `/api/packages/packages/<package>`)
+
+`/api/packages/contributors/<package>`
+* displays the contributors for the given &lt;package&gt;.
+* allows for GET, POST, and DELETE
+* POST and DELETE can only be executed by the owner of the Project
+* DELETE requires the id to be added to the URL path (ie `/api/packages/contributors/<package>/<package contributor id>`)
+
+`/api/packages/games/<package>`
+* displays all associated games for the given &lt;package&gt;.
+* allows for GET, POST, and DELETE
+* DELETE requires the id to be added to the URL path (ie `/api/packages/games/<package>/<package game id>`)
+
+`/api/packages/images/<package>`
+* displays all images for the given &lt;package&gt;.
+* allows for GET, POST, and DELETE
+* DELETE requires the id to be added to the URL path (ie `/api/packages/images/<package>/<package image id>`)
+
+`/api/packages/releases/<package>`
+* displays all releases for the given &lt;package&gt;.
+* allows for GET and POST
+* you cannot currently PATCH or DELETE a release, though the Django Admin does allow for it if a User happens to make a mistake.
+
+`/api/packages/tags/<package>`
+* displays all images for the given &lt;package&gt;.
+* allows for GET, POST, and DELETE
+* DELETE requires the id to be added to the URL path (ie `/api/packages/tags/<package>/<package tag id>`)
+
+#### Plugins
+* All the same APIs for [Packages](#packages) exist for Plugins (using `plugins` and `<plugin>` in place of `packages` and `<package>`) with the following addition.
+
+`/api/plugins/paths/<plugin>`
+* displays the Sub-Plugin paths allowed for the given &lt;plugin&gt;. For instance, [GunGame](https://github.com/GunGame-Dev-Team/GunGame-SP) allows for custom Sub-Plugins but requires them to be located in the `../plugins/custom` directory and include a file as `<sub-plugin>/<sub-plugin>.py`.
+* For example: `../plugins/custom/gg_assists/gg_assists.py`
+* allows for GET, POST, PATCH, and DELETE
+
+#### Sub-Plugins
+* All the same APIs for [Packages](#packages) exist for Sub-Plugins, though they require the `<plugin>` which they are associated as well as the `<sub-plugin>`.
+* For example: `/api/sub-plugins/contributors/<plugin>/<sub-plugin>`
+
+#### Tags
+`/api/tags`
+* displays all created tags
+* tags are created via the `Project Tag` APIs listed above for `Packages`, `Plugins`, and `Sub-Plugins`.
+* allows for GET
+* tags can be black-listed by an Admin/Super User in the Django Admin. due to the black-listing, tags should not be deleted.
+
+#### Users
+  `/api/users`
+* displays all created users
+* allows for GET
 
 ### Admin
 Since you have created a Super User, you should be able to log into `/admin` using your username/password. This will allow you to test the Django Admin functionality if you are working on it.
