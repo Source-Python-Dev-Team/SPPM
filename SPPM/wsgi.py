@@ -8,7 +8,7 @@ https://docs.djangoproject.com/en/1.9/howto/deployment/wsgi/
 """
 
 # =============================================================================
-# >> IMPORTS
+# IMPORTS
 # =============================================================================
 # Python
 import os
@@ -18,7 +18,7 @@ from django.core.wsgi import get_wsgi_application
 
 
 # =============================================================================
-# >> GLOBAL VARIABLES
+# GLOBAL VARIABLES
 # =============================================================================
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "SPPM.settings")
 

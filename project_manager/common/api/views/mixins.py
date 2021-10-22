@@ -1,7 +1,7 @@
 """Mixins for common functionalities between APIs."""
 
 # =============================================================================
-# >> IMPORTS
+# IMPORTS
 # =============================================================================
 # 3rd-Party Django
 from django_filters.rest_framework import DjangoFilterBackend
@@ -14,7 +14,7 @@ from rest_framework.viewsets import ModelViewSet
 
 
 # =============================================================================
-# >> ALL DECLARATION
+# ALL DECLARATION
 # =============================================================================
 __all__ = (
     'ProjectRelatedInfoMixin',
@@ -23,7 +23,7 @@ __all__ = (
 
 
 # =============================================================================
-# >> MIXINS
+# MIXINS
 # =============================================================================
 class ProjectRelatedInfoMixin(ModelViewSet):
     """Mixin used to retrieve information for a specific project."""

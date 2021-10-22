@@ -1,7 +1,7 @@
 """SubPlugin serializers for APIs."""
 
 # =============================================================================
-# >> IMPORTS
+# IMPORTS
 # =============================================================================
 # 3rd-Party Django
 from rest_framework.exceptions import ValidationError
@@ -20,7 +20,7 @@ from project_manager.packages.api.serializers.common import (
     ReleasePackageRequirementSerializer,
 )
 from project_manager.plugins.models import Plugin
-from project_manager.requirements.api.serializers.common import (
+from requirements.api.serializers.common import (
     ReleaseDownloadRequirementSerializer,
     ReleasePyPiRequirementSerializer,
     ReleaseVersionControlRequirementSerializer,
@@ -43,7 +43,7 @@ from project_manager.sub_plugins.models import (
 
 
 # =============================================================================
-# >> ALL DECLARATION
+# ALL DECLARATION
 # =============================================================================
 __all__ = (
     'SubPluginContributorSerializer',
@@ -62,7 +62,7 @@ __all__ = (
 
 
 # =============================================================================
-# >> SERIALIZERS
+# SERIALIZERS
 # =============================================================================
 class SubPluginImageSerializer(ProjectImageSerializer):
     """Serializer for adding, removing, and listing SubPlugin images."""

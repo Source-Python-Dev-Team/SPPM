@@ -1,7 +1,7 @@
 """Package serializers for APIs."""
 
 # =============================================================================
-# >> IMPORTS
+# IMPORTS
 # =============================================================================
 # App
 from project_manager.common.api.serializers import (
@@ -29,7 +29,7 @@ from project_manager.packages.models import (
     PackageReleaseVersionControlRequirement,
     PackageTag,
 )
-from project_manager.requirements.api.serializers.common import (
+from requirements.api.serializers.common import (
     ReleaseDownloadRequirementSerializer,
     ReleasePyPiRequirementSerializer,
     ReleaseVersionControlRequirementSerializer,
@@ -37,7 +37,7 @@ from project_manager.requirements.api.serializers.common import (
 
 
 # =============================================================================
-# >> ALL DECLARATION
+# ALL DECLARATION
 # =============================================================================
 __all__ = (
     'PackageContributorSerializer',
@@ -56,7 +56,7 @@ __all__ = (
 
 
 # =============================================================================
-# >> SERIALIZERS
+# SERIALIZERS
 # =============================================================================
 class PackageImageSerializer(ProjectImageSerializer):
     """Serializer for adding, removing, and listing Package images."""

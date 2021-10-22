@@ -1,7 +1,7 @@
 """Helpers for use with SubPlugins."""
 
 # =============================================================================
-# >> IMPORTS
+# IMPORTS
 # =============================================================================
 # Django
 from django.core.exceptions import ValidationError
@@ -18,7 +18,7 @@ from project_manager.sub_plugins.constants import (
 
 
 # =============================================================================
-# >> ALL DECLARATION
+# ALL DECLARATION
 # =============================================================================
 __all__ = (
     'SubPluginZipFile',
@@ -29,7 +29,7 @@ __all__ = (
 
 
 # =============================================================================
-# >> CLASSES
+# CLASSES
 # =============================================================================
 class SubPluginZipFile(ProjectZipFile):
     """SubPlugin ZipFile parsing class."""
@@ -188,7 +188,7 @@ class SubPluginZipFile(ProjectZipFile):
 
 
 # =============================================================================
-# >> FUNCTIONS
+# FUNCTIONS
 # =============================================================================
 def handle_sub_plugin_zip_upload(instance, filename):
     """Return the path to store the zip for the current release."""

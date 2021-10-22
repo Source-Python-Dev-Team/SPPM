@@ -1,7 +1,7 @@
 """Common serializers for APIs."""
 
 # =============================================================================
-# >> IMPORTS
+# IMPORTS
 # =============================================================================
 # Python
 from contextlib import suppress
@@ -30,20 +30,20 @@ from project_manager.common.constants import (
     RELEASE_NOTES_MAX_LENGTH,
     RELEASE_VERSION_MAX_LENGTH,
 )
-from project_manager.constants import USER_USERNAME_MAX_LENGTH
-from project_manager.games.api.serializers import GameSerializer
-from project_manager.games.constants import GAME_SLUG_MAX_LENGTH
-from project_manager.games.models import Game
-from project_manager.tags.constants import TAG_NAME_MAX_LENGTH
-from project_manager.tags.models import Tag
-from project_manager.users.api.serializers.common import (
+from games.api.serializers import GameSerializer
+from games.constants import GAME_SLUG_MAX_LENGTH
+from games.models import Game
+from tags.constants import TAG_NAME_MAX_LENGTH
+from tags.models import Tag
+from users.api.serializers.common import (
     ForumUserContributorSerializer,
 )
-from project_manager.users.models import ForumUser
+from users.constants import USER_USERNAME_MAX_LENGTH
+from users.models import ForumUser
 
 
 # =============================================================================
-# >> ALL DECLARATION
+# ALL DECLARATION
 # =============================================================================
 __all__ = (
     'ProjectContributorSerializer',
@@ -57,7 +57,7 @@ __all__ = (
 
 
 # =============================================================================
-# >> SERIALIZERS
+# SERIALIZERS
 # =============================================================================
 class ProjectSerializer(ModelSerializer, ProjectLocaleMixin):
     """Base Project Serializer."""

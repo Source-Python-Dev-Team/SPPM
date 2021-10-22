@@ -1,7 +1,7 @@
 """Package serializers for APIs in other apps."""
 
 # =============================================================================
-# >> IMPORTS
+# IMPORTS
 # =============================================================================
 # 3rd-Party Django
 from rest_framework.fields import ReadOnlyField
@@ -9,7 +9,7 @@ from rest_framework.serializers import ModelSerializer
 
 
 # =============================================================================
-# >> ALL DECLARATION
+# ALL DECLARATION
 # =============================================================================
 __all__ = (
     'ReleasePackageRequirementSerializer',
@@ -17,7 +17,7 @@ __all__ = (
 
 
 # =============================================================================
-# >> SERIALIZERS
+# SERIALIZERS
 # =============================================================================
 class ReleasePackageRequirementSerializer(ModelSerializer):
     """Serializer for Package requirements."""

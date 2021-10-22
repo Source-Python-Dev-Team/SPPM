@@ -1,7 +1,7 @@
 """Inline for project admin classes."""
 
 # =============================================================================
-# >> IMPORTS
+# IMPORTS
 # =============================================================================
 # Django
 from django.contrib import admin
@@ -9,7 +9,7 @@ from django.db.models import Q
 
 
 # =============================================================================
-# >> ALL DECLARATION
+# ALL DECLARATION
 # =============================================================================
 __all__ = (
     'ProjectContributorInline',
@@ -21,7 +21,7 @@ __all__ = (
 
 
 # =============================================================================
-# >> INLINES
+# INLINES
 # =============================================================================
 class ProjectContributorInline(admin.TabularInline):
     """Base Project Contributor Inline."""
@@ -47,21 +47,15 @@ class ProjectContributorInline(admin.TabularInline):
 class ProjectGameInline(admin.TabularInline):
     """Base Project Game Inline."""
 
-    extra = 0
     fields = (
         'game',
     )
-
-    def get_formset(self, request, obj=None, **kwargs):
-        """Disallow adding/modifying Game objects in the inline."""
-        formset = super().get_formset(request=request, obj=obj, **kwargs)
-        widget = formset.form.base_fields['game'].widget
-        widget.can_add_related = False
-        widget.can_change_related = False
-        return formset
+    readonly_fields = (
+        'game',
+    )
 
     def has_add_permission(self, request, obj):
-        """Disallow adding new images in the Admin."""
+        """Disallow adding new games in the Admin."""
         return False
 
 
@@ -116,6 +110,9 @@ class ProjectReleaseInline(admin.StackedInline):
         'download_count',
         'created',
     )
+
+    def get_queryset(self, request):
+        return super().get_queryset(request=request).order_by('-created')
 
     def has_add_permission(self, request, obj):
         """Disallow adding new images in the Admin."""

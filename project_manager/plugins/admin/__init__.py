@@ -1,7 +1,7 @@
 """Plugin admin classes."""
 
 # =============================================================================
-# >> IMPORTS
+# IMPORTS
 # =============================================================================
 # Django
 from django.contrib import admin
@@ -20,7 +20,7 @@ from project_manager.plugins.models import Plugin
 
 
 # =============================================================================
-# >> ALL DECLARATION
+# ALL DECLARATION
 # =============================================================================
 __all__ = (
     'PluginAdmin',
@@ -28,7 +28,7 @@ __all__ = (
 
 
 # =============================================================================
-# >> ADMINS
+# ADMINS
 # =============================================================================
 @admin.register(Plugin)
 class PluginAdmin(ProjectAdmin):
@@ -36,9 +36,9 @@ class PluginAdmin(ProjectAdmin):
 
     inlines = (
         PluginContributorInline,
-        PluginReleaseInline,
         PluginGameInline,
         PluginImageInline,
         PluginTagInline,
         SubPluginPathInline,
+        PluginReleaseInline,
     )

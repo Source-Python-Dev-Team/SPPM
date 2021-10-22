@@ -1,14 +1,14 @@
 """Context processors to be added to templates."""
 
 # =============================================================================
-# >> IMPORTS
+# IMPORTS
 # =============================================================================
 # Django
 from django.conf import settings
 
 
 # =============================================================================
-# >> ALL DECLARATION
+# ALL DECLARATION
 # =============================================================================
 __all__ = (
     'add_common_context_processors',
@@ -16,7 +16,7 @@ __all__ = (
 
 
 # =============================================================================
-# >> FUNCTIONS
+# FUNCTIONS
 # =============================================================================
 def add_common_context_processors(request):
     """Expose some settings and other information to all contexts."""

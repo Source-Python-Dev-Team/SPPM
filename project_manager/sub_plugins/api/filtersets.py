@@ -1,7 +1,7 @@
 """SubPlugin API filters."""
 
 # =============================================================================
-# >> IMPORTS
+# IMPORTS
 # =============================================================================
 # App
 from project_manager.common.api.filtersets import ProjectFilterSet
@@ -9,7 +9,7 @@ from project_manager.sub_plugins.models import SubPlugin
 
 
 # =============================================================================
-# >> ALL DECLARATION
+# ALL DECLARATION
 # =============================================================================
 __all__ = (
     'SubPluginFilterSet',
@@ -17,7 +17,7 @@ __all__ = (
 
 
 # =============================================================================
-# >> FILTERS
+# FILTERS
 # =============================================================================
 class SubPluginFilterSet(ProjectFilterSet):
     """Filters for SubPlugins."""

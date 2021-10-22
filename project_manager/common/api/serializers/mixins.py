@@ -1,7 +1,7 @@
 """Mixins for common serializers."""
 
 # =============================================================================
-# >> IMPORTS
+# IMPORTS
 # =============================================================================
 # Django
 from django.utils import formats
@@ -12,7 +12,7 @@ from rest_framework.serializers import ModelSerializer
 
 
 # =============================================================================
-# >> ALL DECLARATION
+# ALL DECLARATION
 # =============================================================================
 __all__ = (
     'ProjectLocaleMixin',
@@ -22,7 +22,7 @@ __all__ = (
 
 
 # =============================================================================
-# >> MIXINS
+# MIXINS
 # =============================================================================
 class ProjectLocaleMixin:
     """Mixin for getting the locale for timestamps."""

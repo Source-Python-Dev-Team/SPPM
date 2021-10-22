@@ -9,7 +9,7 @@ from project_manager.plugins.models import Plugin
 
 
 # =============================================================================
-# >> ALL DECLARATION
+# ALL DECLARATION
 # =============================================================================
 __all__ = (
     'PluginReleaseBase',
@@ -17,7 +17,7 @@ __all__ = (
 
 
 # =============================================================================
-# >> MIXINS
+# MIXINS
 # =============================================================================
 class PluginReleaseBase:
     """Serializer for listing Plugin releases."""

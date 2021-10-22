@@ -1,7 +1,7 @@
 """Base App URLs."""
 
 # =============================================================================
-# >> IMPORTS
+# IMPORTS
 # =============================================================================
 # Django
 from django.conf import settings
@@ -18,7 +18,7 @@ from project_manager.sub_plugins.views import SubPluginReleaseDownloadView
 
 
 # =============================================================================
-# >> GLOBAL VARIABLES
+# GLOBAL VARIABLES
 # =============================================================================
 urlpatterns = [
     url(

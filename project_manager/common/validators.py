@@ -1,7 +1,7 @@
 """Common validators."""
 
 # =============================================================================
-# >> IMPORTS
+# IMPORTS
 # =============================================================================
 # Django
 from django.core.validators import RegexValidator
@@ -11,7 +11,7 @@ from project_manager.common.constants import RELEASE_VERSION_REGEX
 
 
 # =============================================================================
-# >> ALL DECLARATION
+# ALL DECLARATION
 # =============================================================================
 __all__ = (
     'basename_validator',
@@ -20,7 +20,7 @@ __all__ = (
 
 
 # =============================================================================
-# >> GLOBAL VARIABLES
+# GLOBAL VARIABLES
 # =============================================================================
 # basename values should:
 #   Start with a lower-case character.

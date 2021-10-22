@@ -1,14 +1,14 @@
 """Base models for Packages."""
 
 # =============================================================================
-# >> IMPORTS
+# IMPORTS
 # =============================================================================
 # Django
 from django.db import models
 
 
 # =============================================================================
-# >> ALL DECLARATION
+# ALL DECLARATION
 # =============================================================================
 __all__ = (
     'PackageReleaseThroughBase',
@@ -17,13 +17,13 @@ __all__ = (
 
 
 # =============================================================================
-# >> MODELS
+# MODELS
 # =============================================================================
 class PackageThroughBase(models.Model):
     """Base through model class for Packages."""
 
     package = models.ForeignKey(
-        to='packages.Package',
+        to='project_manager.Package',
         on_delete=models.CASCADE,
     )
 
@@ -42,7 +42,7 @@ class PackageReleaseThroughBase(models.Model):
     """Base through model class for Packages."""
 
     package_release = models.ForeignKey(
-        to='packages.PackageRelease',
+        to='project_manager.PackageRelease',
         on_delete=models.CASCADE,
     )
 

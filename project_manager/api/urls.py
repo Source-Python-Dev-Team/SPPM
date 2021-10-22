@@ -1,7 +1,7 @@
 """API base URLs."""
 
 # =============================================================================
-# >> IMPORTS
+# IMPORTS
 # =============================================================================
 # Django
 from django.conf.urls import include, url
@@ -11,7 +11,7 @@ from project_manager.api.views import ProjectManagerAPIView
 
 
 # =============================================================================
-# >> GLOBAL VARIABLES
+# GLOBAL VARIABLES
 # =============================================================================
 app_name = 'api'
 
@@ -19,7 +19,7 @@ urlpatterns = [
     url(
         regex=r'^games/',
         view=include(
-            'project_manager.games.api.urls',
+            'games.api.urls',
             namespace='games',
         ),
     ),
@@ -47,14 +47,14 @@ urlpatterns = [
     url(
         regex=r'^tags/',
         view=include(
-            'project_manager.tags.api.urls',
+            'tags.api.urls',
             namespace='tags',
         ),
     ),
     url(
         regex=r'^users/',
         view=include(
-            'project_manager.users.api.urls',
+            'users.api.urls',
             namespace='users',
         ),
     ),

@@ -1,14 +1,14 @@
 """Base models for Plugins."""
 
 # =============================================================================
-# >> IMPORTS
+# IMPORTS
 # =============================================================================
 # Django
 from django.db import models
 
 
 # =============================================================================
-# >> ALL DECLARATION
+# ALL DECLARATION
 # =============================================================================
 __all__ = (
     'PluginReleaseThroughBase',
@@ -17,13 +17,13 @@ __all__ = (
 
 
 # =============================================================================
-# >> MODELS
+# MODELS
 # =============================================================================
 class PluginThroughBase(models.Model):
     """Base through model class for Plugins."""
 
     plugin = models.ForeignKey(
-        to='plugins.Plugin',
+        to='project_manager.Plugin',
         on_delete=models.CASCADE,
     )
 
@@ -42,7 +42,7 @@ class PluginReleaseThroughBase(models.Model):
     """Base through model class for Packages."""
 
     plugin_release = models.ForeignKey(
-        to='plugins.PluginRelease',
+        to='project_manager.PluginRelease',
         on_delete=models.CASCADE,
     )
 

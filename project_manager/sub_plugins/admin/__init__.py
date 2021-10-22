@@ -1,7 +1,7 @@
 """SubPlugin admin classes."""
 
 # =============================================================================
-# >> IMPORTS
+# IMPORTS
 # =============================================================================
 # Python
 import copy
@@ -22,7 +22,7 @@ from project_manager.sub_plugins.models import SubPlugin
 
 
 # =============================================================================
-# >> ALL DECLARATION
+# ALL DECLARATION
 # =============================================================================
 __all__ = (
     'SubPluginAdmin',
@@ -30,7 +30,7 @@ __all__ = (
 
 
 # =============================================================================
-# >> GLOBALS
+# GLOBAL VARIABLES
 # =============================================================================
 _project_fieldsets = copy.deepcopy(ProjectAdmin.fieldsets)
 _fields = _project_fieldsets[0][1]['fields']
@@ -38,7 +38,7 @@ _project_fieldsets[0][1]['fields'] = ('plugin',) + _fields
 
 
 # =============================================================================
-# >> ADMINS
+# ADMINS
 # =============================================================================
 @admin.register(SubPlugin)
 class SubPluginAdmin(ProjectAdmin):
@@ -47,10 +47,10 @@ class SubPluginAdmin(ProjectAdmin):
     fieldsets = _project_fieldsets
     inlines = (
         SubPluginContributorInline,
-        SubPluginReleaseInline,
         SubPluginGameInline,
         SubPluginImageInline,
         SubPluginTagInline,
+        SubPluginReleaseInline,
     )
     list_display = ProjectAdmin.list_display + (
         'plugin',

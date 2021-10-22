@@ -1,22 +1,17 @@
 """Base app admin."""
 
 # =============================================================================
-# >> IMPORTS
+# IMPORTS
 # =============================================================================
+# Python
+from importlib import import_module
+
 # Django
 from django.contrib import admin
-from django.contrib.auth import get_user_model, models
+from django.contrib.auth import models
 
 # Third Party Django
 from precise_bbcode.models import BBCodeTag, SmileyTag
-
-
-# =============================================================================
-# >> ALL DECLARATION
-# =============================================================================
-__all__ = (
-    'UserAdmin',
-)
 
 
 # =============================================================================
@@ -28,23 +23,8 @@ admin.site.unregister(SmileyTag)
 
 
 # =============================================================================
-# >> ADMINS
+# ADMINS
 # =============================================================================
-@admin.register(get_user_model())
-class UserAdmin(admin.ModelAdmin):
-    """User model Admin."""
-
-    actions = None
-    fields = (
-        'username',
-        'is_superuser',
-        'is_staff',
-    )
-
-    def has_add_permission(self, request):
-        """Disallow creating Users in the Admin."""
-        return False
-
-    def has_delete_permission(self, request, obj=None):
-        """Disallow deleting Users in the Admin."""
-        return False
+import_module('project_manager.packages.admin')
+import_module('project_manager.plugins.admin')
+import_module('project_manager.sub_plugins.admin')

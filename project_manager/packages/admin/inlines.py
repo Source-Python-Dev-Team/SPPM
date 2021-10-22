@@ -1,7 +1,7 @@
 """Inline for Package admin classes."""
 
 # =============================================================================
-# >> IMPORTS
+# IMPORTS
 # =============================================================================
 # App
 from project_manager.common.admin.inlines import (
@@ -21,7 +21,7 @@ from project_manager.packages.models import (
 
 
 # =============================================================================
-# >> ALL DECLARATION
+# ALL DECLARATION
 # =============================================================================
 __all__ = (
     'PackageContributorInline',
@@ -33,7 +33,7 @@ __all__ = (
 
 
 # =============================================================================
-# >> INLINES
+# INLINES
 # =============================================================================
 class PackageContributorInline(ProjectContributorInline):
     """Package Contributor Admin Inline."""

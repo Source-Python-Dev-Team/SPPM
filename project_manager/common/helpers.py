@@ -1,7 +1,7 @@
 """Common helper functions."""
 
 # =============================================================================
-# >> IMPORTS
+# IMPORTS
 # =============================================================================
 # Python
 import json
@@ -16,7 +16,7 @@ from project_manager.common.constants import CANNOT_BE_NAMED, CANNOT_START_WITH
 
 
 # =============================================================================
-# >> ALL DECLARATION
+# ALL DECLARATION
 # =============================================================================
 __all__ = (
     'ProjectZipFile',
@@ -29,7 +29,7 @@ __all__ = (
 
 
 # =============================================================================
-# >> CLASSES
+# CLASSES
 # =============================================================================
 class ProjectZipFile:
     """Base ZipFile parsing class."""
@@ -264,7 +264,7 @@ class ProjectZipFile:
         # TODO: validate pypi requirements?
         # TODO: validate vcs requirements?
         # pylint: disable=import-outside-toplevel
-        from project_manager.requirements.models import (
+        from requirements.models import (
             DownloadRequirement,
             PyPiRequirement,
             VersionControlRequirement,
@@ -295,7 +295,7 @@ class ProjectZipFile:
 
 
 # =============================================================================
-# >> FUNCTIONS
+# FUNCTIONS
 # =============================================================================
 def find_image_number(directory, slug):
     """Return the next available image number."""

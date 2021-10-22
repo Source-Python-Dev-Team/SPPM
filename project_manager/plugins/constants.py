@@ -1,7 +1,7 @@
 """Constants for use with Plugins."""
 
 # =============================================================================
-# >> IMPORTS
+# IMPORTS
 # =============================================================================
 # App
 from project_manager.common.constants import (
@@ -14,7 +14,7 @@ from project_manager.common.constants import (
 
 
 # =============================================================================
-# >> ALL DECLARATION
+# ALL DECLARATION
 # =============================================================================
 __all__ = (
     'PATH_MAX_LENGTH',
@@ -28,7 +28,7 @@ __all__ = (
 
 
 # =============================================================================
-# >> GLOBAL VARIABLES
+# GLOBAL VARIABLES
 # =============================================================================
 # The base path for plugins
 PLUGIN_PATH = 'addons/source-python/plugins/'

@@ -1,7 +1,7 @@
 """Inline for SubPlugin admin classes."""
 
 # =============================================================================
-# >> IMPORTS
+# IMPORTS
 # =============================================================================
 # App
 from project_manager.common.admin.inlines import (
@@ -21,7 +21,7 @@ from project_manager.sub_plugins.models import (
 
 
 # =============================================================================
-# >> ALL DECLARATION
+# ALL DECLARATION
 # =============================================================================
 __all__ = (
     'SubPluginContributorInline',
@@ -33,7 +33,7 @@ __all__ = (
 
 
 # =============================================================================
-# >> INLINES
+# INLINES
 # =============================================================================
 class SubPluginContributorInline(ProjectContributorInline):
     """SubPlugin Contributor Admin Inline."""

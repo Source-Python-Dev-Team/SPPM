@@ -1,7 +1,7 @@
 """Package API filters."""
 
 # =============================================================================
-# >> IMPORTS
+# IMPORTS
 # =============================================================================
 # App
 from project_manager.common.api.filtersets import ProjectFilterSet
@@ -9,7 +9,7 @@ from project_manager.packages.models import Package
 
 
 # =============================================================================
-# >> ALL DECLARATION
+# ALL DECLARATION
 # =============================================================================
 __all__ = (
     'PackageFilterSet',
@@ -17,7 +17,7 @@ __all__ = (
 
 
 # =============================================================================
-# >> FILTERS
+# FILTERS
 # =============================================================================
 class PackageFilterSet(ProjectFilterSet):
     """Filters for Packages."""

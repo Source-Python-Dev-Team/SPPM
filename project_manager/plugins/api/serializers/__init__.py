@@ -1,7 +1,7 @@
 """Plugin serializers for APIs."""
 
 # =============================================================================
-# >> IMPORTS
+# IMPORTS
 # =============================================================================
 # 3rd-Party Django
 from rest_framework.exceptions import ValidationError
@@ -34,7 +34,7 @@ from project_manager.plugins.models import (
     PluginTag,
     SubPluginPath,
 )
-from project_manager.requirements.api.serializers.common import (
+from requirements.api.serializers.common import (
     ReleaseDownloadRequirementSerializer,
     ReleasePyPiRequirementSerializer,
     ReleaseVersionControlRequirementSerializer,
@@ -42,7 +42,7 @@ from project_manager.requirements.api.serializers.common import (
 
 
 # =============================================================================
-# >> ALL DECLARATION
+# ALL DECLARATION
 # =============================================================================
 __all__ = (
     'PluginContributorSerializer',
@@ -62,7 +62,7 @@ __all__ = (
 
 
 # =============================================================================
-# >> SERIALIZERS
+# SERIALIZERS
 # =============================================================================
 class PluginImageSerializer(ProjectImageSerializer):
     """Serializer for adding, removing, and listing Plugin images."""

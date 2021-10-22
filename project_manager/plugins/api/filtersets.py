@@ -1,7 +1,7 @@
 """Plugin API filters."""
 
 # =============================================================================
-# >> IMPORTS
+# IMPORTS
 # =============================================================================
 # App
 from project_manager.common.api.filtersets import ProjectFilterSet
@@ -9,7 +9,7 @@ from project_manager.plugins.models import Plugin
 
 
 # =============================================================================
-# >> ALL DECLARATION
+# ALL DECLARATION
 # =============================================================================
 __all__ = (
     'PluginFilterSet',
@@ -17,7 +17,7 @@ __all__ = (
 
 
 # =============================================================================
-# >> FILTERS
+# FILTERS
 # =============================================================================
 class PluginFilterSet(ProjectFilterSet):
     """Filters for Plugins."""

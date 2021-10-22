@@ -1,7 +1,7 @@
 """Constants for use with SubPlugins."""
 
 # =============================================================================
-# >> IMPORTS
+# IMPORTS
 # =============================================================================
 # App
 from project_manager.common.constants import (
@@ -12,7 +12,7 @@ from project_manager.plugins.constants import PLUGIN_PATH, PLUGIN_DATA_PATH
 
 
 # =============================================================================
-# >> ALL DECLARATION
+# ALL DECLARATION
 # =============================================================================
 __all__ = (
     'SUB_PLUGIN_ALLOWED_FILE_TYPES',
@@ -23,7 +23,7 @@ __all__ = (
 
 
 # =============================================================================
-# >> GLOBAL VARIABLES
+# GLOBAL VARIABLES
 # =============================================================================
 # The allowed file types by directory for sub-plugins
 SUB_PLUGIN_ALLOWED_FILE_TYPES = dict(ALLOWED_FILE_TYPES)

@@ -1,7 +1,7 @@
 """Base views."""
 
 # =============================================================================
-# >> IMPORTS
+# IMPORTS
 # =============================================================================
 # Django
 from django.db.models import Q
@@ -11,11 +11,11 @@ from django.views.generic import TemplateView
 from project_manager.packages.models import Package, PackageRelease
 from project_manager.plugins.models import Plugin, PluginRelease
 from project_manager.sub_plugins.models import SubPlugin, SubPluginRelease
-from project_manager.users.models import ForumUser
+from users.models import ForumUser
 
 
 # =============================================================================
-# >> ALL DECLARATION
+# ALL DECLARATION
 # =============================================================================
 __all__ = (
     'StatisticsView',
@@ -23,7 +23,7 @@ __all__ = (
 
 
 # =============================================================================
-# >> VIEWS
+# VIEWS
 # =============================================================================
 class StatisticsView(TemplateView):
     """View for total Project statistics."""

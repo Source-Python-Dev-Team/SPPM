@@ -1,7 +1,7 @@
 """Plugin model classes."""
 
 # =============================================================================
-# >> IMPORTS
+# IMPORTS
 # =============================================================================
 # Django
 from django.core.exceptions import ValidationError
@@ -26,7 +26,7 @@ from project_manager.common.models import (
     ProjectTag,
 )
 from project_manager.common.validators import basename_validator
-from project_manager.models import AbstractUUIDPrimaryKeyModel
+from project_manager.common.models import AbstractUUIDPrimaryKeyModel
 from project_manager.plugins.constants import PLUGIN_LOGO_URL, PATH_MAX_LENGTH
 from project_manager.plugins.helpers import (
     handle_plugin_image_upload,
@@ -41,7 +41,7 @@ from project_manager.plugins.validators import sub_plugin_path_validator
 
 
 # =============================================================================
-# >> ALL DECLARATION
+# ALL DECLARATION
 # =============================================================================
 __all__ = (
     'Plugin',
@@ -59,7 +59,7 @@ __all__ = (
 
 
 # =============================================================================
-# >> MODELS
+# MODELS
 # =============================================================================
 class Plugin(ProjectBase):
     """Plugin project type model."""
@@ -73,7 +73,7 @@ class Plugin(ProjectBase):
     contributors = models.ManyToManyField(
         to='users.ForumUser',
         related_name='plugin_contributions',
-        through='plugins.PluginContributor',
+        through='project_manager.PluginContributor',
     )
     slug = models.SlugField(
         max_length=PROJECT_SLUG_MAX_LENGTH,
@@ -84,12 +84,12 @@ class Plugin(ProjectBase):
     supported_games = models.ManyToManyField(
         to='games.Game',
         related_name='plugins',
-        through='plugins.PluginGame',
+        through='project_manager.PluginGame',
     )
     tags = models.ManyToManyField(
         to='tags.Tag',
         related_name='plugins',
-        through='plugins.PluginTag',
+        through='project_manager.PluginTag',
     )
 
     handle_logo_upload = handle_plugin_logo_upload
@@ -109,29 +109,29 @@ class PluginRelease(ProjectRelease):
     """Plugin release type model."""
 
     plugin = models.ForeignKey(
-        to='plugins.Plugin',
+        to='project_manager.Plugin',
         related_name='releases',
         on_delete=models.CASCADE,
     )
     download_requirements = models.ManyToManyField(
         to='requirements.DownloadRequirement',
         related_name='required_in_plugin_releases',
-        through='plugins.PluginReleaseDownloadRequirement',
+        through='project_manager.PluginReleaseDownloadRequirement',
     )
     package_requirements = models.ManyToManyField(
-        to='packages.Package',
+        to='project_manager.Package',
         related_name='required_in_plugin_releases',
-        through='plugins.PluginReleasePackageRequirement',
+        through='project_manager.PluginReleasePackageRequirement',
     )
     pypi_requirements = models.ManyToManyField(
         to='requirements.PyPiRequirement',
         related_name='required_in_plugin_releases',
-        through='plugins.PluginReleasePyPiRequirement',
+        through='project_manager.PluginReleasePyPiRequirement',
     )
     vcs_requirements = models.ManyToManyField(
         to='requirements.VersionControlRequirement',
         related_name='required_in_plugin_releases',
-        through='plugins.PluginReleaseVersionControlRequirement',
+        through='project_manager.PluginReleaseVersionControlRequirement',
     )
 
     handle_zip_file_upload = handle_plugin_zip_upload
@@ -162,7 +162,7 @@ class PluginImage(ProjectImage):
     """Plugin image type model."""
 
     plugin = models.ForeignKey(
-        to='plugins.Plugin',
+        to='project_manager.Plugin',
         related_name='images',
         on_delete=models.CASCADE,
     )
@@ -201,7 +201,7 @@ class SubPluginPath(AbstractUUIDPrimaryKeyModel):
     """Model to store SubPlugin paths for a Plugin."""
 
     plugin = models.ForeignKey(
-        to='plugins.Plugin',
+        to='project_manager.Plugin',
         related_name='paths',
         on_delete=models.CASCADE,
     )

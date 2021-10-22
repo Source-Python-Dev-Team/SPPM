@@ -1,7 +1,7 @@
 """Plugin views."""
 
 # =============================================================================
-# >> IMPORTS
+# IMPORTS
 # =============================================================================
 # App
 from project_manager.common.mixins import DownloadMixin
@@ -10,7 +10,7 @@ from project_manager.plugins.models import Plugin, PluginRelease
 
 
 # =============================================================================
-# >> ALL DECLARATION
+# ALL DECLARATION
 # =============================================================================
 __all__ = (
     'PluginReleaseDownloadView',
@@ -18,7 +18,7 @@ __all__ = (
 
 
 # =============================================================================
-# >> VIEWS
+# VIEWS
 # =============================================================================
 class PluginReleaseDownloadView(DownloadMixin):
     """Plugin download view for releases."""

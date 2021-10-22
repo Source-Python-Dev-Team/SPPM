@@ -1,14 +1,14 @@
 """Widgets to use for SubPlugin admin classes."""
 
 # =============================================================================
-# >> IMPORTS
+# IMPORTS
 # =============================================================================
 # Django
 from django.contrib.admin import widgets
 
 
 # =============================================================================
-# >> ALL DECLARATION
+# ALL DECLARATION
 # =============================================================================
 __all__ = (
     'PluginRawIdWidget',
@@ -16,7 +16,7 @@ __all__ = (
 
 
 # =============================================================================
-# >> WIDGETS
+# WIDGETS
 # =============================================================================
 class PluginRawIdWidget(widgets.ForeignKeyRawIdWidget):
     """Widget to use for selecting the Plugin for a SubPlugin."""

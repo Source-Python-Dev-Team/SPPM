@@ -12,7 +12,7 @@
 
 # Local text files
 *.txt
-!requirements/*.txt
+!pip-requirements/*.txt
 
 # Compiled Python
 *.pyc

@@ -1,7 +1,7 @@
 """Forms to use for SubPlugin admin classes."""
 
 # =============================================================================
-# >> IMPORTS
+# IMPORTS
 # =============================================================================
 # Django
 from django import forms
@@ -13,7 +13,7 @@ from project_manager.sub_plugins.models import SubPlugin
 
 
 # =============================================================================
-# >> ALL DECLARATION
+# ALL DECLARATION
 # =============================================================================
 __all__ = (
     'SubPluginAdminForm',
@@ -21,7 +21,7 @@ __all__ = (
 
 
 # =============================================================================
-# >> ADMIN FORMS
+# ADMIN FORMS
 # =============================================================================
 class SubPluginAdminForm(forms.ModelForm):
     """Form to use for selecting the Plugin for a SubPlugin."""

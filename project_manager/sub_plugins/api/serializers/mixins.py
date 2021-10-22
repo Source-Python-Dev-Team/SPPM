@@ -13,7 +13,7 @@ from project_manager.sub_plugins.models import SubPlugin
 
 
 # =============================================================================
-# >> ALL DECLARATION
+# ALL DECLARATION
 # =============================================================================
 __all__ = (
     'SubPluginReleaseBase',
@@ -21,7 +21,7 @@ __all__ = (
 
 
 # =============================================================================
-# >> MIXINS
+# MIXINS
 # =============================================================================
 class SubPluginReleaseBase:
     """Serializer for listing Plugin releases."""

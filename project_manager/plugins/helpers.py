@@ -1,7 +1,7 @@
 """Helpers for use with Plugins."""
 
 # =============================================================================
-# >> IMPORTS
+# IMPORTS
 # =============================================================================
 # Django
 from django.core.exceptions import ValidationError
@@ -18,7 +18,7 @@ from project_manager.plugins.constants import (
 
 
 # =============================================================================
-# >> ALL DECLARATION
+# ALL DECLARATION
 # =============================================================================
 __all__ = (
     'PluginZipFile',
@@ -29,7 +29,7 @@ __all__ = (
 
 
 # =============================================================================
-# >> CLASSES
+# CLASSES
 # =============================================================================
 class PluginZipFile(ProjectZipFile):
     """Plugin ZipFile parsing class."""
@@ -70,7 +70,7 @@ class PluginZipFile(ProjectZipFile):
 
 
 # =============================================================================
-# >> FUNCTIONS
+# FUNCTIONS
 # =============================================================================
 def handle_plugin_zip_upload(instance, filename):
     """Return the path to store the zip for the current release."""

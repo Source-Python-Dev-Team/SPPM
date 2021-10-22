@@ -1,7 +1,7 @@
 """Package model classes."""
 
 # =============================================================================
-# >> IMPORTS
+# IMPORTS
 # =============================================================================
 # Django
 from django.urls import reverse
@@ -38,7 +38,7 @@ from project_manager.packages.models.abstract import (
 
 
 # =============================================================================
-# >> ALL DECLARATION
+# ALL DECLARATION
 # =============================================================================
 __all__ = (
     'Package',
@@ -55,7 +55,7 @@ __all__ = (
 
 
 # =============================================================================
-# >> MODELS
+# MODELS
 # =============================================================================
 class Package(ProjectBase):
     """Package project type model."""
@@ -69,7 +69,7 @@ class Package(ProjectBase):
     contributors = models.ManyToManyField(
         to='users.ForumUser',
         related_name='package_contributions',
-        through='packages.PackageContributor',
+        through='project_manager.PackageContributor',
     )
     slug = models.SlugField(
         max_length=PROJECT_SLUG_MAX_LENGTH,
@@ -80,12 +80,12 @@ class Package(ProjectBase):
     supported_games = models.ManyToManyField(
         to='games.Game',
         related_name='packages',
-        through='packages.PackageGame',
+        through='project_manager.PackageGame',
     )
     tags = models.ManyToManyField(
         to='tags.Tag',
         related_name='packages',
-        through='packages.PackageTag',
+        through='project_manager.PackageTag',
     )
 
     handle_logo_upload = handle_package_logo_upload
@@ -105,29 +105,29 @@ class PackageRelease(ProjectRelease):
     """Package release type model."""
 
     package = models.ForeignKey(
-        to='packages.Package',
+        to='project_manager.Package',
         related_name='releases',
         on_delete=models.CASCADE,
     )
     download_requirements = models.ManyToManyField(
         to='requirements.DownloadRequirement',
         related_name='required_in_package_releases',
-        through='packages.PackageReleaseDownloadRequirement',
+        through='project_manager.PackageReleaseDownloadRequirement',
     )
     package_requirements = models.ManyToManyField(
-        to='packages.Package',
+        to='project_manager.Package',
         related_name='required_in_package_releases',
-        through='packages.PackageReleasePackageRequirement',
+        through='project_manager.PackageReleasePackageRequirement',
     )
     pypi_requirements = models.ManyToManyField(
         to='requirements.PyPiRequirement',
         related_name='required_in_package_releases',
-        through='packages.PackageReleasePyPiRequirement',
+        through='project_manager.PackageReleasePyPiRequirement',
     )
     vcs_requirements = models.ManyToManyField(
         to='requirements.VersionControlRequirement',
         related_name='required_in_package_releases',
-        through='packages.PackageReleaseVersionControlRequirement',
+        through='project_manager.PackageReleaseVersionControlRequirement',
     )
 
     handle_zip_file_upload = handle_package_zip_upload
@@ -153,7 +153,7 @@ class PackageImage(ProjectImage):
     """Package image type model."""
 
     package = models.ForeignKey(
-        to='packages.Package',
+        to='project_manager.Package',
         related_name='images',
         on_delete=models.CASCADE,
     )

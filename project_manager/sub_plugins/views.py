@@ -1,7 +1,7 @@
 """SubPlugin views."""
 
 # =============================================================================
-# >> IMPORTS
+# IMPORTS
 # =============================================================================
 # App
 from project_manager.common.mixins import DownloadMixin
@@ -11,7 +11,7 @@ from project_manager.sub_plugins.models import SubPlugin, SubPluginRelease
 
 
 # =============================================================================
-# >> ALL DECLARATION
+# ALL DECLARATION
 # =============================================================================
 __all__ = (
     'SubPluginReleaseDownloadView',
@@ -19,7 +19,7 @@ __all__ = (
 
 
 # =============================================================================
-# >> VIEWS
+# VIEWS
 # =============================================================================
 class SubPluginReleaseDownloadView(DownloadMixin):
     """SubPlugin download view for releases."""

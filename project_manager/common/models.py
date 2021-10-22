@@ -1,9 +1,10 @@
 """Common models used for inheritance."""
 
 # =============================================================================
-# >> IMPORTS
+# IMPORTS
 # =============================================================================
 # Python
+import uuid
 from operator import attrgetter
 
 # Django
@@ -36,13 +37,13 @@ from project_manager.common.helpers import (
     handle_release_zip_file_upload,
 )
 from project_manager.common.validators import version_validator
-from project_manager.models import AbstractUUIDPrimaryKeyModel
 
 
 # =============================================================================
-# >> ALL DECLARATION
+# ALL DECLARATION
 # =============================================================================
 __all__ = (
+    'AbstractUUIDPrimaryKeyModel',
     'ProjectBase',
     'ProjectContributor',
     'ProjectGame',
@@ -57,8 +58,24 @@ __all__ = (
 
 
 # =============================================================================
-# >> MODELS
+# MODELS
 # =============================================================================
+class AbstractUUIDPrimaryKeyModel(models.Model):
+    """Abstract model that creates an non-editable UUID primary key."""
+
+    id = models.UUIDField(
+        verbose_name='ID',
+        primary_key=True,
+        default=uuid.uuid4,
+        editable=False,
+    )
+
+    class Meta:
+        """Define metaclass attributes."""
+
+        abstract = True
+
+
 class ProjectBase(models.Model):
     """Base model for projects."""
 
@@ -416,7 +433,7 @@ class ProjectReleasePackageRequirement(AbstractUUIDPrimaryKeyModel):
     """Base Package requirement model."""
 
     package_requirement = models.ForeignKey(
-        to='packages.Package',
+        to='project_manager.Package',
         on_delete=models.CASCADE,
     )
     version = models.CharField(

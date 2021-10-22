@@ -1,7 +1,7 @@
 """Inline for Plugin admin classes."""
 
 # =============================================================================
-# >> IMPORTS
+# IMPORTS
 # =============================================================================
 # Django
 from django.contrib import admin
@@ -25,7 +25,7 @@ from project_manager.plugins.models import (
 
 
 # =============================================================================
-# >> ALL DECLARATION
+# ALL DECLARATION
 # =============================================================================
 __all__ = (
     'PluginContributorInline',
@@ -38,7 +38,7 @@ __all__ = (
 
 
 # =============================================================================
-# >> INLINES
+# INLINES
 # =============================================================================
 class PluginContributorInline(ProjectContributorInline):
     """Plugin Contributor Admin Inline."""

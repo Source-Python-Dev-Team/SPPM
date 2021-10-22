@@ -11,14 +11,14 @@ https://docs.djangoproject.com/en/1.9/ref/settings/
 """
 
 # =============================================================================
-# >> IMPORTS
+# IMPORTS
 # =============================================================================
 # 3rd-Party Python
 from path import Path
 
 
 # =============================================================================
-# >> GLOBAL VARIABLES
+# GLOBAL VARIABLES
 # =============================================================================
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = Path(__file__).parent.parent.parent
@@ -43,19 +43,15 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    # 'phpbb',
     'embed_video',
     'precise_bbcode',
     'crispy_forms',
     'django_filters',
     'project_manager',
-    'project_manager.games',
-    'project_manager.packages',
-    'project_manager.plugins',
-    'project_manager.requirements',
-    'project_manager.sub_plugins',
-    'project_manager.tags',
-    'project_manager.users',
+    'games',
+    'requirements',
+    'tags',
+    'users',
 ]
 
 MIDDLEWARE = [
@@ -87,7 +83,6 @@ TEMPLATES = [
 ]
 
 AUTHENTICATION_BACKENDS = (
-    # 'phpbb.backends.PhpbbBackend',
     'django.contrib.auth.backends.ModelBackend',
 )
 
@@ -128,7 +123,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-AUTH_USER_MODEL = 'project_manager.User'
+AUTH_USER_MODEL = 'users.User'
 
 # Rest Framework
 REST_FRAMEWORK = {

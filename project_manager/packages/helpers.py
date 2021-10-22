@@ -1,7 +1,7 @@
 """Helpers for use with Packages."""
 
 # =============================================================================
-# >> IMPORTS
+# IMPORTS
 # =============================================================================
 # Django
 from django.core.exceptions import ValidationError
@@ -18,7 +18,7 @@ from project_manager.packages.constants import (
 
 
 # =============================================================================
-# >> ALL DECLARATION
+# ALL DECLARATION
 # =============================================================================
 __all__ = (
     'PackageZipFile',
@@ -29,7 +29,7 @@ __all__ = (
 
 
 # =============================================================================
-# >> CLASSES
+# CLASSES
 # =============================================================================
 class PackageZipFile(ProjectZipFile):
     """Package ZipFile parsing class."""
@@ -84,7 +84,7 @@ class PackageZipFile(ProjectZipFile):
 
 
 # =============================================================================
-# >> FUNCTIONS
+# FUNCTIONS
 # =============================================================================
 def handle_package_zip_upload(instance, filename):
     """Return the path to store the zip for the current release."""

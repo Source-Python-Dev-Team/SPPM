@@ -9,7 +9,7 @@ from project_manager.packages.models import Package
 
 
 # =============================================================================
-# >> ALL DECLARATION
+# ALL DECLARATION
 # =============================================================================
 __all__ = (
     'PackageReleaseBase',
@@ -17,7 +17,7 @@ __all__ = (
 
 
 # =============================================================================
-# >> MIXINS
+# MIXINS
 # =============================================================================
 class PackageReleaseBase:
     """Serializer for listing Package releases."""

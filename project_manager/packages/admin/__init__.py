@@ -1,7 +1,7 @@
 """Package admin classes."""
 
 # =============================================================================
-# >> IMPORTS
+# IMPORTS
 # =============================================================================
 # Django
 from django.contrib import admin
@@ -19,7 +19,7 @@ from project_manager.packages.models import Package
 
 
 # =============================================================================
-# >> ALL DECLARATION
+# ALL DECLARATION
 # =============================================================================
 __all__ = (
     'PackageAdmin',
@@ -27,7 +27,7 @@ __all__ = (
 
 
 # =============================================================================
-# >> ADMINS
+# ADMINS
 # =============================================================================
 @admin.register(Package)
 class PackageAdmin(ProjectAdmin):
@@ -35,8 +35,8 @@ class PackageAdmin(ProjectAdmin):
 
     inlines = (
         PackageContributorInline,
-        PackageReleaseInline,
         PackageGameInline,
         PackageImageInline,
         PackageTagInline,
+        PackageReleaseInline,
     )

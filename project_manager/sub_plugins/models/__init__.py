@@ -1,7 +1,7 @@
 """SubPlugin model classes."""
 
 # =============================================================================
-# >> IMPORTS
+# IMPORTS
 # =============================================================================
 # Django
 from django.urls import reverse
@@ -38,7 +38,7 @@ from project_manager.sub_plugins.models.abstract import (
 
 
 # =============================================================================
-# >> ALL DECLARATION
+# ALL DECLARATION
 # =============================================================================
 __all__ = (
     'SubPlugin',
@@ -55,7 +55,7 @@ __all__ = (
 
 
 # =============================================================================
-# >> MODELS
+# MODELS
 # =============================================================================
 class SubPlugin(ProjectBase):
     """SubPlugin project type model."""
@@ -73,26 +73,26 @@ class SubPlugin(ProjectBase):
     contributors = models.ManyToManyField(
         to='users.ForumUser',
         related_name='subplugin_contributions',
-        through='sub_plugins.SubPluginContributor',
+        through='project_manager.SubPluginContributor',
     )
     slug = models.SlugField(
         max_length=PROJECT_SLUG_MAX_LENGTH,
         blank=True,
     )
     plugin = models.ForeignKey(
-        to='plugins.Plugin',
+        to='project_manager.Plugin',
         related_name='sub_plugins',
         on_delete=models.CASCADE,
     )
     supported_games = models.ManyToManyField(
         to='games.Game',
         related_name='subplugins',
-        through='sub_plugins.SubPluginGame',
+        through='project_manager.SubPluginGame',
     )
     tags = models.ManyToManyField(
         to='tags.Tag',
         related_name='subplugins',
-        through='sub_plugins.SubPluginTag',
+        through='project_manager.SubPluginTag',
     )
 
     handle_logo_upload = handle_sub_plugin_logo_upload
@@ -141,29 +141,29 @@ class SubPluginRelease(ProjectRelease):
     """SubPlugin release type model."""
 
     sub_plugin = models.ForeignKey(
-        to='sub_plugins.SubPlugin',
+        to='project_manager.SubPlugin',
         related_name='releases',
         on_delete=models.CASCADE,
     )
     download_requirements = models.ManyToManyField(
         to='requirements.DownloadRequirement',
         related_name='required_in_sub_plugin_releases',
-        through='sub_plugins.SubPluginReleaseDownloadRequirement',
+        through='project_manager.SubPluginReleaseDownloadRequirement',
     )
     package_requirements = models.ManyToManyField(
-        to='packages.Package',
+        to='project_manager.Package',
         related_name='required_in_sub_plugin_releases',
-        through='sub_plugins.SubPluginReleasePackageRequirement',
+        through='project_manager.SubPluginReleasePackageRequirement',
     )
     pypi_requirements = models.ManyToManyField(
         to='requirements.PyPiRequirement',
         related_name='required_in_sub_plugin_releases',
-        through='sub_plugins.SubPluginReleasePyPiRequirement',
+        through='project_manager.SubPluginReleasePyPiRequirement',
     )
     vcs_requirements = models.ManyToManyField(
         to='requirements.VersionControlRequirement',
         related_name='required_in_sub_plugin_releases',
-        through='sub_plugins.SubPluginReleaseVersionControlRequirement',
+        through='project_manager.SubPluginReleaseVersionControlRequirement',
     )
 
     handle_zip_file_upload = handle_sub_plugin_zip_upload
@@ -190,7 +190,7 @@ class SubPluginImage(ProjectImage):
     """SubPlugin image type model."""
 
     sub_plugin = models.ForeignKey(
-        to='sub_plugins.SubPlugin',
+        to='project_manager.SubPlugin',
         related_name='images',
         on_delete=models.CASCADE,
     )

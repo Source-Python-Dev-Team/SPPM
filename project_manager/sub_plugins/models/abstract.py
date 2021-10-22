@@ -1,14 +1,14 @@
 """Base models for SubPlugins."""
 
 # =============================================================================
-# >> IMPORTS
+# IMPORTS
 # =============================================================================
 # Django
 from django.db import models
 
 
 # =============================================================================
-# >> ALL DECLARATION
+# ALL DECLARATION
 # =============================================================================
 __all__ = (
     'SubPluginReleaseThroughBase',
@@ -17,13 +17,13 @@ __all__ = (
 
 
 # =============================================================================
-# >> MODELS
+# MODELS
 # =============================================================================
 class SubPluginThroughBase(models.Model):
     """Base through model class for SubPlugins."""
 
     sub_plugin = models.ForeignKey(
-        to='sub_plugins.SubPlugin',
+        to='project_manager.SubPlugin',
         on_delete=models.CASCADE,
     )
 
@@ -42,7 +42,7 @@ class SubPluginReleaseThroughBase(models.Model):
     """Base through model class for Packages."""
 
     sub_plugin_release = models.ForeignKey(
-        to='sub_plugins.SubPluginRelease',
+        to='project_manager.SubPluginRelease',
         on_delete=models.CASCADE,
     )
 
