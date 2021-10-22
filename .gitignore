@@ -14,9 +14,6 @@
 *.txt
 !requirements/*.txt
 
-# Migrations
-*/migrations/0*
-
 # Compiled Python
 *.pyc
 
