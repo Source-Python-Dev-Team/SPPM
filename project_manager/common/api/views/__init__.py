@@ -6,7 +6,7 @@
 # Django
 from django.db import IntegrityError
 
-# 3rd-Party Django
+# Third Party Django
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.exceptions import PermissionDenied

@@ -161,7 +161,7 @@ class PackageImage(ProjectImage):
     handle_image_upload = handle_package_image_upload
 
 
-class PackageContributor(ProjectContributor, PackageThroughBase):
+class PackageContributor(PackageThroughBase, ProjectContributor):
     """Package contributors through model."""
 
     class Meta:

@@ -3,7 +3,7 @@
 # =============================================================================
 # IMPORTS
 # =============================================================================
-# 3rd-Party Django
+# Third Party Django
 from django_filters.filterset import FilterSet
 
 # App

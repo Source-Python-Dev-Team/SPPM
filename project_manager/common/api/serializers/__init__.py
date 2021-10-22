@@ -9,7 +9,7 @@ from contextlib import suppress
 # Django
 from django.utils.timezone import now
 
-# 3rd-Party Django
+# Third Party Django
 from rest_framework.exceptions import ValidationError
 from rest_framework.fields import (
     CharField,

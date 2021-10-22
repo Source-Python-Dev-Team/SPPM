@@ -6,7 +6,7 @@
 # Django
 from django.conf.urls import include, url
 
-# 3rd-Party Django
+# Third Party Django
 from rest_framework import routers
 
 # App

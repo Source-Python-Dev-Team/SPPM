@@ -13,7 +13,7 @@ from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils.text import slugify
 
-# 3rd-Party Django
+# Third Party Django
 from embed_video.fields import EmbedVideoField
 from model_utils.fields import AutoCreatedField
 from PIL import Image

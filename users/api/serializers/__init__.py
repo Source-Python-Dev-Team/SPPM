@@ -3,7 +3,7 @@
 # =============================================================================
 # IMPORTS
 # =============================================================================
-# 3rd-Party Django
+# Third Party Django
 from rest_framework.fields import SerializerMethodField
 from rest_framework.serializers import ModelSerializer
 

@@ -6,7 +6,7 @@
 # Django
 from django.db.models import Q
 
-# 3rd-Party Django
+# Third Party Django
 from django_filters.filters import CharFilter
 from django_filters.filterset import FilterSet
 

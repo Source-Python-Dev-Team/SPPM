@@ -3,7 +3,7 @@
 # =============================================================================
 # IMPORTS
 # =============================================================================
-# 3rd-Party Django
+# Third Party Django
 from rest_framework.filters import OrderingFilter
 from rest_framework.mixins import ListModelMixin
 from rest_framework.viewsets import GenericViewSet

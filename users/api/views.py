@@ -6,7 +6,7 @@
 #  Django
 from django.db.models import Prefetch
 
-# 3rd-Party Django
+# Third Party Django
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import OrderingFilter
 from rest_framework.viewsets import ModelViewSet

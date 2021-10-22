@@ -198,7 +198,7 @@ class SubPluginImage(ProjectImage):
     handle_image_upload = handle_sub_plugin_image_upload
 
 
-class SubPluginContributor(ProjectContributor, SubPluginThroughBase):
+class SubPluginContributor(SubPluginThroughBase, ProjectContributor):
     """SubPlugin contributors through model."""
 
     class Meta:

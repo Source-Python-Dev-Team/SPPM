@@ -6,7 +6,7 @@
 # Django
 from django.views.generic import ListView
 
-# 3rd-Party Django
+# Third Party Django
 from braces.views import OrderableListMixin
 
 

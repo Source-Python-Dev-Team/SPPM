@@ -6,7 +6,7 @@
 # Django
 from django.db.models import Prefetch
 
-# 3rd-Party Django
+# Third Party Django
 from rest_framework.parsers import ParseError
 
 # App

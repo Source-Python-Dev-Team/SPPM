@@ -6,7 +6,7 @@
 # Django
 from django.utils import formats
 
-# 3rd-Party Django
+# Third Party Django
 from rest_framework.exceptions import ValidationError
 from rest_framework.serializers import ModelSerializer
 

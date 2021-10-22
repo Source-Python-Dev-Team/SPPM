@@ -170,7 +170,7 @@ class PluginImage(ProjectImage):
     handle_image_upload = handle_plugin_image_upload
 
 
-class PluginContributor(ProjectContributor, PluginThroughBase):
+class PluginContributor(PluginThroughBase, ProjectContributor):
     """Plugin contributors through model."""
 
     class Meta:
