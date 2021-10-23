@@ -16,21 +16,12 @@ ignore-paths:
   - manage.py
   - migrations
   - populate
+  - tests
   - .git
   - .idea
 
-#ignore-patterns:
-#  - (^|/)skip(this)?(/|$)
-#  - ^seed_db(.*)
-
 pep8:
   run: true
-#  disable:
-#    - D104
-#    - D200
-#    - D400
-#    - E722
-#    - N806
   options:
     max-line-length: 100
 
