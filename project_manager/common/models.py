@@ -44,7 +44,7 @@ from project_manager.common.validators import version_validator
 # =============================================================================
 __all__ = (
     'AbstractUUIDPrimaryKeyModel',
-    'ProjectBase',
+    'Project',
     'ProjectContributor',
     'ProjectGame',
     'ProjectImage',
@@ -76,7 +76,7 @@ class AbstractUUIDPrimaryKeyModel(models.Model):
         abstract = True
 
 
-class ProjectBase(models.Model):
+class Project(models.Model):
     """Base model for projects."""
 
     name = models.CharField(

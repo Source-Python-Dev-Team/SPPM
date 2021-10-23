@@ -13,7 +13,7 @@ from project_manager.common.constants import (
     PROJECT_SLUG_MAX_LENGTH,
 )
 from project_manager.common.models import (
-    ProjectBase,
+    Project,
     ProjectContributor,
     ProjectGame,
     ProjectImage,
@@ -57,7 +57,7 @@ __all__ = (
 # =============================================================================
 # MODELS
 # =============================================================================
-class Package(ProjectBase):
+class Package(Project):
     """Package project type model."""
 
     basename = models.CharField(
