@@ -89,3 +89,11 @@ if settings.DEBUG:
             view=include(debug_toolbar.urls),
         ),
     ]
+
+if settings.LOCAL:
+    urlpatterns += [
+        path(
+            route='accounts/',
+            view=include('django.contrib.auth.urls'),
+        )
+    ]
