@@ -62,12 +62,3 @@ class Game(models.Model):
             using=using,
             update_fields=update_fields,
         )
-
-    def get_absolute_url(self):
-        """Return the URL for the Game."""
-        return reverse(
-            viewname='games:detail',
-            kwargs={
-                'slug': self.slug,
-            }
-        )

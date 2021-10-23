@@ -6,7 +6,9 @@ from games.constants import (
     GAME_NAME_MAX_LENGTH,
     GAME_SLUG_MAX_LENGTH,
 )
+from games.management.commands.create_game_instances import GAMES
 from games.models import Game
+from test_utils.factories.games import GameFactory
 
 
 class GameTestCase(TestCase):
@@ -66,3 +68,15 @@ class GameTestCase(TestCase):
         )
         self.assertFalse(expr=field.blank)
         self.assertFalse(expr=field.null)
+
+    def test__str__(self):
+        game = list(GAMES)[0]
+        obj = GameFactory(
+            name=GAMES[game],
+            basename=game,
+            icon=f'games/{game}.png',
+        )
+        self.assertEqual(
+            first=str(obj),
+            second=obj.name,
+        )
