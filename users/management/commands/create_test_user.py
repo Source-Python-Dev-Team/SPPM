@@ -46,13 +46,11 @@ class Command(BaseCommand):
         username = options['username']
         if User.objects.filter(username=username).exists():
             raise CommandError(
-                f'User with the username "{username}" was not found.'
-            ) from User.DoesNotExist
+                f'User with the username "{username}" already exists.'
+            )
 
         forum_id = options['forum_id']
-        if ForumUser.objects.filter(
-            forum_id=forum_id,
-        ).exists():
+        if ForumUser.objects.filter(forum_id=forum_id).exists():
             raise CommandError(
                 f'A user is already associated with the forum id "{forum_id}".'
             )
@@ -72,6 +70,6 @@ class Command(BaseCommand):
             forum_id=forum_id,
         )
         print(
-            f'User "{username}" successfully associated with forum id '
-            f'"{forum_id}".'
+            f'Successfully created user "{username}" and associated it with '
+            f'forum id "{forum_id}".'
         )

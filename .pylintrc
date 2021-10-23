@@ -12,6 +12,7 @@ ignore=
 disable=
     abstract-method,
     fixme,
+    locally-disabled,
     no-member,
     too-few-public-methods,
     too-many-ancestors,

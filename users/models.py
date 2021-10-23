@@ -41,6 +41,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         max_length=USER_USERNAME_MAX_LENGTH,
         unique=True,
     )
+    # TODO: should we be storing the email?
     email = models.EmailField(
         max_length=USER_EMAIL_MAX_LENGTH,
         blank=True,
@@ -87,6 +88,7 @@ class ForumUser(models.Model):
 
     def get_absolute_url(self):
         """Return the URL for the user."""
+        # TODO: add tests once this view is created
         return reverse(
             viewname='users:detail',
             kwargs={

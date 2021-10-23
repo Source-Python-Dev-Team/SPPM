@@ -93,6 +93,7 @@ class Package(Project):
 
     def get_absolute_url(self):
         """Return the URL for the Package."""
+        # TODO: add tests once this view is created
         return reverse(
             viewname='packages:detail',
             kwargs={

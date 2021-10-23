@@ -76,7 +76,7 @@ class Command(BaseCommand):
                 )
             )
 
-        if obj_list:
+        if obj_list:  # pragma: no branch
             ForumUser.objects.bulk_create(
                 objs=obj_list,
             )

@@ -5,7 +5,6 @@
 # =============================================================================
 # Django
 from django.conf import settings
-from django.urls import reverse
 from django.db import models
 from django.utils.text import slugify
 
@@ -77,15 +76,6 @@ class PyPiRequirement(models.Model):
             force_update=force_update,
             using=using,
             update_fields=update_fields,
-        )
-
-    def get_absolute_url(self):
-        """Return the URL for the PyPiRequirement."""
-        return reverse(
-            viewname='pypi:detail',
-            kwargs={
-                'slug': self.slug,
-            }
         )
 
     def get_pypi_url(self):

@@ -115,6 +115,7 @@ class SubPlugin(Project):
 
     def get_absolute_url(self):
         """Return the URL for the SubPlugin."""
+        # TODO: add tests once this view is created
         return reverse(
             viewname='plugins:sub-plugins:detail',
             kwargs={

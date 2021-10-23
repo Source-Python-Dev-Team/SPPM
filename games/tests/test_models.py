@@ -1,6 +1,11 @@
+# =============================================================================
+# IMPORTS
+# =============================================================================
+# Django
 from django.db import models
 from django.test import TestCase
 
+# App
 from games.constants import (
     GAME_BASENAME_MAX_LENGTH,
     GAME_NAME_MAX_LENGTH,
@@ -11,6 +16,9 @@ from games.models import Game
 from test_utils.factories.games import GameFactory
 
 
+# =============================================================================
+# TEST CASES
+# =============================================================================
 class GameTestCase(TestCase):
     def test_model_inheritance(self):
         self.assertTrue(
@@ -68,6 +76,16 @@ class GameTestCase(TestCase):
         )
         self.assertFalse(expr=field.blank)
         self.assertFalse(expr=field.null)
+
+    def test_meta_class(self):
+        self.assertEqual(
+            first=Game._meta.verbose_name,
+            second='Game',
+        )
+        self.assertEqual(
+            first=Game._meta.verbose_name_plural,
+            second='Games',
+        )
 
     def test__str__(self):
         game = list(GAMES)[0]

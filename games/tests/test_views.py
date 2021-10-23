@@ -1,14 +1,23 @@
+# =============================================================================
+# IMPORTS
+# =============================================================================
+# Django
 from django.core.management import call_command
 
+# Third Party Django
 from rest_framework import status
 from rest_framework.filters import OrderingFilter
 from rest_framework.test import APITestCase
 
+# App
 from games.api.serializers import GameSerializer
 from games.api.views import GameViewSet
 from games.management.commands.create_game_instances import GAMES
 
 
+# =============================================================================
+# TEST CASES
+# =============================================================================
 class GameViewSetAPITestCase(APITestCase):
 
     def test_filter_backends(self):

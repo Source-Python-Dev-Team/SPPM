@@ -5,6 +5,7 @@
 # =============================================================================
 # Django
 from django.db import models
+from django.urls import reverse
 from django.utils.text import slugify
 
 # App
@@ -45,6 +46,12 @@ class Game(models.Model):
     )
     icon = models.ImageField()
 
+    class Meta:
+        """Define metaclass attributes."""
+
+        verbose_name = 'Game'
+        verbose_name_plural = 'Games'
+
     def __str__(self):
         """Return the object's name when str cast."""
         return str(self.name)
@@ -60,4 +67,14 @@ class Game(models.Model):
             force_update=force_update,
             using=using,
             update_fields=update_fields,
+        )
+
+    def get_absolute_url(self):
+        """Return the URL for the Game."""
+        # TODO: add tests once this view is created
+        return reverse(
+            viewname='games:detail',
+            kwargs={
+                'slug': self.slug,
+            }
         )

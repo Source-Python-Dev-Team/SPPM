@@ -18,4 +18,5 @@ class GameFactory(factory.django.DjangoModelFactory):
 
     class Meta:
         """Define metaclass attributes."""
+
         model = Game
