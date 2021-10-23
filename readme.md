@@ -121,3 +121,13 @@ There is also a `/statistics` page to display certain statistics for your local 
 
 ### User Frontend
 Eventually we will be adding `/plugins` and `/packages`, as well as `/plugins/<plugin>/sub-plugins` for a frontend User experience. These all still need built, so if you have Javascript experience and are willing to help out, it would be much appreciated. The first obstacle will be to determine which Javascript framework to use. This really depends on what people know, but Vue or React would be preferred.
+
+## Testing
+
+### Unit Testing
+To run the Django test suite, run `pytest`. The output will show you any tests that are failing. It will also show you a list of warnings, which will help with deprecated functionalities that may need updated in the future.
+
+`pytest` also creates a coverage report that can be found at `htmlcov/index.html`. This report shows where there are gaps in the coverage.
+
+### Linting
+To run the linters, run `prospector`. The output will tell you where there are coding standards violations that need fixed.
