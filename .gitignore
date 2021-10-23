@@ -22,3 +22,7 @@
 
 # Favicon
 favicon.png
+
+htmlcov
+.coverage
+.pytest_cache

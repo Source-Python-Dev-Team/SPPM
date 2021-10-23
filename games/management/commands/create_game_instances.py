@@ -13,7 +13,7 @@ from games.models import Game
 # =============================================================================
 # GLOBAL VARIABLES
 # =============================================================================
-games = {
+GAMES = {
     'berimbau': 'Blade Symphony',
     'bms': 'Black Mesa',
     'csgo': 'Counter-Strike: Global Offensive',
@@ -35,14 +35,15 @@ class Command(BaseCommand):
         """Create any missing Game objects."""
         current_games = Game.objects.values_list('basename', flat=True)
         obj_list = []
-        for game in set(games).difference(current_games):
+        for game in set(GAMES).difference(current_games):
             obj_list.append(
                 Game(
-                    name=games[game],
                     basename=game,
                     icon=f'games/{game}.png',
+                    name=GAMES[game],
+                    slug=game,
                 )
             )
 
-        if obj_list:
+        if obj_list:  # pragma: no branch
             Game.objects.bulk_create(objs=obj_list)

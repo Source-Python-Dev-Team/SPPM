@@ -8,6 +8,7 @@ omit =
 omit =
   */migrations/*
   manage.py
+  populate/*
 
 precision = 2
 skip_covered = True
