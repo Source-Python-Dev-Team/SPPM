@@ -8,6 +8,7 @@ import json
 from zipfile import ZipFile, BadZipfile
 
 # Django
+from django.apps import apps
 from django.conf import settings
 from django.core.exceptions import ValidationError
 
@@ -29,16 +30,44 @@ __all__ = (
 
 
 # =============================================================================
+# GLOBAL VARIABLES
+# =============================================================================
+DownloadRequirement = apps.get_model(
+    app_label='requirements',
+    model_name='DownloadRequirement',
+)
+PyPiRequirement = apps.get_model(
+    app_label='requirements',
+    model_name='PyPiRequirement',
+)
+VersionControlRequirement = apps.get_model(
+    app_label='requirements',
+    model_name='VersionControlRequirement',
+)
+
+
+# =============================================================================
 # CLASSES
 # =============================================================================
 class ProjectZipFile:
     """Base ZipFile parsing class."""
 
     file_types = None
+    zip_file = None
+
+    def __enter__(self):
+        """Open the zip file on entry."""
+        self.zip_file = ZipFile(self.zip_file_path)
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        """Close the zip file on exiting."""
+        self.zip_file.close()
+        return not exc_type
 
     def __init__(self, zip_file):
         """Store the base attributes for the zip file."""
-        self.zip_file = ZipFile(zip_file)
+        self.zip_file_path = zip_file
         self.file_list = self.get_file_list()
         self.basename = None
         self.requirements = {
@@ -222,8 +251,6 @@ class ProjectZipFile:
 
     def _validate_custom_requirement(self, item):
         """Verify that the given requirement exists."""
-        # pylint: disable=import-outside-toplevel
-        from project_manager.packages.models import Package
         basename = item.get('basename')
         if basename is None:
             self.requirements_errors.append(
@@ -231,9 +258,14 @@ class ProjectZipFile:
                 'listing in requirements json file.'
             )
             return
+
+        package_model = apps.get_model(
+            app_label='project_manager',
+            model_name='Package',
+        )
         try:
-            package = Package.objects.get(slug=basename)
-        except Package.DoesNotExist:
+            package = package_model.objects.get(slug=basename)
+        except package_model.DoesNotExist:
             self.requirements_errors.append(
                 f'Custom Package "{basename}" from requirements '
                 f'json file not found.'
@@ -263,12 +295,6 @@ class ProjectZipFile:
         """Verify that the given requirement is valid."""
         # TODO: validate pypi requirements?
         # TODO: validate vcs requirements?
-        # pylint: disable=import-outside-toplevel
-        from requirements.models import (
-            DownloadRequirement,
-            PyPiRequirement,
-            VersionControlRequirement,
-        )
         model = {
             'download': DownloadRequirement,
             'pypi': PyPiRequirement,

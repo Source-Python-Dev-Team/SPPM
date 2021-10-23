@@ -68,7 +68,7 @@ class DownloadMixin(View):
         return self._full_path
 
     def get_base_path(self):
-        """Returns the base path for the download."""
+        """Return the base path for the download."""
         return settings.MEDIA_ROOT / self.base_url / self.kwargs['slug']
 
     def dispatch(self, request, *args, **kwargs):

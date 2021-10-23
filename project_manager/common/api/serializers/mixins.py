@@ -22,6 +22,17 @@ __all__ = (
 
 
 # =============================================================================
+# GLOBAL VARIABLES
+# =============================================================================
+GROUP_QUERYSET_NAMES = {
+    'custom': 'package',
+    'pypi': 'pypi',
+    'vcs': 'versioncontrol',
+    'download': 'download',
+}
+
+
+# =============================================================================
 # MIXINS
 # =============================================================================
 class ProjectLocaleMixin:
@@ -101,26 +112,53 @@ class ProjectReleaseCreationMixin(ModelSerializer):
         # Validate the version is new for the project
         parent_project = self.parent_project
         kwargs = self.get_project_kwargs(parent_project)
-        try:
-            project = self.project_class.objects.get(**kwargs)
-            project_basename = project.basename
-        except self.project_class.DoesNotExist:
-            project_basename = None
-            project = None
-        else:
-            kwargs = {
-                self.project_type.replace('-', '_'): project,
-                'version': version,
-            }
-            if self.Meta.model.objects.filter(**kwargs).exists():
-                raise ValidationError({
-                    'version': 'Given version matches existing version.',
-                })
+        project = self.get_project(
+            kwargs=kwargs,
+        )
+        self.validate_version(
+            project=project,
+            version=version,
+        )
+        project_basename = getattr(project, 'basename', None)
 
         args = (zip_file,)
         if parent_project is not None:
             args += (parent_project,)
-        zip_validator = self.zip_parser(*args)
+
+        with self.zip_parser(*args) as zip_validator:
+            self.validate_zip_file(
+                zip_validator=zip_validator,
+                project_basename=project_basename,
+            )
+
+            # This needs added for project creation
+            attrs['basename'] = zip_validator.basename
+
+            if project is not None:
+                attrs[self.project_type.replace('-', '_')] = project
+
+        return attrs
+
+    def get_project(self, kwargs):
+        """Return the Project for the given kwargs."""
+        try:
+            return self.project_class.objects.get(**kwargs)
+        except self.project_class.DoesNotExist:
+            return None
+
+    def validate_version(self, project, version):
+        """Validate that the version does not already exist."""
+        kwargs = {
+            self.project_type.replace('-', '_'): project,
+            'version': version,
+        }
+        if self.Meta.model.objects.filter(**kwargs).exists():
+            raise ValidationError({
+                'version': 'Given version matches existing version.',
+            })
+
+    def validate_zip_file(self, zip_validator, project_basename):
+        """Validate the files inside the zip file."""
         zip_validator.find_base_info()
         zip_validator.validate_file_paths()
         zip_validator.validate_basename()
@@ -135,13 +173,6 @@ class ProjectReleaseCreationMixin(ModelSerializer):
                     f"'{project_basename}'"
                 )
             })
-
-        # This needs added for project creation
-        attrs['basename'] = zip_validator.basename
-
-        if project is not None:
-            attrs[self.project_type.replace('-', '_')] = project
-        return attrs
 
     def create(self, validated_data):
         """Update the project's updated datetime when release is created."""
@@ -167,70 +198,26 @@ class ProjectReleaseCreationMixin(ModelSerializer):
         # TODO: look into bulk_create
         project_type = release.__class__.__name__.lower()
         for group_type, group in self.requirements.items():
-            if group_type == 'custom':
-                for item in group:
-                    self._create_package_requirement(
-                        release=release,
-                        project_type=project_type,
-                        requirement=item,
-                    )
-            elif group_type == 'pypi':
-                for item in group:
-                    self._create_pypi_requirement(
-                        release=release,
-                        project_type=project_type,
-                        requirement=item,
-                    )
-            elif group_type == 'vcs':
-                for item in group:
-                    self._create_vcs_requirement(
-                        release=release,
-                        project_type=project_type,
-                        requirement=item,
-                    )
-            else:
-                for item in group:
-                    self._create_download_requirement(
-                        release=release,
-                        project_type=project_type,
-                        requirement=item,
-                    )
+            self._create_group_requirements(
+                release=release,
+                project_type=project_type,
+                group_type=group_type,
+                group=group,
+            )
 
     @staticmethod
-    def _create_package_requirement(release, project_type, requirement):
-        """Create the Package requirement for the release."""
-        requirement_set = getattr(
-            release,
-            f'{project_type}packagerequirement_set'
-        )
-        requirement_set.create(**requirement)
+    def _create_group_requirements(release, project_type, group_type, group):
+        queryset_group_name = GROUP_QUERYSET_NAMES.get(group_type)
+        if not queryset_group_name:
+            # TODO: should we care if they have invalid groupings?
+            pass
 
-    @staticmethod
-    def _create_pypi_requirement(release, project_type, requirement):
-        """Create the PyPi requirement for the release."""
-        requirement_set = getattr(
-            release,
-            f'{project_type}pypirequirement_set'
-        )
-        requirement_set.create(**requirement)
-
-    @staticmethod
-    def _create_vcs_requirement(release, project_type, requirement):
-        """Create the Version Control requirement for the release."""
-        requirement_set = getattr(
-            release,
-            f'{project_type}versioncontrolrequirement_set'
-        )
-        requirement_set.create(**requirement)
-
-    @staticmethod
-    def _create_download_requirement(release, project_type, requirement):
-        """Create the Download requirement for the release."""
-        requirement_set = getattr(
-            release,
-            f'{project_type}downloadrequirement_set'
-        )
-        requirement_set.create(**requirement)
+        for requirement in group:
+            requirement_set = getattr(
+                release,
+                f'{project_type}{queryset_group_name}requirement_set'
+            )
+            requirement_set.create(**requirement)
 
 
 class ProjectThroughMixin(ModelSerializer):

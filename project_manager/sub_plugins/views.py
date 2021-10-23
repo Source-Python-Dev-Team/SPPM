@@ -38,7 +38,7 @@ class SubPluginReleaseDownloadView(DownloadMixin):
         })
 
     def get_base_path(self):
-        """Returns the base path for the download."""
+        """Return the base path for the download."""
         base_path = super().get_base_path()
         slug = self.kwargs.get('sub_plugin_slug')
         return base_path / slug

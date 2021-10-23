@@ -1,3 +1,5 @@
+"""Command to create Game objects."""
+
 # =============================================================================
 # IMPORTS
 # =============================================================================
@@ -30,6 +32,7 @@ class Command(BaseCommand):
     """Populate the Game objects."""
 
     def handle(self, *args, **options):
+        """Create any missing Game objects."""
         current_games = Game.objects.values_list('basename', flat=True)
         obj_list = []
         for game in set(games).difference(current_games):

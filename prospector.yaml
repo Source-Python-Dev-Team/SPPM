@@ -1,0 +1,51 @@
+strictness: veryhigh
+test-warnings: true
+doc-warnings: true
+autodetect: true
+member-warnings: true
+
+uses:
+  - django
+
+inherits:
+  - strictness_veryhigh
+
+ignore-paths:
+  - SPPM
+  - htmlcov
+  - manage.py
+  - migrations
+  - populate
+  - .git
+  - .idea
+
+#ignore-patterns:
+#  - (^|/)skip(this)?(/|$)
+#  - ^seed_db(.*)
+
+pep8:
+  run: true
+#  disable:
+#    - D104
+#    - D200
+#    - D400
+#    - E722
+#    - N806
+  options:
+    max-line-length: 100
+
+pep257:
+  run: true
+  disable:
+    - D203
+    - D213
+
+mccabe:
+  run: false
+
+pylint:
+  run: true
+  disable:
+    - fixme
+  options:
+    max-line-length: 100

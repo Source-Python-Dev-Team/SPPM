@@ -1,3 +1,5 @@
+"""Command used to associate a User with a ForumUser object."""
+
 # =============================================================================
 # IMPORTS
 # =============================================================================
@@ -19,9 +21,10 @@ User = get_user_model()
 # COMMANDS
 # =============================================================================
 class Command(BaseCommand):
-    """Populate the Game objects."""
+    """Create a ForumUser for a Super User."""
 
     def add_arguments(self, parser):
+        """Add the required arguments for the command."""
         parser.add_argument(
             'username',
             type=str,
@@ -34,6 +37,7 @@ class Command(BaseCommand):
         )
 
     def handle(self, *args, **options):
+        """Verify the arguments and associate the User."""
         username = options['username']
         try:
             user = User.objects.get(username=username)

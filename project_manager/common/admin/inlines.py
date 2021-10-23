@@ -112,6 +112,7 @@ class ProjectReleaseInline(admin.StackedInline):
     )
 
     def get_queryset(self, request):
+        """Order the queryset from newest to oldest."""
         return super().get_queryset(request=request).order_by('-created')
 
     def has_add_permission(self, request, obj):

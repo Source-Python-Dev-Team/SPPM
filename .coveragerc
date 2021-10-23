@@ -1,0 +1,14 @@
+[run]
+branch = True
+omit =
+  SPPM/settings/*
+  SPPM/wsgi.py
+
+[report]
+omit =
+  */migrations/*
+  manage.py
+
+precision = 2
+skip_covered = True
+skip_empty = True

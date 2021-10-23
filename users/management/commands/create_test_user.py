@@ -1,3 +1,5 @@
+"""Command used to create a non-Super User."""
+
 # =============================================================================
 # IMPORTS
 # =============================================================================
@@ -19,9 +21,10 @@ User = get_user_model()
 # COMMANDS
 # =============================================================================
 class Command(BaseCommand):
-    """Populate the Game objects."""
+    """Create a test User."""
 
     def add_arguments(self, parser):
+        """Add the required arguments for the command."""
         parser.add_argument(
             'username',
             type=str,
@@ -39,6 +42,7 @@ class Command(BaseCommand):
         )
 
     def handle(self, *args, **options):
+        """Verify the arguments and create the User."""
         username = options['username']
         if User.objects.filter(username=username).exists():
             raise CommandError(
@@ -58,10 +62,10 @@ class Command(BaseCommand):
                 username=username,
                 password=options['password'],
             )
-        except Exception as e:
+        except Exception as error:
             raise CommandError(
-                f'Unable to create User due to: {e}'
-            )
+                f'Unable to create User due to: {error}'
+            ) from Exception
 
         ForumUser.objects.create(
             user=user,

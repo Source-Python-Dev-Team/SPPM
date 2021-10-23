@@ -11,12 +11,8 @@ ignore=
 #   http://pylint-messages.wikidot.com/all-codes
 disable=
     abstract-method,
-#    attribute-defined-outside-init,
-    bad-continuation,
-    duplicate-code,
-#    fixme,
+    fixme,
     no-member,
-#    protected-access,
     too-few-public-methods,
     too-many-ancestors,
 

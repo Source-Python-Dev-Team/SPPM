@@ -4,12 +4,6 @@
 # Database files
 *.sqlite3
 
-# Local batch files
-*.bat
-
-# Local shell files
-*.sh
-
 # Local text files
 *.txt
 !pip-requirements/*.txt

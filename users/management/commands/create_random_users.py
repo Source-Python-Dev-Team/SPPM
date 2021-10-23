@@ -1,3 +1,5 @@
+"""Command used to create random users."""
+
 # =============================================================================
 # IMPORTS
 # =============================================================================
@@ -25,9 +27,10 @@ User = get_user_model()
 # COMMANDS
 # =============================================================================
 class Command(BaseCommand):
-    """Populate the Game objects."""
+    """Create some random Users."""
 
     def add_arguments(self, parser):
+        """Add the required arguments for the command."""
         parser.add_argument(
             'count',
             type=int,
@@ -35,6 +38,7 @@ class Command(BaseCommand):
         )
 
     def handle(self, *args, **options):
+        """Verify the arguments and create the Users."""
         count = options['count']
         current_usernames = User.objects.values_list(
             'username',
@@ -60,7 +64,7 @@ class Command(BaseCommand):
         max_id = count + len(current_forum_ids)
         id_list = list(set(range(1, max_id + 1)).difference(current_forum_ids))
         obj_list = []
-        for n, username in enumerate(username_list):
+        for index, username in enumerate(username_list):
             user = User.objects.create_user(
                 username=username,
                 password=urandom(8),
@@ -68,7 +72,7 @@ class Command(BaseCommand):
             obj_list.append(
                 ForumUser(
                     user=user,
-                    forum_id=id_list[n],
+                    forum_id=id_list[index],
                 )
             )
 
@@ -81,4 +85,5 @@ class Command(BaseCommand):
 
     @staticmethod
     def validate_unique_list(username_list, current_usernames, count):
+        """Validate the given list is unique and has the correct count."""
         return len(set(username_list).difference(current_usernames)) == count
