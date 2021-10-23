@@ -31,10 +31,10 @@ class TagAdmin(admin.ModelAdmin):
         'black_listed',
         'creator',
     )
+    list_display_links = None
     list_filter = (
         'black_listed',
     )
-    list_display_links = None
     list_editable = (
         'black_listed',
         'creator',

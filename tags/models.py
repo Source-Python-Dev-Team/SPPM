@@ -41,6 +41,12 @@ class Tag(models.Model):
         on_delete=models.CASCADE,
     )
 
+    class Meta:
+        """Define metaclass attributes."""
+
+        verbose_name = 'Tag'
+        verbose_name_plural = 'Tags'
+
     def __str__(self):
         """Return the tag's name."""
         return str(self.name)
