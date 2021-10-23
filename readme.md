@@ -19,13 +19,26 @@ If you wish to contribute to this application, follow the instructions below on 
 7. Run the [createsuperuser](https://docs.djangoproject.com/en/dev/ref/django-admin/#createsuperuser) management command to create your main user.
 8. Run the `associate_super_user` management command to associate the Super User you just created with a ForumUser object.
    1. Arguments for the command are:
-      1. **username** - The username of the Super User
+      1. **username** - The username of the Super User.
       2. **forum_id** - The user id from the Source.Python forums.
-9. If you want additional users to test with, run the `create_random_users` management command.
+9. If you want to create a test (non-Super User) User, run the `create_test_user` management command.
    1. Arguments for the command are:
-      1. **count** - The number of random Users to create.
-10. Run the server using the [runserver](https://docs.djangoproject.com/en/dev/ref/django-admin/#runserver) management command.
+      1. **username** - The username of the User.
+      2. **password** - The password to use for the User.
+      3. **forum_id** - The user id from the Source.Python forums.
+10. If you want additional users to test with, run the `create_random_users` management command.
+    1. Arguments for the command are:
+       1. **count** - The number of random Users to create.
+11. Run the server using the [runserver](https://docs.djangoproject.com/en/dev/ref/django-admin/#runserver) management command.
     1. Some IDEs, like Pycharm, have tools to run the server instead of manually running the command in a console window.
+
+## Authentication (logging in)
+You can log in one of two ways.
+
+1. The Django Admin can be used to log in your Super User you created above.
+2. A simple login page is available (local only) via the `/accounts/login` page.
+
+Either way will allow you to login and view/utilize all the APIs except for the Django Admin. Certain APIs require you to be logged in, whether as a regular user or a Super User.
 
 ## APIs
 ### Walkable REST APIs
@@ -34,7 +47,7 @@ The REST APIs that the frontend will eventually be built off of can be found at 
 Each REST API should also show a list of filters and ordering fields, along with examples.
 
 GET calls do not require the user to be logged in.
-POST calls require the user to be logged in (logging into the Django Admin will suffice for local development).
+POST calls require the user to be logged in.
 PATCH and DELETE calls require the user to be logged in, as well as be either the owner or a contributor for the Project (ie package/plugin/sub-plugin contributor).
 DELETE cannot be called on Projects themselves, just on the associated models.
 
