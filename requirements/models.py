@@ -42,6 +42,10 @@ class DownloadRequirement(models.Model):
         verbose_name = 'Download Requirement'
         verbose_name_plural = 'Download Requirements'
 
+    def __str__(self):
+        """Return the object's url when str cast."""
+        return str(self.url)
+
 
 class PyPiRequirement(models.Model):
     """PyPi requirement model."""
@@ -95,3 +99,7 @@ class VersionControlRequirement(models.Model):
 
         verbose_name = 'Version Control Requirement'
         verbose_name_plural = 'Version Control Requirements'
+
+    def __str__(self):
+        """Return the object's url when str cast."""
+        return str(self.url)

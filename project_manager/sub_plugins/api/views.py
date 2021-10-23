@@ -109,7 +109,7 @@ class SubPluginViewSet(ProjectViewSet):
         `?ordering=-updated`
     """
 
-    filter_class = SubPluginFilterSet
+    filterset_class = SubPluginFilterSet
     queryset = SubPlugin.objects.prefetch_related(
         Prefetch(
             lookup='releases',

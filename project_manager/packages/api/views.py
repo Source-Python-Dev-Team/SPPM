@@ -104,7 +104,7 @@ class PackageViewSet(ProjectViewSet):
         `?ordering=-updated`
     """
 
-    filter_class = PackageFilterSet
+    filterset_class = PackageFilterSet
     queryset = Package.objects.prefetch_related(
         Prefetch(
             lookup='releases',

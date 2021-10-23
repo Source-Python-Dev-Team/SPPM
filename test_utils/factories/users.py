@@ -11,6 +11,16 @@ from users.models import ForumUser, User
 
 
 # =============================================================================
+# ALL DECLARATION
+# =============================================================================
+__all__ = (
+    'AdminUserFactory',
+    'ForumUserFactory',
+    'NonAdminUserFactory',
+)
+
+
+# =============================================================================
 # FACTORIES
 # =============================================================================
 class NonAdminUserFactory(factory.django.DjangoModelFactory):

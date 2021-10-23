@@ -25,9 +25,9 @@ class ForumUserViewSetAPITestCase(APITestCase):
             tuple2=(OrderingFilter, DjangoFilterBackend)
         )
 
-    def test_filter_class(self):
+    def test_filterset_class(self):
         self.assertEqual(
-            first=ForumUserViewSet.filter_class,
+            first=ForumUserViewSet.filterset_class,
             second=ForumUserFilterSet,
         )
 

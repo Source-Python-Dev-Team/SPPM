@@ -120,7 +120,7 @@ class PluginViewSet(ProjectViewSet):
         `?ordering=-updated`
     """
 
-    filter_class = PluginFilterSet
+    filterset_class = PluginFilterSet
     queryset = Plugin.objects.prefetch_related(
         Prefetch(
             lookup='releases',

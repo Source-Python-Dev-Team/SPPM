@@ -11,10 +11,18 @@ from tags.models import Tag
 
 
 # =============================================================================
+# ALL DECLARATION
+# =============================================================================
+__all__ = (
+    'TagFactory',
+)
+
+
+# =============================================================================
 # FACTORIES
 # =============================================================================
 class TagFactory(factory.django.DjangoModelFactory):
-    """Model factory to use when testing with Game objects."""
+    """Model factory to use when testing with Tag objects."""
 
     name = factory.Sequence(function=lambda n: f'tag_{n}')
     creator = factory.SubFactory(

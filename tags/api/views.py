@@ -49,7 +49,7 @@ class TagViewSet(ListModelMixin, GenericViewSet):
     """
 
     filter_backends = (OrderingFilter, DjangoFilterBackend)
-    filter_class = TagFilterSet
+    filterset_class = TagFilterSet
     serializer_class = TagSerializer
     queryset = Tag.objects.select_related(
         'creator__user',

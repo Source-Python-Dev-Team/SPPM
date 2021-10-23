@@ -35,7 +35,7 @@ class ForumUserViewSet(ModelViewSet):
     """ForumUser API view."""
 
     filter_backends = (OrderingFilter, DjangoFilterBackend)
-    filter_class = ForumUserFilterSet
+    filterset_class = ForumUserFilterSet
     http_method_names = ('get', 'options')
     ordering = ('user__username',)
     ordering_fields = ('forum_id', 'user__username')
