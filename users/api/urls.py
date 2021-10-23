@@ -4,7 +4,7 @@
 # IMPORTS
 # =============================================================================
 # Django
-from django.conf.urls import include, url
+from django.urls import include, path
 
 # Third Party Django
 from rest_framework import routers
@@ -30,8 +30,8 @@ router.register(
 app_name = 'users'
 
 urlpatterns = [
-    url(
-        regex=r'^',
+    path(
+        route='',
         view=include(router.urls),
     )
 ]

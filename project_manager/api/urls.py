@@ -4,7 +4,7 @@
 # IMPORTS
 # =============================================================================
 # Django
-from django.conf.urls import include, url
+from django.urls import include, path
 
 # App
 from project_manager.api.views import ProjectManagerAPIView
@@ -16,50 +16,50 @@ from project_manager.api.views import ProjectManagerAPIView
 app_name = 'api'
 
 urlpatterns = [
-    url(
-        regex=r'^games/',
+    path(
+        route='games/',
         view=include(
             'games.api.urls',
             namespace='games',
         ),
     ),
-    url(
-        regex=r'^packages/',
+    path(
+        route='packages/',
         view=include(
             'project_manager.packages.api.urls',
             namespace='packages',
         ),
     ),
-    url(
-        regex=r'^plugins/',
+    path(
+        route='plugins/',
         view=include(
             'project_manager.plugins.api.urls',
             namespace='plugins',
         ),
     ),
-    url(
-        regex=r'^sub-plugins/',
+    path(
+        route='sub-plugins/',
         view=include(
             'project_manager.sub_plugins.api.urls',
             namespace='sub-plugins',
         ),
     ),
-    url(
-        regex=r'^tags/',
+    path(
+        route='tags/',
         view=include(
             'tags.api.urls',
             namespace='tags',
         ),
     ),
-    url(
-        regex=r'^users/',
+    path(
+        route='users/',
         view=include(
             'users.api.urls',
             namespace='users',
         ),
     ),
-    url(
-        regex=r'^$',
+    path(
+        route='',
         view=ProjectManagerAPIView.as_view(),
         name='api-root',
     ),

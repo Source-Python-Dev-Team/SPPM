@@ -4,7 +4,7 @@
 # IMPORTS
 # =============================================================================
 # Django
-from django.conf.urls import url
+from django.urls import path
 
 # Third Party Django
 from rest_framework import routers
@@ -65,8 +65,8 @@ router.register(
 app_name = 'sub-plugins'
 
 urlpatterns = [
-    url(
-        regex=r'^$',
+    path(
+        route='',
         view=SubPluginAPIView.as_view(),
         name='endpoints',
     )

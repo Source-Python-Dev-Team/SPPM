@@ -4,7 +4,7 @@
 # IMPORTS
 # =============================================================================
 # Django
-from django.conf.urls import url
+from django.urls import path
 
 # Third Party Django
 from rest_framework import routers
@@ -63,8 +63,8 @@ router.register(
 app_name = 'packages'
 
 urlpatterns = [
-    url(
-        regex=r'^$',
+    path(
+        route='',
         view=PackageAPIView.as_view(),
         name='endpoints',
     )
