@@ -4,7 +4,6 @@
 # IMPORTS
 # =============================================================================
 # Django
-from django.urls import reverse
 from django.db import models
 from django.utils.text import slugify
 

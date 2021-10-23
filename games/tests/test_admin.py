@@ -1,11 +1,20 @@
+# =============================================================================
+# IMPORTS
+# =============================================================================
+# Django
 from django.contrib import admin
 from django.test import TestCase
 
+# App
 from games.admin import GameAdmin
 
 
-class GameTestCase(TestCase):
-    def test_model_inheritance(self):
+# =============================================================================
+# TEST CASES
+# =============================================================================
+class GameAdminTestCase(TestCase):
+
+    def test_class_inheritance(self):
         self.assertTrue(
             expr=issubclass(GameAdmin, admin.ModelAdmin),
         )
