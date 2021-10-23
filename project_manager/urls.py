@@ -81,7 +81,7 @@ urlpatterns = [
     settings.STATIC_URL, document_root=settings.STATIC_ROOT
 )
 
-if settings.DEBUG:
+if settings.DEBUG:  # pragma: no branch
     import debug_toolbar
     urlpatterns += [
         path(
@@ -90,7 +90,7 @@ if settings.DEBUG:
         ),
     ]
 
-if settings.LOCAL:
+if settings.LOCAL:  # pragma: no branch
     urlpatterns += [
         path(
             route='accounts/',
