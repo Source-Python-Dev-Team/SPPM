@@ -4,11 +4,13 @@
 # IMPORTS
 # =============================================================================
 # Python
+import logging
 from os import urandom
 
 # Django
+from django.conf import settings
 from django.contrib.auth import get_user_model
-from django.core.management.base import BaseCommand
+from django.core.management.base import BaseCommand, CommandError
 
 # Third Party Python
 from random_username.generate import generate_username
@@ -21,6 +23,8 @@ from users.models import ForumUser
 # GLOBAL VARIABLES
 # =============================================================================
 User = get_user_model()
+
+logger = logging.getLogger(__name__)
 
 
 # =============================================================================
@@ -39,6 +43,12 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         """Verify the arguments and create the Users."""
+        # Only allow this command in local development
+        if not settings.LOCAL:
+            raise CommandError(
+                'Command can only be run for local development.'
+            )
+
         count = options['count']
         current_usernames = User.objects.values_list(
             'username',
@@ -81,7 +91,7 @@ class Command(BaseCommand):
                 objs=obj_list,
             )
 
-        print(f'Successfully created "{count}" users.')
+        logger.info(f'Successfully created "{count}" users.')
 
     @staticmethod
     def validate_unique_list(username_list, current_usernames, count):

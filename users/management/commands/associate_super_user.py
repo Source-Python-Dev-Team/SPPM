@@ -3,7 +3,11 @@
 # =============================================================================
 # IMPORTS
 # =============================================================================
+# Python
+import logging
+
 # Django
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.core.management.base import BaseCommand, CommandError
 
@@ -15,6 +19,8 @@ from users.models import ForumUser
 # GLOBAL VARIABLES
 # =============================================================================
 User = get_user_model()
+
+logger = logging.getLogger(__name__)
 
 
 # =============================================================================
@@ -38,6 +44,12 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         """Verify the arguments and associate the User."""
+        # Only allow this command in local development
+        if not settings.LOCAL:
+            raise CommandError(
+                'Command can only be run for local development.'
+            )
+
         username = options['username']
         try:
             user = User.objects.get(username=username)
@@ -58,7 +70,7 @@ class Command(BaseCommand):
             user=user,
             forum_id=forum_id,
         )
-        print(
+        logger.info(
             f'User "{username}" successfully associated with forum id '
             f'"{forum_id}".'
         )

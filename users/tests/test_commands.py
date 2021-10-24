@@ -8,7 +8,7 @@ from unittest import mock
 # Django
 from django.core.management import call_command
 from django.core.management.base import CommandError
-from django.test import TestCase
+from django.test import TestCase, override_settings
 
 # App
 from test_utils.factories.users import AdminUserFactory, ForumUserFactory
@@ -18,9 +18,13 @@ from users.models import ForumUser
 # =============================================================================
 # TEST CASES
 # =============================================================================
+@override_settings(LOCAL=True)
 class CommandsTestCase(TestCase):
 
-    def test_associate_super_user(self):
+    @mock.patch(
+        'users.management.commands.associate_super_user.logger',
+    )
+    def test_associate_super_user(self, mock_logger):
         user = AdminUserFactory()
         self.assertEqual(
             first=ForumUser.objects.count(),
@@ -40,6 +44,25 @@ class CommandsTestCase(TestCase):
         self.assertEqual(
             first=forum_user.forum_id,
             second=forum_id,
+        )
+        mock_logger.info.assert_called_once_with(
+            f'User "{user.username}" successfully associated with forum id "{forum_id}".'
+        )
+
+    @override_settings(LOCAL=False)
+    def test_associate_super_user_local_only(self):
+        user = AdminUserFactory()
+        self.assertEqual(
+            first=ForumUser.objects.count(),
+            second=0,
+        )
+        forum_id = randint(1, 10)
+        with self.assertRaises(CommandError) as context:
+            call_command('associate_super_user', user.username, forum_id)
+
+        self.assertEqual(
+            first=str(context.exception),
+            second='Command can only be run for local development.',
         )
 
     def test_associate_super_user_invalid_username(self):
@@ -73,23 +96,49 @@ class CommandsTestCase(TestCase):
             ),
         )
 
-    def test_create_random_users(self):
+    @mock.patch(
+        'users.management.commands.create_random_users.logger',
+    )
+    def test_create_random_users(self, mock_logger):
+        count = randint(1, 10)
         forum_id = randint(1, 10)
         ForumUserFactory(
             forum_id=forum_id,
         )
-        call_command('create_random_users', 10)
+        call_command('create_random_users', count)
         self.assertEqual(
             first=ForumUser.objects.count(),
-            second=11,
+            second=count + 1,
         )
         query = ForumUser.objects.values_list('forum_id', flat=True)
+        id_list = list(range(1, count + 1))
+        id_list.append(count + 1 if forum_id in id_list else forum_id)
         self.assertListEqual(
             list1=list(query.order_by('forum_id')),
-            list2=list(range(1, 12)),
+            list2=id_list,
+        )
+        mock_logger.info.assert_called_once_with(
+            f'Successfully created "{count}" users.'
         )
 
-    def test_create_test_user(self):
+    @override_settings(LOCAL=False)
+    def test_create_random_users_local_only(self):
+        forum_id = randint(1, 10)
+        ForumUserFactory(
+            forum_id=forum_id,
+        )
+        with self.assertRaises(CommandError) as context:
+            call_command('create_random_users', 10)
+
+        self.assertEqual(
+            first=str(context.exception),
+            second='Command can only be run for local development.',
+        )
+
+    @mock.patch(
+        'users.management.commands.create_test_user.logger',
+    )
+    def test_create_test_user(self, mock_logger):
         username = 'test-user'
         forum_id = randint(1, 10)
         call_command('create_test_user', username, 'password', forum_id)
@@ -105,6 +154,21 @@ class CommandsTestCase(TestCase):
         self.assertEqual(
             first=user.user.username,
             second=username,
+        )
+        mock_logger.info.assert_called_once_with(
+            f'Successfully created user "{username}" and associated it with forum id "{forum_id}".'
+        )
+
+    @override_settings(LOCAL=False)
+    def test_create_test_user_local_only(self):
+        username = 'test-user'
+        forum_id = randint(1, 10)
+        with self.assertRaises(CommandError) as context:
+            call_command('create_test_user', username, 'password', forum_id)
+
+        self.assertEqual(
+            first=str(context.exception),
+            second='Command can only be run for local development.',
         )
 
     def test_create_test_user_username_exists(self):

@@ -13,6 +13,9 @@ https://docs.djangoproject.com/en/1.9/ref/settings/
 # =============================================================================
 # IMPORTS
 # =============================================================================
+# Python
+import sys
+
 # Third Party Python
 from path import Path
 
@@ -139,6 +142,31 @@ REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': (
         'project_manager.api.pagination.BasePagination'
     ),
+}
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '%(message)s',
+        },
+    },
+    'handlers': {
+        'console': {
+            'level': 'INFO',
+            'class': 'logging.StreamHandler',
+            'formatter': 'verbose',
+            'stream': sys.stdout,
+        },
+    },
+    'loggers': {
+        '': {
+            'handlers': ['console'],
+            'level': 'INFO',
+            'propagate': True,
+        }
+    }
 }
 
 EMBED_VIDEO_BACKENDS = (
