@@ -16,6 +16,7 @@ disable=
     no-member,
     too-few-public-methods,
     too-many-ancestors,
+    logging-fstring-interpolation,
 
 
 [BASIC]
