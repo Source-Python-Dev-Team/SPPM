@@ -4,8 +4,8 @@
 # IMPORTS
 # =============================================================================
 # Python
-import uuid
 from operator import attrgetter
+from uuid import uuid4
 
 # Django
 from django.conf import settings
@@ -66,7 +66,7 @@ class AbstractUUIDPrimaryKeyModel(models.Model):
     id = models.UUIDField(
         verbose_name='ID',
         primary_key=True,
-        default=uuid.uuid4,
+        default=uuid4,
         editable=False,
     )
 

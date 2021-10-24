@@ -54,7 +54,7 @@ class ProjectGameInline(admin.TabularInline):
         'game',
     )
 
-    def has_add_permission(self, request, obj):
+    def has_add_permission(self, request, obj=None):
         """Disallow adding new games in the Admin."""
         return False
 
@@ -87,7 +87,7 @@ class ProjectImageInline(admin.TabularInline):
         'created',
     )
 
-    def has_add_permission(self, request, obj):
+    def has_add_permission(self, request, obj=None):
         """Disallow adding new images in the Admin."""
         return False
 
@@ -115,6 +115,6 @@ class ProjectReleaseInline(admin.StackedInline):
         """Order the queryset from newest to oldest."""
         return super().get_queryset(request=request).order_by('-created')
 
-    def has_add_permission(self, request, obj):
+    def has_add_permission(self, request, obj=None):
         """Disallow adding new images in the Admin."""
         return False
