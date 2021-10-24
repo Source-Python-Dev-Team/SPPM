@@ -8,9 +8,7 @@ from rest_framework.serializers import ModelSerializer
 
 # App
 from tags.models import Tag
-from users.api.serializers.common import (
-    ForumUserContributorSerializer,
-)
+from users.api.serializers.common import ForumUserContributorSerializer
 
 
 # =============================================================================
