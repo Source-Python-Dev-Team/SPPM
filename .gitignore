@@ -26,3 +26,4 @@ favicon.png
 htmlcov
 .coverage
 .pytest_cache
+.secret_key
