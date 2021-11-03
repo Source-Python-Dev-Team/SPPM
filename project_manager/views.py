@@ -34,19 +34,19 @@ class StatisticsView(TemplateView):
         """Return all statistical context data."""
         context = super().get_context_data(**kwargs)
         package_downloads = sum(
-            PackageRelease.objects.all().values_list(
+            PackageRelease.objects.values_list(
                 'download_count',
                 flat=True,
             )
         )
         plugin_downloads = sum(
-            PluginRelease.objects.all().values_list(
+            PluginRelease.objects.values_list(
                 'download_count',
                 flat=True,
             )
         )
         sub_plugin_downloads = sum(
-            SubPluginRelease.objects.all().values_list(
+            SubPluginRelease.objects.values_list(
                 'download_count',
                 flat=True,
             )
@@ -58,7 +58,7 @@ class StatisticsView(TemplateView):
             Q(subplugin_contributions__isnull=False) |
             Q(packages__isnull=False) |
             Q(package_contributions__isnull=False)
-        ).count()
+        ).distinct().count()
         packages = Package.objects.count()
         plugins = Plugin.objects.count()
         sub_plugins = SubPlugin.objects.count()
