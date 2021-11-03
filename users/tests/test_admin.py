@@ -74,6 +74,13 @@ class ForumUserAdminTestCase(TestCase):
             expr=ForumUserAdmin(ForumUser, '').has_delete_permission(''),
         )
 
+    def test_get_queryset(self):
+        query = ForumUserAdmin(ForumUser, '').get_queryset('').query
+        self.assertIn(
+            member='user',
+            container=query.select_related,
+        )
+
 
 class UserAdminTestCase(TestCase):
 
