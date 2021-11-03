@@ -30,7 +30,7 @@ class DownloadMixin(View):
     def model(self):
         """Return the release model."""
         raise NotImplementedError(
-            f'Class {self.__class__.__name__} must implement a '
+            f'Class "{self.__class__.__name__}" must implement a '
             '"model" attribute.'
         )
 
@@ -38,7 +38,7 @@ class DownloadMixin(View):
     def base_url(self):
         """Return the base url for the download."""
         raise NotImplementedError(
-            f'Class {self.__class__.__name__} must implement a '
+            f'Class "{self.__class__.__name__}" must implement a '
             '"base_url" attribute.'
         )
 
@@ -46,7 +46,7 @@ class DownloadMixin(View):
     def project_model(self):
         """Return the project model."""
         raise NotImplementedError(
-            f'Class {self.__class__.__name__} must implement a '
+            f'Class "{self.__class__.__name__}" must implement a '
             '"project_model" attribute.'
         )
 
@@ -55,7 +55,7 @@ class DownloadMixin(View):
         """Return the project's kwarg key."""
         if self.model_kwarg is not None:
             raise NotImplementedError(
-                f'Class {self.__class__.__name__} must implement a '
+                f'Class "{self.__class__.__name__}" must implement a '
                 '"model_kwarg" attribute.'
             )
 

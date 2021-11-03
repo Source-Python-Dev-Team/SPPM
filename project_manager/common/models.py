@@ -190,32 +190,28 @@ class Project(models.Model):
 
     def clean(self):
         """Clean all attributes and raise any errors that occur."""
-        errors = {}
-        logo_errors = self.clean_logo()
-        if logo_errors:
-            errors['logo'] = logo_errors
-        if errors:
-            raise ValidationError(errors)
+        self.clean_logo()
         return super().clean()
 
     def clean_logo(self):
         """Verify the logo is within the proper dimensions."""
         errors = []
         if not self.logo:
-            return errors
+            return
+
         width, height = Image.open(self.logo).size
         if width > LOGO_MAX_WIDTH:
             errors.append(f'Logo width must be no more than {LOGO_MAX_WIDTH}.')
+
         if height > LOGO_MAX_HEIGHT:
             errors.append(
                 f'Logo height must be no more than {LOGO_MAX_HEIGHT}.'
             )
-        return errors
 
-    def save(
-        self, force_insert=False, force_update=False, using=None,
-        update_fields=None
-    ):
+        if errors:
+            raise ValidationError(errors)
+
+    def save(self, *args, **kwargs):
         """Store the slug and remove old logo if necessary."""
         self.slug = self.get_slug_value()
         if all([
@@ -224,16 +220,12 @@ class Project(models.Model):
             self.logo_path not in str(self.logo)
         ]):
             path = settings.MEDIA_ROOT / self.logo_path
-            if path.isdir():
-                logo = [x for x in path.files() if x.stem == self.slug]
-                if logo:
-                    logo[0].remove()
-        super().save(
-            force_insert=force_insert,
-            force_update=force_update,
-            using=using,
-            update_fields=update_fields,
-        )
+            if path.isdir():  # pragma: no branch
+                logo_files = [x for x in path.files() if x.stem == self.slug]
+                if logo_files:  # pragma: no branch
+                    logo_files[0].remove()
+
+        super().save(*args, **kwargs)
 
     def get_forum_url(self):
         """Return the forum topic URL."""
@@ -281,7 +273,7 @@ class ProjectRelease(AbstractUUIDPrimaryKeyModel):
     def project_class(self):
         """Return the project's class."""
         raise NotImplementedError(
-            f'Class {self.__class__.__name__} must implement a '
+            f'Class "{self.__class__.__name__}" must implement a '
             '"project_class" attribute.'
         )
 
@@ -289,7 +281,7 @@ class ProjectRelease(AbstractUUIDPrimaryKeyModel):
     def project(self):
         """Return the project's class."""
         raise NotImplementedError(
-            f'Class {self.__class__.__name__} must implement a '
+            f'Class "{self.__class__.__name__}" must implement a '
             '"project" property.'
         )
 
@@ -310,18 +302,10 @@ class ProjectRelease(AbstractUUIDPrimaryKeyModel):
         """Return the project name + release version."""
         return f'{self.project} - {self.version}'
 
-    def save(
-        self, force_insert=False, force_update=False, using=None,
-        update_fields=None
-    ):
+    def save(self, *args, **kwargs):
         """Update the Project's 'updated' value to the releases 'created'."""
         pk = self.pk
-        super().save(
-            force_insert=force_insert,
-            force_update=force_update,
-            using=using,
-            update_fields=update_fields,
-        )
+        super().save(*args, **kwargs)
         if pk is None:
             self.project_class.objects.filter(
                 pk=self.project.pk,
@@ -377,7 +361,7 @@ class ProjectContributor(AbstractUUIDPrimaryKeyModel):
     def project(self):
         """Return the project's class."""
         raise NotImplementedError(
-            f'Class {self.__class__.__name__} must implement a '
+            f'Class "{self.__class__.__name__}" must implement a '
             f'"project" property.'
         )
 

@@ -51,18 +51,10 @@ class Tag(models.Model):
         """Return the tag's name."""
         return str(self.name)
 
-    def save(
-        self, force_insert=False, force_update=False, using=None,
-        update_fields=None
-    ):
+    def save(self, *args, **kwargs):
         """Remove all through model instances if black-listed."""
         if self.black_listed:
             self.plugintag_set.all().delete()
             self.packagetag_set.all().delete()
             self.subplugintag_set.all().delete()
-        super().save(
-            force_insert=force_insert,
-            force_update=force_update,
-            using=using,
-            update_fields=update_fields,
-        )
+        super().save(*args, **kwargs)

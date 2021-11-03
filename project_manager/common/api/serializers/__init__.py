@@ -96,7 +96,7 @@ class ProjectSerializer(ModelSerializer, ProjectLocaleMixin):
     def project_type(self):
         """Return the project's type."""
         raise NotImplementedError(
-            f'Class {self.__class__.__name__} must implement a '
+            f'Class "{self.__class__.__name__}" must implement a '
             '"project_type" attribute.'
         )
 
@@ -104,7 +104,7 @@ class ProjectSerializer(ModelSerializer, ProjectLocaleMixin):
     def release_model(self):
         """Return the model to use for releases."""
         raise NotImplementedError(
-            f'Class {self.__class__.__name__} must implement a '
+            f'Class "{self.__class__.__name__}" must implement a '
             '"release_model" attribute.'
         )
 
@@ -214,8 +214,7 @@ class ProjectSerializer(ModelSerializer, ProjectLocaleMixin):
     def get_extra_kwargs(self):
         """Set the 'name' field to read-only when updating."""
         extra_kwargs = super().get_extra_kwargs()
-        action = self.context['view'].action
-        if action == 'update':
+        if self.context['view'].action == 'update':
             name_kwargs = extra_kwargs.get('name', {})
             name_kwargs['read_only'] = True
             extra_kwargs['name'] = name_kwargs

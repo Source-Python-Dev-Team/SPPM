@@ -22,7 +22,6 @@ from project_manager.common.constants import CANNOT_BE_NAMED, CANNOT_START_WITH
 __all__ = (
     'ProjectZipFile',
     'find_image_number',
-    'get_groups',
     'handle_project_image_upload',
     'handle_project_logo_upload',
     'handle_release_zip_file_upload',
@@ -82,21 +81,21 @@ class ProjectZipFile:
     def project_type(self):
         """Return the type of project."""
         raise NotImplementedError(
-            f'Class {self.__class__.__name__} must implement a '
+            f'Class "{self.__class__.__name__}" must implement a '
             f'"project_type" attribute.'
         )
 
     def find_base_info(self):
         """Store all base information for the zip file."""
         raise NotImplementedError(
-            f'Class {self.__class__.__name__} must implement a '
+            f'Class "{self.__class__.__name__}" must implement a '
             f'"find_base_info" method.'
         )
 
     def get_base_paths(self):
         """Return a list of base paths to check against."""
         raise NotImplementedError(
-            f'Class {self.__class__.__name__} must implement a '
+            f'Class "{self.__class__.__name__}" must implement a '
             f'"get_base_paths" method.'
         )
 
@@ -245,7 +244,7 @@ class ProjectZipFile:
     def get_requirement_path(self):
         """Return the path for the requirements json file."""
         raise NotImplementedError(
-            f'Class {self.__class__.__name__} must implement a '
+            f'Class "{self.__class__.__name__}" must implement a '
             f'"get_requirement_path" method.'
         )
 
@@ -328,16 +327,6 @@ def find_image_number(directory, slug):
     path = settings.MEDIA_ROOT / 'images' / directory / slug
     current_files = [x.stem for x in path.files()] if path.isdir() else []
     return f'{max(map(int, current_files or [0])) + 1}:04'
-
-
-def get_groups(iterable, count=3):
-    """Return lists from the given iterable in chunks of 'count'."""
-    if not iterable:
-        return iterable
-    iterable = list(iterable)
-    remainder = len(iterable) % count
-    iterable.extend([''] * (count - remainder))
-    return zip(*(iter(iterable),) * count)
 
 
 def handle_project_image_upload(instance, filename):

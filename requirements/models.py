@@ -69,18 +69,10 @@ class PyPiRequirement(models.Model):
         """Return the object's name when str cast."""
         return str(self.name)
 
-    def save(
-        self, force_insert=False, force_update=False, using=None,
-        update_fields=None
-    ):
+    def save(self, *args, **kwargs):
         """Set the slug and save the Requirement."""
         self.slug = slugify(self.name)
-        super().save(
-            force_insert=force_insert,
-            force_update=force_update,
-            using=using,
-            update_fields=update_fields,
-        )
+        super().save(*args, **kwargs)
 
     def get_pypi_url(self):
         """Return the PyPi URL for the requirement."""
