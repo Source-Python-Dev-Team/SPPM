@@ -8,6 +8,8 @@ from django.db.models import Prefetch
 
 # Third Party Django
 from rest_framework.parsers import ParseError
+from rest_framework.response import Response
+from rest_framework.reverse import reverse
 
 # App
 from project_manager.common.api.views import (
@@ -65,7 +67,39 @@ class SubPluginAPIView(ProjectAPIView):
     """SubPlugin API routes."""
 
     project_type = 'sub-plugin'
-    extra_params = '<plugin>/'
+
+    def get(self, request):
+        """Return all the API routes for Projects."""
+        return Response(
+            data={
+                'contributors': reverse(
+                    viewname=f'api:{self.project_type}s:endpoints',
+                    request=request,
+                ) + (
+                    f'contributors/<plugin>/<{self.project_type}>/'
+                ),
+                'games': reverse(
+                    viewname=f'api:{self.project_type}s:endpoints',
+                    request=request,
+                ) + f'games/<plugin>/<{self.project_type}>/',
+                'images': reverse(
+                    viewname=f'api:{self.project_type}s:endpoints',
+                    request=request,
+                ) + f'images/<plugin>/<{self.project_type}>/',
+                'projects': reverse(
+                    viewname=f'api:{self.project_type}s:endpoints',
+                    request=request,
+                ) + f'projects/<plugin>/',
+                'releases': reverse(
+                    viewname=f'api:{self.project_type}s:endpoints',
+                    request=request,
+                ) + f'releases/<plugin>/<{self.project_type}>/',
+                'tags': reverse(
+                    viewname=f'api:{self.project_type}s:endpoints',
+                    request=request,
+                ) + f'tags/<plugin>/<{self.project_type}>/',
+            }
+        )
 
 
 class SubPluginViewSet(ProjectViewSet):
@@ -163,11 +197,11 @@ class SubPluginImageViewSet(ProjectImageViewSet):
             ) from Plugin.DoesNotExist
         return plugin
 
-    def get_project_kwargs(self, parent_project=None):
+    def get_project_kwargs(self):
         """Add the Plugin to the kwargs for filtering for the project."""
-        kwargs = super().get_project_kwargs(parent_project=parent_project)
+        kwargs = super().get_project_kwargs()
         kwargs.update(
-            plugin=parent_project,
+            plugin=self.parent_project,
         )
         return kwargs
 
@@ -230,11 +264,11 @@ class SubPluginReleaseViewSet(ProjectReleaseViewSet):
             ) from Plugin.DoesNotExist
         return plugin
 
-    def get_project_kwargs(self, parent_project=None):
+    def get_project_kwargs(self):
         """Add the Plugin to the kwargs for filtering for the project."""
-        kwargs = super().get_project_kwargs(parent_project=parent_project)
+        kwargs = super().get_project_kwargs()
         kwargs.update(
-            plugin=parent_project,
+            plugin=self.parent_project,
         )
         return kwargs
 

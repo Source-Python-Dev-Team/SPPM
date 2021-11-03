@@ -30,8 +30,7 @@ class ProjectRelatedInfoMixin(ModelViewSet):
 
     filter_backends = (OrderingFilter, DjangoFilterBackend)
 
-    api_type = None
-    parent_project = None
+    related_model_type = None
     _project = None
 
     @property
@@ -39,7 +38,7 @@ class ProjectRelatedInfoMixin(ModelViewSet):
         """Return the project for the image."""
         if self._project is not None:
             return self._project
-        kwargs = self.get_project_kwargs(self.parent_project)
+        kwargs = self.get_project_kwargs()
         try:
             self._project = self.project_model.objects.select_related(
                 'owner__user'
@@ -54,7 +53,7 @@ class ProjectRelatedInfoMixin(ModelViewSet):
     def project_model(self):
         """Return the model to use for the project."""
         raise NotImplementedError(
-            f'Class {self.__class__.__name__} must implement a '
+            f'Class "{self.__class__.__name__}" must implement a '
             '"project_model" attribute.'
         )
 
@@ -62,11 +61,11 @@ class ProjectRelatedInfoMixin(ModelViewSet):
     def project_type(self):
         """Return the project's type."""
         raise NotImplementedError(
-            f'Class {self.__class__.__name__} must implement a '
+            f'Class "{self.__class__.__name__}" must implement a '
             '"project_type" attribute.'
         )
 
-    def get_project_kwargs(self, parent_project=None):
+    def get_project_kwargs(self):
         """Return the kwargs to use to filter for the project."""
         project_slug = f"{self.project_type.replace('-', '_')}_slug"
         return {
@@ -83,8 +82,9 @@ class ProjectRelatedInfoMixin(ModelViewSet):
 
     def get_view_name(self):
         """Return the name for the view."""
-        if hasattr(self, 'kwargs') and self.api_type is not None:
-            return f'{self.project} - {self.api_type}'
+        if hasattr(self, 'kwargs') and self.related_model_type is not None:
+            plural = 's' if self.action == 'list' else ''
+            return f'{self.project} - {self.related_model_type}{plural}'
         return super().get_view_name()
 
 
@@ -97,7 +97,7 @@ class ProjectThroughModelMixin(ProjectRelatedInfoMixin):
 
     owner_only = False
     _owner = None
-    _contributors = []
+    _contributors = None
 
     @property
     def owner(self):
@@ -109,7 +109,7 @@ class ProjectThroughModelMixin(ProjectRelatedInfoMixin):
     @property
     def contributors(self):
         """Return a Queryset for the project's contributors."""
-        if isinstance(self._contributors, list):
+        if self._contributors is None:
             self._contributors = self.project.contributors.values_list(
                 'user',
                 flat=True,

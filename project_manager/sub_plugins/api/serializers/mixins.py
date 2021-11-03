@@ -47,10 +47,10 @@ class SubPluginReleaseBase:
         """Return the SubPlugin zip parsing function."""
         return SubPluginZipFile
 
-    def get_project_kwargs(self, parent_project=None):
+    def get_project_kwargs(self):
         """Return kwargs for the project."""
         kwargs = self.context['view'].kwargs
         return {
             'slug': kwargs.get('sub_plugin_slug'),
-            'plugin': parent_project,
+            'plugin': self.parent_project,
         }

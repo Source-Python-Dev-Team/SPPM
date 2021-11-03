@@ -64,14 +64,13 @@ class ProjectLocaleMixin:
 class ProjectReleaseCreationMixin(ModelSerializer):
     """Mixin for validation/creation of a project release."""
 
-    parent_project = None
     requirements = None
 
     @property
     def project_class(self):
         """Return the project's class."""
         raise NotImplementedError(
-            f'Class {self.__class__.__name__} must implement a '
+            f'Class "{self.__class__.__name__}" must implement a '
             '"project_class" attribute.'
         )
 
@@ -79,7 +78,7 @@ class ProjectReleaseCreationMixin(ModelSerializer):
     def project_type(self):
         """Return the project's type."""
         raise NotImplementedError(
-            f'Class {self.__class__.__name__} must implement a '
+            f'Class "{self.__class__.__name__}" must implement a '
             '"project_type" attribute.'
         )
 
@@ -87,11 +86,11 @@ class ProjectReleaseCreationMixin(ModelSerializer):
     def zip_parser(self):
         """Return the project's zip parsing function."""
         raise NotImplementedError(
-            f'Class {self.__class__.__name__} must implement a '
+            f'Class "{self.__class__.__name__}" must implement a '
             '"zip_parser" attribute.'
         )
 
-    def get_project_kwargs(self, parent_project=None):
+    def get_project_kwargs(self):
         """Return kwargs for the project."""
         return {
             'pk': self.context['view'].kwargs.get('pk')
@@ -110,8 +109,7 @@ class ProjectReleaseCreationMixin(ModelSerializer):
             })
 
         # Validate the version is new for the project
-        parent_project = self.parent_project
-        kwargs = self.get_project_kwargs(parent_project)
+        kwargs = self.get_project_kwargs()
         project = self.get_project(
             kwargs=kwargs,
         )
@@ -122,8 +120,6 @@ class ProjectReleaseCreationMixin(ModelSerializer):
         project_basename = getattr(project, 'basename', None)
 
         args = (zip_file,)
-        if parent_project is not None:
-            args += (parent_project,)
 
         with self.zip_parser(*args) as zip_validator:
             self.validate_zip_file(

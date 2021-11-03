@@ -30,7 +30,7 @@ class PluginReleaseBase:
         """Return the Plugin zip parsing function."""
         return PluginZipFile
 
-    def get_project_kwargs(self, parent_project=None):
+    def get_project_kwargs(self):
         """Return kwargs for the project."""
         return {
             'pk': self.context['view'].kwargs.get('plugin_slug')

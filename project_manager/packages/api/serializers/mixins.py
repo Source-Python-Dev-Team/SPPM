@@ -30,7 +30,7 @@ class PackageReleaseBase:
         """Return the Package zip parsing function."""
         return PackageZipFile
 
-    def get_project_kwargs(self, parent_project=None):
+    def get_project_kwargs(self):
         """Return kwargs for the project."""
         return {
             'pk': self.context['view'].kwargs.get('package_slug')

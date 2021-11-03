@@ -49,7 +49,6 @@ class ProjectAPIView(APIView):
     http_method_names = ('get', 'options')
 
     project_type = None
-    extra_params = ''
 
     def get(self, request):
         """Return all the API routes for Projects."""
@@ -59,28 +58,28 @@ class ProjectAPIView(APIView):
                     viewname=f'api:{self.project_type}s:endpoints',
                     request=request,
                 ) + (
-                    f'contributors/{self.extra_params}<{self.project_type}>/'
+                    f'contributors/<{self.project_type}>/'
                 ),
                 'games': reverse(
                     viewname=f'api:{self.project_type}s:endpoints',
                     request=request,
-                ) + f'games/{self.extra_params}<{self.project_type}>/',
+                ) + f'games/<{self.project_type}>/',
                 'images': reverse(
                     viewname=f'api:{self.project_type}s:endpoints',
                     request=request,
-                ) + f'images/{self.extra_params}<{self.project_type}>/',
+                ) + f'images/<{self.project_type}>/',
                 'projects': reverse(
                     viewname=f'api:{self.project_type}s:endpoints',
                     request=request,
-                ) + f'projects/{self.extra_params}',
+                ) + f'projects/',
                 'releases': reverse(
                     viewname=f'api:{self.project_type}s:endpoints',
                     request=request,
-                ) + f'releases/{self.extra_params}<{self.project_type}>/',
+                ) + f'releases/<{self.project_type}>/',
                 'tags': reverse(
                     viewname=f'api:{self.project_type}s:endpoints',
                     request=request,
-                ) + f'tags/{self.extra_params}<{self.project_type}>/',
+                ) + f'tags/<{self.project_type}>/',
             }
         )
 
@@ -102,13 +101,12 @@ class ProjectViewSet(ModelViewSet):
     stored_contributors = None
     stored_supported_games = None
     stored_tags = None
-    _obj = None
 
     @property
     def creation_serializer_class(self):
         """Return the serializer class to use ONLY when creating a project."""
         raise NotImplementedError(
-            f'Class {self.__class__.__name__} must implement a '
+            f'Class "{self.__class__.__name__}" must implement a '
             '"creation_serializer_class" attribute.'
         )
 
@@ -166,20 +164,13 @@ class ProjectViewSet(ModelViewSet):
         self.store_many_to_many_fields(request=request)
         return super().update(request, *args, **kwargs)
 
-    def get_view_name(self):
-        """Return the project so it's name is in the view."""
-        if self._obj is not None:
-            return self._obj
-        return super().get_view_name()
-
 
 class ProjectImageViewSet(ProjectThroughModelMixin):
     """Base Image View."""
 
     ordering = ('-created',)
     ordering_fields = ('created',)
-
-    api_type = 'Images'
+    related_model_type = 'Image'
 
 
 class ProjectReleaseViewSet(ProjectRelatedInfoMixin):
@@ -190,8 +181,7 @@ class ProjectReleaseViewSet(ProjectRelatedInfoMixin):
     ordering_fields = ('created',)
     lookup_value_regex = RELEASE_VERSION_REGEX
     lookup_field = 'version'
-
-    api_type = 'Releases'
+    related_model_type = 'Release'
 
 
 class ProjectGameViewSet(ProjectThroughModelMixin):
@@ -199,8 +189,7 @@ class ProjectGameViewSet(ProjectThroughModelMixin):
 
     ordering = ('-game',)
     ordering_fields = ('game',)
-
-    api_type = 'Supported Games'
+    related_model_type = 'Game'
 
 
 class ProjectTagViewSet(ProjectThroughModelMixin):
@@ -208,8 +197,7 @@ class ProjectTagViewSet(ProjectThroughModelMixin):
 
     ordering = ('-tag',)
     ordering_fields = ('tag',)
-
-    api_type = 'Tags'
+    related_model_type = 'Tag'
 
 
 class ProjectContributorViewSet(ProjectThroughModelMixin):
@@ -217,6 +205,6 @@ class ProjectContributorViewSet(ProjectThroughModelMixin):
 
     ordering = ('-user',)
     ordering_fields = ('user',)
+    related_model_type = 'Contributor'
 
-    api_type = 'Contributors'
     owner_only = True
