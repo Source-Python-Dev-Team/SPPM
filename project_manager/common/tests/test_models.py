@@ -249,6 +249,32 @@ class ProjectTestCase(TestCase):
         self.assertFalse(expr=field.blank)
         self.assertFalse(expr=field.null)
 
+    def test_handle_logo_upload_required(self):
+        obj = ''
+        with self.assertRaises(NotImplementedError) as context:
+            Project.handle_logo_upload.fget(obj)
+
+        self.assertEqual(
+            first=str(context.exception),
+            second=(
+                f'Class "{obj.__class__.__name__}" must implement a '
+                f'"handle_logo_upload" attribute.'
+            ),
+        )
+
+    def test_releases_required(self):
+        obj = ''
+        with self.assertRaises(NotImplementedError) as context:
+            Project.releases.fget(obj)
+
+        self.assertEqual(
+            first=str(context.exception),
+            second=(
+                f'Class "{obj.__class__.__name__}" must implement a "releases"'
+                f' field via ForeignKey relationship.'
+            ),
+        )
+
     def test_meta_class(self):
         self.assertTrue(
             expr=Project._meta.abstract
@@ -277,6 +303,19 @@ class ProjectContributorTestCase(TestCase):
         )
         self.assertFalse(expr=field.blank)
         self.assertFalse(expr=field.null)
+
+    def test_project_required(self):
+        obj = ''
+        with self.assertRaises(NotImplementedError) as context:
+            ProjectContributor.project.fget(obj)
+
+        self.assertEqual(
+            first=str(context.exception),
+            second=(
+                f'Class "{obj.__class__.__name__}" must implement a "project"'
+                f' property.'
+            ),
+        )
 
     def test_meta_class(self):
         self.assertTrue(
@@ -341,6 +380,19 @@ class ProjectImageTestCase(TestCase):
         self.assertEqual(
             first=field.verbose_name,
             second='created',
+        )
+
+    def test_handle_image_upload_required(self):
+        obj = ''
+        with self.assertRaises(NotImplementedError) as context:
+            ProjectImage.handle_image_upload.fget(obj)
+
+        self.assertEqual(
+            first=str(context.exception),
+            second=(
+                f'Class "{obj.__class__.__name__}" must implement a '
+                f'"handle_image_upload" attribute.'
+            ),
         )
 
     def test_meta_class(self):
@@ -436,6 +488,45 @@ class ProjectReleaseTestCase(TestCase):
         self.assertEqual(
             first=field.verbose_name,
             second='created',
+        )
+
+    def test_project_class_required(self):
+        obj = ''
+        with self.assertRaises(NotImplementedError) as context:
+            ProjectRelease.project_class.fget(obj)
+
+        self.assertEqual(
+            first=str(context.exception),
+            second=(
+                f'Class "{obj.__class__.__name__}" must implement a '
+                f'"project_class" attribute.'
+            ),
+        )
+
+    def test_project_required(self):
+        obj = ''
+        with self.assertRaises(NotImplementedError) as context:
+            ProjectRelease.project.fget(obj)
+
+        self.assertEqual(
+            first=str(context.exception),
+            second=(
+                f'Class "{obj.__class__.__name__}" must implement a "project"'
+                f' property.'
+            ),
+        )
+
+    def test_handle_zip_file_upload_required(self):
+        obj = ''
+        with self.assertRaises(NotImplementedError) as context:
+            ProjectRelease.handle_zip_file_upload.fget(obj)
+
+        self.assertEqual(
+            first=str(context.exception),
+            second=(
+                f'Class "{obj.__class__.__name__}" must implement a '
+                f'"handle_zip_file_upload" attribute.'
+            ),
         )
 
     def test_meta_class(self):
