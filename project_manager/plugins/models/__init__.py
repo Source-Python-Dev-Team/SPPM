@@ -95,6 +95,12 @@ class Plugin(Project):
     handle_logo_upload = handle_plugin_logo_upload
     logo_path = PLUGIN_LOGO_URL
 
+    class Meta:
+        """Define metaclass attributes."""
+
+        verbose_name = 'Plugin'
+        verbose_name_plural = 'Plugins'
+
     def get_absolute_url(self):
         """Return the URL for the Plugin."""
         # TODO: add tests once this view is created

@@ -91,6 +91,12 @@ class Package(Project):
     handle_logo_upload = handle_package_logo_upload
     logo_path = PACKAGE_LOGO_URL
 
+    class Meta:
+        """Define metaclass attributes."""
+
+        verbose_name = 'Package'
+        verbose_name_plural = 'Packages'
+
     def get_absolute_url(self):
         """Return the URL for the Package."""
         # TODO: add tests once this view is created
@@ -138,6 +144,11 @@ class PackageRelease(ProjectRelease):
     def project(self):
         """Return the Package."""
         return self.package
+
+    class Meta(ProjectRelease.Meta):
+        """Define metaclass attributes."""
+
+        unique_together = ('package', 'version')
 
     def get_absolute_url(self):
         """Return the URL for the PackageRelease."""

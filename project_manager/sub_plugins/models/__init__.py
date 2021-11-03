@@ -124,18 +124,10 @@ class SubPlugin(Project):
             }
         )
 
-    def save(
-        self, force_insert=False, force_update=False, using=None,
-        update_fields=None
-    ):
+    def save(self, *args, **kwargs):
         """Set the id using the plugin's slug and the project's slug."""
         self.id = f'{self.plugin.slug}.{self.get_slug_value()}'
-        super().save(
-            force_insert=force_insert,
-            force_update=force_update,
-            using=using,
-            update_fields=update_fields,
-        )
+        super().save(*args, **kwargs)
 
 
 class SubPluginRelease(ProjectRelease):
@@ -174,6 +166,11 @@ class SubPluginRelease(ProjectRelease):
     def project(self):
         """Return the SubPlugin."""
         return self.sub_plugin
+
+    class Meta(ProjectRelease.Meta):
+        """Define metaclass attributes."""
+
+        unique_together = ('sub_plugin', 'version')
 
     def get_absolute_url(self):
         """Return the URL for the SubPluginRelease."""
