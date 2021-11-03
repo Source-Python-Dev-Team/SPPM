@@ -75,7 +75,7 @@ class PluginAPIView(ProjectAPIView):
         response.data['paths'] = reverse(
             viewname=f'api:{self.project_type}s:endpoints',
             request=request,
-        ) + f'paths/{self.extra_params}<{self.project_type}>/'
+        ) + f'paths/<{self.project_type}>/'
         return response
 
 
@@ -242,6 +242,6 @@ class SubPluginPathViewSet(ProjectThroughModelMixin):
     )
     serializer_class = SubPluginPathSerializer
 
-    api_type = 'Sub-Plugin Paths'
     project_type = 'plugin'
     project_model = Plugin
+    related_model_type = 'Sub-Plugin Path'
