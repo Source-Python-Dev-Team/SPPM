@@ -89,7 +89,7 @@ class SubPluginAPIView(ProjectAPIView):
                 'projects': reverse(
                     viewname=f'api:{self.project_type}s:endpoints',
                     request=request,
-                ) + f'projects/<plugin>/',
+                ) + 'projects/<plugin>/',
                 'releases': reverse(
                     viewname=f'api:{self.project_type}s:endpoints',
                     request=request,

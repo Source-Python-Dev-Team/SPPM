@@ -71,7 +71,7 @@ class ProjectAPIView(APIView):
                 'projects': reverse(
                     viewname=f'api:{self.project_type}s:endpoints',
                     request=request,
-                ) + f'projects/',
+                ) + 'projects/',
                 'releases': reverse(
                     viewname=f'api:{self.project_type}s:endpoints',
                     request=request,
