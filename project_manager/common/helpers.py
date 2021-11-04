@@ -52,22 +52,12 @@ class ProjectZipFile:
     """Base ZipFile parsing class."""
 
     file_types = None
-    zip_file = None
-
-    def __enter__(self):
-        """Open the zip file on entry."""
-        self.zip_file = ZipFile(self.zip_file_path)
-        return self
-
-    def __exit__(self, exc_type, exc_val, exc_tb):
-        """Close the zip file on exiting."""
-        self.zip_file.close()
-        return not exc_type
 
     def __init__(self, zip_file):
         """Store the base attributes for the zip file."""
-        self.zip_file_path = zip_file
-        self.file_list = self.get_file_list()
+        self.zip_file = zip_file
+        with ZipFile(self.zip_file) as zip_obj:
+            self.file_list = self.get_file_list(zip_obj)
         self.basename = None
         self.requirements = {
             'custom': [],
@@ -133,13 +123,11 @@ class ProjectZipFile:
 
         return False
 
-    def get_file_list(self):
+    @staticmethod
+    def get_file_list(zip_obj):
         """Return a list of all files in the given zip file."""
         try:
-            return [
-                x for x in self.zip_file.namelist()
-                if not x.endswith('/')
-            ]
+            return [x for x in zip_obj.namelist() if not x.endswith('/')]
         except BadZipfile:
             raise ValidationError({
                 'zip_file': 'Given file is not a valid zip file.'
@@ -187,7 +175,7 @@ class ProjectZipFile:
         """Return the requirements for the release."""
         requirement_path = self.get_requirement_path()
         try:
-            with self.zip_file.open(requirement_path) as requirement_file:
+            with ZipFile(self.zip_file).open(requirement_path) as requirement_file:
                 contents = json.load(requirement_file)
         except KeyError:
             return

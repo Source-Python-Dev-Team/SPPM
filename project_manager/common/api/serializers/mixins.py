@@ -113,7 +113,7 @@ class ProjectReleaseCreationMixin(ModelSerializer):
         project = self.get_project(
             kwargs=kwargs,
         )
-        self.validate_version(
+        self.run_version_validation(
             project=project,
             version=version,
         )
@@ -121,17 +121,17 @@ class ProjectReleaseCreationMixin(ModelSerializer):
 
         args = (zip_file,)
 
-        with self.zip_parser(*args) as zip_validator:
-            self.validate_zip_file(
-                zip_validator=zip_validator,
-                project_basename=project_basename,
-            )
+        zip_validator = self.zip_parser(*args)
+        self.run_zip_file_validation(
+            zip_validator=zip_validator,
+            project_basename=project_basename,
+        )
 
-            # This needs added for project creation
-            attrs['basename'] = zip_validator.basename
+        # This needs added for project creation
+        attrs['basename'] = zip_validator.basename
 
-            if project is not None:
-                attrs[self.project_type.replace('-', '_')] = project
+        if project is not None:
+            attrs[self.project_type.replace('-', '_')] = project
 
         return attrs
 
@@ -142,7 +142,7 @@ class ProjectReleaseCreationMixin(ModelSerializer):
         except self.project_class.DoesNotExist:
             return None
 
-    def validate_version(self, project, version):
+    def run_version_validation(self, project, version):
         """Validate that the version does not already exist."""
         kwargs = {
             self.project_type.replace('-', '_'): project,
@@ -153,7 +153,7 @@ class ProjectReleaseCreationMixin(ModelSerializer):
                 'version': 'Given version matches existing version.',
             })
 
-    def validate_zip_file(self, zip_validator, project_basename):
+    def run_zip_file_validation(self, zip_validator, project_basename):
         """Validate the files inside the zip file."""
         zip_validator.find_base_info()
         zip_validator.validate_file_paths()
