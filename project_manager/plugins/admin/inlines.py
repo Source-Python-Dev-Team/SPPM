@@ -86,6 +86,6 @@ class SubPluginPathInline(admin.StackedInline):
     )
     model = SubPluginPath
 
-    def has_add_permission(self, request, obj):
+    def has_add_permission(self, request, obj=None):
         """Disallow adding new images in the Admin."""
         return False
