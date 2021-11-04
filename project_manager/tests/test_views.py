@@ -56,7 +56,7 @@ class StatisticsViewTestCase(TestCase):
         package_download_count = 0
         package_count = randint(2, 8)
         for _ in range(package_count):
-            contributors = sample(user_list, randint(1, 3))
+            contributors = sample(user_list, randint(2, 4))
             contributing_users.update(contributors)
             owner = contributors.pop()
             package = PackageFactory(
@@ -81,7 +81,7 @@ class StatisticsViewTestCase(TestCase):
         plugin_download_count = 0
         plugin_count = randint(4, 8)
         for _ in range(plugin_count):
-            contributors = sample(user_list, randint(1, 3))
+            contributors = sample(user_list, randint(2, 4))
             contributing_users.update(contributors)
             owner = contributors.pop()
             plugin = PluginFactory(
@@ -105,7 +105,7 @@ class StatisticsViewTestCase(TestCase):
                 count = randint(1, 2)
                 sub_plugin_count += count
                 for _ in range(count):
-                    contributors = sample(user_list, randint(1, 3))
+                    contributors = sample(user_list, randint(2, 4))
                     contributing_users.update(contributors)
                     owner = contributors.pop()
                     sub_plugin = SubPluginFactory(
