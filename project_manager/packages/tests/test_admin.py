@@ -1,6 +1,9 @@
 # =============================================================================
 # IMPORTS
 # =============================================================================
+# Python
+from unittest import mock
+
 # Django
 from django.contrib import admin
 from django.test import TestCase
@@ -29,6 +32,9 @@ from project_manager.packages.models import (
     PackageRelease,
     PackageTag,
 )
+from test_utils.factories.packages import PackageFactory
+from test_utils.factories.users import ForumUserFactory
+from users.models import ForumUser
 
 
 # =============================================================================
@@ -60,6 +66,25 @@ class PackageContributorInlineTestCase(TestCase):
                 PackageContributorInline,
                 ProjectContributorInline,
             ),
+        )
+
+    @mock.patch(
+        target='django.contrib.admin.options.InlineModelAdmin.get_formset',
+    )
+    def test_get_formset(self, mock_super_get_formset):
+        user = ForumUserFactory()
+        package = PackageFactory()
+        field = mock_super_get_formset.return_value.form.base_fields['user']
+        field.queryset = ForumUser.objects.all()
+        self.assertCountEqual(
+            first=list(field.queryset),
+            second=[package.owner, user],
+        )
+        obj = PackageContributorInline(PackageContributor, admin.AdminSite())
+        obj.get_formset('', package)
+        self.assertListEqual(
+            list1=list(field.queryset),
+            list2=[user],
         )
 
     def test_model(self):
@@ -148,6 +173,13 @@ class PackageReleaseInlineTestCase(TestCase):
         self.assertEqual(
             first=PackageReleaseInline.model,
             second=PackageRelease,
+        )
+
+    def test_get_queryset(self):
+        obj = PackageReleaseInline(PackageRelease, admin.AdminSite())
+        self.assertTupleEqual(
+            tuple1=obj.get_queryset(mock.Mock()).query.order_by,
+            tuple2=('-created',),
         )
 
     def test_has_add_permission(self):

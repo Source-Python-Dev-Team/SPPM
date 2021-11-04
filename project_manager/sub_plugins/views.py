@@ -26,7 +26,7 @@ class SubPluginReleaseDownloadView(DownloadMixin):
 
     model = SubPluginRelease
     project_model = Plugin
-    model_kwarg = 'plugin'
+    model_kwarg = 'sub_plugin'
     base_url = SUB_PLUGIN_RELEASE_URL
 
     def get_instance(self, kwargs):

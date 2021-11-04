@@ -53,11 +53,10 @@ class DownloadMixin(View):
     @property
     def model_kwarg(self):
         """Return the project's kwarg key."""
-        if self.model_kwarg is not None:
-            raise NotImplementedError(
-                f'Class "{self.__class__.__name__}" must implement a '
-                '"model_kwarg" attribute.'
-            )
+        raise NotImplementedError(
+            f'Class "{self.__class__.__name__}" must implement a '
+            '"model_kwarg" attribute.'
+        )
 
     @property
     def full_path(self):
