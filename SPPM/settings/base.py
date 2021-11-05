@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     'embed_video',
     'precise_bbcode',
     'crispy_forms',
+    'django_extensions',
     'django_filters',
     'project_manager',
     'games',
