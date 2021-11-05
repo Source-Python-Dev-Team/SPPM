@@ -40,14 +40,14 @@ class PluginZipFile(ProjectZipFile):
     def find_base_info(self):
         """Store all base information for the zip file."""
         for file_path in self.file_list:
-            if not file_path.endswith('.py'):
-                continue
-
             if not file_path.startswith(PLUGIN_PATH):
                 continue
 
             current = file_path.split(PLUGIN_PATH, 1)[1]
             if not current:
+                continue
+
+            if not file_path.endswith('.py'):
                 continue
 
             current = current.split('/', 1)[0]
@@ -72,7 +72,7 @@ class PluginZipFile(ProjectZipFile):
 # =============================================================================
 # FUNCTIONS
 # =============================================================================
-def handle_plugin_zip_upload(instance, filename):
+def handle_plugin_zip_upload(instance):
     """Return the path to store the zip for the current release."""
     slug = instance.plugin.slug
     return f'{PLUGIN_RELEASE_URL}{slug}/{slug}-v{instance.version}.zip'

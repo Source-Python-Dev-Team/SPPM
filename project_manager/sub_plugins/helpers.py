@@ -190,7 +190,7 @@ class SubPluginZipFile(ProjectZipFile):
 # =============================================================================
 # FUNCTIONS
 # =============================================================================
-def handle_sub_plugin_zip_upload(instance, filename):
+def handle_sub_plugin_zip_upload(instance):
     """Return the path to store the zip for the current release."""
     slug = instance.sub_plugin.slug
     return (

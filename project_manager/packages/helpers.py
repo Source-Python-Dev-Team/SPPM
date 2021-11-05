@@ -41,13 +41,14 @@ class PackageZipFile(ProjectZipFile):
     def find_base_info(self):
         """Store all base information for the zip file."""
         for file_path in self.file_list:
-            if not file_path.endswith('.py'):
-                continue
             if not file_path.startswith(PACKAGE_PATH):
                 continue
 
             current = file_path.split(PACKAGE_PATH, 1)[1]
             if not current:
+                continue
+
+            if not file_path.endswith('.py'):
                 continue
 
             if '/' not in current:
@@ -86,7 +87,7 @@ class PackageZipFile(ProjectZipFile):
 # =============================================================================
 # FUNCTIONS
 # =============================================================================
-def handle_package_zip_upload(instance, filename):
+def handle_package_zip_upload(instance):
     """Return the path to store the zip for the current release."""
     slug = instance.package.slug
     return f'{PACKAGE_RELEASE_URL}{slug}/{slug}-v{instance.version}.zip'
