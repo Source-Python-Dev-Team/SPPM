@@ -734,7 +734,7 @@ class PackageReleasePackageRequirementTestCase(TestCase):
         )
 
 
-class PackageReleasePypiRequirementTestCase(TestCase):
+class PackageReleasePyPiRequirementTestCase(TestCase):
     def test_model_inheritance(self):
         self.assertTrue(
             expr=issubclass(

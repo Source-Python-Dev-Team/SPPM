@@ -740,7 +740,7 @@ class PluginReleasePackageRequirementTestCase(TestCase):
         )
 
 
-class PluginReleasePypiRequirementTestCase(TestCase):
+class PluginReleasePyPiRequirementTestCase(TestCase):
     def test_model_inheritance(self):
         self.assertTrue(
             expr=issubclass(

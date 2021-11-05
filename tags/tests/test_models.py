@@ -19,7 +19,7 @@ from users.models import ForumUser
 # =============================================================================
 # TEST CASES
 # =============================================================================
-class GameTestCase(TestCase):
+class TagTestCase(TestCase):
     def test_model_inheritance(self):
         self.assertTrue(
             expr=issubclass(Tag, models.Model),

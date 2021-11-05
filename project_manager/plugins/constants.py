@@ -19,6 +19,7 @@ from project_manager.common.constants import (
 __all__ = (
     'PATH_MAX_LENGTH',
     'PLUGIN_ALLOWED_FILE_TYPES',
+    'PLUGIN_DATA_PATH',
     'PLUGIN_IMAGE_URL',
     'PLUGIN_LOGO_URL',
     'PLUGIN_PATH',
