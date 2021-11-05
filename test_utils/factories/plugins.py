@@ -14,6 +14,7 @@ from project_manager.plugins.models import (
     Plugin,
     PluginContributor,
     PluginGame,
+    PluginImage,
     PluginRelease,
     PluginReleaseDownloadRequirement,
     PluginReleasePackageRequirement,
@@ -31,6 +32,7 @@ __all__ = (
     'PluginContributorFactory',
     'PluginFactory',
     'PluginGameFactory',
+    'PluginImageFactory',
     'PluginReleaseFactory',
     'PluginReleaseDownloadRequirementFactory',
     'PluginReleasePackageRequirementFactory',
@@ -105,6 +107,20 @@ class PluginGameFactory(factory.django.DjangoModelFactory):
         """Define the metaclass attributes."""
 
         model = PluginGame
+
+
+class PluginImageFactory(factory.django.DjangoModelFactory):
+    """Model factory to use when testing with PluginImage objects."""
+
+    plugin = factory.SubFactory(
+        factory='test_utils.factories.plugins.PluginFactory',
+    )
+    image = factory.Sequence(function=lambda n: f'image_{n}.jpg')
+
+    class Meta:
+        """Define the metaclass attributes."""
+
+        model = PluginImage
 
 
 class PluginTagFactory(factory.django.DjangoModelFactory):

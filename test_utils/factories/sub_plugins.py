@@ -14,6 +14,7 @@ from project_manager.sub_plugins.models import (
     SubPlugin,
     SubPluginContributor,
     SubPluginGame,
+    SubPluginImage,
     SubPluginRelease,
     SubPluginReleaseDownloadRequirement,
     SubPluginReleasePackageRequirement,
@@ -28,8 +29,9 @@ from project_manager.sub_plugins.models import (
 # =============================================================================
 __all__ = (
     'SubPluginContributorFactory',
-    'SubPluginGameFactory',
     'SubPluginFactory',
+    'SubPluginGameFactory',
+    'SubPluginImageFactory',
     'SubPluginReleaseFactory',
     'SubPluginReleaseDownloadRequirementFactory',
     'SubPluginReleasePackageRequirementFactory',
@@ -106,6 +108,20 @@ class SubPluginGameFactory(factory.django.DjangoModelFactory):
         """Define the metaclass attributes."""
 
         model = SubPluginGame
+
+
+class SubPluginImageFactory(factory.django.DjangoModelFactory):
+    """Model factory to use when testing with SubPluginImage objects."""
+
+    sub_plugin = factory.SubFactory(
+        factory='test_utils.factories.sub_plugins.SubPluginFactory',
+    )
+    image = factory.Sequence(function=lambda n: f'image_{n}.jpg')
+
+    class Meta:
+        """Define the metaclass attributes."""
+
+        model = SubPluginImage
 
 
 class SubPluginTagFactory(factory.django.DjangoModelFactory):

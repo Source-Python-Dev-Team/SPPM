@@ -14,6 +14,7 @@ from project_manager.packages.models import (
     Package,
     PackageContributor,
     PackageGame,
+    PackageImage,
     PackageRelease,
     PackageReleaseDownloadRequirement,
     PackageReleasePackageRequirement,
@@ -30,6 +31,7 @@ __all__ = (
     'PackageContributorFactory',
     'PackageFactory',
     'PackageGameFactory',
+    'PackageImageFactory',
     'PackageReleaseFactory',
     'PackageReleaseDownloadRequirementFactory',
     'PackageReleasePackageRequirementFactory',
@@ -103,6 +105,20 @@ class PackageGameFactory(factory.django.DjangoModelFactory):
         """Define the metaclass attributes."""
 
         model = PackageGame
+
+
+class PackageImageFactory(factory.django.DjangoModelFactory):
+    """Model factory to use when testing with PackageImage objects."""
+
+    package = factory.SubFactory(
+        factory='test_utils.factories.packages.PackageFactory',
+    )
+    image = factory.Sequence(function=lambda n: f'image_{n}.jpg')
+
+    class Meta:
+        """Define the metaclass attributes."""
+
+        model = PackageImage
 
 
 class PackageTagFactory(factory.django.DjangoModelFactory):
