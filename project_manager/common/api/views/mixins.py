@@ -95,7 +95,7 @@ class ProjectThroughModelMixin(ProjectRelatedInfoMixin):
     http_method_names = ('get', 'post', 'delete', 'options')
     permission_classes = (IsAuthenticatedOrReadOnly,)
 
-    owner_only = False
+    owner_only_id_access = False
     _owner = None
     _contributors = None
 
@@ -123,6 +123,6 @@ class ProjectThroughModelMixin(ProjectRelatedInfoMixin):
             is_contributor = user in self.contributors
             if user != self.owner and not is_contributor:
                 raise PermissionDenied
-            if self.owner_only and is_contributor:
+            if self.owner_only_id_access and is_contributor:
                 raise PermissionDenied
         return super().check_permissions(request=request)

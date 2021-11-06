@@ -207,4 +207,4 @@ class ProjectContributorViewSet(ProjectThroughModelMixin):
     ordering_fields = ('user',)
     related_model_type = 'Contributor'
 
-    owner_only = True
+    owner_only_id_access = True
