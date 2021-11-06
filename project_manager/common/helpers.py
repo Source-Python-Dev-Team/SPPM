@@ -5,7 +5,7 @@
 # =============================================================================
 # Python
 import json
-from zipfile import ZipFile, BadZipfile
+from zipfile import ZipFile, BadZipFile
 
 # Django
 from django.apps import apps
@@ -128,10 +128,10 @@ class ProjectZipFile:
         """Return a list of all files in the given zip file."""
         try:
             return [x for x in zip_obj.namelist() if not x.endswith('/')]
-        except BadZipfile:
+        except BadZipFile:
             raise ValidationError({
                 'zip_file': 'Given file is not a valid zip file.'
-            }) from BadZipfile
+            }) from BadZipFile
 
     def validate_basename(self):
         """Validate that the basename is not erroneous."""
