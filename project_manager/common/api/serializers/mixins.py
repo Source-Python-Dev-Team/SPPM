@@ -239,6 +239,8 @@ class ProjectThroughMixin(ModelSerializer):
 
 
 class AddProjectToViewMixin(ModelSerializer):
+    """Mixin used to add the project to the serialized data."""
+
     def validate(self, attrs):
         """Add the project to the validated data."""
         view = self.context['view']
