@@ -15,6 +15,7 @@ from rest_framework.serializers import ModelSerializer
 # ALL DECLARATION
 # =============================================================================
 __all__ = (
+    'AddProjectToViewMixin',
     'ProjectLocaleMixin',
     'ProjectReleaseCreationMixin',
     'ProjectThroughMixin',
@@ -219,8 +220,6 @@ class ProjectReleaseCreationMixin(ModelSerializer):
 class ProjectThroughMixin(ModelSerializer):
     """Mixin for through model serializers."""
 
-    add_project = True
-
     def get_field_names(self, declared_fields, info):
         """Add the 'id' field if necessary."""
         field_names = super().get_field_names(
@@ -234,13 +233,14 @@ class ProjectThroughMixin(ModelSerializer):
                 user = request.user.id
                 if view.owner == user:
                     return field_names + ('id',)
-                if user in view.contributors and not view.owner_only:
+                if user in view.contributors and not view.owner_only_id_access:
                     return field_names + ('id',)
         return field_names
 
+
+class AddProjectToViewMixin(ModelSerializer):
     def validate(self, attrs):
         """Add the project to the validated data."""
-        if self.add_project:
-            view = self.context['view']
-            attrs[view.project_type.replace('-', '_')] = view.project
+        view = self.context['view']
+        attrs[view.project_type.replace('-', '_')] = view.project
         return super().validate(attrs=attrs)

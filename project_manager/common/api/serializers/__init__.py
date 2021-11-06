@@ -22,6 +22,7 @@ from rest_framework.serializers import ModelSerializer
 
 # App
 from project_manager.common.api.serializers.mixins import (
+    AddProjectToViewMixin,
     ProjectLocaleMixin,
     ProjectReleaseCreationMixin,
     ProjectThroughMixin,
@@ -321,8 +322,6 @@ class ProjectCreateReleaseSerializer(ProjectReleaseCreationMixin):
 class ProjectImageSerializer(ProjectThroughMixin):
     """Base ProjectImage Serializer."""
 
-    add_project = False
-
     class Meta:
         """Define metaclass attributes."""
 
@@ -337,7 +336,7 @@ class ProjectImageSerializer(ProjectThroughMixin):
         return super().create(validated_data=validated_data)
 
 
-class ProjectGameSerializer(ProjectThroughMixin):
+class ProjectGameSerializer(ProjectThroughMixin, AddProjectToViewMixin):
     """Base ProjectGame Serializer."""
 
     game_slug = CharField(
@@ -374,7 +373,7 @@ class ProjectGameSerializer(ProjectThroughMixin):
         return super().validate(attrs=attrs)
 
 
-class ProjectTagSerializer(ProjectThroughMixin):
+class ProjectTagSerializer(ProjectThroughMixin, AddProjectToViewMixin):
     """Base ProjectTag Serializer."""
 
     tag = CharField(
@@ -410,7 +409,7 @@ class ProjectTagSerializer(ProjectThroughMixin):
         return super().validate(attrs=attrs)
 
 
-class ProjectContributorSerializer(ProjectThroughMixin):
+class ProjectContributorSerializer(ProjectThroughMixin, AddProjectToViewMixin):
     """Base ProjectContributor Serializer."""
 
     username = CharField(
