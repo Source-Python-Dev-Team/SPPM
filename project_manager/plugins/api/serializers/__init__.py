@@ -16,7 +16,10 @@ from project_manager.common.api.serializers import (
     ProjectSerializer,
     ProjectTagSerializer,
 )
-from project_manager.common.api.serializers.mixins import ProjectThroughMixin
+from project_manager.common.api.serializers.mixins import (
+    AddProjectToViewMixin,
+    ProjectThroughMixin,
+)
 from project_manager.packages.api.serializers.common import (
     ReleasePackageRequirementSerializer,
 )
@@ -210,7 +213,7 @@ class PluginContributorSerializer(ProjectContributorSerializer):
         model = PluginContributor
 
 
-class SubPluginPathSerializer(ProjectThroughMixin):
+class SubPluginPathSerializer(ProjectThroughMixin, AddProjectToViewMixin):
     """Sub-Plugin Paths Serializer."""
 
     class Meta:
