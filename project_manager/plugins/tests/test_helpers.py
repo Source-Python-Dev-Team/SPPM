@@ -35,6 +35,20 @@ from test_utils.factories.plugins import (
 # TEST CASES
 # =============================================================================
 class PluginZipFileTestCase(TestCase):
+
+    def setUp(self) -> None:
+        super().setUp()
+        mock.patch(
+            target='project_manager.common.helpers.ZipFile',
+        ).start()
+        self.mock_get_file_list = mock.patch(
+            target='project_manager.common.helpers.ProjectZipFile.get_file_list',
+        ).start()
+
+    def tearDown(self) -> None:
+        super().tearDown()
+        mock.patch.stopall()
+
     @staticmethod
     def _get_file_list(plugin_basename):
         return tuple(
@@ -65,15 +79,9 @@ class PluginZipFileTestCase(TestCase):
             d2=PLUGIN_ALLOWED_FILE_TYPES,
         )
 
-    @mock.patch(
-        target='project_manager.common.helpers.ZipFile',
-    )
-    @mock.patch(
-        target='project_manager.common.helpers.ProjectZipFile.get_file_list',
-    )
-    def test_find_base_info(self, mock_get_file_list, _):
+    def test_find_base_info(self):
         plugin_basename = 'test_plugin'
-        mock_get_file_list.return_value = self._get_file_list(
+        self.mock_get_file_list.return_value = self._get_file_list(
             plugin_basename=plugin_basename,
         )
         obj = PluginZipFile('')
@@ -83,7 +91,7 @@ class PluginZipFileTestCase(TestCase):
             second=plugin_basename,
         )
 
-        mock_get_file_list.return_value += (
+        self.mock_get_file_list.return_value += (
             f'{PLUGIN_PATH}second_basename/__init__.py',
         )
         with self.assertRaises(ValidationError) as context:
@@ -99,15 +107,9 @@ class PluginZipFileTestCase(TestCase):
             second='multiple',
         )
 
-    @mock.patch(
-        target='project_manager.common.helpers.ZipFile',
-    )
-    @mock.patch(
-        target='project_manager.common.helpers.ProjectZipFile.get_file_list',
-    )
-    def test_get_base_paths(self, mock_get_file_list, _):
+    def test_get_base_paths(self):
         plugin_basename = 'test_plugin'
-        mock_get_file_list.return_value = self._get_file_list(
+        self.mock_get_file_list.return_value = self._get_file_list(
             plugin_basename=plugin_basename,
         )
         obj = PluginZipFile('')
@@ -117,15 +119,31 @@ class PluginZipFileTestCase(TestCase):
             list2=[f'{PLUGIN_PATH}{plugin_basename}/{plugin_basename}.py'],
         )
 
-    @mock.patch(
-        target='project_manager.common.helpers.ZipFile',
-    )
-    @mock.patch(
-        target='project_manager.common.helpers.ProjectZipFile.get_file_list',
-    )
-    def test_get_requirement_path(self, mock_get_file_list, _):
+    def test_validate_base_file_in_zip(self):
         plugin_basename = 'test_plugin'
-        mock_get_file_list.return_value = self._get_file_list(
+        self.mock_get_file_list.return_value = self._get_file_list(
+            plugin_basename=plugin_basename,
+        )
+        obj = PluginZipFile('')
+        obj.find_base_info()
+        obj.validate_base_file_in_zip()
+
+        obj.basename = 'invalid'
+        with self.assertRaises(ValidationError) as context:
+            obj.validate_base_file_in_zip()
+
+        self.assertEqual(
+            first=context.exception.message,
+            second='No primary file found in zip.',
+        )
+        self.assertEqual(
+            first=context.exception.code,
+            second='not-found',
+        )
+
+    def test_get_requirement_path(self):
+        plugin_basename = 'test_plugin'
+        self.mock_get_file_list.return_value = self._get_file_list(
             plugin_basename=plugin_basename,
         )
         obj = PluginZipFile('')
