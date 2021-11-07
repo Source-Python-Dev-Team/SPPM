@@ -19,6 +19,7 @@ ignore-paths:
   - tests
   - .git
   - .idea
+  - venv
 
 pep8:
   run: true
