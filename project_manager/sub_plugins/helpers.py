@@ -46,13 +46,12 @@ class SubPluginZipFile(ProjectZipFile):
 
     def _validate_path(self, path):
         """Validate the given path is ok for the extension."""
-        if self.file_types is None:
-            raise NotImplementedError(
-                f'File types not set for {self.__class__.__name__}.'
-            )
+        if path.endswith('/'):
+            return True
 
-        extension = path.rsplit('.')[1]
-        if '/' in extension:
+        try:
+            extension = path.rsplit('/', 1)[1].rsplit('.', 1)[1]
+        except IndexError:
             return True
 
         for base_path, allowed_extensions in self.file_types.items():
@@ -78,9 +77,6 @@ class SubPluginZipFile(ProjectZipFile):
         plugin_path = f'{PLUGIN_PATH}{self.plugin.basename}/'
         paths = list(self.plugin.paths.values_list('path', flat=True))
         for file_path in self.file_list:
-            if not file_path.endswith('.py'):
-                continue
-
             if not file_path.startswith(plugin_path):
                 # TODO: validate not another plugin path or package
                 continue
@@ -89,17 +85,23 @@ class SubPluginZipFile(ProjectZipFile):
             if not current:
                 continue
 
+            if not file_path.endswith('.py'):
+                continue
+
             for current_path in paths:
                 if not current.startswith(current_path):
                     continue
 
                 current = current.split(current_path, 1)[1]
-                if current.startswith('/'):
+                if current.startswith('/'):  # pragma: no branch
                     current = current[1:]
 
                 current = current.split('/', 1)[0]
-                if not current:
+                if not current:  # pragma: no cover
                     continue
+
+                if current.endswith('.py'):
+                    current = current[:~2]
 
                 if self.basename is None:
                     self.basename = current
@@ -138,10 +140,12 @@ class SubPluginZipFile(ProjectZipFile):
 
     def _validate_base_file_in_zip(self, base_path, path_values):
         """Verify a base file is found in the given path."""
-        if not base_path.startswith('/'):
+        if not base_path.startswith('/'):  # pragma: no branch
             base_path = '/' + base_path
-        if not base_path.endswith('/'):
+
+        if not base_path.endswith('/'):  # pragma: no branch
             base_path += '/'
+
         sub_path = f'{PLUGIN_PATH}{self.plugin.basename}{base_path}'
         module_found = package_found = False
         if path_values['allow_module']:
@@ -161,7 +165,8 @@ class SubPluginZipFile(ProjectZipFile):
                 message=(
                     f'SubPlugin found as both a module and package in the same'
                     f' path: "{sub_path}".'
-                )
+                ),
+                code='invalid',
             )
 
         if package_found or module_found:
@@ -171,11 +176,13 @@ class SubPluginZipFile(ProjectZipFile):
             message=(
                 f'SubPlugin not found in path, though files found within zip '
                 f'for directory: "{sub_path}".'
-            )
+            ),
+            code='not-found',
         )
 
     def get_requirement_path(self):
         """Return the path for the requirements json file."""
+        # TODO: this is incorrect...it should take into account the sub-path
         if self.is_module:
             return (
                 f'{PLUGIN_PATH}{self.plugin.basename}/'
