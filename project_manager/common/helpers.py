@@ -51,8 +51,6 @@ VersionControlRequirement = apps.get_model(
 class ProjectZipFile:
     """Base ZipFile parsing class."""
 
-    file_types = None
-
     def __init__(self, zip_file):
         """Store the base attributes for the zip file."""
         self.zip_file = zip_file
@@ -73,6 +71,14 @@ class ProjectZipFile:
         raise NotImplementedError(
             f'Class "{self.__class__.__name__}" must implement a '
             f'"project_type" attribute.'
+        )
+
+    @property
+    def file_types(self):
+        """Return the type of project."""
+        raise NotImplementedError(
+            f'Class "{self.__class__.__name__}" must implement a '
+            f'"file_types" attribute.'
         )
 
     def find_base_info(self):
@@ -105,22 +111,27 @@ class ProjectZipFile:
 
     def _validate_path(self, path):
         """Validate the given path is ok for the extension."""
-        if self.file_types is None:
-            raise NotImplementedError(
-                f'File types not set for {self.__class__.__name__}.'
-            )
+        if path.endswith('/'):
+            return True
 
-        extension = path.rsplit('.')[1]
-        if '/' in extension:
+        try:
+            extension = path.rsplit('/', 1)[1].rsplit('.', 1)[1]
+        except IndexError:
+            print(path)
             return True
 
         for base_path, allowed_extensions in self.file_types.items():
             if not path.startswith(base_path.format(self=self)):
                 continue
+
+            # extension allowed for path
             if extension in allowed_extensions:
                 return True
+
+            # extension not allowed for path
             return False
 
+        # File not found in any allowed paths
         return False
 
     @staticmethod
@@ -211,19 +222,15 @@ class ProjectZipFile:
                     self._validate_custom_requirement(
                         item=item,
                     )
-                elif group_type == 'pypi':
-                    self._validate_requirement(
-                        item=item,
-                        group_type=group_type,
-                        field='name',
-                        include_version=True,
-                    )
                 else:
+                    is_pypi = group_type == 'pypi'
                     self._validate_requirement(
                         item=item,
                         group_type=group_type,
-                        field='url',
+                        field='name' if is_pypi else 'url',
+                        include_version=is_pypi,
                     )
+
         if self.requirements_errors:
             raise ValidationError({
                 'zip_file': self.requirements_errors,

@@ -95,6 +95,19 @@ class ProjectZipFileTestCase(TestCase):
             ),
         )
 
+    def test_file_types_required(self):
+        obj = ProjectZipFile('')
+        with self.assertRaises(NotImplementedError) as context:
+            _ = obj.file_types
+
+        self.assertEqual(
+            first=str(context.exception),
+            second=(
+                f'Class "{obj.__class__.__name__}" must implement a '
+                f'"file_types" attribute.'
+            ),
+        )
+
     def test_find_base_info_required(self):
         obj = ProjectZipFile('')
         with self.assertRaises(NotImplementedError) as context:
