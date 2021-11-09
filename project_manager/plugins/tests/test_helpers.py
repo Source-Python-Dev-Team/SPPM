@@ -153,6 +153,70 @@ class PluginZipFileTestCase(TestCase):
             second=f'{PLUGIN_PATH}{plugin_basename}/requirements.json',
         )
 
+    def test_validate_file_paths(self):
+        plugin_basename = 'test_plugin'
+        self.mock_get_file_list.return_value = self._get_file_list(
+            plugin_basename=plugin_basename,
+        )
+        obj = PluginZipFile('')
+        obj.find_base_info()
+        obj.validate_base_file_in_zip()
+        obj.validate_file_paths()
+
+        invalid_file = f'{PLUGIN_PATH}{plugin_basename}/{plugin_basename}.invalid'
+        self.mock_get_file_list.return_value = self._get_file_list(
+            plugin_basename=plugin_basename,
+        ) + (invalid_file, )
+        obj = PluginZipFile('')
+        obj.find_base_info()
+        obj.validate_base_file_in_zip()
+        with self.assertRaises(ValidationError) as context:
+            obj.validate_file_paths()
+
+        self.assertEqual(
+            first=len(context.exception.message_dict),
+            second=1,
+        )
+        self.assertIn(
+            member='zip_file',
+            container=context.exception.message_dict,
+        )
+        self.assertEqual(
+            first=len(context.exception.message_dict['zip_file']),
+            second=1,
+        )
+        self.assertEqual(
+            first=context.exception.message_dict['zip_file'][0],
+            second=f'Invalid paths found in zip: {invalid_file}',
+        )
+
+        invalid_file = f'invalid/{plugin_basename}/{plugin_basename}.py'
+        self.mock_get_file_list.return_value = self._get_file_list(
+            plugin_basename=plugin_basename,
+        ) + (invalid_file, )
+        obj = PluginZipFile('')
+        obj.find_base_info()
+        obj.validate_base_file_in_zip()
+        with self.assertRaises(ValidationError) as context:
+            obj.validate_file_paths()
+
+        self.assertEqual(
+            first=len(context.exception.message_dict),
+            second=1,
+        )
+        self.assertIn(
+            member='zip_file',
+            container=context.exception.message_dict,
+        )
+        self.assertEqual(
+            first=len(context.exception.message_dict['zip_file']),
+            second=1,
+        )
+        self.assertEqual(
+            first=context.exception.message_dict['zip_file'][0],
+            second=f'Invalid paths found in zip: {invalid_file}',
+        )
+
 
 class HelperFunctionsTestCase(TestCase):
     def test_handle_plugin_zip_upload(self):

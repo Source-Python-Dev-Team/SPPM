@@ -202,6 +202,70 @@ class PackageZipFileTestCase(TestCase):
             second=f'{PACKAGE_PATH}{package_basename}/requirements.json',
         )
 
+    def test_validate_file_paths(self):
+        package_basename = 'test_package_as_module'
+        self.mock_get_file_list.return_value = self._get_module_file_list(
+            package_basename=package_basename,
+        )
+        obj = PackageZipFile('')
+        obj.find_base_info()
+        obj.validate_base_file_in_zip()
+        obj.validate_file_paths()
+
+        invalid_file = f'{PACKAGE_PATH}{package_basename}.invalid'
+        self.mock_get_file_list.return_value = self._get_module_file_list(
+            package_basename=package_basename,
+        ) + (invalid_file, )
+        obj = PackageZipFile('')
+        obj.find_base_info()
+        obj.validate_base_file_in_zip()
+        with self.assertRaises(ValidationError) as context:
+            obj.validate_file_paths()
+
+        self.assertEqual(
+            first=len(context.exception.message_dict),
+            second=1,
+        )
+        self.assertIn(
+            member='zip_file',
+            container=context.exception.message_dict,
+        )
+        self.assertEqual(
+            first=len(context.exception.message_dict['zip_file']),
+            second=1,
+        )
+        self.assertEqual(
+            first=context.exception.message_dict['zip_file'][0],
+            second=f'Invalid paths found in zip: {invalid_file}',
+        )
+
+        invalid_file = f'invalid/{package_basename}.py'
+        self.mock_get_file_list.return_value = self._get_module_file_list(
+            package_basename=package_basename,
+        ) + (invalid_file, )
+        obj = PackageZipFile('')
+        obj.find_base_info()
+        obj.validate_base_file_in_zip()
+        with self.assertRaises(ValidationError) as context:
+            obj.validate_file_paths()
+
+        self.assertEqual(
+            first=len(context.exception.message_dict),
+            second=1,
+        )
+        self.assertIn(
+            member='zip_file',
+            container=context.exception.message_dict,
+        )
+        self.assertEqual(
+            first=len(context.exception.message_dict['zip_file']),
+            second=1,
+        )
+        self.assertEqual(
+            first=context.exception.message_dict['zip_file'][0],
+            second=f'Invalid paths found in zip: {invalid_file}',
+        )
+
 
 class HelperFunctionsTestCase(TestCase):
     def test_handle_package_zip_upload(self):
