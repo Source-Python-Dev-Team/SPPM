@@ -179,9 +179,9 @@ class SubPluginSerializer(ProjectSerializer):
         try:
             plugin = Plugin.objects.get(slug=plugin_slug)
         except Plugin.DoesNotExist:
-            raise ValidationError(
-                f"Plugin '{plugin_slug}' not found."
-            ) from Plugin.DoesNotExist
+            raise ValidationError({
+                'plugin': f"Plugin '{plugin_slug}' not found."
+            }) from Plugin.DoesNotExist
         return plugin
 
     @staticmethod
