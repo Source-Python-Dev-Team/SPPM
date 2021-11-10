@@ -70,34 +70,18 @@ class SubPluginAPIView(ProjectAPIView):
 
     def get(self, request):
         """Return all the API routes for Projects."""
+        base_path = reverse(
+            viewname=f'api:{self.project_type}s:endpoints',
+            request=request,
+        )
         return Response(
             data={
-                'contributors': reverse(
-                    viewname=f'api:{self.project_type}s:endpoints',
-                    request=request,
-                ) + (
-                    f'contributors/<plugin>/<{self.project_type}>/'
-                ),
-                'games': reverse(
-                    viewname=f'api:{self.project_type}s:endpoints',
-                    request=request,
-                ) + f'games/<plugin>/<{self.project_type}>/',
-                'images': reverse(
-                    viewname=f'api:{self.project_type}s:endpoints',
-                    request=request,
-                ) + f'images/<plugin>/<{self.project_type}>/',
-                'projects': reverse(
-                    viewname=f'api:{self.project_type}s:endpoints',
-                    request=request,
-                ) + 'projects/<plugin>/',
-                'releases': reverse(
-                    viewname=f'api:{self.project_type}s:endpoints',
-                    request=request,
-                ) + f'releases/<plugin>/<{self.project_type}>/',
-                'tags': reverse(
-                    viewname=f'api:{self.project_type}s:endpoints',
-                    request=request,
-                ) + f'tags/<plugin>/<{self.project_type}>/',
+                'contributors': base_path + f'contributors/<plugin>/<{self.project_type}>/',
+                'games': base_path + f'games/<plugin>/<{self.project_type}>/',
+                'images': base_path + f'images/<plugin>/<{self.project_type}>/',
+                'projects': base_path + 'projects/<plugin>/',
+                'releases': base_path + f'releases/<plugin>/<{self.project_type}>/',
+                'tags': base_path + f'tags/<plugin>/<{self.project_type}>/',
             }
         )
 

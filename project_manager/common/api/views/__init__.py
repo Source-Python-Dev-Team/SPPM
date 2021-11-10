@@ -52,34 +52,18 @@ class ProjectAPIView(APIView):
 
     def get(self, request):
         """Return all the API routes for Projects."""
+        base_path = reverse(
+            viewname=f'api:{self.project_type}s:endpoints',
+            request=request,
+        )
         return Response(
             data={
-                'contributors': reverse(
-                    viewname=f'api:{self.project_type}s:endpoints',
-                    request=request,
-                ) + (
-                    f'contributors/<{self.project_type}>/'
-                ),
-                'games': reverse(
-                    viewname=f'api:{self.project_type}s:endpoints',
-                    request=request,
-                ) + f'games/<{self.project_type}>/',
-                'images': reverse(
-                    viewname=f'api:{self.project_type}s:endpoints',
-                    request=request,
-                ) + f'images/<{self.project_type}>/',
-                'projects': reverse(
-                    viewname=f'api:{self.project_type}s:endpoints',
-                    request=request,
-                ) + 'projects/',
-                'releases': reverse(
-                    viewname=f'api:{self.project_type}s:endpoints',
-                    request=request,
-                ) + f'releases/<{self.project_type}>/',
-                'tags': reverse(
-                    viewname=f'api:{self.project_type}s:endpoints',
-                    request=request,
-                ) + f'tags/<{self.project_type}>/',
+                'contributors': base_path + f'contributors/<{self.project_type}>/',
+                'games': base_path + f'games/<{self.project_type}>/',
+                'images': base_path + f'images/<{self.project_type}>/',
+                'projects': base_path + 'projects/',
+                'releases': base_path + f'releases/<{self.project_type}>/',
+                'tags': base_path + f'tags/<{self.project_type}>/',
             }
         )
 
