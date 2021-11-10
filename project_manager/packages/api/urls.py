@@ -12,7 +12,7 @@ from rest_framework import routers
 # App
 from project_manager.packages.api.views import (
     PackageAPIView,
-    PackageContributorsViewSet,
+    PackageContributorViewSet,
     PackageGameViewSet,
     PackageImageViewSet,
     PackageReleaseViewSet,
@@ -52,7 +52,7 @@ router.register(
 )
 router.register(
     prefix=r'^contributors/(?P<package_slug>[\w-]+)',
-    viewset=PackageContributorsViewSet,
+    viewset=PackageContributorViewSet,
     basename='contributors',
 )
 

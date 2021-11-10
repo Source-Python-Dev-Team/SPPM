@@ -45,7 +45,7 @@ from project_manager.packages.models import (
 # =============================================================================
 __all__ = (
     'PackageAPIView',
-    'PackageContributorsViewSet',
+    'PackageContributorViewSet',
     'PackageGameViewSet',
     'PackageImageViewSet',
     'PackageReleaseViewSet',
@@ -203,7 +203,7 @@ class PackageTagViewSet(ProjectTagViewSet):
     project_model = Package
 
 
-class PackageContributorsViewSet(ProjectContributorViewSet):
+class PackageContributorViewSet(ProjectContributorViewSet):
     """Contributors listing for Packages."""
 
     queryset = PackageContributor.objects.select_related(
