@@ -8,7 +8,8 @@ from unittest import mock
 from django.test import TestCase
 
 # Third Party Django
-from rest_framework.serializers import ListSerializer
+from rest_framework.fields import ReadOnlyField
+from rest_framework.serializers import ListSerializer, ModelSerializer
 
 # App
 from project_manager.common.api.serializers import (
@@ -19,9 +20,6 @@ from project_manager.common.api.serializers import (
     ProjectReleaseSerializer,
     ProjectSerializer,
     ProjectTagSerializer,
-)
-from project_manager.packages.api.serializers.common import (
-    ReleasePackageRequirementSerializer,
 )
 from project_manager.packages.api.serializers import (
     PackageContributorSerializer,
@@ -37,7 +35,11 @@ from project_manager.packages.api.serializers import (
     PackageSerializer,
     PackageTagSerializer,
 )
+from project_manager.packages.api.serializers.common import (
+    ReleasePackageRequirementSerializer,
+)
 from project_manager.packages.api.serializers.mixins import PackageReleaseBase
+from project_manager.packages.helpers import PackageZipFile
 from project_manager.packages.models import (
     Package,
     PackageContributor,
@@ -207,6 +209,36 @@ class PackageReleasePackageRequirementSerializerTestCase(TestCase):
                 PackageReleasePackageRequirementSerializer,
                 ReleasePackageRequirementSerializer,
             ),
+        )
+
+    def test_name_field(self):
+        obj = PackageReleasePackageRequirementSerializer()
+        self.assertIn(member='name', container=obj.fields)
+        field = obj.fields['name']
+        self.assertIsInstance(obj=field, cls=ReadOnlyField)
+        self.assertEqual(
+            first=field.source,
+            second='package_requirement.name',
+        )
+
+    def test_slug_field(self):
+        obj = PackageReleasePackageRequirementSerializer()
+        self.assertIn(member='slug', container=obj.fields)
+        field = obj.fields['slug']
+        self.assertIsInstance(obj=field, cls=ReadOnlyField)
+        self.assertEqual(
+            first=field.source,
+            second='package_requirement.slug',
+        )
+
+    def test_version_field(self):
+        obj = PackageReleasePackageRequirementSerializer()
+        self.assertIn(member='version', container=obj.fields)
+        field = obj.fields['version']
+        self.assertIsInstance(obj=field, cls=ReadOnlyField)
+        self.assertEqual(
+            first=field.source,
+            second='version',
         )
 
     def test_meta_class(self):
@@ -402,4 +434,56 @@ class PackageTagSerializerTestCase(TestCase):
         self.assertEqual(
             first=PackageTagSerializer.Meta.model,
             second=PackageTag,
+        )
+
+
+class ReleasePackageRequirementSerializerTestCase(TestCase):
+    def test_class_inheritance(self):
+        self.assertTrue(
+            expr=issubclass(
+                ReleasePackageRequirementSerializer,
+                ModelSerializer,
+            ),
+        )
+
+    def test_meta_class(self):
+        self.assertTupleEqual(
+            tuple1=ReleasePackageRequirementSerializer.Meta.fields,
+            tuple2=(
+                'name',
+                'slug',
+                'version',
+                'optional',
+            ),
+        )
+
+
+class PackageReleaseBaseTestCase(TestCase):
+    def test_base_attributes(self):
+        self.assertEqual(
+            first=PackageReleaseBase.project_class,
+            second=Package,
+        )
+        self.assertEqual(
+            first=PackageReleaseBase.project_type,
+            second='package',
+        )
+
+    def test_zip_parser(self):
+        self.assertEqual(
+            first=PackageReleaseBase().zip_parser,
+            second=PackageZipFile,
+        )
+
+    def test_get_project_kwargs(self):
+        obj = PackageReleaseBase()
+        slug = 'test-package'
+        obj.context = {
+            'view': mock.Mock(
+                kwargs={'package_slug': slug},
+            ),
+        }
+        self.assertDictEqual(
+            d1=obj.get_project_kwargs(),
+            d2={'pk': slug},
         )

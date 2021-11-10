@@ -117,7 +117,6 @@ class ProjectZipFile:
         try:
             extension = path.rsplit('/', 1)[1].rsplit('.', 1)[1]
         except IndexError:
-            print(path)
             return True
 
         for base_path, allowed_extensions in self.file_types.items():

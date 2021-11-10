@@ -8,6 +8,8 @@ from unittest import mock
 from django.test import TestCase
 
 # Third Party Django
+from rest_framework.exceptions import ValidationError
+from rest_framework.fields import ReadOnlyField
 from rest_framework.serializers import ListSerializer
 
 # App
@@ -19,6 +21,10 @@ from project_manager.common.api.serializers import (
     ProjectReleaseSerializer,
     ProjectSerializer,
     ProjectTagSerializer,
+)
+from project_manager.common.api.serializers.mixins import (
+    ProjectThroughMixin,
+    AddProjectToViewMixin,
 )
 from project_manager.packages.api.serializers.common import (
     ReleasePackageRequirementSerializer,
@@ -36,8 +42,10 @@ from project_manager.plugins.api.serializers import (
     PluginReleaseVersionControlRequirementSerializer,
     PluginSerializer,
     PluginTagSerializer,
+    SubPluginPathSerializer,
 )
 from project_manager.plugins.api.serializers.mixins import PluginReleaseBase
+from project_manager.plugins.helpers import PluginZipFile
 from project_manager.plugins.models import (
     Plugin,
     PluginContributor,
@@ -49,12 +57,14 @@ from project_manager.plugins.models import (
     PluginReleasePyPiRequirement,
     PluginReleaseVersionControlRequirement,
     PluginTag,
+    SubPluginPath,
 )
 from requirements.api.serializers.common import (
     ReleaseDownloadRequirementSerializer,
     ReleasePyPiRequirementSerializer,
     ReleaseVersionControlRequirementSerializer,
 )
+from test_utils.factories.plugins import PluginFactory
 
 
 # =============================================================================
@@ -207,6 +217,36 @@ class PluginReleasePackageRequirementSerializerTestCase(TestCase):
                 PluginReleasePackageRequirementSerializer,
                 ReleasePackageRequirementSerializer,
             ),
+        )
+
+    def test_name_field(self):
+        obj = PluginReleasePackageRequirementSerializer()
+        self.assertIn(member='name', container=obj.fields)
+        field = obj.fields['name']
+        self.assertIsInstance(obj=field, cls=ReadOnlyField)
+        self.assertEqual(
+            first=field.source,
+            second='package_requirement.name',
+        )
+
+    def test_slug_field(self):
+        obj = PluginReleasePackageRequirementSerializer()
+        self.assertIn(member='slug', container=obj.fields)
+        field = obj.fields['slug']
+        self.assertIsInstance(obj=field, cls=ReadOnlyField)
+        self.assertEqual(
+            first=field.source,
+            second='package_requirement.slug',
+        )
+
+    def test_version_field(self):
+        obj = PluginReleasePackageRequirementSerializer()
+        self.assertIn(member='version', container=obj.fields)
+        field = obj.fields['version']
+        self.assertIsInstance(obj=field, cls=ReadOnlyField)
+        self.assertEqual(
+            first=field.source,
+            second='version',
         )
 
     def test_meta_class(self):
@@ -402,4 +442,157 @@ class PluginTagSerializerTestCase(TestCase):
         self.assertEqual(
             first=PluginTagSerializer.Meta.model,
             second=PluginTag,
+        )
+
+
+class SubPluginPathSerializerTestCase(TestCase):
+    def test_class_inheritance(self):
+        self.assertTrue(
+            expr=issubclass(SubPluginPathSerializer, ProjectThroughMixin),
+        )
+        self.assertTrue(
+            expr=issubclass(SubPluginPathSerializer, AddProjectToViewMixin),
+        )
+
+    def test_get_field_names(self):
+        obj = SubPluginPathSerializer(
+            context={
+                'request': mock.Mock(
+                    method='POST',
+                )
+            },
+        )
+        field_names = obj.get_field_names(
+            declared_fields=[],
+            info=mock.Mock(),
+        )
+        self.assertTupleEqual(
+            tuple1=field_names,
+            tuple2=(
+                'allow_module',
+                'allow_package_using_basename',
+                'allow_package_using_init',
+                'path',
+            ),
+        )
+
+        obj = SubPluginPathSerializer(
+            context={
+                'request': mock.Mock(
+                    method='PATCH',
+                )
+            },
+        )
+        field_names = obj.get_field_names(
+            declared_fields=[],
+            info=mock.Mock(),
+        )
+        self.assertTupleEqual(
+            tuple1=field_names,
+            tuple2=(
+                'allow_module',
+                'allow_package_using_basename',
+                'allow_package_using_init',
+            ),
+        )
+
+    def test_validate(self):
+        """
+        view = self.context['view']
+        attrs[view.project_type.replace('-', '_')] = view.project
+        """
+        plugin = PluginFactory()
+        obj = SubPluginPathSerializer(
+            context={
+                'view': mock.Mock(
+                    project_type='plugin',
+                    project=plugin,
+                )
+            }
+        )
+        field_names = (
+            'allow_module',
+            'allow_package_using_basename',
+            'allow_package_using_init',
+        )
+        attrs = {
+            field_name: False for field_name in field_names
+        }
+        with self.assertRaises(ValidationError) as context:
+            obj.validate(attrs=attrs)
+
+        self.assertEqual(
+            first=len(context.exception.detail),
+            second=3,
+        )
+        for field_name in field_names:
+            self.assertIn(
+                member=field_name,
+                container=context.exception.detail,
+            )
+            error = context.exception.detail[field_name]
+            self.assertEqual(
+                first=error,
+                second="At least one of the 'Allow' fields must be True.",
+            )
+            self.assertEqual(
+                first=error.code,
+                second='invalid',
+            )
+
+        for field_name in field_names:
+            current_attrs = dict(attrs)
+            current_attrs.update({
+                field_name: True,
+            })
+            value = obj.validate(attrs=current_attrs)
+            self.assertDictEqual(
+                d1=value,
+                d2={**current_attrs, **{'plugin': plugin}},
+            )
+
+    def test_meta_class(self):
+        self.assertEqual(
+            first=SubPluginPathSerializer.Meta.model,
+            second=SubPluginPath,
+        )
+        self.assertTupleEqual(
+            tuple1=SubPluginPathSerializer.Meta.fields,
+            tuple2=(
+                'allow_module',
+                'allow_package_using_basename',
+                'allow_package_using_init',
+                'path',
+            )
+        )
+
+
+class PluginReleaseBaseTestCase(TestCase):
+    def test_base_attributes(self):
+        self.assertEqual(
+            first=PluginReleaseBase.project_class,
+            second=Plugin,
+        )
+        self.assertEqual(
+            first=PluginReleaseBase.project_type,
+            second='plugin',
+        )
+
+    def test_zip_parser(self):
+        self.assertEqual(
+            first=PluginReleaseBase().zip_parser,
+            second=PluginZipFile,
+        )
+
+    def test_get_project_kwargs(self):
+        obj = PluginReleaseBase()
+        slug = 'test-plugin'
+        obj.context = {
+            'view': mock.Mock(
+                kwargs={'plugin_slug': slug},
+            ),
+        }
+        self.assertDictEqual(
+            d1=obj.get_project_kwargs(),
+            d2={'pk': slug},
         )
