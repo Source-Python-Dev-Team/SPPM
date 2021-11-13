@@ -242,9 +242,18 @@ class SubPluginPathSerializer(ProjectThroughMixin, AddProjectToViewMixin):
     def validate(self, attrs):
         """Validate that at least one of the 'Allow' fields is True."""
         if not any([
-            attrs['allow_module'],
-            attrs['allow_package_using_basename'],
-            attrs['allow_package_using_init'],
+            attrs.get(
+                'allow_module',
+                getattr(self.instance, 'allow_module', None),
+            ),
+            attrs.get(
+                'allow_package_using_basename',
+                getattr(self.instance, 'allow_package_using_basename', None),
+            ),
+            attrs.get(
+                'allow_package_using_init',
+                getattr(self.instance, 'allow_package_using_init', None),
+            ),
         ]):
             message = "At least one of the 'Allow' fields must be True."
             raise ValidationError({
