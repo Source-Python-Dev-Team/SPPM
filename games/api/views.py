@@ -43,3 +43,4 @@ class GameViewSet(ListModelMixin, GenericViewSet):
     queryset = Game.objects.all()
     ordering = ('name',)
     ordering_fields = ('basename', 'name')
+    http_method_names = ('get', 'options')

@@ -18,7 +18,9 @@ from games.management.commands.create_game_instances import GAMES
 # =============================================================================
 # TEST CASES
 # =============================================================================
-class GameViewSetAPITestCase(APITestCase):
+class GameViewSetTestCase(APITestCase):
+
+    api_path = '/api/games/'
 
     def test_filter_backends(self):
         self.assertTupleEqual(
@@ -44,8 +46,14 @@ class GameViewSetAPITestCase(APITestCase):
             tuple2=('basename', 'name',),
         )
 
-    def test_can_list(self):
-        response = self.client.get(path='/api/games/')
+    def test_http_method_names(self):
+        self.assertTupleEqual(
+            tuple1=GameViewSet.http_method_names,
+            tuple2=('get', 'options'),
+        )
+
+    def test_get(self):
+        response = self.client.get(path=self.api_path)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -56,7 +64,7 @@ class GameViewSetAPITestCase(APITestCase):
         )
 
         call_command('create_game_instances')
-        response = self.client.get(path='/api/games/')
+        response = self.client.get(path=self.api_path)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -66,17 +74,13 @@ class GameViewSetAPITestCase(APITestCase):
             second=len(GAMES),
         )
 
-    def test_cannot_post(self):
-        game = list(GAMES)[0]
-        response = self.client.post(
-            path='/api/games/',
-            data={
-                'basename': game,
-                'icon': f'games/{game}.png',
-                'name': GAMES[game],
-            }
-        )
+    def test_options(self):
+        response = self.client.options(path=self.api_path)
         self.assertEqual(
             first=response.status_code,
-            second=status.HTTP_405_METHOD_NOT_ALLOWED,
+            second=status.HTTP_200_OK,
+        )
+        self.assertEqual(
+            first=response.json()['name'],
+            second='Game List',
         )
