@@ -22,10 +22,35 @@ from test_utils.factories.packages import PackageFactory, PackageReleaseFactory
 # =============================================================================
 # TEST CASES
 # =============================================================================
+@override_settings(MEDIA_ROOT=settings.BASE_DIR / 'fixtures')
 class PackageReleaseDownloadViewTestCase(TestCase):
+
+    basename = package = zip_file = None
+
+    @classmethod
+    def setUpTestData(cls):
+        cls.basename = 'test_package'
+        cls.package = PackageFactory(
+            basename=cls.basename,
+        )
+        version = '1.0.0'
+        cls.zip_file = f'{cls.package.slug}-v{version}.zip'
+        cls.release = PackageReleaseFactory(
+            package=cls.package,
+            version=version,
+            zip_file=cls.zip_file,
+        )
+        cls.api_path = f'/media/{PACKAGE_RELEASE_URL}{cls.package.slug}/{cls.zip_file}'
+
     def test_model_inheritance(self):
         self.assertTrue(
             expr=issubclass(PackageReleaseDownloadView, DownloadMixin),
+        )
+
+    def test__allowed_methods(self):
+        self.assertListEqual(
+            list1=PackageReleaseDownloadView()._allowed_methods(),
+            list2=['GET', 'OPTIONS'],
         )
 
     def test_base_attributes(self):
@@ -49,60 +74,39 @@ class PackageReleaseDownloadViewTestCase(TestCase):
     @mock.patch(
         target='project_manager.common.mixins.DownloadMixin.full_path',
     )
-    @override_settings(MEDIA_ROOT=settings.BASE_DIR / 'fixtures')
     def test_get_failure(self, mock_full_path):
-        basename = 'test_package'
-        package = PackageFactory(
-            basename=basename,
-        )
-        version = '1.0.0'
-        zip_file = f'{package.slug}-v{version}.zip'
-        PackageReleaseFactory(
-            package=package,
-            version=version,
-            zip_file=zip_file,
-        )
         mock_full_path.isfile.return_value = False
-        response = self.client.get(
-            path=f'/media/{PACKAGE_RELEASE_URL}{package.slug}/{zip_file}'
-        )
+        response = self.client.get(path=self.api_path)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_404_NOT_FOUND,
         )
         mock_full_path.isfile.assert_called_once_with()
 
-    @override_settings(MEDIA_ROOT=settings.BASE_DIR / 'fixtures')
     def test_get_success(self):
-        basename = 'test_package'
-        package = PackageFactory(
-            basename=basename,
-        )
-        version = '1.0.0'
-        zip_file = f'{package.slug}-v{version}.zip'
-        release = PackageReleaseFactory(
-            package=package,
-            version=version,
-            zip_file=zip_file,
-        )
         self.assertEqual(
-            first=PackageRelease.objects.get(pk=release.pk).download_count,
+            first=PackageRelease.objects.get(pk=self.release.pk).download_count,
             second=0,
         )
-        response = self.client.get(
-            path=f'/media/{PACKAGE_RELEASE_URL}{package.slug}/{zip_file}'
-        )
+        response = self.client.get(path=self.api_path)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
         )
         self.assertIn(
             member=(
-                f'addons/source-python/packages/custom/{basename}/__init__.py'
+                f'addons/source-python/packages/custom/{self.basename}/__init__.py'
             ),
             container=str(response.content),
         )
         self.assertEqual(
-            first=PackageRelease.objects.get(pk=release.pk).download_count,
+            first=PackageRelease.objects.get(pk=self.release.pk).download_count,
             second=1,
+        )
+
+    def test_options(self):
+        response = self.client.options(path=self.api_path)
+        self.assertEqual(
+            first=response.status_code,
+            second=status.HTTP_200_OK,
         )

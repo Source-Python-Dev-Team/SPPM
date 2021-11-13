@@ -597,12 +597,3 @@ class SubPluginReleaseBaseTestCase(TestCase):
                 'plugin': plugin,
             },
         )
-
-"""
-    def get_project_kwargs(self):
-        kwargs = self.context['view'].kwargs
-        return {
-            'slug': kwargs.get('sub_plugin_slug'),
-            'plugin': self.parent_project,
-        }
-"""
