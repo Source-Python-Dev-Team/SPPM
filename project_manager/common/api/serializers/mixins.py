@@ -10,6 +10,9 @@ from django.utils import formats
 from rest_framework.exceptions import ValidationError
 from rest_framework.serializers import ModelSerializer
 
+# App
+from project_manager.common.helpers import GROUP_QUERYSET_NAMES
+
 
 # =============================================================================
 # ALL DECLARATION
@@ -20,17 +23,6 @@ __all__ = (
     'ProjectReleaseCreationMixin',
     'ProjectThroughMixin',
 )
-
-
-# =============================================================================
-# GLOBAL VARIABLES
-# =============================================================================
-GROUP_QUERYSET_NAMES = {
-    'custom': 'package',
-    'pypi': 'pypi',
-    'vcs': 'versioncontrol',
-    'download': 'download',
-}
 
 
 # =============================================================================
@@ -93,21 +85,15 @@ class ProjectReleaseCreationMixin(ModelSerializer):
 
     def get_project_kwargs(self):
         """Return kwargs for the project."""
-        return {
-            'pk': self.context['view'].kwargs.get('pk')
-        }
+        raise NotImplementedError(
+            f'Class "{self.__class__.__name__}" must implement a '
+            '"get_project_kwargs" method.'
+        )
 
     def validate(self, attrs):
         """Validate that the new release can be created."""
         version = attrs.get('version', '')
         zip_file = attrs.get('zip_file')
-        if any([version, zip_file]) and not all([version, zip_file]):
-            raise ValidationError({
-                '__all__': (
-                    "If either 'version' or 'zip_file' are provided, "
-                    "must be provided."
-                )
-            })
 
         # Validate the version is new for the project
         kwargs = self.get_project_kwargs()
@@ -120,7 +106,7 @@ class ProjectReleaseCreationMixin(ModelSerializer):
         )
         project_basename = getattr(project, 'basename', None)
 
-        args = (zip_file,)
+        args = self.get_zip_file_args(zip_file=zip_file)
 
         zip_validator = self.zip_parser(*args)
         self.run_zip_file_validation(
@@ -135,6 +121,11 @@ class ProjectReleaseCreationMixin(ModelSerializer):
             attrs[self.project_type.replace('-', '_')] = project
 
         return attrs
+
+    @staticmethod
+    def get_zip_file_args(zip_file):
+        """Return the arguments necessary to instantiate the ZipFile class."""
+        return [zip_file]
 
     def get_project(self, kwargs):
         """Return the Project for the given kwargs."""
@@ -167,7 +158,7 @@ class ProjectReleaseCreationMixin(ModelSerializer):
                 'zip_file': (
                     f"Basename in zip '{zip_validator.basename}' does "
                     f"not match basename for {self.project_type} "
-                    f"'{project_basename}'"
+                    f"'{project_basename}'."
                 )
             })
 
@@ -189,7 +180,7 @@ class ProjectReleaseCreationMixin(ModelSerializer):
 
     def _create_requirements(self, release):
         """Create all requirements for the release."""
-        if self.requirements is None:
+        if not self.requirements:
             return
 
         # TODO: look into bulk_create
@@ -205,10 +196,6 @@ class ProjectReleaseCreationMixin(ModelSerializer):
     @staticmethod
     def _create_group_requirements(release, project_type, group_type, group):
         queryset_group_name = GROUP_QUERYSET_NAMES.get(group_type)
-        if not queryset_group_name:
-            # TODO: should we care if they have invalid groupings?
-            pass
-
         for requirement in group:
             requirement_set = getattr(
                 release,

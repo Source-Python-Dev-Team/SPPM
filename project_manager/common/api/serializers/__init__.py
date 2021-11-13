@@ -212,15 +212,6 @@ class ProjectSerializer(ModelSerializer, ProjectLocaleMixin):
             'download_requirements': download_requirements,
         }
 
-    def get_extra_kwargs(self):
-        """Set the 'name' field to read-only when updating."""
-        extra_kwargs = super().get_extra_kwargs()
-        if self.context['view'].action == 'update':
-            name_kwargs = extra_kwargs.get('name', {})
-            name_kwargs['read_only'] = True
-            extra_kwargs['name'] = name_kwargs
-        return extra_kwargs
-
     def get_extra_validated_data(self, validated_data):
         """Add any extra data to be used on create."""
         validated_data['owner'] = self.context['request'].user.forum_user
@@ -234,18 +225,6 @@ class ProjectSerializer(ModelSerializer, ProjectLocaleMixin):
     def validate(self, attrs):
         """Validate the given field values."""
         self.release_dict = attrs.pop('releases', {})
-        version = self.release_dict.get('version', '')
-        zip_file = self.release_dict.get('zip_file')
-        if (
-            self.context['request'].method == 'POST' and
-            not all([version, zip_file])
-        ):
-            raise ValidationError({
-                'releases': (
-                    'Version and Zip File are required when using POST or PUT '
-                    f'for creating/updating a {self.project_type}.'
-                )
-            })
         return attrs
 
     def update(self, instance, validated_data):
@@ -365,10 +344,10 @@ class ProjectGameSerializer(ProjectThroughMixin, AddProjectToViewMixin):
             })
         try:
             game = Game.objects.get(basename=name)
-        except Game.DoesNotExist:
+        except Game.DoesNotExist as exception:
             raise ValidationError({
                 'game': f'Invalid game "{name}".'
-            }) from Game.DoesNotExist
+            }) from exception
         attrs['game'] = game
         return super().validate(attrs=attrs)
 
@@ -448,9 +427,9 @@ class ProjectContributorSerializer(ProjectThroughMixin, AddProjectToViewMixin):
             })
         try:
             user = ForumUser.objects.get(user__username=username)
-        except ForumUser.DoesNotExist:
+        except ForumUser.DoesNotExist as exception:
             raise ValidationError({
-                'user': f'No user named "{username}".'
-            }) from ForumUser.DoesNotExist
+                'username': f'No user named "{username}".'
+            }) from exception
         attrs['user'] = user
         return super().validate(attrs=attrs)

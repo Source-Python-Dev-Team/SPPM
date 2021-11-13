@@ -5,6 +5,8 @@
 # =============================================================================
 # Python
 import json
+import logging
+from collections import defaultdict
 from zipfile import ZipFile, BadZipFile
 
 # Django
@@ -20,6 +22,7 @@ from project_manager.common.constants import CANNOT_BE_NAMED, CANNOT_START_WITH
 # ALL DECLARATION
 # =============================================================================
 __all__ = (
+    'GROUP_QUERYSET_NAMES',
     'ProjectZipFile',
     'find_image_number',
     'handle_project_image_upload',
@@ -43,6 +46,13 @@ VersionControlRequirement = apps.get_model(
     app_label='requirements',
     model_name='VersionControlRequirement',
 )
+logger = logging.getLogger(__name__)
+GROUP_QUERYSET_NAMES = {
+    'custom': 'package',
+    'pypi': 'pypi',
+    'vcs': 'versioncontrol',
+    'download': 'download',
+}
 
 
 # =============================================================================
@@ -57,12 +67,7 @@ class ProjectZipFile:
         with ZipFile(self.zip_file) as zip_obj:
             self.file_list = self.get_file_list(zip_obj)
         self.basename = None
-        self.requirements = {
-            'custom': [],
-            'pypi': [],
-            'vcs': [],
-            'download': [],
-        }
+        self.requirements = defaultdict(list)
         self.requirements_errors = []
 
     @property
@@ -138,10 +143,10 @@ class ProjectZipFile:
         """Return a list of all files in the given zip file."""
         try:
             return [x for x in zip_obj.namelist() if not x.endswith('/')]
-        except BadZipFile:
+        except BadZipFile as exception:
             raise ValidationError({
                 'zip_file': 'Given file is not a valid zip file.'
-            }) from BadZipFile
+            }) from exception
 
     def validate_basename(self):
         """Validate that the basename is not erroneous."""
@@ -183,33 +188,25 @@ class ProjectZipFile:
 
     def validate_requirements(self):
         """Return the requirements for the release."""
-        requirement_path = self.get_requirement_path()
-        try:
-            with ZipFile(self.zip_file).open(requirement_path) as requirement_file:
-                contents = json.load(requirement_file)
-        except KeyError:
+        contents = self.get_requirements_file_contents()
+        if contents is None:
             return
-        except json.JSONDecodeError:
-            raise ValidationError({
-                'zip_file': 'Requirements json file cannot be decoded.'
-            }) from json.JSONDecodeError
-        if not isinstance(contents, dict):
-            raise ValidationError({
-                'zip_file': 'Invalid requirements json file.'
-            })
+
         for group_type, group in contents.items():
-            if group_type not in self.requirements:
+            if group_type not in GROUP_QUERYSET_NAMES:
                 self.requirements_errors.append(
                     f'Invalid group name "{group_type}" found in '
                     f'requirements json file.'
                 )
                 continue
+
             if not isinstance(group, list):
                 self.requirements_errors.append(
                     f'Invalid group values for "{group_type}" found in '
                     f'requirements json file.'
                 )
                 continue
+
             for item in group:
                 if not isinstance(item, dict):
                     self.requirements_errors.append(
@@ -217,6 +214,7 @@ class ProjectZipFile:
                         f'requirements json file.'
                     )
                     continue
+
                 if group_type == 'custom':
                     self._validate_custom_requirement(
                         item=item,
@@ -234,6 +232,27 @@ class ProjectZipFile:
             raise ValidationError({
                 'zip_file': self.requirements_errors,
             })
+
+    def get_requirements_file_contents(self):
+        """Return the contents of the requirements.json file."""
+        requirement_path = self.get_requirement_path()
+        try:
+            with ZipFile(self.zip_file).open(requirement_path) as requirement_file:
+                contents = json.load(requirement_file)
+        except KeyError:
+            logger.debug('No requirement file found.')
+            return None
+        except json.decoder.JSONDecodeError as exception:
+            raise ValidationError({
+                'zip_file': 'Requirements json file cannot be decoded.'
+            }) from exception
+
+        if not isinstance(contents, dict):
+            raise ValidationError({
+                'zip_file': 'Invalid requirements json file.'
+            })
+
+        return contents
 
     def get_requirement_path(self):
         """Return the path for the requirements json file."""
@@ -257,6 +276,8 @@ class ProjectZipFile:
             model_name='Package',
         )
         try:
+            # TODO: should this be retrieving via basename instead of slug?
+            #       or should the field in the requirements file be called slug?
             package = package_model.objects.get(slug=basename)
         except package_model.DoesNotExist:
             self.requirements_errors.append(
@@ -264,6 +285,7 @@ class ProjectZipFile:
                 f'json file not found.'
             )
             return
+
         version = item.get('version')
         # TODO: update this logic to work with all version operators
         available_versions = package.releases.values_list(
@@ -276,6 +298,7 @@ class ProjectZipFile:
                 f'from requirements json file, not found.'
             )
             return
+
         self.requirements['custom'].append({
             'package_requirement': package,
             'version': version,
@@ -294,14 +317,15 @@ class ProjectZipFile:
             'vcs': VersionControlRequirement,
         }.get(group_type)
         value = item.get(field)
-        instance, created = model.objects.get_or_create(**{field: value})
-        key = f'{group_type}_requirement'
         if value is None:
             self.requirements_errors.append(
                 f'No {field} found for object in "{group_type}" listing in '
                 f'requirements json file.'
             )
             return
+
+        instance, created = model.objects.get_or_create(**{field: value})
+        key = f'{group_type}_requirement'
         requirement_dict = {
             key: instance,
             'optional': item.get('optional', False),
@@ -310,6 +334,7 @@ class ProjectZipFile:
             requirement_dict.update({
                 'version': item.get('version'),
             })
+
         self.requirements[group_type].append(requirement_dict)
 
 
