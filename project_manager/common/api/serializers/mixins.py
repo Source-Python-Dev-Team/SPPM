@@ -56,6 +56,7 @@ class ProjectLocaleMixin:
 
 
 class CreateRequirementsMixin:
+    """Mixin for creating the requirement relationships for releases."""
 
     requirements = None
 
