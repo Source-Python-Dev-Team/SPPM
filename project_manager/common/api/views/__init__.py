@@ -148,13 +148,11 @@ class ProjectReleaseViewSet(ProjectRelatedInfoMixin):
         """Only allow the owner and contributors to create releases."""
         if request.method not in SAFE_METHODS:
             if not hasattr(request.user, 'forum_user'):
-                print('no forum_user')
                 raise PermissionDenied
 
             user = request.user.id
             is_contributor = user in self.contributors
             if user != self.owner and not is_contributor:
-                print('not owner or contributor')
                 raise PermissionDenied
 
         return super().check_permissions(request=request)

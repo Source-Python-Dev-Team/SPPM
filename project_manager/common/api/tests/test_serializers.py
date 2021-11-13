@@ -32,6 +32,7 @@ from project_manager.common.api.serializers import (
 )
 from project_manager.common.api.serializers.mixins import (
     AddProjectToViewMixin,
+    CreateRequirementsMixin,
     ProjectLocaleMixin,
     ProjectReleaseCreationMixin,
     ProjectThroughMixin,
@@ -186,6 +187,9 @@ class ProjectReleaseCreationMixinTestCase(TestCase):
     def test_class_inheritance(self):
         self.assertTrue(
             expr=issubclass(ProjectReleaseCreationMixin, ModelSerializer),
+        )
+        self.assertTrue(
+            expr=issubclass(ProjectReleaseCreationMixin, CreateRequirementsMixin),
         )
 
     def test_project_class_required(self):
