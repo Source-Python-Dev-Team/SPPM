@@ -65,7 +65,13 @@ from project_manager.plugins.models import (
     PluginTag,
     SubPluginPath,
 )
+from requirements.models import (
+    DownloadRequirement,
+    PyPiRequirement,
+    VersionControlRequirement,
+)
 from test_utils.factories.games import GameFactory
+from test_utils.factories.packages import PackageFactory, PackageReleaseFactory
 from test_utils.factories.plugins import (
     PluginContributorFactory,
     PluginFactory,
@@ -1549,6 +1555,87 @@ class PluginReleaseViewSetTestCase(APITestCase):
             }
         )
 
+    @override_settings(MEDIA_ROOT=MEDIA_ROOT)
+    def test_post_with_requirements(self):
+        base_path = settings.BASE_DIR / 'fixtures' / 'releases' / 'plugins'
+        file_path = base_path / 'test-plugin' / 'test-plugin-requirements-v1.0.0.zip'
+        version = '1.0.1'
+        custom_package_1 = PackageFactory(
+            basename='custom_package_1',
+        )
+        PackageReleaseFactory(
+            package=custom_package_1,
+            version='1.0.0',
+        )
+        custom_package_2 = PackageFactory(
+            basename='custom_package_2',
+        )
+        PackageReleaseFactory(
+            package=custom_package_2,
+            version='1.0.0',
+        )
+        self.assertEqual(
+            first=DownloadRequirement.objects.count(),
+            second=0,
+        )
+        self.assertEqual(
+            first=PyPiRequirement.objects.count(),
+            second=0,
+        )
+        self.assertEqual(
+            first=VersionControlRequirement.objects.count(),
+            second=0,
+        )
+        self.client.force_login(self.owner.user)
+        plugin = PluginFactory(
+            basename='test_plugin',
+            owner=self.owner,
+        )
+        PluginReleaseFactory(
+            plugin=plugin,
+            version='1.0.0',
+        )
+        api_path = f'{self.base_api_path}{plugin.slug}/'
+        with file_path.open('rb') as open_file:
+            zip_file = UploadedFile(open_file, content_type='application/zip')
+            response = self.client.post(
+                path=api_path,
+                data={
+                    'version': version,
+                    'zip_file': zip_file,
+                },
+            )
+
+        self.assertEqual(
+            first=response.status_code,
+            second=status.HTTP_201_CREATED,
+        )
+        release = PluginRelease.objects.get(pk=response.json()['id'])
+        self.assertEqual(
+            first=DownloadRequirement.objects.count(),
+            second=2,
+        )
+        self.assertEqual(
+            first=release.download_requirements.count(),
+            second=2,
+        )
+        self.assertEqual(
+            first=PyPiRequirement.objects.count(),
+            second=2,
+        )
+        self.assertEqual(
+            first=release.pypi_requirements.count(),
+            second=2,
+        )
+        self.assertEqual(
+            first=VersionControlRequirement.objects.count(),
+            second=2,
+        )
+        self.assertEqual(
+            first=release.vcs_requirements.count(),
+            second=2,
+        )
+
     def test_options(self):
         response = self.client.options(path=self.api_path)
         self.assertEqual(first=response.status_code, second=status.HTTP_200_OK)
@@ -2291,6 +2378,82 @@ class PluginViewSetTestCase(APITestCase):
         self.assertDictEqual(
             d1=response.json(),
             d2={'basename': 'Plugin already exists. Cannot create.'}
+        )
+
+    @override_settings(MEDIA_ROOT=MEDIA_ROOT)
+    def test_post_with_requirements(self):
+        base_path = settings.BASE_DIR / 'fixtures' / 'releases' / 'plugins'
+        file_path = base_path / 'test-plugin' / 'test-plugin-requirements-v1.0.0.zip'
+        version = '1.0.0'
+        custom_package_1 = PackageFactory(
+            basename='custom_package_1',
+        )
+        PackageReleaseFactory(
+            package=custom_package_1,
+            version='1.0.0',
+        )
+        custom_package_2 = PackageFactory(
+            basename='custom_package_2',
+        )
+        PackageReleaseFactory(
+            package=custom_package_2,
+            version='1.0.0',
+        )
+        self.assertEqual(
+            first=DownloadRequirement.objects.count(),
+            second=0,
+        )
+        self.assertEqual(
+            first=PyPiRequirement.objects.count(),
+            second=0,
+        )
+        self.assertEqual(
+            first=VersionControlRequirement.objects.count(),
+            second=0,
+        )
+        self.client.force_login(self.owner.user)
+        with file_path.open('rb') as open_file:
+            zip_file = UploadedFile(open_file, content_type='application/zip')
+            response = self.client.post(
+                path=self.api_path,
+                data={
+                    'name': 'Test Plugin',
+                    'releases.notes': '',
+                    'releases.version': version,
+                    'releases.zip_file': zip_file,
+                },
+            )
+
+        self.assertEqual(
+            first=response.status_code,
+            second=status.HTTP_201_CREATED,
+        )
+        contents = response.json()
+        plugin = Plugin.objects.get(slug=contents['slug'])
+        release = PluginRelease.objects.get(plugin=plugin)
+        self.assertEqual(
+            first=DownloadRequirement.objects.count(),
+            second=2,
+        )
+        self.assertEqual(
+            first=release.download_requirements.count(),
+            second=2,
+        )
+        self.assertEqual(
+            first=PyPiRequirement.objects.count(),
+            second=2,
+        )
+        self.assertEqual(
+            first=release.pypi_requirements.count(),
+            second=2,
+        )
+        self.assertEqual(
+            first=VersionControlRequirement.objects.count(),
+            second=2,
+        )
+        self.assertEqual(
+            first=release.vcs_requirements.count(),
+            second=2,
         )
 
     def test_patch(self):
