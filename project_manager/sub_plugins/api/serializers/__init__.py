@@ -148,6 +148,10 @@ class SubPluginReleaseSerializer(
 
         model = SubPluginRelease
 
+    def get_zip_file_args(self, zip_file):
+        """Return the arguments necessary to instantiate the ZipFile class."""
+        return [zip_file, self.parent_project]
+
 
 class SubPluginCreateReleaseSerializer(
     SubPluginReleaseBase, ProjectCreateReleaseSerializer
@@ -158,6 +162,10 @@ class SubPluginCreateReleaseSerializer(
         """Define metaclass attributes."""
 
         model = SubPluginRelease
+
+    def get_zip_file_args(self, zip_file):
+        """Return the arguments necessary to instantiate the ZipFile class."""
+        return [zip_file, self.parent_project]
 
 
 class SubPluginSerializer(ProjectSerializer):
@@ -178,10 +186,10 @@ class SubPluginSerializer(ProjectSerializer):
         plugin_slug = kwargs.get('plugin_slug')
         try:
             plugin = Plugin.objects.get(slug=plugin_slug)
-        except Plugin.DoesNotExist:
+        except Plugin.DoesNotExist as exception:
             raise ValidationError({
                 'plugin': f"Plugin '{plugin_slug}' not found."
-            }) from Plugin.DoesNotExist
+            }) from exception
         return plugin
 
     @staticmethod

@@ -36,10 +36,10 @@ class SubPluginReleaseBase:
         plugin_slug = kwargs.get('plugin_slug')
         try:
             plugin = Plugin.objects.get(slug=plugin_slug)
-        except Plugin.DoesNotExist:
+        except Plugin.DoesNotExist as exception:
             raise ValidationError(
                 f"Plugin '{plugin_slug}' not found."
-            ) from Plugin.DoesNotExist
+            ) from exception
         return plugin
 
     @property
