@@ -17,7 +17,9 @@ from users.api.views import ForumUserViewSet
 # =============================================================================
 # TEST CASES
 # =============================================================================
-class ForumUserViewSetAPITestCase(APITestCase):
+class ForumUserViewSetTestCase(APITestCase):
+
+    api_path = '/api/users/'
 
     def test_filter_backends(self):
         self.assertTupleEqual(
@@ -55,9 +57,9 @@ class ForumUserViewSetAPITestCase(APITestCase):
             tuple2=('forum_id', 'user__username'),
         )
 
-    def test_get(self):
+    def test_get_list(self):
         user = ForumUserFactory()
-        response = self.client.get(path='/api/users/')
+        response = self.client.get(path=self.api_path)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -77,9 +79,26 @@ class ForumUserViewSetAPITestCase(APITestCase):
             second=user.user.username,
         )
 
+    def test_get_details(self):
+        user = ForumUserFactory()
+        response = self.client.get(path=f'{self.api_path}{user.forum_id}/')
+        self.assertEqual(
+            first=response.status_code,
+            second=status.HTTP_200_OK,
+        )
+        content = response.json()
+        self.assertEqual(
+            first=content['forum_id'],
+            second=user.forum_id,
+        )
+        self.assertEqual(
+            first=content['username'],
+            second=user.user.username,
+        )
+
     def test_get_filter(self):
         user = ForumUserFactory()
-        response = self.client.get(path='/api/users/?has_contributions=true')
+        response = self.client.get(path=f'{self.api_path}?has_contributions=true')
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -89,7 +108,7 @@ class ForumUserViewSetAPITestCase(APITestCase):
             second=0,
         )
 
-        response = self.client.get(path='/api/users/?has_contributions=false')
+        response = self.client.get(path=f'{self.api_path}?has_contributions=false')
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -107,4 +126,15 @@ class ForumUserViewSetAPITestCase(APITestCase):
         self.assertEqual(
             first=content_user['username'],
             second=user.user.username,
+        )
+
+    def test_options(self):
+        response = self.client.options(path=self.api_path)
+        self.assertEqual(
+            first=response.status_code,
+            second=status.HTTP_200_OK,
+        )
+        self.assertEqual(
+            first=response.json()['name'],
+            second='Forum User List',
         )
