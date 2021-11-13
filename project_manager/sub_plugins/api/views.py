@@ -154,8 +154,8 @@ class SubPluginViewSet(ProjectViewSet):
         try:
             self.plugin = Plugin.objects.get(slug=plugin_slug)
             return queryset.filter(plugin=self.plugin)
-        except Plugin.DoesNotExist:
-            raise ParseError('Invalid plugin_slug.') from Plugin.DoesNotExist
+        except Plugin.DoesNotExist as exception:
+            raise ParseError('Invalid plugin_slug.') from exception
 
 
 class SubPluginImageViewSet(ProjectImageViewSet):
@@ -175,10 +175,10 @@ class SubPluginImageViewSet(ProjectImageViewSet):
         plugin_slug = self.kwargs.get('plugin_slug')
         try:
             plugin = Plugin.objects.get(slug=plugin_slug)
-        except Plugin.DoesNotExist:
+        except Plugin.DoesNotExist as exception:
             raise ParseError(
                 f"Plugin '{plugin_slug}' not found."
-            ) from Plugin.DoesNotExist
+            ) from exception
         return plugin
 
     def get_project_kwargs(self):
@@ -242,10 +242,10 @@ class SubPluginReleaseViewSet(ProjectReleaseViewSet):
         plugin_slug = self.kwargs.get('plugin_slug')
         try:
             plugin = Plugin.objects.get(slug=plugin_slug)
-        except Plugin.DoesNotExist:
+        except Plugin.DoesNotExist as exception:
             raise ParseError(
                 f"Plugin '{plugin_slug}' not found."
-            ) from Plugin.DoesNotExist
+            ) from exception
         return plugin
 
     def get_project_kwargs(self):
