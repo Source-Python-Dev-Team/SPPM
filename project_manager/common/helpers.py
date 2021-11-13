@@ -276,9 +276,7 @@ class ProjectZipFile:
             model_name='Package',
         )
         try:
-            # TODO: should this be retrieving via basename instead of slug?
-            #       or should the field in the requirements file be called slug?
-            package = package_model.objects.get(slug=basename)
+            package = package_model.objects.get(basename=basename)
         except package_model.DoesNotExist:
             self.requirements_errors.append(
                 f'Custom Package "{basename}" from requirements '
