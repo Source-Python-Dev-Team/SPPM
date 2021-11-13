@@ -121,15 +121,13 @@ class ProjectSerializer(
         validated_data['created'] = validated_data['updated'] = current_time
         instance = super().create(validated_data)
         self.requirements = self.release_dict.pop('requirements')
-        version = self.release_dict['version']
-        zip_file = self.release_dict['zip_file']
-        notes = self.release_dict['notes']
         kwargs = {
             self.project_type.replace('-', '_'): instance,
             'created': current_time,
-            'notes': notes,
-            'version': version,
-            'zip_file': zip_file,
+            'notes': self.release_dict['notes'],
+            'version': self.release_dict['version'],
+            'zip_file': self.release_dict['zip_file'],
+            'created_by': self.context['request'].user.forum_user,
         }
         release = self.release_model.objects.create(**kwargs)
         self._create_requirements(release=release)
@@ -255,6 +253,9 @@ class ProjectReleaseSerializer(
     """Base ProjectRelease Serializer for listing."""
 
     created = SerializerMethodField()
+    created_by = ForumUserContributorSerializer(
+        read_only=True,
+    )
     download_count = IntegerField(read_only=True)
 
     class Meta:
@@ -266,6 +267,7 @@ class ProjectReleaseSerializer(
             'zip_file',
             'version',
             'created',
+            'created_by',
             'download_count',
             'download_requirements',
             'package_requirements',

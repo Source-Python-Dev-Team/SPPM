@@ -70,6 +70,9 @@ class PluginReleaseFactory(factory.django.DjangoModelFactory):
         factory='test_utils.factories.plugins.PluginFactory',
     )
     version = factory.Sequence(function=lambda n: f'1.0.{n}')
+    created_by = factory.SubFactory(
+        factory='test_utils.factories.users.ForumUserFactory',
+    )
 
     class Meta:
         """Define metaclass attributes."""

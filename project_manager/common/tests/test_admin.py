@@ -210,6 +210,7 @@ class ProjectReleaseInlineTestCase(TestCase):
                 'zip_file',
                 'download_count',
                 'created',
+                'created_by',
             ),
         )
 
@@ -220,6 +221,7 @@ class ProjectReleaseInlineTestCase(TestCase):
                 'zip_file',
                 'download_count',
                 'created',
+                'created_by',
             ),
         )
 

@@ -451,6 +451,10 @@ class PackageViewSetTestCase(APITestCase):
         )
         release = package.releases.get()
         self.assertEqual(
+            first=release.created_by.forum_id,
+            second=self.regular_user.forum_id,
+        )
+        self.assertEqual(
             first=release.version,
             second=version,
         )

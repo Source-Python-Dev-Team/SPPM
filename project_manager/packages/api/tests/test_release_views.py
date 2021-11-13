@@ -194,6 +194,7 @@ class PackageReleaseViewSetTestCase(APITestCase):
         timestamp = self.package_release.created
         request = response.wsgi_request
         zip_file = f'{request.scheme}://{request.get_host()}{self.package_release.zip_file.url}'
+        created_by = self.package_release.created_by
         payload = {
             'notes': self.package_release.notes,
             'zip_file': zip_file,
@@ -202,6 +203,10 @@ class PackageReleaseViewSetTestCase(APITestCase):
                 'actual': timestamp.strftime('%Y-%m-%dT%H:%M:%S.%fZ'),
                 'locale': formats.date_format(timestamp, 'DATETIME_FORMAT'),
                 'locale_short': formats.date_format(timestamp, 'SHORT_DATETIME_FORMAT'),
+            },
+            'created_by': {
+                'forum_id': created_by.forum_id,
+                'username': created_by.user.username,
             },
             'download_count': self.package_release.download_count,
             'download_requirements': [],
@@ -264,6 +269,7 @@ class PackageReleaseViewSetTestCase(APITestCase):
         timestamp = self.package_release.created
         request = response.wsgi_request
         zip_file = f'{request.scheme}://{request.get_host()}{self.package_release.zip_file.url}'
+        created_by = self.package_release.created_by
         payload = {
             'notes': self.package_release.notes,
             'zip_file': zip_file,
@@ -272,6 +278,10 @@ class PackageReleaseViewSetTestCase(APITestCase):
                 'actual': timestamp.strftime('%Y-%m-%dT%H:%M:%S.%fZ'),
                 'locale': formats.date_format(timestamp, 'DATETIME_FORMAT'),
                 'locale_short': formats.date_format(timestamp, 'SHORT_DATETIME_FORMAT'),
+            },
+            'created_by': {
+                'forum_id': created_by.forum_id,
+                'username': created_by.user.username,
             },
             'download_count': self.package_release.download_count,
             'download_requirements': [],
@@ -414,6 +424,10 @@ class PackageReleaseViewSetTestCase(APITestCase):
         content = response.json()
         release = package.releases.get(id=content['id'])
         self.assertEqual(
+            first=release.created_by.forum_id,
+            second=self.contributor.forum_id,
+        )
+        self.assertEqual(
             first=release.version,
             second=version,
         )
@@ -441,6 +455,10 @@ class PackageReleaseViewSetTestCase(APITestCase):
         )
         content = response.json()
         release = package.releases.get(id=content['id'])
+        self.assertEqual(
+            first=release.created_by.forum_id,
+            second=self.owner.forum_id,
+        )
         self.assertEqual(
             first=release.version,
             second=version,

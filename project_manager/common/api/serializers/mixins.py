@@ -126,6 +126,7 @@ class ProjectReleaseCreationMixin(CreateRequirementsMixin, ModelSerializer):
         """Validate that the new release can be created."""
         version = attrs.get('version', '')
         zip_file = attrs.get('zip_file')
+        attrs['created_by'] = self.context['request'].user.forum_user
 
         # Validate the version is new for the project
         kwargs = self.get_project_kwargs()

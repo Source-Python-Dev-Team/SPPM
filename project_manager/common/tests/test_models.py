@@ -490,6 +490,27 @@ class ProjectReleaseTestCase(TestCase):
             second='created',
         )
 
+    def test_created_by_field(self):
+        field = ProjectRelease._meta.get_field('created_by')
+        self.assertIsInstance(
+            obj=field,
+            cls=models.ForeignKey,
+        )
+        self.assertEqual(
+            first=field.remote_field.model,
+            second='users.ForumUser',
+        )
+        self.assertEqual(
+            first=field.remote_field.on_delete,
+            second=models.SET_NULL,
+        )
+        self.assertEqual(
+            first=field.remote_field.related_name,
+            second='%(class)ss',
+        )
+        self.assertFalse(expr=field.blank)
+        self.assertTrue(expr=field.null)
+
     def test_project_class_required(self):
         obj = ''
         with self.assertRaises(NotImplementedError) as context:

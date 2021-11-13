@@ -103,12 +103,14 @@ class ProjectReleaseInline(admin.StackedInline):
         'zip_file',
         'download_count',
         'created',
+        'created_by',
     )
 
     readonly_fields = (
         'zip_file',
         'download_count',
         'created',
+        'created_by',
     )
 
     def get_queryset(self, request):

@@ -460,7 +460,7 @@ class ProjectReleaseSerializerTestCase(TestCase):
         declared_fields = getattr(ProjectReleaseSerializer, '_declared_fields')
         self.assertEqual(
             first=len(declared_fields),
-            second=2,
+            second=3,
         )
 
         self.assertIn(
@@ -471,6 +471,17 @@ class ProjectReleaseSerializerTestCase(TestCase):
             obj=declared_fields['created'],
             cls=SerializerMethodField,
         )
+
+        self.assertIn(
+            member='created_by',
+            container=declared_fields,
+        )
+        field = declared_fields['created_by']
+        self.assertIsInstance(
+            obj=field,
+            cls=ForumUserContributorSerializer,
+        )
+        self.assertTrue(expr=field.read_only)
 
         self.assertIn(
             member='download_count',
@@ -491,6 +502,7 @@ class ProjectReleaseSerializerTestCase(TestCase):
                 'zip_file',
                 'version',
                 'created',
+                'created_by',
                 'download_count',
                 'download_requirements',
                 'package_requirements',

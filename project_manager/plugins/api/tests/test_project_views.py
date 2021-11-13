@@ -452,6 +452,10 @@ class PluginViewSetTestCase(APITestCase):
         )
         release = plugin.releases.get()
         self.assertEqual(
+            first=release.created_by.forum_id,
+            second=self.regular_user.forum_id,
+        )
+        self.assertEqual(
             first=release.version,
             second=version,
         )

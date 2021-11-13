@@ -261,6 +261,12 @@ class ProjectRelease(AbstractUUIDPrimaryKeyModel):
     created = AutoCreatedField(
         verbose_name='created',
     )
+    created_by = models.ForeignKey(
+        to='users.ForumUser',
+        related_name='%(class)ss',
+        on_delete=models.SET_NULL,
+        null=True,
+    )
 
     class Meta:
         """Define metaclass attributes."""

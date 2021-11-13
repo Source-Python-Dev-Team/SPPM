@@ -234,6 +234,7 @@ class SubPluginReleaseViewSetTestCase(APITestCase):
         timestamp = self.sub_plugin_release.created
         request = response.wsgi_request
         zip_file = f'{request.scheme}://{request.get_host()}{self.sub_plugin_release.zip_file.url}'
+        created_by = self.sub_plugin_release.created_by
         payload = {
             'notes': self.sub_plugin_release.notes,
             'zip_file': zip_file,
@@ -242,6 +243,10 @@ class SubPluginReleaseViewSetTestCase(APITestCase):
                 'actual': timestamp.strftime('%Y-%m-%dT%H:%M:%S.%fZ'),
                 'locale': formats.date_format(timestamp, 'DATETIME_FORMAT'),
                 'locale_short': formats.date_format(timestamp, 'SHORT_DATETIME_FORMAT'),
+            },
+            'created_by': {
+                'forum_id': created_by.forum_id,
+                'username': created_by.user.username,
             },
             'download_count': self.sub_plugin_release.download_count,
             'download_requirements': [],
@@ -304,6 +309,7 @@ class SubPluginReleaseViewSetTestCase(APITestCase):
         timestamp = self.sub_plugin_release.created
         request = response.wsgi_request
         zip_file = f'{request.scheme}://{request.get_host()}{self.sub_plugin_release.zip_file.url}'
+        created_by = self.sub_plugin_release.created_by
         payload = {
             'notes': self.sub_plugin_release.notes,
             'zip_file': zip_file,
@@ -312,6 +318,10 @@ class SubPluginReleaseViewSetTestCase(APITestCase):
                 'actual': timestamp.strftime('%Y-%m-%dT%H:%M:%S.%fZ'),
                 'locale': formats.date_format(timestamp, 'DATETIME_FORMAT'),
                 'locale_short': formats.date_format(timestamp, 'SHORT_DATETIME_FORMAT'),
+            },
+            'created_by': {
+                'forum_id': created_by.forum_id,
+                'username': created_by.user.username,
             },
             'download_count': self.sub_plugin_release.download_count,
             'download_requirements': [],
@@ -463,6 +473,10 @@ class SubPluginReleaseViewSetTestCase(APITestCase):
         content = response.json()
         release = sub_plugin.releases.get(pk=content['id'])
         self.assertEqual(
+            first=release.created_by.forum_id,
+            second=self.contributor.forum_id,
+        )
+        self.assertEqual(
             first=release.version,
             second=version,
         )
@@ -490,6 +504,10 @@ class SubPluginReleaseViewSetTestCase(APITestCase):
         )
         content = response.json()
         release = sub_plugin.releases.get(pk=content['id'])
+        self.assertEqual(
+            first=release.created_by.forum_id,
+            second=self.owner.forum_id,
+        )
         self.assertEqual(
             first=release.version,
             second=version,
