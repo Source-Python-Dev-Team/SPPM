@@ -53,7 +53,6 @@ INSTALLED_APPS = [
     'rest_framework',
     'embed_video',
     'precise_bbcode',
-    'crispy_forms',
     'django_extensions',
     'django_filters',
     'project_manager',
@@ -205,7 +204,5 @@ GITHUB_URL = 'https://github.com/Source-Python-Dev-Team/Source.Python'
 PYPI_URL = 'https://pypi.python.org/pypi'
 
 DOWNLOAD_URL = 'http://downloads.sourcepython.com/'
-
-CRISPY_TEMPLATE_PACK = 'bootstrap'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
