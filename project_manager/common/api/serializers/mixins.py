@@ -19,6 +19,7 @@ from project_manager.common.helpers import GROUP_QUERYSET_NAMES
 # =============================================================================
 __all__ = (
     'AddProjectToViewMixin',
+    'CreateRequirementsMixin',
     'ProjectLocaleMixin',
     'ProjectReleaseCreationMixin',
     'ProjectThroughMixin',
@@ -54,7 +55,37 @@ class ProjectLocaleMixin:
         ) if date else date
 
 
-class ProjectReleaseCreationMixin(ModelSerializer):
+class CreateRequirementsMixin:
+
+    requirements = None
+
+    def _create_requirements(self, release):
+        """Create all requirements for the release."""
+        if not self.requirements:
+            return
+
+        # TODO: look into bulk_create
+        project_type = release.__class__.__name__.lower()
+        for group_type, group in self.requirements.items():
+            self._create_group_requirements(
+                release=release,
+                project_type=project_type,
+                group_type=group_type,
+                group=group,
+            )
+
+    @staticmethod
+    def _create_group_requirements(release, project_type, group_type, group):
+        queryset_group_name = GROUP_QUERYSET_NAMES.get(group_type)
+        for requirement in group:
+            requirement_set = getattr(
+                release,
+                f'{project_type}{queryset_group_name}requirement_set'
+            )
+            requirement_set.create(**requirement)
+
+
+class ProjectReleaseCreationMixin(CreateRequirementsMixin, ModelSerializer):
     """Mixin for validation/creation of a project release."""
 
     requirements = None
@@ -116,6 +147,7 @@ class ProjectReleaseCreationMixin(ModelSerializer):
 
         # This needs added for project creation
         attrs['basename'] = zip_validator.basename
+        attrs['requirements'] = zip_validator.requirements
 
         if project is not None:
             attrs[self.project_type.replace('-', '_')] = project
@@ -152,7 +184,6 @@ class ProjectReleaseCreationMixin(ModelSerializer):
         zip_validator.validate_basename()
         zip_validator.validate_base_file_in_zip()
         zip_validator.validate_requirements()
-        self.requirements = zip_validator.requirements
         if project_basename not in (zip_validator.basename, None):
             raise ValidationError({
                 'zip_file': (
@@ -166,6 +197,7 @@ class ProjectReleaseCreationMixin(ModelSerializer):
         """Update the project's updated datetime when release is created."""
         # Remove the basename before creating the release
         del validated_data['basename']
+        self.requirements = validated_data.pop('requirements')
 
         instance = super().create(validated_data=validated_data)
         project_type = self.project_type.replace('-', '_')
@@ -177,31 +209,6 @@ class ProjectReleaseCreationMixin(ModelSerializer):
         )
         self._create_requirements(instance)
         return instance
-
-    def _create_requirements(self, release):
-        """Create all requirements for the release."""
-        if not self.requirements:
-            return
-
-        # TODO: look into bulk_create
-        project_type = release.__class__.__name__.lower()
-        for group_type, group in self.requirements.items():
-            self._create_group_requirements(
-                release=release,
-                project_type=project_type,
-                group_type=group_type,
-                group=group,
-            )
-
-    @staticmethod
-    def _create_group_requirements(release, project_type, group_type, group):
-        queryset_group_name = GROUP_QUERYSET_NAMES.get(group_type)
-        for requirement in group:
-            requirement_set = getattr(
-                release,
-                f'{project_type}{queryset_group_name}requirement_set'
-            )
-            requirement_set.create(**requirement)
 
 
 class ProjectThroughMixin(ModelSerializer):

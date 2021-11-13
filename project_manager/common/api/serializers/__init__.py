@@ -23,6 +23,7 @@ from rest_framework.serializers import ModelSerializer
 # App
 from project_manager.common.api.serializers.mixins import (
     AddProjectToViewMixin,
+    CreateRequirementsMixin,
     ProjectLocaleMixin,
     ProjectReleaseCreationMixin,
     ProjectThroughMixin,
@@ -60,7 +61,11 @@ __all__ = (
 # =============================================================================
 # SERIALIZERS
 # =============================================================================
-class ProjectSerializer(ModelSerializer, ProjectLocaleMixin):
+class ProjectSerializer(
+    CreateRequirementsMixin,
+    ModelSerializer,
+    ProjectLocaleMixin
+):
     """Base Project Serializer."""
 
     current_release = SerializerMethodField()
@@ -115,6 +120,7 @@ class ProjectSerializer(ModelSerializer, ProjectLocaleMixin):
         current_time = now()
         validated_data['created'] = validated_data['updated'] = current_time
         instance = super().create(validated_data)
+        self.requirements = self.release_dict.pop('requirements')
         version = self.release_dict['version']
         zip_file = self.release_dict['zip_file']
         notes = self.release_dict['notes']
@@ -125,7 +131,8 @@ class ProjectSerializer(ModelSerializer, ProjectLocaleMixin):
             'version': version,
             'zip_file': zip_file,
         }
-        self.release_model.objects.create(**kwargs)
+        release = self.release_model.objects.create(**kwargs)
+        self._create_requirements(release=release)
         return instance
 
     def get_created(self, obj):
