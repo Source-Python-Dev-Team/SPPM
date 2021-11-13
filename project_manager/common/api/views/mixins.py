@@ -32,6 +32,25 @@ class ProjectRelatedInfoMixin(ModelViewSet):
 
     related_model_type = None
     _project = None
+    _owner = None
+    _contributors = None
+
+    @property
+    def owner(self):
+        """Return the project's owner."""
+        if self._owner is None:
+            self._owner = self.project.owner.user_id
+        return self._owner
+
+    @property
+    def contributors(self):
+        """Return a Queryset for the project's contributors."""
+        if self._contributors is None:
+            self._contributors = self.project.contributors.values_list(
+                'user',
+                flat=True,
+            )
+        return self._contributors
 
     @property
     def project(self):
@@ -43,10 +62,10 @@ class ProjectRelatedInfoMixin(ModelViewSet):
             self._project = self.project_model.objects.select_related(
                 'owner__user'
             ).get(**kwargs)
-        except self.project_model.DoesNotExist:
+        except self.project_model.DoesNotExist as exception:
             raise ParseError(
                 f"Invalid {self.project_type.replace('-', '_')}_slug."
-            ) from self.project_model.DoesNotExist
+            ) from exception
         return self._project
 
     @property
@@ -96,28 +115,9 @@ class ProjectThroughModelMixin(ProjectRelatedInfoMixin):
     permission_classes = (IsAuthenticatedOrReadOnly,)
 
     owner_only_id_access = False
-    _owner = None
-    _contributors = None
-
-    @property
-    def owner(self):
-        """Return the project's owner."""
-        if self._owner is None:
-            self._owner = self.project.owner.user_id
-        return self._owner
-
-    @property
-    def contributors(self):
-        """Return a Queryset for the project's contributors."""
-        if self._contributors is None:
-            self._contributors = self.project.contributors.values_list(
-                'user',
-                flat=True,
-            )
-        return self._contributors
 
     def check_permissions(self, request):
-        """Only allow the owner and contributors to add game support."""
+        """Only allow the owner and contributors to add data relationships."""
         if request.method not in SAFE_METHODS or self.action == 'retrieve':
             user = request.user.id
             is_contributor = user in self.contributors

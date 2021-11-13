@@ -9,12 +9,11 @@ from django.db import IntegrityError
 # Third Party Django
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.authentication import SessionAuthentication
-from rest_framework.exceptions import PermissionDenied
+from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.filters import OrderingFilter
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, SAFE_METHODS
 from rest_framework.response import Response
 from rest_framework.reverse import reverse
-from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 
@@ -82,10 +81,6 @@ class ProjectViewSet(ModelViewSet):
     ordering_fields = ('name', 'basename', 'updated', 'created')
     permission_classes = (IsAuthenticatedOrReadOnly,)
 
-    stored_contributors = None
-    stored_supported_games = None
-    stored_tags = None
-
     @property
     def creation_serializer_class(self):
         """Return the serializer class to use ONLY when creating a project."""
@@ -117,36 +112,18 @@ class ProjectViewSet(ModelViewSet):
 
     def create(self, request, *args, **kwargs):
         """Store the many-to-many fields before creation."""
-        self.store_many_to_many_fields(request=request)
         try:
             return super().create(request, *args, **kwargs)
-        except IntegrityError:
-            return Response(
-                data={
-                    'error': (
-                        f'{self.queryset.model.__name__} already exists. '
-                        'Cannot create.'
-                    )
-                },
-                status=status.HTTP_400_BAD_REQUEST,
-            )
+        except IntegrityError as exception:
+            raise ValidationError({
+                'basename': f'{self.queryset.model.__name__} already exists. Cannot create.'
+            }) from exception
 
     def get_serializer_class(self):
         """Return the serializer class for the current method."""
         if self.request.method == 'POST':
             return self.creation_serializer_class
         return super().get_serializer_class()
-
-    def store_many_to_many_fields(self, request):
-        """Store the many-to-many fields."""
-        self.stored_contributors = request.data.pop('contributors', None)
-        self.stored_supported_games = request.data.pop('supported_games', None)
-        self.stored_tags = request.data.pop('tags', None)
-
-    def update(self, request, *args, **kwargs):
-        """Store the many-to-many fields before updating."""
-        self.store_many_to_many_fields(request=request)
-        return super().update(request, *args, **kwargs)
 
 
 class ProjectImageViewSet(ProjectThroughModelMixin):
@@ -166,6 +143,21 @@ class ProjectReleaseViewSet(ProjectRelatedInfoMixin):
     lookup_value_regex = RELEASE_VERSION_REGEX
     lookup_field = 'version'
     related_model_type = 'Release'
+
+    def check_permissions(self, request):
+        """Only allow the owner and contributors to create releases."""
+        if request.method not in SAFE_METHODS:
+            if not hasattr(request.user, 'forum_user'):
+                print('no forum_user')
+                raise PermissionDenied
+
+            user = request.user.id
+            is_contributor = user in self.contributors
+            if user != self.owner and not is_contributor:
+                print('not owner or contributor')
+                raise PermissionDenied
+
+        return super().check_permissions(request=request)
 
 
 class ProjectGameViewSet(ProjectThroughModelMixin):
