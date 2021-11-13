@@ -6,6 +6,7 @@ from random import randint
 from unittest import mock
 
 # Django
+from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.test import TestCase
 
@@ -24,7 +25,13 @@ from project_manager.sub_plugins.helpers import (
     handle_sub_plugin_logo_upload,
     handle_sub_plugin_zip_upload,
 )
+from test_utils.factories.packages import PackageReleaseFactory, PackageFactory
 from test_utils.factories.plugins import PluginFactory, SubPluginPathFactory
+from test_utils.factories.requirements import (
+    VersionControlRequirementFactory,
+    PyPiRequirementFactory,
+    DownloadRequirementFactory,
+)
 from test_utils.factories.sub_plugins import (
     SubPluginFactory,
     SubPluginImageFactory,
@@ -36,7 +43,6 @@ from test_utils.factories.sub_plugins import (
 # TEST CASES
 # =============================================================================
 class SubPluginZipFileTestCase(TestCase):
-    # TODO: Add tests for SubPluginZipFile class
 
     base_path = plugin = sub_plugin_path = None
 
@@ -56,9 +62,6 @@ class SubPluginZipFileTestCase(TestCase):
 
     def setUp(self) -> None:
         super().setUp()
-        mock.patch(
-            target='project_manager.common.helpers.ZipFile',
-        ).start()
         self.mock_get_file_list = mock.patch(
             target='project_manager.common.helpers.ProjectZipFile.get_file_list',
         ).start()
@@ -108,7 +111,10 @@ class SubPluginZipFileTestCase(TestCase):
             d2=SUB_PLUGIN_ALLOWED_FILE_TYPES,
         )
 
-    def test_find_base_info(self):
+    @mock.patch(
+        target='project_manager.common.helpers.ZipFile',
+    )
+    def test_find_base_info(self, _):
         sub_plugin_basename = 'test_sub_plugin'
         self.mock_get_file_list.return_value = self._get_file_list(
             sub_plugin_basename=sub_plugin_basename,
@@ -136,7 +142,10 @@ class SubPluginZipFileTestCase(TestCase):
             second='multiple',
         )
 
-    def test_validate_base_file_in_zip(self):
+    @mock.patch(
+        target='project_manager.common.helpers.ZipFile',
+    )
+    def test_validate_base_file_in_zip(self, _):
         sub_plugin_basename = 'test_plugin'
         self.mock_get_file_list.return_value = self._get_file_list(
             sub_plugin_basename=sub_plugin_basename,
@@ -203,7 +212,10 @@ class SubPluginZipFileTestCase(TestCase):
             second='not-found',
         )
 
-    def test_get_requirement_path(self):
+    @mock.patch(
+        target='project_manager.common.helpers.ZipFile',
+    )
+    def test_get_requirement_paths(self, _):
         sub_plugin_basename = 'test_sub_plugin'
         self.mock_get_file_list.return_value = self._get_file_list(
             sub_plugin_basename=sub_plugin_basename,
@@ -211,9 +223,12 @@ class SubPluginZipFileTestCase(TestCase):
         obj = SubPluginZipFile('', self.plugin)
         obj.find_base_info()
         obj.validate_base_file_in_zip()
-        self.assertEqual(
-            first=obj.get_requirement_path(),
-            second=f'{PLUGIN_PATH}{self.plugin.basename}/{sub_plugin_basename}/requirements.json',
+        self.assertListEqual(
+            list1=obj.get_requirement_paths(),
+            list2=[
+                f'{PLUGIN_PATH}{self.plugin.basename}/{self.sub_plugin_path.path}/'
+                f'{sub_plugin_basename}/requirements.json'
+            ],
         )
 
         self.sub_plugin_path.allow_package_using_basename = False
@@ -225,12 +240,18 @@ class SubPluginZipFileTestCase(TestCase):
         obj = SubPluginZipFile('', self.plugin)
         obj.find_base_info()
         obj.validate_base_file_in_zip()
-        self.assertEqual(
-            first=obj.get_requirement_path(),
-            second=f'{PLUGIN_PATH}{self.plugin.basename}/{sub_plugin_basename}_requirements.json',
+        self.assertListEqual(
+            list1=obj.get_requirement_paths(),
+            list2=[
+                f'{PLUGIN_PATH}{self.plugin.basename}/{self.sub_plugin_path.path}/'
+                f'{sub_plugin_basename}_requirements.json'
+            ],
         )
 
-    def test_validate_file_paths(self):
+    @mock.patch(
+        target='project_manager.common.helpers.ZipFile',
+    )
+    def test_validate_file_paths(self, _):
         sub_plugin_basename = 'test_plugin'
         self.mock_get_file_list.return_value = self._get_file_list(
             sub_plugin_basename=sub_plugin_basename,
@@ -292,6 +313,303 @@ class SubPluginZipFileTestCase(TestCase):
         self.assertEqual(
             first=context.exception.message_dict['zip_file'][0],
             second=f'Invalid paths found in zip: {invalid_file}',
+        )
+
+    @mock.patch(
+        target='project_manager.sub_plugins.helpers.logger',
+    )
+    def test_validate_requirements_file_failures(self, mock_logger):
+        base_path = settings.BASE_DIR / 'fixtures' / 'releases' / 'sub-plugins' / 'test-plugin'
+        file_path = base_path / 'test-sub-plugin' / 'test-sub-plugin-v1.0.0.zip'
+        self.mock_get_file_list.return_value = []
+        plugin = PluginFactory(
+            basename='test_plugin',
+        )
+        sub_plugin_path = SubPluginPathFactory(
+            plugin=plugin,
+            allow_package_using_init=True,
+            path='sub_plugins',
+        )
+        obj = SubPluginZipFile(
+            zip_file=file_path,
+            plugin=plugin,
+        )
+        obj.basename = 'invalid'
+        obj.paths = {sub_plugin_path}
+        obj.validate_requirements()
+        mock_logger.debug.assert_called_once_with('No requirement file found.')
+
+        file_path = base_path / 'test-sub-plugin' / 'test-sub-plugin-invalid-v1.0.0.zip'
+        self.mock_get_file_list.return_value = [
+            'addons/source-python/plugins/test_plugin/sub_plugins/test_sub_plugin/requirements.json',
+        ]
+        obj = SubPluginZipFile(
+            zip_file=file_path,
+            plugin=plugin,
+        )
+        obj.basename = 'test_sub_plugin'
+        obj.paths = {sub_plugin_path}
+        with self.assertRaises(ValidationError) as context:
+            obj.validate_requirements()
+
+        self.assertDictEqual(
+            d1=context.exception.message_dict,
+            d2={'zip_file': ['Requirements json file cannot be decoded.']},
+        )
+
+    @mock.patch(
+        target='project_manager.common.helpers.json.loads',
+    )
+    @mock.patch(
+        target='project_manager.common.helpers.ZipFile',
+    )
+    @mock.patch(
+        target='project_manager.sub_plugins.helpers.ZipFile',
+    )
+    def test_validate_requirements_file_item_failures(self, _, __, mock_json_loads):
+        plugin = PluginFactory()
+        custom_package_basename = 'test_custom_package'
+        custom_package_slug = custom_package_basename.replace('_', '-')
+        custom_package = PackageFactory(
+            basename=custom_package_basename,
+        )
+        custom_package_release = PackageReleaseFactory(
+            package=custom_package,
+            version='1.0.0',
+        )
+        download_requirement_url = 'http://example.com/some_file.zip'
+        download_requirement = DownloadRequirementFactory(
+            url=download_requirement_url,
+        )
+        pypi_requirement_name = 'some-pypi-package'
+        pypi_requirement = PyPiRequirementFactory(
+            name=pypi_requirement_name,
+        )
+        vcs_requirement_url = 'git://git.some-project.org/SomeProject.git'
+        vcs_requirement = VersionControlRequirementFactory(
+            url=vcs_requirement_url,
+        )
+
+        mock_json_loads.return_value = []
+        obj = SubPluginZipFile('', plugin=plugin)
+        sub_plugin_path = SubPluginPathFactory(
+            plugin=plugin,
+            allow_package_using_init=True,
+            path='sub_plugins',
+        )
+        obj.paths = {sub_plugin_path}
+        with self.assertRaises(ValidationError) as context:
+            obj.validate_requirements()
+
+        self.assertDictEqual(
+            d1=context.exception.message_dict,
+            d2={'zip_file': ['Invalid requirements json file.']},
+        )
+
+        group_type = 'invalid'
+        mock_json_loads.return_value = {
+            group_type: {},
+        }
+        obj = SubPluginZipFile('', plugin=plugin)
+        obj.paths = {sub_plugin_path}
+        with self.assertRaises(ValidationError) as context:
+            obj.validate_requirements()
+
+        self.assertDictEqual(
+            d1=context.exception.message_dict,
+            d2={
+                'zip_file': [
+                    f'Invalid group name "{group_type}" found in requirements '
+                    f'json file.'
+                ],
+            },
+        )
+
+        group_type = 'custom'
+        mock_json_loads.return_value = {
+            group_type: {
+                'key': 'value',
+            },
+        }
+        obj = SubPluginZipFile('', plugin=plugin)
+        obj.paths = {sub_plugin_path}
+        with self.assertRaises(ValidationError) as context:
+            obj.validate_requirements()
+
+        self.assertDictEqual(
+            d1=context.exception.message_dict,
+            d2={
+                'zip_file': [
+                    f'Invalid group values for "{group_type}" found in '
+                    f'requirements json file.'
+                ],
+            },
+        )
+
+        group_type = 'custom'
+        mock_json_loads.return_value = {
+            group_type: [
+                'package',
+            ],
+        }
+        obj = SubPluginZipFile('', plugin=plugin)
+        obj.paths = {sub_plugin_path}
+        with self.assertRaises(ValidationError) as context:
+            obj.validate_requirements()
+
+        self.assertDictEqual(
+            d1=context.exception.message_dict,
+            d2={
+                'zip_file': [
+                    f'Invalid object found in "{group_type}" listing in '
+                    f'requirements json file.'
+                ],
+            },
+        )
+
+        group_type = 'custom'
+        mock_json_loads.return_value = {
+            group_type: [
+                {'key': 'value'},
+            ],
+        }
+        obj = SubPluginZipFile('', plugin=plugin)
+        obj.paths = {sub_plugin_path}
+        with self.assertRaises(ValidationError) as context:
+            obj.validate_requirements()
+
+        self.assertDictEqual(
+            d1=context.exception.message_dict,
+            d2={
+                'zip_file': [
+                    'No basename found for object in "custom" listing in '
+                    'requirements json file.'
+                ],
+            },
+        )
+
+        group_type = 'custom'
+        invalid_basename = 'invalid'
+        mock_json_loads.return_value = {
+            group_type: [
+                {'basename': invalid_basename},
+            ],
+        }
+        obj = SubPluginZipFile('', plugin=plugin)
+        obj.paths = {sub_plugin_path}
+        with self.assertRaises(ValidationError) as context:
+            obj.validate_requirements()
+
+        self.assertDictEqual(
+            d1=context.exception.message_dict,
+            d2={
+                'zip_file': [
+                    f'Custom Package "{invalid_basename}" from requirements '
+                    f'json file not found.'
+                ],
+            },
+        )
+
+        group_type = 'custom'
+        version = '1.0.1'
+        mock_json_loads.return_value = {
+            group_type: [
+                {
+                    'basename': custom_package_slug,
+                    'version': version,
+                },
+            ],
+        }
+        obj = SubPluginZipFile('', plugin=plugin)
+        obj.paths = {sub_plugin_path}
+        with self.assertRaises(ValidationError) as context:
+            obj.validate_requirements()
+
+        self.assertDictEqual(
+            d1=context.exception.message_dict,
+            d2={
+                'zip_file': [
+                    f'Custom Package "{custom_package_slug}" version '
+                    f'"{version}", from requirements json file, not found.'
+                ],
+            },
+        )
+
+        for group_type, required_field in {
+            'download': 'url',
+            'pypi': 'name',
+            'vcs': 'url',
+        }.items():
+            mock_json_loads.return_value = {
+                group_type: [
+                    {
+                        'key': 'value',
+                    },
+                ],
+            }
+            obj = SubPluginZipFile('', plugin=plugin)
+            obj.paths = {sub_plugin_path}
+            with self.assertRaises(ValidationError) as context:
+                obj.validate_requirements()
+
+            self.assertDictEqual(
+                d1=context.exception.message_dict,
+                d2={
+                    'zip_file': [
+                        f'No {required_field} found for object in '
+                        f'"{group_type}" listing in requirements json file.'
+                    ],
+                },
+            )
+
+        mock_json_loads.return_value = {
+            'custom': [
+                {
+                    'basename': custom_package_slug,
+                    'version': custom_package_release.version,
+                },
+            ],
+            'download': [
+                {
+                    'url': download_requirement_url,
+                }
+            ],
+            'pypi': [
+                {
+                    'name': pypi_requirement_name,
+                }
+            ],
+            'vcs': [
+                {
+                    'url': vcs_requirement_url,
+                }
+            ],
+        }
+        obj = SubPluginZipFile('', plugin=plugin)
+        obj.paths = {sub_plugin_path}
+        obj.validate_requirements()
+        self.assertDictEqual(
+            d1=obj.requirements,
+            d2={
+                'custom': [{
+                    'package_requirement': custom_package,
+                    'version': custom_package_release.version,
+                    'optional': False,
+                }],
+                'download': [{
+                    'download_requirement': download_requirement,
+                    'optional': False,
+                }],
+                'pypi': [{
+                    'pypi_requirement': pypi_requirement,
+                    'version': None,
+                    'optional': False,
+                }],
+                'vcs': [{
+                    'vcs_requirement': vcs_requirement,
+                    'optional': False,
+                }],
+            }
         )
 
 

@@ -5,12 +5,25 @@
 from rest_framework import status
 from rest_framework.reverse import reverse
 from rest_framework.test import APITestCase
+from rest_framework.views import APIView
+
+# App
+from project_manager.api.views import ProjectManagerAPIView
 
 
 # =============================================================================
 # TEST CASES
 # =============================================================================
-class ProjectManagerAPIViewAPITestCase(APITestCase):
+class ProjectManagerAPIViewTestCase(APITestCase):
+
+    def test_class_inheritance(self):
+        self.assertTrue(expr=issubclass(ProjectManagerAPIView, APIView))
+
+    def test_allowed_methods(self):
+        self.assertListEqual(
+            list1=ProjectManagerAPIView().allowed_methods,
+            list2=['GET', 'OPTIONS'],
+        )
 
     def test_get(self):
         response = self.client.get(path='/api/')
