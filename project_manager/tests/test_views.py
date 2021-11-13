@@ -109,9 +109,9 @@ class StatisticsViewTestCase(TestCase):
                     download_count=download_count,
                 )
 
-            if any([
+            if n > 1 and any([
+                n == 2,
                 choice([True, False]),
-                (n == plugin_count and not sub_plugin_count),
             ]):
                 count = randint(1, 2)
                 sub_plugin_count += count
