@@ -56,3 +56,4 @@ class TagViewSet(ListModelMixin, GenericViewSet):
     )
     ordering = ('name',)
     ordering_fields = ('name',)
+    http_method_names = ('get', 'options')

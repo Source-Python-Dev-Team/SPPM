@@ -17,7 +17,9 @@ from test_utils.factories.tags import TagFactory
 # =============================================================================
 # TEST CASES
 # =============================================================================
-class TagViewSetAPITestCase(APITestCase):
+class TagViewSetTestCase(APITestCase):
+
+    api_path = '/api/tags/'
 
     def test_filter_backends(self):
         self.assertTupleEqual(
@@ -49,8 +51,14 @@ class TagViewSetAPITestCase(APITestCase):
             tuple2=('name',),
         )
 
-    def test_can_list(self):
-        response = self.client.get(path='/api/tags/')
+    def test_http_method_names(self):
+        self.assertTupleEqual(
+            tuple1=TagViewSet.http_method_names,
+            tuple2=('get', 'options'),
+        )
+
+    def test_get(self):
+        response = self.client.get(path=self.api_path)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -61,7 +69,7 @@ class TagViewSetAPITestCase(APITestCase):
         )
 
         tag = TagFactory()
-        response = self.client.get(path='/api/tags/')
+        response = self.client.get(path=self.api_path)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -76,14 +84,13 @@ class TagViewSetAPITestCase(APITestCase):
             second=tag.name,
         )
 
-    def test_cannot_post(self):
-        response = self.client.post(
-            path='/api/tags/',
-            data={
-                'name': 'test',
-            }
-        )
+    def test_options(self):
+        response = self.client.options(path=self.api_path)
         self.assertEqual(
             first=response.status_code,
-            second=status.HTTP_405_METHOD_NOT_ALLOWED,
+            second=status.HTTP_200_OK,
+        )
+        self.assertEqual(
+            first=response.json()['name'],
+            second='Tag List',
         )
