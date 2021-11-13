@@ -4,6 +4,10 @@
 # IMPORTS
 # =============================================================================
 # Django
+import json
+import logging
+from zipfile import ZipFile
+
 from django.core.exceptions import ValidationError
 
 # App
@@ -29,6 +33,12 @@ __all__ = (
 
 
 # =============================================================================
+# GLOBAL VARIABLES
+# =============================================================================
+logger = logging.getLogger(__name__)
+
+
+# =============================================================================
 # CLASSES
 # =============================================================================
 class SubPluginZipFile(ProjectZipFile):
@@ -36,7 +46,7 @@ class SubPluginZipFile(ProjectZipFile):
 
     project_type = 'SubPlugin'
     file_types = SUB_PLUGIN_ALLOWED_FILE_TYPES
-    paths = set()
+    paths = None
     is_module = False
 
     def __init__(self, zip_file, plugin):
@@ -66,8 +76,10 @@ class SubPluginZipFile(ProjectZipFile):
                     )
                 ):
                     continue
+
                 if extension in allowed_extensions:
                     return True
+
                 return False
 
         return False
@@ -75,7 +87,8 @@ class SubPluginZipFile(ProjectZipFile):
     def find_base_info(self):
         """Store all base information for the zip file."""
         plugin_path = f'{PLUGIN_PATH}{self.plugin.basename}/'
-        paths = list(self.plugin.paths.values_list('path', flat=True))
+        paths = list(self.plugin.paths.all())
+        self.paths = set()
         for file_path in self.file_list:
             if not file_path.startswith(plugin_path):
                 # TODO: validate not another plugin path or package
@@ -89,10 +102,11 @@ class SubPluginZipFile(ProjectZipFile):
                 continue
 
             for current_path in paths:
-                if not current.startswith(current_path):
+                path = current_path.path
+                if not current.startswith(path):
                     continue
 
-                current = current.split(current_path, 1)[1]
+                current = current.split(path, 1)[1]
                 if current.startswith('/'):  # pragma: no branch
                     current = current[1:]
 
@@ -117,25 +131,16 @@ class SubPluginZipFile(ProjectZipFile):
     def validate_base_file_in_zip(self):
         """Verify that there is a base file within the zip file."""
         plugin_paths = {
-            values['path']: {
-                'allow_module': values['allow_module'],
-                'allow_package_using_basename': values[
-                    'allow_package_using_basename'
-                ],
-                'allow_package_using_init': values['allow_package_using_init'],
-            } for values in self.plugin.paths.filter(
-                path__in=self.paths,
-            ).values(
-                'path',
-                'allow_module',
-                'allow_package_using_basename',
-                'allow_package_using_init',
-            )
+            path.path: {
+                'allow_module': path.allow_module,
+                'allow_package_using_basename': path.allow_package_using_basename,
+                'allow_package_using_init': path.allow_package_using_init,
+            } for path in self.paths
         }
-        for path in self.paths:
+        for path, path_values in plugin_paths.items():
             self._validate_base_file_in_zip(
                 base_path=path,
-                path_values=plugin_paths[path]
+                path_values=path_values,
             )
 
     def _validate_base_file_in_zip(self, base_path, path_values):
@@ -180,18 +185,43 @@ class SubPluginZipFile(ProjectZipFile):
             code='not-found',
         )
 
-    def get_requirement_path(self):
+    def get_requirements_file_contents(self):
+        """Return the contents of the requirements.json file."""
+        requirement_paths = self.get_requirement_paths()
+        for requirement_path in requirement_paths:
+            try:
+                with ZipFile(self.zip_file).open(requirement_path) as requirement_file:
+                    contents = json.load(requirement_file)
+            except KeyError:
+                continue
+            except json.decoder.JSONDecodeError as exception:
+                raise ValidationError({
+                    'zip_file': 'Requirements json file cannot be decoded.'
+                }) from exception
+
+            if not isinstance(contents, dict):
+                raise ValidationError({
+                    'zip_file': 'Invalid requirements json file.'
+                })
+
+            return contents
+
+        logger.debug('No requirement file found.')
+        return None
+
+    def get_requirement_paths(self):
         """Return the path for the requirements json file."""
-        # TODO: this is incorrect...it should take into account the sub-path
         if self.is_module:
-            return (
-                f'{PLUGIN_PATH}{self.plugin.basename}/'
+            return [
+                f'{PLUGIN_PATH}{self.plugin.basename}/{sub_plugin_path.path}/'
                 f'{self.basename}_requirements.json'
-            )
-        return (
-            f'{PLUGIN_PATH}{self.plugin.basename}/'
+                for sub_plugin_path in self.paths
+            ]
+        return [
+            f'{PLUGIN_PATH}{self.plugin.basename}/{sub_plugin_path.path}/'
             f'{self.basename}/requirements.json'
-        )
+            for sub_plugin_path in self.paths
+        ]
 
 
 # =============================================================================
