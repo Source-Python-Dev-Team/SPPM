@@ -317,7 +317,6 @@ class PackageZipFileTestCase(TestCase):
     )
     def test_validate_requirements_file_item_failures(self, _, mock_json_loads):
         custom_package_basename = 'test_custom_package'
-        custom_package_slug = custom_package_basename.replace('_', '-')
         custom_package = PackageFactory(
             basename=custom_package_basename,
         )
@@ -452,7 +451,7 @@ class PackageZipFileTestCase(TestCase):
         mock_json_loads.return_value = {
             group_type: [
                 {
-                    'basename': custom_package_slug,
+                    'basename': custom_package_basename,
                     'version': version,
                 },
             ],
@@ -465,7 +464,7 @@ class PackageZipFileTestCase(TestCase):
             d1=context.exception.message_dict,
             d2={
                 'zip_file': [
-                    f'Custom Package "{custom_package_slug}" version '
+                    f'Custom Package "{custom_package_basename}" version '
                     f'"{version}", from requirements json file, not found.'
                 ],
             },
@@ -500,7 +499,7 @@ class PackageZipFileTestCase(TestCase):
         mock_json_loads.return_value = {
             'custom': [
                 {
-                    'basename': custom_package_slug,
+                    'basename': custom_package_basename,
                     'version': custom_package_release.version,
                 },
             ],

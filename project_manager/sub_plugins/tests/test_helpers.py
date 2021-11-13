@@ -369,7 +369,6 @@ class SubPluginZipFileTestCase(TestCase):
     def test_validate_requirements_file_item_failures(self, _, __, mock_json_loads):
         plugin = PluginFactory()
         custom_package_basename = 'test_custom_package'
-        custom_package_slug = custom_package_basename.replace('_', '-')
         custom_package = PackageFactory(
             basename=custom_package_basename,
         )
@@ -515,7 +514,7 @@ class SubPluginZipFileTestCase(TestCase):
         mock_json_loads.return_value = {
             group_type: [
                 {
-                    'basename': custom_package_slug,
+                    'basename': custom_package_basename,
                     'version': version,
                 },
             ],
@@ -529,7 +528,7 @@ class SubPluginZipFileTestCase(TestCase):
             d1=context.exception.message_dict,
             d2={
                 'zip_file': [
-                    f'Custom Package "{custom_package_slug}" version '
+                    f'Custom Package "{custom_package_basename}" version '
                     f'"{version}", from requirements json file, not found.'
                 ],
             },
@@ -565,7 +564,7 @@ class SubPluginZipFileTestCase(TestCase):
         mock_json_loads.return_value = {
             'custom': [
                 {
-                    'basename': custom_package_slug,
+                    'basename': custom_package_basename,
                     'version': custom_package_release.version,
                 },
             ],
