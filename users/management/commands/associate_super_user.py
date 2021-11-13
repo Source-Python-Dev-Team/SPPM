@@ -53,10 +53,10 @@ class Command(BaseCommand):
         username = options['username']
         try:
             user = User.objects.get(username=username)
-        except User.DoesNotExist:
+        except User.DoesNotExist as exception:
             raise CommandError(
                 f'User with the username "{username}" was not found.'
-            ) from User.DoesNotExist
+            ) from exception
 
         forum_id = options['forum_id']
         if ForumUser.objects.filter(

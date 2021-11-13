@@ -72,10 +72,10 @@ class Command(BaseCommand):
                 username=username,
                 password=options['password'],
             )
-        except Exception as error:
+        except Exception as exception:
             raise CommandError(
-                f'Unable to create User due to: {error}'
-            ) from Exception
+                f'Unable to create User due to: {exception}'
+            ) from exception
 
         ForumUser.objects.create(
             user=user,
