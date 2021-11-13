@@ -36,9 +36,17 @@ from test_utils.factories.users import ForumUserFactory
 # =============================================================================
 class StatisticsViewTestCase(TestCase):
 
+    api_path = '/statistics/'
+
     def test_class_inheritance(self):
         self.assertTrue(
             expr=issubclass(StatisticsView, TemplateView),
+        )
+
+    def test_http_method_names(self):
+        self.assertTupleEqual(
+            tuple1=StatisticsView.http_method_names,
+            tuple2=('get', 'options'),
         )
 
     def test_template_name(self):
@@ -47,7 +55,7 @@ class StatisticsViewTestCase(TestCase):
             second='statistics.html',
         )
 
-    def test_get_view(self):
+    def test_get(self):
         contributing_users = set()
         total_users = randint(20, 30)
         user_list = [ForumUserFactory() for _ in range(total_users)]
@@ -129,7 +137,7 @@ class StatisticsViewTestCase(TestCase):
                             download_count=download_count,
                         )
 
-        response = self.client.get('/statistics/')
+        response = self.client.get(self.api_path)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -157,4 +165,15 @@ class StatisticsViewTestCase(TestCase):
                     sub_plugin_download_count,
                 ])
             }
+        )
+
+    def test_options(self):
+        response = self.client.get(self.api_path)
+        self.assertEqual(
+            first=response.status_code,
+            second=status.HTTP_200_OK,
+        )
+        self.assertIn(
+            member='Source.Python Project Manager Statistics',
+            container=str(response.content),
         )

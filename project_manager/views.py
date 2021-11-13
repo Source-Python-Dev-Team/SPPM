@@ -29,6 +29,7 @@ class StatisticsView(TemplateView):
     """View for total Project statistics."""
 
     template_name = 'statistics.html'
+    http_method_names = ('get', 'options')
 
     def get_context_data(self, **kwargs):
         """Return all statistical context data."""
