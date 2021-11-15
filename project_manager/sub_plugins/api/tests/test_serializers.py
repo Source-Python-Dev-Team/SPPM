@@ -452,8 +452,10 @@ class SubPluginSerializerTestCase(TestCase):
         )
 
     def test_get_download_kwargs(self):
+        zip_file = settings.MEDIA_ROOT / 'releases' / 'file_name_v1.0.0.zip'
+        zip_file = zip_file.replace('\\', '/')
         release = SubPluginReleaseFactory(
-            zip_file=settings.MEDIA_ROOT / 'releases' / 'file_name_v1.0.0.zip',
+            zip_file=zip_file,
         )
         obj = release.sub_plugin
         instance = SubPluginSerializer()

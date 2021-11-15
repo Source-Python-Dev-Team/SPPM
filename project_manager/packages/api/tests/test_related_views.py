@@ -4,9 +4,11 @@
 # Python
 import shutil
 import tempfile
+from datetime import timedelta
 
 # Django
 from django.test import override_settings
+from django.utils.timezone import now
 
 # Third Party Python
 from path import Path
@@ -767,6 +769,7 @@ class PackageImageViewSetTestCase(APITestCase):
         )
         cls.package_image_2 = PackageImageFactory(
             package=cls.package,
+            created=now() + timedelta(seconds=1)
         )
         cls.regular_user = ForumUserFactory()
 

@@ -4,9 +4,11 @@
 # Python
 import shutil
 import tempfile
+from datetime import timedelta
 
 # Django
 from django.test import override_settings
+from django.utils.timezone import now
 
 # Third Party Python
 from path import Path
@@ -772,6 +774,7 @@ class PluginImageViewSetTestCase(APITestCase):
         )
         cls.plugin_image_2 = PluginImageFactory(
             plugin=cls.plugin,
+            created=now() + timedelta(seconds=1)
         )
         cls.regular_user = ForumUserFactory()
 
@@ -841,7 +844,6 @@ class PluginImageViewSetTestCase(APITestCase):
         content = response.json()
         self.assertEqual(first=content['count'], second=2)
         request = response.wsgi_request
-        image = f'{request.scheme}://{request.get_host()}{self.plugin_image_2.image.url}'
         self.assertDictEqual(
             d1=content['results'][0],
             d2={
