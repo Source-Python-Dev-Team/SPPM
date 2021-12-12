@@ -101,10 +101,10 @@ class ProjectRelatedInfoMixin(ModelViewSet):
 
     def get_view_name(self):
         """Return the name for the view."""
-        if hasattr(self, 'kwargs') and self.related_model_type is not None:
+        if hasattr(self, 'kwargs'):  # pragma: no branch
             plural = 's' if self.action == 'list' else ''
             return f'{self.project} - {self.related_model_type}{plural}'
-        return super().get_view_name()
+        return super().get_view_name()  # pragma: no cover
 
 
 class ProjectThroughModelMixin(ProjectRelatedInfoMixin):
