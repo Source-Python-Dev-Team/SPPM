@@ -7,6 +7,8 @@ from django.test import TestCase
 
 # App
 from games.admin import GameAdmin
+from games.models import Game
+from test_utils.factories.games import GameFactory
 
 
 # =============================================================================
@@ -47,7 +49,7 @@ class GameAdminTestCase(TestCase):
     def test_readonly_fields(self):
         self.assertTupleEqual(
             tuple1=GameAdmin.readonly_fields,
-            tuple2=('basename',),
+            tuple2=(),
         )
 
     def test_search_fields(self):
@@ -57,4 +59,16 @@ class GameAdminTestCase(TestCase):
                 'name',
                 'basename',
             ),
+        )
+
+    def test_get_readonly_fields(self):
+        self.assertTupleEqual(
+            tuple1=GameAdmin(Game, '').get_readonly_fields('', obj=None),
+            tuple2=(),
+        )
+
+        game = GameFactory()
+        self.assertTupleEqual(
+            tuple1=GameAdmin(Game, '').get_readonly_fields('', obj=game),
+            tuple2=('basename',),
         )
