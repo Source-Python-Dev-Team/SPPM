@@ -7,6 +7,9 @@
 from django.urls import reverse
 from django.db import models
 
+# Third Party Django
+from model_utils.tracker import FieldTracker
+
 # App
 from project_manager.common.constants import (
     PROJECT_BASENAME_MAX_LENGTH,
@@ -140,6 +143,12 @@ class PackageRelease(ProjectRelease):
     handle_zip_file_upload = handle_package_zip_upload
     project_class = Package
 
+    field_tracker = FieldTracker(
+        fields=[
+            'version',
+        ]
+    )
+
     @property
     def project(self):
         """Return the Package."""
@@ -149,6 +158,8 @@ class PackageRelease(ProjectRelease):
         """Define metaclass attributes."""
 
         unique_together = ('package', 'version')
+        verbose_name = 'Package Release'
+        verbose_name_plural = 'Package Releases'
 
     def get_absolute_url(self):
         """Return the URL for the PackageRelease."""

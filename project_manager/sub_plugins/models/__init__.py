@@ -7,6 +7,9 @@
 from django.urls import reverse
 from django.db import models
 
+# Third Party Django
+from model_utils.tracker import FieldTracker
+
 # App
 from project_manager.common.constants import (
     PROJECT_BASENAME_MAX_LENGTH,
@@ -162,6 +165,12 @@ class SubPluginRelease(ProjectRelease):
     handle_zip_file_upload = handle_sub_plugin_zip_upload
     project_class = SubPlugin
 
+    field_tracker = FieldTracker(
+        fields=[
+            'version',
+        ]
+    )
+
     @property
     def project(self):
         """Return the SubPlugin."""
@@ -171,6 +180,8 @@ class SubPluginRelease(ProjectRelease):
         """Define metaclass attributes."""
 
         unique_together = ('sub_plugin', 'version')
+        verbose_name = 'SubPlugin Release'
+        verbose_name_plural = 'SubPlugin Releases'
 
     def get_absolute_url(self):
         """Return the URL for the SubPluginRelease."""

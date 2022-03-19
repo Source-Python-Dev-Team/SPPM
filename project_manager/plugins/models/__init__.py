@@ -8,6 +8,9 @@ from django.core.exceptions import ValidationError
 from django.urls import reverse
 from django.db import models
 
+# Third Party Django
+from model_utils.tracker import FieldTracker
+
 # App
 from project_manager.common.constants import (
     PROJECT_BASENAME_MAX_LENGTH,
@@ -144,6 +147,12 @@ class PluginRelease(ProjectRelease):
     handle_zip_file_upload = handle_plugin_zip_upload
     project_class = Plugin
 
+    field_tracker = FieldTracker(
+        fields=[
+            'version',
+        ]
+    )
+
     @property
     def project(self):
         """Return the Plugin."""
@@ -153,6 +162,8 @@ class PluginRelease(ProjectRelease):
         """Define metaclass attributes."""
 
         unique_together = ('plugin', 'version')
+        verbose_name = 'Plugin Release'
+        verbose_name_plural = 'Plugin Releases'
 
     def get_absolute_url(self):
         """Return the URL for the PluginRelease."""

@@ -268,6 +268,8 @@ class ProjectRelease(AbstractUUIDPrimaryKeyModel):
         null=True,
     )
 
+    field_tracker = None
+
     class Meta:
         """Define metaclass attributes."""
 
@@ -307,6 +309,17 @@ class ProjectRelease(AbstractUUIDPrimaryKeyModel):
     def __str__(self):
         """Return the project name + release version."""
         return f'{self.project} - {self.version}'
+
+    def clean(self):
+        """Raise a proper error when setting version to an existing value."""
+        if self.field_tracker.has_changed('version'):
+            new_version = self.field_tracker.current()['version']
+            if self.project.releases.filter(version=new_version).exists():
+                raise ValidationError({
+                    'version': 'Version already exists.'
+                })
+
+        return super().clean()
 
     def save(self, *args, **kwargs):
         """Update the Project's 'updated' value to the releases 'created'."""
