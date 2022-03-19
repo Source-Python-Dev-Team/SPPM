@@ -11,7 +11,6 @@ from project_manager.common.admin.inlines import (
     ProjectContributorInline,
     ProjectGameInline,
     ProjectImageInline,
-    ProjectReleaseInline,
     ProjectTagInline,
 )
 from project_manager.plugins.admin import PluginAdmin
@@ -19,7 +18,6 @@ from project_manager.plugins.admin.inlines import (
     PluginContributorInline,
     PluginGameInline,
     PluginImageInline,
-    PluginReleaseInline,
     PluginTagInline,
     SubPluginPathInline,
 )
@@ -51,7 +49,6 @@ class PluginAdminTestCase(TestCase):
                 PluginImageInline,
                 PluginTagInline,
                 SubPluginPathInline,
-                PluginReleaseInline,
             ),
         )
 
@@ -133,28 +130,6 @@ class PluginTagInlineTestCase(TestCase):
 
     def test_has_add_permission(self):
         obj = PluginTagInline(PluginTag, admin.AdminSite())
-        self.assertFalse(
-            expr=obj.has_add_permission(''),
-        )
-
-
-class PluginReleaseInlineTestCase(TestCase):
-    def test_class_inheritance(self):
-        self.assertTrue(
-            expr=issubclass(
-                PluginReleaseInline,
-                ProjectReleaseInline,
-            ),
-        )
-
-    def test_model(self):
-        self.assertEqual(
-            first=PluginReleaseInline.model,
-            second=PluginRelease,
-        )
-
-    def test_has_add_permission(self):
-        obj = PluginReleaseInline(PluginRelease, admin.AdminSite())
         self.assertFalse(
             expr=obj.has_add_permission(''),
         )

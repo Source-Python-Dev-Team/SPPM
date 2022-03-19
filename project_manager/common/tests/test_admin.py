@@ -11,7 +11,6 @@ from project_manager.common.admin.inlines import (
     ProjectContributorInline,
     ProjectGameInline,
     ProjectImageInline,
-    ProjectReleaseInline,
     ProjectTagInline,
 )
 from project_manager.common.models import Project
@@ -181,47 +180,6 @@ class ProjectImageInlineTestCase(TestCase):
             tuple2=(
                 'image',
                 'created',
-            ),
-        )
-
-
-class ProjectReleaseInlineTestCase(TestCase):
-
-    def test_class_inheritance(self):
-        self.assertTrue(
-            expr=issubclass(ProjectReleaseInline, admin.StackedInline),
-        )
-
-    def test_extra(self):
-        self.assertEqual(
-            first=ProjectReleaseInline.extra,
-            second=0,
-        )
-
-    def test_view_on_site(self):
-        self.assertFalse(expr=ProjectReleaseInline.view_on_site)
-
-    def test_fields(self):
-        self.assertTupleEqual(
-            tuple1=ProjectReleaseInline.fields,
-            tuple2=(
-                'version',
-                'notes',
-                'zip_file',
-                'download_count',
-                'created',
-                'created_by',
-            ),
-        )
-
-    def test_readonly_fields(self):
-        self.assertTupleEqual(
-            tuple1=ProjectReleaseInline.readonly_fields,
-            tuple2=(
-                'zip_file',
-                'download_count',
-                'created',
-                'created_by',
             ),
         )
 

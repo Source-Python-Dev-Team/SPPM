@@ -8,7 +8,6 @@ from project_manager.common.admin.inlines import (
     ProjectContributorInline,
     ProjectGameInline,
     ProjectImageInline,
-    ProjectReleaseInline,
     ProjectTagInline,
 )
 from project_manager.packages.models import (
@@ -27,7 +26,6 @@ __all__ = (
     'PackageContributorInline',
     'PackageGameInline',
     'PackageImageInline',
-    'PackageReleaseInline',
     'PackageTagInline',
 )
 
@@ -57,9 +55,3 @@ class PackageImageInline(ProjectImageInline):
     """Package Image Inline."""
 
     model = PackageImage
-
-
-class PackageReleaseInline(ProjectReleaseInline):
-    """Package Release Inline."""
-
-    model = PackageRelease

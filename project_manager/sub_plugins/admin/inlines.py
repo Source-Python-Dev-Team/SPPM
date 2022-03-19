@@ -8,7 +8,6 @@ from project_manager.common.admin.inlines import (
     ProjectContributorInline,
     ProjectGameInline,
     ProjectImageInline,
-    ProjectReleaseInline,
     ProjectTagInline,
 )
 from project_manager.sub_plugins.models import (
@@ -27,7 +26,6 @@ __all__ = (
     'SubPluginContributorInline',
     'SubPluginGameInline',
     'SubPluginImageInline',
-    'SubPluginReleaseInline',
     'SubPluginTagInline',
 )
 
@@ -57,9 +55,3 @@ class SubPluginImageInline(ProjectImageInline):
     """Plugin Image Inline."""
 
     model = SubPluginImage
-
-
-class SubPluginReleaseInline(ProjectReleaseInline):
-    """Plugin Release Inline."""
-
-    model = SubPluginRelease

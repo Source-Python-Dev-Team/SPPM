@@ -12,6 +12,7 @@ from django.contrib import admin
 # =============================================================================
 __all__ = (
     'ProjectAdmin',
+    'ProjectReleaseAdmin',
 )
 
 
@@ -71,6 +72,57 @@ class ProjectAdmin(admin.ModelAdmin):
         'owner__user__username',
         'contributors__user__username',
     )
+
+    def has_add_permission(self, request):
+        """Disallow creation of a Project in the Admin."""
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        """Disallow deletion of Project in the Admin."""
+        return False
+
+
+class ProjectReleaseAdmin(admin.ModelAdmin):
+    """Base admin class for project releases."""
+
+    fieldsets = (
+        (
+            'Release Info',
+            {
+                'classes': ('wide',),
+                'fields': (
+                    'version',
+                    'notes',
+                    'zip_file',
+                ),
+            }
+        ),
+        (
+            'Metadata',
+            {
+                'classes': ('collapse',),
+                'fields': (
+                    'created',
+                    'created_by',
+                    'download_count',
+                ),
+            },
+        )
+    )
+    list_display = (
+        'version',
+        'created',
+    )
+    readonly_fields = (
+        'zip_file',
+        'download_count',
+        'created',
+        'created_by',
+    )
+    search_fields = (
+        'version',
+    )
+    view_on_site = False
 
     def has_add_permission(self, request):
         """Disallow creation of a Project in the Admin."""

@@ -3,19 +3,21 @@
 # =============================================================================
 # IMPORTS
 # =============================================================================
+# Python
+from copy import deepcopy
+
 # Django
 from django.contrib import admin
 
 # App
-from project_manager.common.admin import ProjectAdmin
+from project_manager.common.admin import ProjectAdmin, ProjectReleaseAdmin
 from project_manager.packages.admin.inlines import (
     PackageContributorInline,
     PackageImageInline,
     PackageGameInline,
-    PackageReleaseInline,
     PackageTagInline,
 )
-from project_manager.packages.models import Package
+from project_manager.packages.models import Package, PackageRelease
 
 
 # =============================================================================
@@ -23,6 +25,7 @@ from project_manager.packages.models import Package
 # =============================================================================
 __all__ = (
     'PackageAdmin',
+    'PackageReleaseAdmin',
 )
 
 
@@ -38,5 +41,16 @@ class PackageAdmin(ProjectAdmin):
         PackageGameInline,
         PackageImageInline,
         PackageTagInline,
-        PackageReleaseInline,
     )
+
+
+@admin.register(PackageRelease)
+class PackageReleaseAdmin(ProjectReleaseAdmin):
+    """PackageRelease admin."""
+
+    fieldsets = deepcopy(ProjectReleaseAdmin.fieldsets)
+    fieldsets[0][1]['fields'] += ('package',)
+    list_display = ProjectReleaseAdmin.list_display + ('package',)
+    ordering = ('package', '-created',)
+    readonly_fields = ProjectReleaseAdmin.readonly_fields + ('package',)
+    search_fields = ProjectReleaseAdmin.search_fields + ('package__name',)

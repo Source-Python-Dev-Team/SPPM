@@ -14,7 +14,6 @@ from project_manager.common.admin.inlines import (
     ProjectContributorInline,
     ProjectGameInline,
     ProjectImageInline,
-    ProjectReleaseInline,
     ProjectTagInline,
 )
 from project_manager.packages.admin import PackageAdmin
@@ -22,7 +21,6 @@ from project_manager.packages.admin.inlines import (
     PackageContributorInline,
     PackageGameInline,
     PackageImageInline,
-    PackageReleaseInline,
     PackageTagInline,
 )
 from project_manager.packages.models import (
@@ -54,7 +52,6 @@ class PackageAdminTestCase(TestCase):
                 PackageGameInline,
                 PackageImageInline,
                 PackageTagInline,
-                PackageReleaseInline,
             ),
         )
 
@@ -155,35 +152,6 @@ class PackageTagInlineTestCase(TestCase):
 
     def test_has_add_permission(self):
         obj = PackageTagInline(PackageTag, admin.AdminSite())
-        self.assertFalse(
-            expr=obj.has_add_permission(''),
-        )
-
-
-class PackageReleaseInlineTestCase(TestCase):
-    def test_class_inheritance(self):
-        self.assertTrue(
-            expr=issubclass(
-                PackageReleaseInline,
-                ProjectReleaseInline,
-            ),
-        )
-
-    def test_model(self):
-        self.assertEqual(
-            first=PackageReleaseInline.model,
-            second=PackageRelease,
-        )
-
-    def test_get_queryset(self):
-        obj = PackageReleaseInline(PackageRelease, admin.AdminSite())
-        self.assertTupleEqual(
-            tuple1=obj.get_queryset(mock.Mock()).query.order_by,
-            tuple2=('-created',),
-        )
-
-    def test_has_add_permission(self):
-        obj = PackageReleaseInline(PackageRelease, admin.AdminSite())
         self.assertFalse(
             expr=obj.has_add_permission(''),
         )

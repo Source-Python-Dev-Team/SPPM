@@ -3,20 +3,22 @@
 # =============================================================================
 # IMPORTS
 # =============================================================================
+# Python
+from copy import deepcopy
+
 # Django
 from django.contrib import admin
 
 # App
-from project_manager.common.admin import ProjectAdmin
+from project_manager.common.admin import ProjectAdmin, ProjectReleaseAdmin
 from project_manager.plugins.admin.inlines import (
     PluginContributorInline,
     PluginGameInline,
     PluginImageInline,
-    PluginReleaseInline,
     PluginTagInline,
     SubPluginPathInline,
 )
-from project_manager.plugins.models import Plugin
+from project_manager.plugins.models import Plugin, PluginRelease
 
 
 # =============================================================================
@@ -24,6 +26,7 @@ from project_manager.plugins.models import Plugin
 # =============================================================================
 __all__ = (
     'PluginAdmin',
+    'PluginReleaseAdmin',
 )
 
 
@@ -40,5 +43,16 @@ class PluginAdmin(ProjectAdmin):
         PluginImageInline,
         PluginTagInline,
         SubPluginPathInline,
-        PluginReleaseInline,
     )
+
+
+@admin.register(PluginRelease)
+class PluginReleaseAdmin(ProjectReleaseAdmin):
+    """PluginRelease admin."""
+
+    fieldsets = deepcopy(ProjectReleaseAdmin.fieldsets)
+    fieldsets[0][1]['fields'] += ('plugin',)
+    list_display = ProjectReleaseAdmin.list_display + ('plugin',)
+    ordering = ('plugin', '-created',)
+    readonly_fields = ProjectReleaseAdmin.readonly_fields + ('plugin',)
+    search_fields = ProjectReleaseAdmin.search_fields + ('plugin__name',)

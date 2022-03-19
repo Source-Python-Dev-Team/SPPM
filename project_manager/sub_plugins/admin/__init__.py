@@ -4,21 +4,20 @@
 # IMPORTS
 # =============================================================================
 # Python
-import copy
+from copy import deepcopy
 
 # Django
 from django.contrib import admin
 
 # App
-from project_manager.common.admin import ProjectAdmin
+from project_manager.common.admin import ProjectAdmin, ProjectReleaseAdmin
 from project_manager.sub_plugins.admin.inlines import (
     SubPluginContributorInline,
     SubPluginGameInline,
     SubPluginImageInline,
-    SubPluginReleaseInline,
     SubPluginTagInline,
 )
-from project_manager.sub_plugins.models import SubPlugin
+from project_manager.sub_plugins.models import SubPlugin, SubPluginRelease
 
 
 # =============================================================================
@@ -32,7 +31,7 @@ __all__ = (
 # =============================================================================
 # GLOBAL VARIABLES
 # =============================================================================
-_project_fieldsets = copy.deepcopy(ProjectAdmin.fieldsets)
+_project_fieldsets = deepcopy(ProjectAdmin.fieldsets)
 _fields = _project_fieldsets[0][1]['fields']
 _project_fieldsets[0][1]['fields'] = ('plugin',) + _fields
 
@@ -50,7 +49,6 @@ class SubPluginAdmin(ProjectAdmin):
         SubPluginGameInline,
         SubPluginImageInline,
         SubPluginTagInline,
-        SubPluginReleaseInline,
     )
     list_display = ProjectAdmin.list_display + (
         'plugin',
@@ -62,3 +60,15 @@ class SubPluginAdmin(ProjectAdmin):
         'plugin__name',
         'plugin__basename',
     )
+
+
+@admin.register(SubPluginRelease)
+class SubPluginReleaseAdmin(ProjectReleaseAdmin):
+    """SubPluginRelease admin."""
+
+    fieldsets = deepcopy(ProjectReleaseAdmin.fieldsets)
+    fieldsets[0][1]['fields'] += ('sub_plugin',)
+    list_display = ProjectReleaseAdmin.list_display + ('sub_plugin',)
+    ordering = ('sub_plugin', '-created',)
+    readonly_fields = ProjectReleaseAdmin.readonly_fields + ('sub_plugin',)
+    search_fields = ProjectReleaseAdmin.search_fields + ('sub_plugin__name',)

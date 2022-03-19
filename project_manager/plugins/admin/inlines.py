@@ -11,7 +11,6 @@ from project_manager.common.admin.inlines import (
     ProjectContributorInline,
     ProjectGameInline,
     ProjectImageInline,
-    ProjectReleaseInline,
     ProjectTagInline,
 )
 from project_manager.plugins.models import (
@@ -31,7 +30,6 @@ __all__ = (
     'PluginContributorInline',
     'PluginGameInline',
     'PluginImageInline',
-    'PluginReleaseInline',
     'PluginTagInline',
     'SubPluginPathInline',
 )
@@ -62,12 +60,6 @@ class PluginImageInline(ProjectImageInline):
     """Plugin Image Inline."""
 
     model = PluginImage
-
-
-class PluginReleaseInline(ProjectReleaseInline):
-    """Plugin Release Inline."""
-
-    model = PluginRelease
 
 
 class SubPluginPathInline(admin.StackedInline):

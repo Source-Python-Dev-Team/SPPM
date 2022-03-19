@@ -15,7 +15,6 @@ __all__ = (
     'ProjectContributorInline',
     'ProjectGameInline',
     'ProjectImageInline',
-    'ProjectReleaseInline',
     'ProjectTagInline',
 )
 
@@ -86,36 +85,6 @@ class ProjectImageInline(admin.TabularInline):
         'image',
         'created',
     )
-
-    def has_add_permission(self, request, obj=None):
-        """Disallow adding new images in the Admin."""
-        return False
-
-
-class ProjectReleaseInline(admin.StackedInline):
-    """Base Project Release Inline."""
-
-    extra = 0
-    view_on_site = False
-    fields = (
-        'version',
-        'notes',
-        'zip_file',
-        'download_count',
-        'created',
-        'created_by',
-    )
-
-    readonly_fields = (
-        'zip_file',
-        'download_count',
-        'created',
-        'created_by',
-    )
-
-    def get_queryset(self, request):
-        """Order the queryset from newest to oldest."""
-        return super().get_queryset(request=request).order_by('-created')
 
     def has_add_permission(self, request, obj=None):
         """Disallow adding new images in the Admin."""
