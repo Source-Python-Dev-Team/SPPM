@@ -17,7 +17,6 @@ from project_manager.plugins.models import (
     PluginContributor,
     PluginGame,
     PluginImage,
-    PluginRelease,
     PluginTag,
     SubPluginPath,
 )

@@ -13,6 +13,9 @@ from django.test import TestCase
 from django.urls import reverse
 from django.utils.timezone import now
 
+# Third Party Django
+from model_utils.tracker import FieldTracker
+
 # App
 from games.models import Game
 from project_manager.common.constants import (
@@ -496,6 +499,17 @@ class SubPluginReleaseTestCase(TestCase):
             second=SubPluginReleaseVersionControlRequirement,
         )
 
+    def test_field_tracker(self):
+        self.assertTrue(expr=hasattr(SubPluginRelease, 'field_tracker'))
+        self.assertIsInstance(
+            obj=SubPluginRelease.field_tracker,
+            cls=FieldTracker,
+        )
+        self.assertSetEqual(
+            set1=SubPluginRelease.field_tracker.fields,
+            set2={'version'},
+        )
+
     def test_primary_attributes(self):
         self.assertEqual(
             first=SubPluginRelease.handle_zip_file_upload,
@@ -521,6 +535,28 @@ class SubPluginReleaseTestCase(TestCase):
         self.assertEqual(
             first=str(release),
             second=f'{release.project} - {release.version}',
+        )
+
+    def test_clean(self):
+        release = SubPluginReleaseFactory(
+            version='1.0.0',
+        )
+        SubPluginReleaseFactory(
+            sub_plugin=release.sub_plugin,
+            version='1.0.1',
+        )
+
+        release.clean()
+        release.version = '1.0.2'
+        release.clean()
+
+        release.version = '1.0.1'
+        with self.assertRaises(ValidationError) as context:
+            release.clean()
+
+        self.assertDictEqual(
+            d1=context.exception.message_dict,
+            d2={'version': ['Version already exists.']}
         )
 
     def test_save(self):
@@ -560,6 +596,14 @@ class SubPluginReleaseTestCase(TestCase):
         self.assertTupleEqual(
             tuple1=SubPluginRelease._meta.unique_together,
             tuple2=(('sub_plugin', 'version'),),
+        )
+        self.assertEqual(
+            first=SubPluginRelease._meta.verbose_name,
+            second='SubPlugin Release',
+        )
+        self.assertEqual(
+            first=SubPluginRelease._meta.verbose_name_plural,
+            second='SubPlugin Releases',
         )
 
 

@@ -9,14 +9,14 @@ from django.contrib import admin
 from django.test import TestCase
 
 # App
-from project_manager.common.admin import ProjectAdmin
+from project_manager.common.admin import ProjectAdmin, ProjectReleaseAdmin
 from project_manager.common.admin.inlines import (
     ProjectContributorInline,
     ProjectGameInline,
     ProjectImageInline,
     ProjectTagInline,
 )
-from project_manager.packages.admin import PackageAdmin
+from project_manager.packages.admin import PackageAdmin, PackageReleaseAdmin
 from project_manager.packages.admin.inlines import (
     PackageContributorInline,
     PackageGameInline,
@@ -53,6 +53,95 @@ class PackageAdminTestCase(TestCase):
                 PackageImageInline,
                 PackageTagInline,
             ),
+        )
+
+
+class TestPackageReleaseAdminTestCase(TestCase):
+    def test_class_inheritance(self):
+        self.assertTrue(
+            expr=issubclass(PackageReleaseAdmin, ProjectReleaseAdmin),
+        )
+
+    def test_fieldsets(self):
+        self.assertTupleEqual(
+            tuple1=PackageReleaseAdmin.fieldsets,
+            tuple2=(
+                (
+                    'Release Info',
+                    {
+                        'classes': ('wide',),
+                        'fields': (
+                            'version',
+                            'notes',
+                            'zip_file',
+                            'package',
+                        ),
+                    }
+                ),
+                (
+                    'Metadata',
+                    {
+                        'classes': ('collapse',),
+                        'fields': (
+                            'created',
+                            'created_by',
+                            'download_count',
+                        ),
+                    },
+                )
+            )
+        )
+
+    def test_list_display(self):
+        self.assertTupleEqual(
+            tuple1=PackageReleaseAdmin.list_display,
+            tuple2=(
+                'version',
+                'created',
+                'package',
+            )
+        )
+
+    def test_ordering(self):
+        self.assertTupleEqual(
+            tuple1=PackageReleaseAdmin.ordering,
+            tuple2=(
+                'package',
+                '-created',
+            )
+        )
+
+    def test_readonly_fields(self):
+        self.assertTupleEqual(
+            tuple1=PackageReleaseAdmin.readonly_fields,
+            tuple2=(
+                'zip_file',
+                'download_count',
+                'created',
+                'created_by',
+                'package',
+            )
+        )
+
+    def test_search_fields(self):
+        self.assertTupleEqual(
+            tuple1=PackageReleaseAdmin.search_fields,
+            tuple2=(
+                'version',
+                'package__name',
+            )
+        )
+
+    def test_has_add_permission(self):
+        obj = PackageReleaseAdmin(PackageRelease, admin.AdminSite())
+        self.assertFalse(
+            expr=obj.has_add_permission(''),
+        )
+
+    def test_has_delete_permission(self):
+        obj = PackageReleaseAdmin(PackageRelease, admin.AdminSite())
+        self.assertFalse(
+            expr=obj.has_delete_permission(''),
         )
 
 

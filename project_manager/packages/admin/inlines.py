@@ -14,7 +14,6 @@ from project_manager.packages.models import (
     PackageContributor,
     PackageGame,
     PackageImage,
-    PackageRelease,
     PackageTag,
 )
 

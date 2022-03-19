@@ -13,6 +13,9 @@ from django.test import TestCase
 from django.urls import reverse
 from django.utils.timezone import now
 
+# Third Party Django
+from model_utils.tracker import FieldTracker
+
 # App
 from games.models import Game
 from project_manager.common.constants import (
@@ -466,6 +469,17 @@ class PackageReleaseTestCase(TestCase):
             second=PackageReleaseVersionControlRequirement,
         )
 
+    def test_field_tracker(self):
+        self.assertTrue(expr=hasattr(PackageRelease, 'field_tracker'))
+        self.assertIsInstance(
+            obj=PackageRelease.field_tracker,
+            cls=FieldTracker,
+        )
+        self.assertSetEqual(
+            set1=PackageRelease.field_tracker.fields,
+            set2={'version'},
+        )
+
     def test_primary_attributes(self):
         self.assertEqual(
             first=PackageRelease.handle_zip_file_upload,
@@ -491,6 +505,28 @@ class PackageReleaseTestCase(TestCase):
         self.assertEqual(
             first=str(release),
             second=f'{release.project} - {release.version}',
+        )
+
+    def test_clean(self):
+        release = PackageReleaseFactory(
+            version='1.0.0',
+        )
+        PackageReleaseFactory(
+            package=release.package,
+            version='1.0.1',
+        )
+
+        release.clean()
+        release.version = '1.0.2'
+        release.clean()
+
+        release.version = '1.0.1'
+        with self.assertRaises(ValidationError) as context:
+            release.clean()
+
+        self.assertDictEqual(
+            d1=context.exception.message_dict,
+            d2={'version': ['Version already exists.']}
         )
 
     def test_save(self):
@@ -529,6 +565,14 @@ class PackageReleaseTestCase(TestCase):
         self.assertTupleEqual(
             tuple1=PackageRelease._meta.unique_together,
             tuple2=(('package', 'version'),),
+        )
+        self.assertEqual(
+            first=PackageRelease._meta.verbose_name,
+            second='Package Release',
+        )
+        self.assertEqual(
+            first=PackageRelease._meta.verbose_name_plural,
+            second='Package Releases',
         )
 
 

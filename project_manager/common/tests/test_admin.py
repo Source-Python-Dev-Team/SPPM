@@ -6,7 +6,7 @@ from django.contrib import admin
 from django.test import TestCase
 
 # App
-from project_manager.common.admin import ProjectAdmin
+from project_manager.common.admin import ProjectAdmin, ProjectReleaseAdmin
 from project_manager.common.admin.inlines import (
     ProjectContributorInline,
     ProjectGameInline,
@@ -20,7 +20,6 @@ from project_manager.common.models import Project
 # TEST CASES
 # =============================================================================
 class ProjectAdminTestCase(TestCase):
-
     def test_class_inheritance(self):
         self.assertTrue(
             expr=issubclass(ProjectAdmin, admin.ModelAdmin),
@@ -112,8 +111,72 @@ class ProjectAdminTestCase(TestCase):
         )
 
 
-class ProjectContributorInlineTestCase(TestCase):
+class ProjectReleaseAdminTestCase(TestCase):
+    def test_class_inheritance(self):
+        self.assertTrue(expr=issubclass(ProjectReleaseAdmin, admin.ModelAdmin))
 
+    def test_fieldsets(self):
+        self.assertTupleEqual(
+            tuple1=ProjectReleaseAdmin.fieldsets,
+            tuple2=(
+                (
+                    'Release Info',
+                    {
+                        'classes': ('wide',),
+                        'fields': (
+                            'version',
+                            'notes',
+                            'zip_file',
+                        ),
+                    }
+                ),
+                (
+                    'Metadata',
+                    {
+                        'classes': ('collapse',),
+                        'fields': (
+                            'created',
+                            'created_by',
+                            'download_count',
+                        ),
+                    },
+                )
+            )
+        )
+
+    def test_list_display(self):
+        self.assertTupleEqual(
+            tuple1=ProjectReleaseAdmin.list_display,
+            tuple2=(
+                'version',
+                'created',
+            )
+        )
+
+    def test_readonly_fields(self):
+        self.assertTupleEqual(
+            tuple1=ProjectReleaseAdmin.readonly_fields,
+            tuple2=(
+                'zip_file',
+                'download_count',
+                'created',
+                'created_by',
+            )
+        )
+
+    def test_search_fields(self):
+        self.assertTupleEqual(
+            tuple1=ProjectReleaseAdmin.search_fields,
+            tuple2=(
+                'version',
+            )
+        )
+
+    def test_view_on_site(self):
+        self.assertFalse(expr=ProjectReleaseAdmin.view_on_site)
+
+
+class ProjectContributorInlineTestCase(TestCase):
     def test_class_inheritance(self):
         self.assertTrue(
             expr=issubclass(ProjectContributorInline, admin.TabularInline),
@@ -139,7 +202,6 @@ class ProjectContributorInlineTestCase(TestCase):
 
 
 class ProjectGameInlineTestCase(TestCase):
-
     def test_class_inheritance(self):
         self.assertTrue(
             expr=issubclass(ProjectGameInline, admin.TabularInline),
@@ -159,7 +221,6 @@ class ProjectGameInlineTestCase(TestCase):
 
 
 class ProjectImageInlineTestCase(TestCase):
-
     def test_class_inheritance(self):
         self.assertTrue(
             expr=issubclass(ProjectImageInline, admin.TabularInline),
@@ -185,7 +246,6 @@ class ProjectImageInlineTestCase(TestCase):
 
 
 class ProjectTagInlineTestCase(TestCase):
-
     def test_class_inheritance(self):
         self.assertTrue(
             expr=issubclass(ProjectTagInline, admin.TabularInline),

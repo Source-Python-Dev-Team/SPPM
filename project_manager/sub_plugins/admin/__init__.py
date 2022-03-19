@@ -25,6 +25,7 @@ from project_manager.sub_plugins.models import SubPlugin, SubPluginRelease
 # =============================================================================
 __all__ = (
     'SubPluginAdmin',
+    'SubPluginReleaseAdmin',
 )
 
 

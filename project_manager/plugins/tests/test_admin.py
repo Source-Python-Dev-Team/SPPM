@@ -6,14 +6,14 @@ from django.contrib import admin
 from django.test import TestCase
 
 # App
-from project_manager.common.admin import ProjectAdmin
+from project_manager.common.admin import ProjectAdmin, ProjectReleaseAdmin
 from project_manager.common.admin.inlines import (
     ProjectContributorInline,
     ProjectGameInline,
     ProjectImageInline,
     ProjectTagInline,
 )
-from project_manager.plugins.admin import PluginAdmin
+from project_manager.plugins.admin import PluginAdmin, PluginReleaseAdmin
 from project_manager.plugins.admin.inlines import (
     PluginContributorInline,
     PluginGameInline,
@@ -50,6 +50,95 @@ class PluginAdminTestCase(TestCase):
                 PluginTagInline,
                 SubPluginPathInline,
             ),
+        )
+
+
+class TestPluginReleaseAdminTestCase(TestCase):
+    def test_class_inheritance(self):
+        self.assertTrue(
+            expr=issubclass(PluginReleaseAdmin, ProjectReleaseAdmin),
+        )
+
+    def test_fieldsets(self):
+        self.assertTupleEqual(
+            tuple1=PluginReleaseAdmin.fieldsets,
+            tuple2=(
+                (
+                    'Release Info',
+                    {
+                        'classes': ('wide',),
+                        'fields': (
+                            'version',
+                            'notes',
+                            'zip_file',
+                            'plugin',
+                        ),
+                    }
+                ),
+                (
+                    'Metadata',
+                    {
+                        'classes': ('collapse',),
+                        'fields': (
+                            'created',
+                            'created_by',
+                            'download_count',
+                        ),
+                    },
+                )
+            )
+        )
+
+    def test_list_display(self):
+        self.assertTupleEqual(
+            tuple1=PluginReleaseAdmin.list_display,
+            tuple2=(
+                'version',
+                'created',
+                'plugin',
+            )
+        )
+
+    def test_ordering(self):
+        self.assertTupleEqual(
+            tuple1=PluginReleaseAdmin.ordering,
+            tuple2=(
+                'plugin',
+                '-created',
+            )
+        )
+
+    def test_readonly_fields(self):
+        self.assertTupleEqual(
+            tuple1=PluginReleaseAdmin.readonly_fields,
+            tuple2=(
+                'zip_file',
+                'download_count',
+                'created',
+                'created_by',
+                'plugin',
+            )
+        )
+
+    def test_search_fields(self):
+        self.assertTupleEqual(
+            tuple1=PluginReleaseAdmin.search_fields,
+            tuple2=(
+                'version',
+                'plugin__name',
+            )
+        )
+
+    def test_has_add_permission(self):
+        obj = PluginReleaseAdmin(PluginRelease, admin.AdminSite())
+        self.assertFalse(
+            expr=obj.has_add_permission(''),
+        )
+
+    def test_has_delete_permission(self):
+        obj = PluginReleaseAdmin(PluginRelease, admin.AdminSite())
+        self.assertFalse(
+            expr=obj.has_delete_permission(''),
         )
 
 

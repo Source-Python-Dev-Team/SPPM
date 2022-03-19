@@ -14,7 +14,6 @@ from project_manager.sub_plugins.models import (
     SubPluginContributor,
     SubPluginGame,
     SubPluginImage,
-    SubPluginRelease,
     SubPluginTag,
 )
 

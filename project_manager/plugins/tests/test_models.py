@@ -13,6 +13,9 @@ from django.test import TestCase
 from django.urls import reverse
 from django.utils.timezone import now
 
+# Third Party Django
+from model_utils.tracker import FieldTracker
+
 # App
 from games.models import Game
 from project_manager.common.constants import (
@@ -472,6 +475,17 @@ class PluginReleaseTestCase(TestCase):
             second=PluginReleaseVersionControlRequirement,
         )
 
+    def test_field_tracker(self):
+        self.assertTrue(expr=hasattr(PluginRelease, 'field_tracker'))
+        self.assertIsInstance(
+            obj=PluginRelease.field_tracker,
+            cls=FieldTracker,
+        )
+        self.assertSetEqual(
+            set1=PluginRelease.field_tracker.fields,
+            set2={'version'},
+        )
+
     def test_primary_attributes(self):
         self.assertEqual(
             first=PluginRelease.handle_zip_file_upload,
@@ -497,6 +511,28 @@ class PluginReleaseTestCase(TestCase):
         self.assertEqual(
             first=str(release),
             second=f'{release.project} - {release.version}',
+        )
+
+    def test_clean(self):
+        release = PluginReleaseFactory(
+            version='1.0.0',
+        )
+        PluginReleaseFactory(
+            plugin=release.plugin,
+            version='1.0.1',
+        )
+
+        release.clean()
+        release.version = '1.0.2'
+        release.clean()
+
+        release.version = '1.0.1'
+        with self.assertRaises(ValidationError) as context:
+            release.clean()
+
+        self.assertDictEqual(
+            d1=context.exception.message_dict,
+            d2={'version': ['Version already exists.']}
         )
 
     def test_save(self):
@@ -535,6 +571,14 @@ class PluginReleaseTestCase(TestCase):
         self.assertTupleEqual(
             tuple1=PluginRelease._meta.unique_together,
             tuple2=(('plugin', 'version'),),
+        )
+        self.assertEqual(
+            first=PluginRelease._meta.verbose_name,
+            second='Plugin Release',
+        )
+        self.assertEqual(
+            first=PluginRelease._meta.verbose_name_plural,
+            second='Plugin Releases',
         )
 
 
