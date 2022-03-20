@@ -137,6 +137,7 @@ class PackageReleaseViewSet(ProjectReleaseViewSet):
 
     queryset = PackageRelease.objects.select_related(
         'package',
+        'created_by__user',
     ).prefetch_related(
         Prefetch(
             lookup='packagereleasepackagerequirement_set',

@@ -153,6 +153,7 @@ class PluginReleaseViewSet(ProjectReleaseViewSet):
 
     queryset = PluginRelease.objects.select_related(
         'plugin',
+        'created_by__user',
     ).prefetch_related(
         Prefetch(
             lookup='pluginreleasepackagerequirement_set',

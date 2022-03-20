@@ -195,6 +195,7 @@ class SubPluginReleaseViewSet(ProjectReleaseViewSet):
 
     queryset = SubPluginRelease.objects.select_related(
         'sub_plugin',
+        'created_by__user',
     ).prefetch_related(
         Prefetch(
             lookup='subpluginreleasepackagerequirement_set',
