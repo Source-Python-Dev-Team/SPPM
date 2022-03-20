@@ -5,7 +5,6 @@
 # =============================================================================
 # Django
 from django.contrib import admin
-from django.db.models import Q
 
 
 # =============================================================================
@@ -33,15 +32,6 @@ class ProjectContributorInline(admin.TabularInline):
         'user',
     )
 
-    def get_formset(self, request, obj=None, **kwargs):
-        """Disallow the owner to be a contributor."""
-        formset = super().get_formset(request=request, obj=obj, **kwargs)
-        queryset = formset.form.base_fields['user'].queryset
-        formset.form.base_fields['user'].queryset = queryset.filter(
-            ~Q(user=obj.owner.user)
-        )
-        return formset
-
 
 class ProjectGameInline(admin.TabularInline):
     """Base Project Game Inline."""
@@ -54,6 +44,7 @@ class ProjectGameInline(admin.TabularInline):
     )
 
     def get_queryset(self, request):
+        """Cache the 'game' for the queryset."""
         return super().get_queryset(
             request=request,
         ).select_related(
@@ -78,6 +69,7 @@ class ProjectTagInline(admin.TabularInline):
     )
 
     def get_queryset(self, request):
+        """Cache the 'tag' for the queryset."""
         return super().get_queryset(
             request=request,
         ).select_related(
@@ -98,7 +90,6 @@ class ProjectImageInline(admin.TabularInline):
         'image',
         'created',
     )
-
     readonly_fields = (
         'image',
         'created',

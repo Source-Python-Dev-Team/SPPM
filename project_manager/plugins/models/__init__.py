@@ -237,6 +237,12 @@ class SubPluginPath(AbstractUUIDPrimaryKeyModel):
         default=False,
     )
 
+    field_tracker = FieldTracker(
+        fields=[
+            'path',
+        ]
+    )
+
     class Meta:
         """Define metaclass attributes."""
 
@@ -249,18 +255,30 @@ class SubPluginPath(AbstractUUIDPrimaryKeyModel):
         return str(self.path)
 
     def clean(self):
-        """Validate that at least one of the Allow fields is True."""
+        """Validate that at least one of the `allow` fields is True."""
+        errors = {}
         if not any([
             self.allow_module,
             self.allow_package_using_basename,
             self.allow_package_using_init,
         ]):
             message = 'At least one of the "Allow" fields must be True.'
-            raise ValidationError({
+            errors.update({
                 'allow_module': message,
                 'allow_package_using_basename': message,
                 'allow_package_using_init': message,
             })
+
+        if self.field_tracker.has_changed('path'):
+            new_path = self.field_tracker.current()['path']
+            if self.plugin.paths.filter(path=new_path).exists():
+                errors.update({
+                    'path': 'Path already exists for plugin.',
+                })
+
+        if errors:
+            raise ValidationError(errors)
+
         return super().clean()
 
     def get_absolute_url(self):

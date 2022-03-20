@@ -74,6 +74,7 @@ class ProjectAdmin(admin.ModelAdmin):
     )
 
     def get_queryset(self, request):
+        """Cache the 'owner' for the queryset."""
         return super().get_queryset(
             request=request,
         ).select_related(
@@ -130,6 +131,14 @@ class ProjectReleaseAdmin(admin.ModelAdmin):
         'version',
     )
     view_on_site = False
+
+    def get_queryset(self, request):
+        """Cache 'created_by' for the queryset."""
+        return super().get_queryset(
+            request=request,
+        ).select_related(
+            'created_by__user',
+        )
 
     def has_add_permission(self, request):
         """Disallow creation of a Project in the Admin."""

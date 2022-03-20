@@ -39,9 +39,20 @@ class TagAdmin(admin.ModelAdmin):
         'black_listed',
         'creator',
     )
+    raw_id_fields = (
+        'creator',
+    )
     readonly_fields = (
         'name',
     )
+
+    def get_queryset(self, request):
+        """Cache the 'creator' for the queryset."""
+        return super().get_queryset(
+            request=request,
+        ).select_related(
+            'creator__user',
+        )
 
     def has_add_permission(self, request):
         """Disallow adding of tags in the Admin."""

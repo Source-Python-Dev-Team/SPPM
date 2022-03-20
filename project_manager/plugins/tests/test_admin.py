@@ -1,6 +1,9 @@
 # =============================================================================
 # IMPORTS
 # =============================================================================
+# Python
+from unittest import mock
+
 # Django
 from django.contrib import admin
 from django.test import TestCase
@@ -22,6 +25,7 @@ from project_manager.plugins.admin.inlines import (
     SubPluginPathInline,
 )
 from project_manager.plugins.models import (
+    Plugin,
     PluginContributor,
     PluginGame,
     PluginImage,
@@ -50,6 +54,19 @@ class PluginAdminTestCase(TestCase):
                 PluginTagInline,
                 SubPluginPathInline,
             ),
+        )
+
+    def test_get_queryset(self):
+        request = mock.Mock()
+        query = PluginAdmin(
+            Plugin,
+            admin.AdminSite(),
+        ).get_queryset(
+            request=request,
+        ).query
+        self.assertDictEqual(
+            d1=query.select_related,
+            d2={'owner': {'user': {}}}
         )
 
 
@@ -129,6 +146,19 @@ class TestPluginReleaseAdminTestCase(TestCase):
             )
         )
 
+    def test_get_queryset(self):
+        request = mock.Mock()
+        query = PluginReleaseAdmin(
+            PluginRelease,
+            admin.AdminSite(),
+        ).get_queryset(
+            request=request,
+        ).query
+        self.assertDictEqual(
+            d1=query.select_related,
+            d2={'created_by': {'user': {}}}
+        )
+
     def test_has_add_permission(self):
         obj = PluginReleaseAdmin(PluginRelease, admin.AdminSite())
         self.assertFalse(
@@ -171,6 +201,23 @@ class PluginGameInlineTestCase(TestCase):
         self.assertEqual(
             first=PluginGameInline.model,
             second=PluginGame,
+        )
+
+    def test_get_queryset(self):
+        request = mock.Mock()
+        query = PluginGameInline(
+            PluginGame,
+            admin.AdminSite(),
+        ).get_queryset(
+            request=request,
+        ).query
+        self.assertDictEqual(
+            d1=query.select_related,
+            d2={'game': {}}
+        )
+        self.assertTupleEqual(
+            tuple1=query.order_by,
+            tuple2=('game__name',),
         )
 
     def test_has_add_permission(self):
@@ -217,6 +264,23 @@ class PluginTagInlineTestCase(TestCase):
             second=PluginTag,
         )
 
+    def test_get_queryset(self):
+        request = mock.Mock()
+        query = PluginTagInline(
+            PluginTag,
+            admin.AdminSite(),
+        ).get_queryset(
+            request=request,
+        ).query
+        self.assertDictEqual(
+            d1=query.select_related,
+            d2={'tag': {}}
+        )
+        self.assertTupleEqual(
+            tuple1=query.order_by,
+            tuple2=('tag__name',),
+        )
+
     def test_has_add_permission(self):
         obj = PluginTagInline(PluginTag, admin.AdminSite())
         self.assertFalse(
@@ -256,7 +320,7 @@ class SubPluginPathInlineTestCase(TestCase):
     def test_readonly_fields(self):
         self.assertTupleEqual(
             tuple1=SubPluginPathInline.readonly_fields,
-            tuple2=('path',),
+            tuple2=(),
         )
 
     def test_model(self):

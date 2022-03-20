@@ -99,7 +99,7 @@ class PackageReleaseViewSetTestCase(APITestCase):
         )
         self.assertDictEqual(
             d1=PackageReleaseViewSet.queryset.query.select_related,
-            d2={'package': {}},
+            d2={'package': {}, 'created_by': {'user': {}}},
         )
         prefetch_lookups = PackageReleaseViewSet.queryset._prefetch_related_lookups
         self.assertEqual(first=len(prefetch_lookups), second=4)

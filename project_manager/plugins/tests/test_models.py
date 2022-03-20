@@ -956,6 +956,29 @@ class SubPluginPathTestCase(TestCase):
                 second='At least one of the "Allow" fields must be True.',
             )
 
+        plugin = PluginFactory()
+        path_1 = SubPluginPathFactory(
+            path='path_1',
+            plugin=plugin,
+            allow_module=True,
+        )
+        SubPluginPathFactory(
+            path='path_2',
+            plugin=plugin,
+        )
+
+        path_1.path = 'path_3'
+        path_1.clean()
+
+        path_1.path = 'path_2'
+        with self.assertRaises(ValidationError) as context:
+            path_1.clean()
+
+        self.assertDictEqual(
+            d1=context.exception.message_dict,
+            d2={'path': ['Path already exists for plugin.']}
+        )
+
     def test_meta_class(self):
         self.assertEqual(
             first=SubPluginPath._meta.verbose_name,

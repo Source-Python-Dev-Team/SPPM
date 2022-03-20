@@ -72,9 +72,6 @@ class SubPluginPathInline(admin.StackedInline):
         'allow_package_using_basename',
         'allow_package_using_init',
     )
-    readonly_fields = (
-        'path',
-    )
     model = SubPluginPath
 
     def has_add_permission(self, request, obj=None):

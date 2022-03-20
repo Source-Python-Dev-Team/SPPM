@@ -24,15 +24,13 @@ from project_manager.packages.admin.inlines import (
     PackageTagInline,
 )
 from project_manager.packages.models import (
+    Package,
     PackageContributor,
     PackageGame,
     PackageImage,
     PackageRelease,
     PackageTag,
 )
-from test_utils.factories.packages import PackageFactory
-from test_utils.factories.users import ForumUserFactory
-from users.models import ForumUser
 
 
 # =============================================================================
@@ -53,6 +51,19 @@ class PackageAdminTestCase(TestCase):
                 PackageImageInline,
                 PackageTagInline,
             ),
+        )
+
+    def test_get_queryset(self):
+        request = mock.Mock()
+        query = PackageAdmin(
+            Package,
+            admin.AdminSite(),
+        ).get_queryset(
+            request=request,
+        ).query
+        self.assertDictEqual(
+            d1=query.select_related,
+            d2={'owner': {'user': {}}}
         )
 
 
@@ -132,6 +143,19 @@ class TestPackageReleaseAdminTestCase(TestCase):
             )
         )
 
+    def test_get_queryset(self):
+        request = mock.Mock()
+        query = PackageReleaseAdmin(
+            PackageRelease,
+            admin.AdminSite(),
+        ).get_queryset(
+            request=request,
+        ).query
+        self.assertDictEqual(
+            d1=query.select_related,
+            d2={'created_by': {'user': {}}}
+        )
+
     def test_has_add_permission(self):
         obj = PackageReleaseAdmin(PackageRelease, admin.AdminSite())
         self.assertFalse(
@@ -154,25 +178,6 @@ class PackageContributorInlineTestCase(TestCase):
             ),
         )
 
-    @mock.patch(
-        target='django.contrib.admin.options.InlineModelAdmin.get_formset',
-    )
-    def test_get_formset(self, mock_super_get_formset):
-        user = ForumUserFactory()
-        package = PackageFactory()
-        field = mock_super_get_formset.return_value.form.base_fields['user']
-        field.queryset = ForumUser.objects.all()
-        self.assertCountEqual(
-            first=list(field.queryset),
-            second=[package.owner, user],
-        )
-        obj = PackageContributorInline(PackageContributor, admin.AdminSite())
-        obj.get_formset('', package)
-        self.assertListEqual(
-            list1=list(field.queryset),
-            list2=[user],
-        )
-
     def test_model(self):
         self.assertEqual(
             first=PackageContributorInline.model,
@@ -193,6 +198,23 @@ class PackageGameInlineTestCase(TestCase):
         self.assertEqual(
             first=PackageGameInline.model,
             second=PackageGame,
+        )
+
+    def test_get_queryset(self):
+        request = mock.Mock()
+        query = PackageGameInline(
+            PackageGame,
+            admin.AdminSite(),
+        ).get_queryset(
+            request=request,
+        ).query
+        self.assertDictEqual(
+            d1=query.select_related,
+            d2={'game': {}}
+        )
+        self.assertTupleEqual(
+            tuple1=query.order_by,
+            tuple2=('game__name',),
         )
 
     def test_has_add_permission(self):
@@ -237,6 +259,23 @@ class PackageTagInlineTestCase(TestCase):
         self.assertEqual(
             first=PackageTagInline.model,
             second=PackageTag,
+        )
+
+    def test_get_queryset(self):
+        request = mock.Mock()
+        query = PackageTagInline(
+            PackageTag,
+            admin.AdminSite(),
+        ).get_queryset(
+            request=request,
+        ).query
+        self.assertDictEqual(
+            d1=query.select_related,
+            d2={'tag': {}}
+        )
+        self.assertTupleEqual(
+            tuple1=query.order_by,
+            tuple2=('tag__name',),
         )
 
     def test_has_add_permission(self):

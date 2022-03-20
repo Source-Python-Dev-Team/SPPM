@@ -1,6 +1,9 @@
 # =============================================================================
 # IMPORTS
 # =============================================================================
+# Python
+from unittest import mock
+
 # Django
 from django.contrib import admin
 from django.test import TestCase
@@ -24,6 +27,7 @@ from project_manager.sub_plugins.admin.inlines import (
     SubPluginTagInline,
 )
 from project_manager.sub_plugins.models import (
+    SubPlugin,
     SubPluginContributor,
     SubPluginGame,
     SubPluginImage,
@@ -50,6 +54,19 @@ class SubPluginAdminTestCase(TestCase):
                 SubPluginImageInline,
                 SubPluginTagInline,
             ),
+        )
+
+    def test_get_queryset(self):
+        request = mock.Mock()
+        query = SubPluginAdmin(
+            SubPlugin,
+            admin.AdminSite(),
+        ).get_queryset(
+            request=request,
+        ).query
+        self.assertDictEqual(
+            d1=query.select_related,
+            d2={'owner': {'user': {}}}
         )
 
 
@@ -129,6 +146,19 @@ class TestSubPluginReleaseAdminTestCase(TestCase):
             )
         )
 
+    def test_get_queryset(self):
+        request = mock.Mock()
+        query = SubPluginReleaseAdmin(
+            SubPluginRelease,
+            admin.AdminSite(),
+        ).get_queryset(
+            request=request,
+        ).query
+        self.assertDictEqual(
+            d1=query.select_related,
+            d2={'created_by': {'user': {}}}
+        )
+
     def test_has_add_permission(self):
         obj = SubPluginReleaseAdmin(SubPluginRelease, admin.AdminSite())
         self.assertFalse(
@@ -173,6 +203,23 @@ class SubPluginGameInlineTestCase(TestCase):
             second=SubPluginGame,
         )
 
+    def test_get_queryset(self):
+        request = mock.Mock()
+        query = SubPluginGameInline(
+            SubPluginGame,
+            admin.AdminSite(),
+        ).get_queryset(
+            request=request,
+        ).query
+        self.assertDictEqual(
+            d1=query.select_related,
+            d2={'game': {}}
+        )
+        self.assertTupleEqual(
+            tuple1=query.order_by,
+            tuple2=('game__name',),
+        )
+
     def test_has_add_permission(self):
         obj = SubPluginGameInline(SubPluginGame, admin.AdminSite())
         self.assertFalse(
@@ -215,6 +262,23 @@ class SubPluginTagInlineTestCase(TestCase):
         self.assertEqual(
             first=SubPluginTagInline.model,
             second=SubPluginTag,
+        )
+
+    def test_get_queryset(self):
+        request = mock.Mock()
+        query = SubPluginTagInline(
+            SubPluginTag,
+            admin.AdminSite(),
+        ).get_queryset(
+            request=request,
+        ).query
+        self.assertDictEqual(
+            d1=query.select_related,
+            d2={'tag': {}}
+        )
+        self.assertTupleEqual(
+            tuple1=query.order_by,
+            tuple2=('tag__name',),
         )
 
     def test_has_add_permission(self):

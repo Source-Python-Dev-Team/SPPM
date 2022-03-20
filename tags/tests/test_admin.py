@@ -51,10 +51,23 @@ class TagAdminTestCase(TestCase):
             ),
         )
 
+    def test_raw_id_fields(self):
+        self.assertTupleEqual(
+            tuple1=TagAdmin.raw_id_fields,
+            tuple2=('creator',),
+        )
+
     def test_readonly_fields(self):
         self.assertTupleEqual(
             tuple1=TagAdmin.readonly_fields,
             tuple2=('name',),
+        )
+
+    def test_get_queryset(self):
+        query = TagAdmin(Tag, '').get_queryset('').query
+        self.assertDictEqual(
+            d1=query.select_related,
+            d2={'creator': {'user': {}}}
         )
 
     def test_has_add_permission(self):

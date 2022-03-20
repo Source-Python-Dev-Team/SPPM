@@ -100,7 +100,7 @@ class PluginReleaseViewSetTestCase(APITestCase):
         )
         self.assertDictEqual(
             d1=PluginReleaseViewSet.queryset.query.select_related,
-            d2={'plugin': {}},
+            d2={'plugin': {}, 'created_by': {'user': {}}},
         )
         prefetch_lookups = PluginReleaseViewSet.queryset._prefetch_related_lookups
         self.assertEqual(first=len(prefetch_lookups), second=4)
