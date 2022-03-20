@@ -53,6 +53,15 @@ class ProjectGameInline(admin.TabularInline):
         'game',
     )
 
+    def get_queryset(self, request):
+        return super().get_queryset(
+            request=request,
+        ).select_related(
+            'game',
+        ).order_by(
+            'game__name',
+        )
+
     def has_add_permission(self, request, obj=None):
         """Disallow adding new games in the Admin."""
         return False
@@ -67,6 +76,15 @@ class ProjectTagInline(admin.TabularInline):
     readonly_fields = (
         'tag',
     )
+
+    def get_queryset(self, request):
+        return super().get_queryset(
+            request=request,
+        ).select_related(
+            'tag',
+        ).order_by(
+            'tag__name',
+        )
 
     def has_add_permission(self, request, obj=None):
         """Disallow adding new tags in the Admin."""

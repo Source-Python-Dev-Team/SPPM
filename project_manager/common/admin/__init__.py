@@ -73,6 +73,13 @@ class ProjectAdmin(admin.ModelAdmin):
         'contributors__user__username',
     )
 
+    def get_queryset(self, request):
+        return super().get_queryset(
+            request=request,
+        ).select_related(
+            'owner__user',
+        )
+
     def has_add_permission(self, request):
         """Disallow creation of a Project in the Admin."""
         return False
