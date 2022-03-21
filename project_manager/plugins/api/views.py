@@ -80,46 +80,9 @@ class PluginAPIView(ProjectAPIView):
 
 
 class PluginViewSet(ProjectViewSet):
-    """ViewSet for creating, updating, and listing Plugins.
+    """ViewSet for creating, updating, and listing Plugins."""
 
-    ###Available Filters:
-    *  **game**=*{game}*
-        * Filters on supported games with exact match to slug.
-
-        ####Example:
-        `?game=csgo`
-
-        `?game=cstrike`
-
-    *  **tag**=*{tag}*
-        * Filters on tags using exact match.
-
-        ####Example:
-        `?tag=wcs`
-
-        `?tag=sounds`
-
-    *  **user**=*{username}*
-        * Filters on username using exact match with owner/contributors.
-
-        ####Example:
-        `?user=satoon101`
-
-        `?user=Ayuto`
-
-    ###Available Ordering:
-
-    *  **name** (descending) or **-name** (ascending)
-    *  **basename** (descending) or **-basename** (ascending)
-    *  **created** (descending) or **-created** (ascending)
-    *  **updated** (descending) or **-updated** (ascending)
-
-        ####Example:
-        `?ordering=basename`
-
-        `?ordering=-updated`
-    """
-
+    __doc__ += ProjectViewSet.doc_string
     filterset_class = PluginFilterSet
     queryset = Plugin.objects.prefetch_related(
         Prefetch(
@@ -139,6 +102,7 @@ class PluginViewSet(ProjectViewSet):
 class PluginImageViewSet(ProjectImageViewSet):
     """ViewSet for adding, removing, and listing images for Plugins."""
 
+    __doc__ += ProjectImageViewSet.doc_string
     queryset = PluginImage.objects.select_related(
         'plugin',
     )
@@ -151,6 +115,7 @@ class PluginImageViewSet(ProjectImageViewSet):
 class PluginReleaseViewSet(ProjectReleaseViewSet):
     """ViewSet for retrieving releases for Plugins."""
 
+    __doc__ += ProjectReleaseViewSet.doc_string
     queryset = PluginRelease.objects.select_related(
         'plugin',
         'created_by__user',
@@ -197,6 +162,7 @@ class PluginReleaseViewSet(ProjectReleaseViewSet):
 class PluginGameViewSet(ProjectGameViewSet):
     """Supported Games listing for Plugins."""
 
+    __doc__ += ProjectGameViewSet.doc_string
     queryset = PluginGame.objects.select_related(
         'game',
         'plugin',
@@ -210,6 +176,7 @@ class PluginGameViewSet(ProjectGameViewSet):
 class PluginTagViewSet(ProjectTagViewSet):
     """Tags listing for Plugins."""
 
+    __doc__ += ProjectTagViewSet.doc_string
     queryset = PluginTag.objects.select_related(
         'tag',
         'plugin',
@@ -223,6 +190,7 @@ class PluginTagViewSet(ProjectTagViewSet):
 class PluginContributorViewSet(ProjectContributorViewSet):
     """Contributors listing for Plugins."""
 
+    __doc__ += ProjectContributorViewSet.doc_string
     queryset = PluginContributor.objects.select_related(
         'user__user',
         'plugin',
@@ -234,7 +202,17 @@ class PluginContributorViewSet(ProjectContributorViewSet):
 
 
 class SubPluginPathViewSet(ProjectThroughModelMixin):
-    """Sub-Plugin Paths listing."""
+    """Sub-Plugin Paths listing.
+
+    ###Available Ordering:
+
+    *  **path** (descending) or **-path** (ascending)
+
+        ####Example:
+        `?ordering=path`
+
+        `?ordering=-path`
+    """
 
     http_method_names = ('get', 'post', 'patch', 'delete', 'options')
     ordering = ('path',)

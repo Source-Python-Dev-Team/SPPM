@@ -74,6 +74,45 @@ class ProjectAPIView(APIView):
 class ProjectViewSet(ModelViewSet):
     """Base ViewSet for creating, updating, and listing Projects."""
 
+    doc_string = """
+
+    ###Available Filters:
+    *  **game**=*{game}*
+        * Filters on supported games with exact match to slug.
+
+        ####Example:
+        `?game=csgo`
+
+        `?game=cstrike`
+
+    *  **tag**=*{tag}*
+        * Filters on tags using exact match.
+
+        ####Example:
+        `?tag=wcs`
+
+        `?tag=sounds`
+
+    *  **user**=*{username}*
+        * Filters on username using exact match with owner/contributors.
+
+        ####Example:
+        `?user=satoon101`
+
+        `?user=Ayuto`
+
+    ###Available Ordering:
+
+    *  **name** (descending) or **-name** (ascending)
+    *  **basename** (descending) or **-basename** (ascending)
+    *  **created** (descending) or **-created** (ascending)
+    *  **updated** (descending) or **-updated** (ascending)
+
+        ####Example:
+        `?ordering=basename`
+
+        `?ordering=-updated`
+    """
     authentication_classes = (SessionAuthentication,)
     filter_backends = (OrderingFilter, DjangoFilterBackend)
     http_method_names = ('get', 'post', 'patch', 'options')
@@ -129,6 +168,17 @@ class ProjectViewSet(ModelViewSet):
 class ProjectImageViewSet(ProjectThroughModelMixin):
     """Base Image View."""
 
+    doc_string = """
+
+    ###Available Ordering:
+
+    *  **created** (descending) or **-created** (ascending)
+
+        ####Example:
+        `?ordering=created`
+
+        `?ordering=-created`
+    """
     ordering = ('-created',)
     ordering_fields = ('created',)
     related_model_type = 'Image'
@@ -137,6 +187,17 @@ class ProjectImageViewSet(ProjectThroughModelMixin):
 class ProjectReleaseViewSet(ProjectRelatedInfoMixin):
     """Base Release ViewSet."""
 
+    doc_string = """
+
+    ###Available Ordering:
+
+    *  **created** (descending) or **-created** (ascending)
+
+        ####Example:
+        `?ordering=created`
+
+        `?ordering=-created`
+    """
     http_method_names = ('get', 'post', 'options')
     ordering = ('-created',)
     ordering_fields = ('created',)
@@ -161,6 +222,17 @@ class ProjectReleaseViewSet(ProjectRelatedInfoMixin):
 class ProjectGameViewSet(ProjectThroughModelMixin):
     """Base Game Support ViewSet."""
 
+    doc_string = """
+
+    ###Available Ordering:
+
+    *  **game** (descending) or **-game** (ascending)
+
+        ####Example:
+        `?ordering=game`
+
+        `?ordering=-game`
+    """
     ordering = ('-game',)
     ordering_fields = ('game',)
     related_model_type = 'Game'
@@ -169,6 +241,17 @@ class ProjectGameViewSet(ProjectThroughModelMixin):
 class ProjectTagViewSet(ProjectThroughModelMixin):
     """Base Project Tag ViewSet."""
 
+    doc_string = """
+
+    ###Available Ordering:
+
+    *  **tag** (descending) or **-tag** (ascending)
+
+        ####Example:
+        `?ordering=tag`
+
+        `?ordering=-tag`
+    """
     ordering = ('-tag',)
     ordering_fields = ('tag',)
     related_model_type = 'Tag'
@@ -177,6 +260,17 @@ class ProjectTagViewSet(ProjectThroughModelMixin):
 class ProjectContributorViewSet(ProjectThroughModelMixin):
     """Base Project Contributor ViewSet."""
 
+    doc_string = """
+
+    ###Available Ordering:
+
+    *  **user** (descending) or **-user** (ascending)
+
+        ####Example:
+        `?ordering=user`
+
+        `?ordering=-user`
+    """
     ordering = ('-user',)
     ordering_fields = ('user',)
     related_model_type = 'Contributor'

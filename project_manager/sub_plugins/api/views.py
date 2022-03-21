@@ -87,46 +87,9 @@ class SubPluginAPIView(ProjectAPIView):
 
 
 class SubPluginViewSet(ProjectViewSet):
-    """ViewSet for creating, updating, and listing SubPlugins.
+    """ViewSet for creating, updating, and listing SubPlugins."""
 
-    ###Available Filters:
-    *  **game**=*{game}*
-        * Filters on supported games with exact match to slug.
-
-        ####Example:
-        `?game=csgo`
-
-        `?game=cstrike`
-
-    *  **tag**=*{tag}*
-        * Filters on tags using exact match.
-
-        ####Example:
-        `?tag=wcs`
-
-        `?tag=sounds`
-
-    *  **user**=*{username}*
-        * Filters on username using exact match with owner/contributors.
-
-        ####Example:
-        `?user=satoon101`
-
-        `?user=Ayuto`
-
-    ###Available Ordering:
-
-    *  **name** (descending) or **-name** (ascending)
-    *  **basename** (descending) or **-basename** (ascending)
-    *  **created** (descending) or **-created** (ascending)
-    *  **updated** (descending) or **-updated** (ascending)
-
-        ####Example:
-        `?ordering=basename`
-
-        `?ordering=-updated`
-    """
-
+    __doc__ += ProjectViewSet.doc_string
     filterset_class = SubPluginFilterSet
     queryset = SubPlugin.objects.prefetch_related(
         Prefetch(
@@ -161,6 +124,7 @@ class SubPluginViewSet(ProjectViewSet):
 class SubPluginImageViewSet(ProjectImageViewSet):
     """ViewSet for adding, removing, and listing images for SubPlugins."""
 
+    __doc__ += ProjectImageViewSet.doc_string
     queryset = SubPluginImage.objects.select_related(
         'sub_plugin',
     )
@@ -193,6 +157,7 @@ class SubPluginImageViewSet(ProjectImageViewSet):
 class SubPluginReleaseViewSet(ProjectReleaseViewSet):
     """ViewSet for retrieving releases for SubPlugins."""
 
+    __doc__ += ProjectReleaseViewSet.doc_string
     queryset = SubPluginRelease.objects.select_related(
         'sub_plugin',
         'created_by__user',
@@ -261,6 +226,7 @@ class SubPluginReleaseViewSet(ProjectReleaseViewSet):
 class SubPluginGameViewSet(ProjectGameViewSet):
     """Supported Games listing for SubPlugins."""
 
+    __doc__ += ProjectGameViewSet.doc_string
     queryset = SubPluginGame.objects.select_related(
         'game',
         'sub_plugin',
@@ -274,6 +240,7 @@ class SubPluginGameViewSet(ProjectGameViewSet):
 class SubPluginTagViewSet(ProjectTagViewSet):
     """Tags listing for SubPlugins."""
 
+    __doc__ += ProjectTagViewSet.doc_string
     queryset = SubPluginTag.objects.select_related(
         'tag',
         'sub_plugin',
@@ -287,6 +254,7 @@ class SubPluginTagViewSet(ProjectTagViewSet):
 class SubPluginContributorViewSet(ProjectContributorViewSet):
     """Contributors listing for SubPlugins."""
 
+    __doc__ += ProjectContributorViewSet.doc_string
     queryset = SubPluginContributor.objects.select_related(
         'user__user',
         'sub_plugin',

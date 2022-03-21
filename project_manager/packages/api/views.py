@@ -64,46 +64,9 @@ class PackageAPIView(ProjectAPIView):
 
 
 class PackageViewSet(ProjectViewSet):
-    """ViewSet for creating, updating, and listing Packages.
+    """ViewSet for creating, updating, and listing Packages."""
 
-    ###Available Filters:
-    *  **game**=*{game}*
-        * Filters on supported games with exact match to slug.
-
-        ####Example:
-        `?game=csgo`
-
-        `?game=cstrike`
-
-    *  **tag**=*{tag}*
-        * Filters on tags using exact match.
-
-        ####Example:
-        `?tag=wcs`
-
-        `?tag=sounds`
-
-    *  **user**=*{username}*
-        * Filters on username using exact match with owner/contributors.
-
-        ####Example:
-        `?user=satoon101`
-
-        `?user=Ayuto`
-
-    ###Available Ordering:
-
-    *  **name** (descending) or **-name** (ascending)
-    *  **basename** (descending) or **-basename** (ascending)
-    *  **created** (descending) or **-created** (ascending)
-    *  **updated** (descending) or **-updated** (ascending)
-
-        ####Example:
-        `?ordering=basename`
-
-        `?ordering=-updated`
-    """
-
+    __doc__ += ProjectViewSet.doc_string
     filterset_class = PackageFilterSet
     queryset = Package.objects.prefetch_related(
         Prefetch(
@@ -123,6 +86,7 @@ class PackageViewSet(ProjectViewSet):
 class PackageImageViewSet(ProjectImageViewSet):
     """ViewSet for adding, removing, and listing images for Packages."""
 
+    __doc__ += ProjectImageViewSet.doc_string
     queryset = PackageImage.objects.select_related(
         'package',
     )
@@ -135,6 +99,7 @@ class PackageImageViewSet(ProjectImageViewSet):
 class PackageReleaseViewSet(ProjectReleaseViewSet):
     """ViewSet for retrieving releases for Packages."""
 
+    __doc__ += ProjectReleaseViewSet.doc_string
     queryset = PackageRelease.objects.select_related(
         'package',
         'created_by__user',
@@ -181,6 +146,7 @@ class PackageReleaseViewSet(ProjectReleaseViewSet):
 class PackageGameViewSet(ProjectGameViewSet):
     """Supported Games listing for Packages."""
 
+    __doc__ += ProjectGameViewSet.doc_string
     queryset = PackageGame.objects.select_related(
         'game',
         'package',
@@ -194,6 +160,7 @@ class PackageGameViewSet(ProjectGameViewSet):
 class PackageTagViewSet(ProjectTagViewSet):
     """Tags listing for Packages."""
 
+    __doc__ += ProjectTagViewSet.doc_string
     queryset = PackageTag.objects.select_related(
         'tag',
         'package',
@@ -207,6 +174,7 @@ class PackageTagViewSet(ProjectTagViewSet):
 class PackageContributorViewSet(ProjectContributorViewSet):
     """Contributors listing for Packages."""
 
+    __doc__ += ProjectContributorViewSet.doc_string
     queryset = PackageContributor.objects.select_related(
         'user__user',
         'package',

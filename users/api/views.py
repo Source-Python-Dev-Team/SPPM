@@ -32,7 +32,18 @@ __all__ = (
 # VIEWS
 # =============================================================================
 class ForumUserViewSet(ModelViewSet):
-    """ForumUser API view."""
+    """ForumUser API view.
+
+    ###Available Ordering:
+
+    *  **forum_id** (descending) or **-forum_id** (ascending)
+    *  **user__username** (descending) or **-user__username** (ascending)
+
+        ####Example:
+        `?ordering=forum_id`
+
+        `?ordering=-user__username`
+    """
 
     filter_backends = (OrderingFilter, DjangoFilterBackend)
     filterset_class = ForumUserFilterSet
