@@ -52,6 +52,12 @@ class SubPluginZipFile(ProjectZipFile):
     def __init__(self, zip_file, plugin):
         """Store the base attributes and the plugin."""
         self.plugin = plugin
+        self.sub_plugin_paths = list(
+            self.plugin.paths.values_list(
+                'path',
+                flat=True,
+            )
+        )
         super().__init__(zip_file)
 
     def _validate_path(self, path):
@@ -65,10 +71,7 @@ class SubPluginZipFile(ProjectZipFile):
             return True
 
         for base_path, allowed_extensions in self.file_types.items():
-            for sub_plugin_path in self.plugin.paths.values_list(
-                'path',
-                flat=True,
-            ):
+            for sub_plugin_path in self.sub_plugin_paths:
                 if not path.startswith(
                     base_path.format(
                         self=self,
