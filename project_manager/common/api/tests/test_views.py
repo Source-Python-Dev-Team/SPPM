@@ -118,7 +118,7 @@ class ProjectViewSetTestCase(TestCase):
         )
         self.assertTupleEqual(
             tuple1=ProjectViewSet.ordering,
-            tuple2=('-releases__created',),
+            tuple2=('-updated',),
         )
         self.assertTupleEqual(
             tuple1=ProjectViewSet.ordering_fields,

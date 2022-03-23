@@ -116,7 +116,7 @@ class ProjectViewSet(ModelViewSet):
     authentication_classes = (SessionAuthentication,)
     filter_backends = (OrderingFilter, DjangoFilterBackend)
     http_method_names = ('get', 'post', 'patch', 'options')
-    ordering = ('-releases__created',)
+    ordering = ('-updated',)
     ordering_fields = ('name', 'basename', 'updated', 'created')
     permission_classes = (IsAuthenticatedOrReadOnly,)
 
