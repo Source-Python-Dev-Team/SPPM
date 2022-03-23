@@ -54,3 +54,11 @@ class PackageReleaseAdmin(ProjectReleaseAdmin):
     ordering = ('package', '-created',)
     readonly_fields = ProjectReleaseAdmin.readonly_fields + ('package',)
     search_fields = ProjectReleaseAdmin.search_fields + ('package__name',)
+
+    def get_queryset(self, request):
+        """Cache 'package' for the queryset."""
+        return super().get_queryset(
+            request=request,
+        ).select_related(
+            'package',
+        )

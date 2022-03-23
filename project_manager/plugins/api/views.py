@@ -70,7 +70,7 @@ class PluginAPIView(ProjectAPIView):
     project_type = 'plugin'
 
     def get(self, request):
-        """Add the 'paths' route and return all of the routes."""
+        """Add the 'paths' route and return all the routes."""
         response = super().get(request=request)
         response.data['paths'] = reverse(
             viewname=f'api:{self.project_type}s:endpoints',
@@ -84,15 +84,15 @@ class PluginViewSet(ProjectViewSet):
 
     __doc__ += ProjectViewSet.doc_string
     filterset_class = PluginFilterSet
-    queryset = Plugin.objects.prefetch_related(
+    queryset = Plugin.objects.select_related(
+        'owner__user',
+    ).prefetch_related(
         Prefetch(
             lookup='releases',
             queryset=PluginRelease.objects.order_by(
                 '-created',
             ),
         ),
-    ).select_related(
-        'owner__user',
     )
     serializer_class = PluginSerializer
 

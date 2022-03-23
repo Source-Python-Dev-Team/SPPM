@@ -56,3 +56,11 @@ class PluginReleaseAdmin(ProjectReleaseAdmin):
     ordering = ('plugin', '-created',)
     readonly_fields = ProjectReleaseAdmin.readonly_fields + ('plugin',)
     search_fields = ProjectReleaseAdmin.search_fields + ('plugin__name',)
+
+    def get_queryset(self, request):
+        """Cache 'plugin' for the queryset."""
+        return super().get_queryset(
+            request=request,
+        ).select_related(
+            'plugin',
+        )

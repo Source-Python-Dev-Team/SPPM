@@ -156,7 +156,7 @@ class TestPluginReleaseAdminTestCase(TestCase):
         ).query
         self.assertDictEqual(
             d1=query.select_related,
-            d2={'created_by': {'user': {}}}
+            d2={'created_by': {'user': {}}, 'plugin': {}},
         )
 
     def test_has_add_permission(self):

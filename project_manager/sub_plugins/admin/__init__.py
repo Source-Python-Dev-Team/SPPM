@@ -62,6 +62,14 @@ class SubPluginAdmin(ProjectAdmin):
         'plugin__basename',
     )
 
+    def get_queryset(self, request):
+        """Cache 'plugin' for the queryset."""
+        return super().get_queryset(
+            request=request,
+        ).select_related(
+            'plugin',
+        )
+
 
 @admin.register(SubPluginRelease)
 class SubPluginReleaseAdmin(ProjectReleaseAdmin):
@@ -73,3 +81,11 @@ class SubPluginReleaseAdmin(ProjectReleaseAdmin):
     ordering = ('sub_plugin', '-created',)
     readonly_fields = ProjectReleaseAdmin.readonly_fields + ('sub_plugin',)
     search_fields = ProjectReleaseAdmin.search_fields + ('sub_plugin__name',)
+
+    def get_queryset(self, request):
+        """Cache 'plugin' for the queryset."""
+        return super().get_queryset(
+            request=request,
+        ).select_related(
+            'sub_plugin__plugin',
+        )

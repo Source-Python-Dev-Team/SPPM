@@ -66,7 +66,7 @@ class SubPluginAdminTestCase(TestCase):
         ).query
         self.assertDictEqual(
             d1=query.select_related,
-            d2={'owner': {'user': {}}}
+            d2={'owner': {'user': {}}, 'plugin': {}},
         )
 
 
@@ -156,7 +156,7 @@ class TestSubPluginReleaseAdminTestCase(TestCase):
         ).query
         self.assertDictEqual(
             d1=query.select_related,
-            d2={'created_by': {'user': {}}}
+            d2={'created_by': {'user': {}}, 'sub_plugin': {'plugin': {}}},
         )
 
     def test_has_add_permission(self):
