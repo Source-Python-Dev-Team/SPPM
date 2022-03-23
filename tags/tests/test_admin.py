@@ -45,22 +45,19 @@ class TagAdminTestCase(TestCase):
     def test_list_editable(self):
         self.assertTupleEqual(
             tuple1=TagAdmin.list_editable,
-            tuple2=(
-                'black_listed',
-                'creator',
-            ),
+            tuple2=('black_listed',),
         )
 
     def test_raw_id_fields(self):
         self.assertTupleEqual(
             tuple1=TagAdmin.raw_id_fields,
-            tuple2=('creator',),
+            tuple2=(),
         )
 
     def test_readonly_fields(self):
         self.assertTupleEqual(
             tuple1=TagAdmin.readonly_fields,
-            tuple2=('name',),
+            tuple2=('creator', 'name'),
         )
 
     def test_get_queryset(self):

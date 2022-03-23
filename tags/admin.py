@@ -37,12 +37,9 @@ class TagAdmin(admin.ModelAdmin):
     )
     list_editable = (
         'black_listed',
-        'creator',
-    )
-    raw_id_fields = (
-        'creator',
     )
     readonly_fields = (
+        'creator',
         'name',
     )
 
