@@ -58,8 +58,8 @@ class PluginReleaseViewSetTestCase(APITestCase):
         cls.plugin = PluginFactory(
             owner=cls.owner,
         )
-        cls.base_api_path = f'/api/plugins/releases/'
-        cls.api_path = f'{cls.base_api_path}{cls.plugin.slug}/'
+        cls.base_api_path = f'/api/plugins/releases'
+        cls.api_path = f'{cls.base_api_path}/{cls.plugin.slug}/'
         cls.contributor = ForumUserFactory()
         PluginContributorFactory(
             plugin=cls.plugin,
@@ -337,11 +337,11 @@ class PluginReleaseViewSetTestCase(APITestCase):
         )
 
     def test_get_details_failure(self):
-        api_path = f'{self.base_api_path}invalid/'
+        api_path = f'{self.base_api_path}/invalid/'
         response = self.client.get(path=api_path)
         self.assertEqual(
             first=response.status_code,
-            second=status.HTTP_400_BAD_REQUEST,
+            second=status.HTTP_404_NOT_FOUND,
         )
         self.assertDictEqual(
             d1=response.json(),
@@ -362,7 +362,7 @@ class PluginReleaseViewSetTestCase(APITestCase):
             plugin=plugin,
             user=self.contributor,
         )
-        api_path = f'{self.base_api_path}{plugin.slug}/'
+        api_path = f'{self.base_api_path}/{plugin.slug}/'
         base_path = settings.BASE_DIR / 'fixtures' / 'releases' / 'plugins'
         file_path = base_path / 'test-plugin' / 'test-plugin-v1.0.0.zip'
 
@@ -493,7 +493,7 @@ class PluginReleaseViewSetTestCase(APITestCase):
             plugin=plugin,
             version='1.0.0',
         )
-        api_path = f'{self.base_api_path}{plugin.slug}/'
+        api_path = f'{self.base_api_path}/{plugin.slug}/'
         with file_path.open('rb') as open_file:
             zip_file = UploadedFile(open_file, content_type='application/zip')
             response = self.client.post(
@@ -558,7 +558,7 @@ class PluginReleaseViewSetTestCase(APITestCase):
             plugin=plugin,
             version='1.0.0',
         )
-        api_path = f'{self.base_api_path}{plugin.slug}/'
+        api_path = f'{self.base_api_path}/{plugin.slug}/'
         with file_path.open('rb') as open_file:
             zip_file = UploadedFile(open_file, content_type='application/zip')
             response = self.client.post(

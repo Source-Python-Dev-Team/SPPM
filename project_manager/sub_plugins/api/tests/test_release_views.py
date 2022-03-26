@@ -62,8 +62,8 @@ class SubPluginReleaseViewSetTestCase(APITestCase):
             owner=cls.owner,
             plugin=cls.plugin,
         )
-        cls.base_api_path = f'/api/sub-plugins/releases/'
-        cls.api_path = f'{cls.base_api_path}{cls.plugin.slug}/{cls.sub_plugin.slug}/'
+        cls.base_api_path = f'/api/sub-plugins/releases'
+        cls.api_path = f'{cls.base_api_path}/{cls.plugin.slug}/{cls.sub_plugin.slug}'
         cls.contributor = ForumUserFactory()
         SubPluginContributorFactory(
             sub_plugin=cls.sub_plugin,
@@ -224,7 +224,8 @@ class SubPluginReleaseViewSetTestCase(APITestCase):
 
     def test_get_list(self):
         # Verify that a non logged in user can see results
-        response = self.client.get(path=self.api_path)
+        api_path = f'{self.api_path}/'
+        response = self.client.get(path=api_path)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -262,7 +263,7 @@ class SubPluginReleaseViewSetTestCase(APITestCase):
 
         # Verify that regular user can see results
         self.client.force_login(self.regular_user.user)
-        response = self.client.get(path=self.api_path)
+        response = self.client.get(path=api_path)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -276,7 +277,7 @@ class SubPluginReleaseViewSetTestCase(APITestCase):
 
         # Verify that contributors can see results
         self.client.force_login(self.contributor.user)
-        response = self.client.get(path=self.api_path)
+        response = self.client.get(path=api_path)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -290,7 +291,7 @@ class SubPluginReleaseViewSetTestCase(APITestCase):
 
         # Verify that the owner can see results
         self.client.force_login(self.owner.user)
-        response = self.client.get(path=self.api_path)
+        response = self.client.get(path=api_path)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -304,7 +305,7 @@ class SubPluginReleaseViewSetTestCase(APITestCase):
 
     def test_get_details(self):
         # Verify that non logged in user can see details
-        api_path = f'{self.api_path}{self.sub_plugin_release.version}/'
+        api_path = f'{self.api_path}/{self.sub_plugin_release.version}/'
         response = self.client.get(path=api_path)
         timestamp = self.sub_plugin_release.created
         request = response.wsgi_request
@@ -376,11 +377,11 @@ class SubPluginReleaseViewSetTestCase(APITestCase):
         )
 
     def test_get_details_failure(self):
-        api_path = f'{self.base_api_path}{self.plugin.slug}/invalid/'
+        api_path = f'{self.base_api_path}/{self.plugin.slug}/invalid/'
         response = self.client.get(path=api_path)
         self.assertEqual(
             first=response.status_code,
-            second=status.HTTP_400_BAD_REQUEST,
+            second=status.HTTP_404_NOT_FOUND,
         )
         self.assertDictEqual(
             d1=response.json(),
@@ -410,7 +411,7 @@ class SubPluginReleaseViewSetTestCase(APITestCase):
             sub_plugin=sub_plugin,
             user=self.contributor,
         )
-        api_path = f'{self.base_api_path}{plugin.slug}/{sub_plugin.slug}/'
+        api_path = f'{self.base_api_path}/{plugin.slug}/{sub_plugin.slug}/'
         base_path = settings.BASE_DIR / 'fixtures' / 'releases' / 'sub-plugins'
         file_path = base_path / 'test-plugin' / 'test-sub-plugin' / 'test-sub-plugin-v1.0.0.zip'
 
@@ -544,7 +545,7 @@ class SubPluginReleaseViewSetTestCase(APITestCase):
             sub_plugin=sub_plugin,
             version='1.0.0',
         )
-        api_path = f'{self.base_api_path}{plugin.slug}/{sub_plugin.slug}/'
+        api_path = f'{self.base_api_path}/{plugin.slug}/{sub_plugin.slug}/'
         with file_path.open('rb') as open_file:
             zip_file = UploadedFile(open_file, content_type='application/zip')
             response = self.client.post(
@@ -588,7 +589,7 @@ class SubPluginReleaseViewSetTestCase(APITestCase):
             sub_plugin=sub_plugin,
             version='1.0.0',
         )
-        api_path = f'{self.base_api_path}{plugin.slug}/{sub_plugin.slug}/'
+        api_path = f'{self.base_api_path}/{plugin.slug}/{sub_plugin.slug}/'
         base_path = settings.BASE_DIR / 'fixtures' / 'releases' / 'sub-plugins'
         file_path = base_path / 'test-plugin' / 'test-sub-plugin' / 'test-sub-plugin-requirements-v1.0.0.zip'
         version = '1.0.1'
@@ -668,7 +669,7 @@ class SubPluginReleaseViewSetTestCase(APITestCase):
         )
 
     def test_options(self):
-        response = self.client.options(path=self.api_path)
+        response = self.client.options(path=f'{self.api_path}/')
         self.assertEqual(first=response.status_code, second=status.HTTP_200_OK)
         self.assertEqual(
             first=response.json()['name'],

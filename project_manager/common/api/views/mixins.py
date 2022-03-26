@@ -6,9 +6,8 @@
 # Third Party Django
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.authentication import SessionAuthentication
-from rest_framework.exceptions import PermissionDenied
+from rest_framework.exceptions import NotFound, PermissionDenied
 from rest_framework.filters import OrderingFilter
-from rest_framework.parsers import ParseError
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, SAFE_METHODS
 from rest_framework.viewsets import ModelViewSet
 
@@ -63,8 +62,8 @@ class ProjectRelatedInfoMixin(ModelViewSet):
                 'owner__user'
             ).get(**kwargs)
         except self.project_model.DoesNotExist as exception:
-            raise ParseError(
-                f"Invalid {self.project_type.replace('-', '_')}_slug."
+            raise NotFound(
+                detail=f"Invalid {self.project_type.replace('-', '_')}_slug.",
             ) from exception
         return self._project
 

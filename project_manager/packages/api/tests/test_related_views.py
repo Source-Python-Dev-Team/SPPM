@@ -69,8 +69,8 @@ class PackageContributorViewSetTestCase(APITestCase):
         cls.package = PackageFactory(
             owner=cls.owner,
         )
-        cls.base_api_path = f'/api/packages/contributors/'
-        cls.api_path = f'{cls.base_api_path}{cls.package.slug}/'
+        cls.base_api_path = f'/api/packages/contributors'
+        cls.api_path = f'{cls.base_api_path}/{cls.package.slug}/'
         cls.contributor = ForumUserFactory()
         cls.package_contributor = PackageContributorFactory(
             package=cls.package,
@@ -238,11 +238,11 @@ class PackageContributorViewSetTestCase(APITestCase):
         )
 
     def test_get_details_failure(self):
-        api_path = f'{self.base_api_path}invalid/'
+        api_path = f'{self.base_api_path}/invalid/'
         response = self.client.get(path=api_path)
         self.assertEqual(
             first=response.status_code,
-            second=status.HTTP_400_BAD_REQUEST,
+            second=status.HTTP_404_NOT_FOUND,
         )
         self.assertDictEqual(
             d1=response.json(),
@@ -398,8 +398,8 @@ class PackageGameViewSetTestCase(APITestCase):
         cls.package = PackageFactory(
             owner=cls.owner,
         )
-        cls.base_api_path = f'/api/packages/games/'
-        cls.api_path = f'{cls.base_api_path}{cls.package.slug}/'
+        cls.base_api_path = f'/api/packages/games'
+        cls.api_path = f'{cls.base_api_path}/{cls.package.slug}/'
         cls.contributor = ForumUserFactory()
         PackageContributorFactory(
             package=cls.package,
@@ -610,11 +610,11 @@ class PackageGameViewSetTestCase(APITestCase):
         )
 
     def test_get_details_failure(self):
-        api_path = f'{self.base_api_path}invalid/'
+        api_path = f'{self.base_api_path}/invalid/'
         response = self.client.get(path=api_path)
         self.assertEqual(
             first=response.status_code,
-            second=status.HTTP_400_BAD_REQUEST,
+            second=status.HTTP_404_NOT_FOUND,
         )
         self.assertDictEqual(
             d1=response.json(),
@@ -757,8 +757,8 @@ class PackageImageViewSetTestCase(APITestCase):
         cls.package = PackageFactory(
             owner=cls.owner,
         )
-        cls.base_api_path = f'/api/packages/images/'
-        cls.api_path = f'{cls.base_api_path}{cls.package.slug}/'
+        cls.base_api_path = f'/api/packages/images'
+        cls.api_path = f'{cls.base_api_path}/{cls.package.slug}/'
         cls.contributor = ForumUserFactory()
         PackageContributorFactory(
             package=cls.package,
@@ -929,11 +929,11 @@ class PackageImageViewSetTestCase(APITestCase):
         )
 
     def test_get_details_failure(self):
-        api_path = f'{self.base_api_path}invalid/'
+        api_path = f'{self.base_api_path}/invalid/'
         response = self.client.get(path=api_path)
         self.assertEqual(
             first=response.status_code,
-            second=status.HTTP_400_BAD_REQUEST,
+            second=status.HTTP_404_NOT_FOUND,
         )
         self.assertDictEqual(
             d1=response.json(),
@@ -1037,8 +1037,8 @@ class PackageTagViewSetTestCase(APITestCase):
         cls.package = PackageFactory(
             owner=cls.owner,
         )
-        cls.base_api_path = f'/api/packages/tags/'
-        cls.api_path = f'{cls.base_api_path}{cls.package.slug}/'
+        cls.base_api_path = f'/api/packages/tags'
+        cls.api_path = f'{cls.base_api_path}/{cls.package.slug}/'
         cls.contributor = ForumUserFactory()
         PackageContributorFactory(
             package=cls.package,
@@ -1197,11 +1197,11 @@ class PackageTagViewSetTestCase(APITestCase):
         )
 
     def test_get_details_failure(self):
-        api_path = f'{self.base_api_path}invalid/'
+        api_path = f'{self.base_api_path}/invalid/'
         response = self.client.get(path=api_path)
         self.assertEqual(
             first=response.status_code,
-            second=status.HTTP_400_BAD_REQUEST,
+            second=status.HTTP_404_NOT_FOUND,
         )
         self.assertDictEqual(
             d1=response.json(),

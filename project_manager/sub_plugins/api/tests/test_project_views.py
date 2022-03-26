@@ -71,8 +71,8 @@ class SubPluginViewSetTestCase(APITestCase):
             sub_plugin=cls.sub_plugin,
             zip_file='/media/release_v1.0.0.zip',
         )
-        cls.base_api_path = f'/api/sub-plugins/projects/'
-        cls.api_path = f'{cls.base_api_path}{plugin.slug}/'
+        cls.base_api_path = f'/api/sub-plugins/projects'
+        cls.api_path = f'{cls.base_api_path}/{plugin.slug}'
         cls.contributor = ForumUserFactory()
         SubPluginContributorFactory(
             sub_plugin=cls.sub_plugin,
@@ -144,7 +144,8 @@ class SubPluginViewSetTestCase(APITestCase):
 
     def test_get_list(self):
         # Verify that non logged in user can see results but not 'id'
-        response = self.client.get(path=self.api_path)
+        api_path = f'{self.api_path}/'
+        response = self.client.get(path=api_path)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -193,7 +194,7 @@ class SubPluginViewSetTestCase(APITestCase):
 
         # Verify that regular user can see results but not 'id'
         self.client.force_login(self.regular_user.user)
-        response = self.client.get(path=self.api_path)
+        response = self.client.get(path=api_path)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -207,7 +208,7 @@ class SubPluginViewSetTestCase(APITestCase):
 
         # Verify that contributors can see results AND 'id'
         self.client.force_login(self.contributor.user)
-        response = self.client.get(path=self.api_path)
+        response = self.client.get(path=api_path)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -221,7 +222,7 @@ class SubPluginViewSetTestCase(APITestCase):
 
         # Verify that the owner can see results AND 'id'
         self.client.force_login(self.owner.user)
-        response = self.client.get(path=self.api_path)
+        response = self.client.get(path=api_path)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -234,7 +235,8 @@ class SubPluginViewSetTestCase(APITestCase):
         )
 
     def test_get_list_filters(self):
-        response = self.client.get(path=self.api_path)
+        api_path = f'{self.api_path}/'
+        response = self.client.get(path=api_path)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -245,7 +247,7 @@ class SubPluginViewSetTestCase(APITestCase):
         )
 
         # Validate tag filtering
-        response = self.client.get(path=f'{self.api_path}?tag=test_tag')
+        response = self.client.get(path=f'{api_path}?tag=test_tag')
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -259,7 +261,7 @@ class SubPluginViewSetTestCase(APITestCase):
             sub_plugin=self.sub_plugin,
             tag=tag,
         )
-        response = self.client.get(path=f'{self.api_path}?tag=test_tag')
+        response = self.client.get(path=f'{api_path}?tag=test_tag')
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -270,7 +272,7 @@ class SubPluginViewSetTestCase(APITestCase):
         )
 
         # Validate game filtering
-        response = self.client.get(path=f'{self.api_path}?game=game1')
+        response = self.client.get(path=f'{api_path}?game=game1')
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -288,7 +290,7 @@ class SubPluginViewSetTestCase(APITestCase):
             sub_plugin=self.sub_plugin,
             game=game,
         )
-        response = self.client.get(path=f'{self.api_path}?game=game1')
+        response = self.client.get(path=f'{api_path}?game=game1')
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -300,7 +302,7 @@ class SubPluginViewSetTestCase(APITestCase):
 
         # Validate game filtering
         response = self.client.get(
-            path=f'{self.api_path}?user={self.regular_user.user.username}',
+            path=f'{api_path}?user={self.regular_user.user.username}',
         )
         self.assertEqual(
             first=response.status_code,
@@ -311,7 +313,7 @@ class SubPluginViewSetTestCase(APITestCase):
             second=0,
         )
         response = self.client.get(
-            path=f'{self.api_path}?user={self.contributor.user.username}',
+            path=f'{api_path}?user={self.contributor.user.username}',
         )
         self.assertEqual(
             first=response.status_code,
@@ -322,7 +324,7 @@ class SubPluginViewSetTestCase(APITestCase):
             second=1,
         )
         response = self.client.get(
-            path=f'{self.api_path}?user={self.owner.user.username}',
+            path=f'{api_path}?user={self.owner.user.username}',
         )
         self.assertEqual(
             first=response.status_code,
@@ -335,7 +337,7 @@ class SubPluginViewSetTestCase(APITestCase):
 
     def test_get_details(self):
         # Verify that non logged in user can see details
-        api_path = f'{self.api_path}{self.sub_plugin.slug}/'
+        api_path = f'{self.api_path}/{self.sub_plugin.slug}/'
         response = self.client.get(path=api_path)
         request = response.wsgi_request
         domain = f'{request.scheme}://{request.get_host()}'
@@ -435,7 +437,7 @@ class SubPluginViewSetTestCase(APITestCase):
         base_path = settings.BASE_DIR / 'fixtures' / 'releases' / 'sub-plugins'
         file_path = base_path / 'test-plugin' / 'test-sub-plugin' / 'test-sub-plugin-v1.0.0.zip'
         version = '1.0.0'
-        api_path = f'{self.base_api_path}{plugin.slug}/'
+        api_path = f'{self.base_api_path}/{plugin.slug}/'
         with file_path.open('rb') as open_file:
             zip_file = UploadedFile(open_file, content_type='application/zip')
             response = self.client.post(
@@ -530,7 +532,7 @@ class SubPluginViewSetTestCase(APITestCase):
         base_path = settings.BASE_DIR / 'fixtures' / 'releases' / 'sub-plugins'
         file_path = base_path / 'test-plugin' / 'test-sub-plugin' / 'test-sub-plugin-requirements-v1.0.0.zip'
         version = '1.0.0'
-        api_path = f'{self.base_api_path}{plugin.slug}/'
+        api_path = f'{self.base_api_path}/{plugin.slug}/'
         custom_package_1 = PackageFactory(
             basename='custom_package_1',
         )
@@ -604,7 +606,7 @@ class SubPluginViewSetTestCase(APITestCase):
 
     def test_patch(self):
         # Verify that non logged in user cannot update a path
-        api_path = f'{self.api_path}{self.sub_plugin.slug}/'
+        api_path = f'{self.api_path}/{self.sub_plugin.slug}/'
         response = self.client.patch(
             path=api_path,
             data={
@@ -656,7 +658,7 @@ class SubPluginViewSetTestCase(APITestCase):
         )
 
     def test_options(self):
-        response = self.client.options(path=self.api_path)
+        response = self.client.options(path=f'{self.api_path}/')
         self.assertEqual(first=response.status_code, second=status.HTTP_200_OK)
         self.assertEqual(
             first=response.json()['name'],
