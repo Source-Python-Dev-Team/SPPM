@@ -74,8 +74,8 @@ class PluginContributorViewSetTestCase(APITestCase):
         cls.plugin = PluginFactory(
             owner=cls.owner,
         )
-        cls.base_api_path = f'/api/plugins/contributors'
-        cls.api_path = f'{cls.base_api_path}/{cls.plugin.slug}/'
+        cls.base_api_path = f'/api/plugins/contributors/'
+        cls.api_path = f'{cls.base_api_path}{cls.plugin.slug}/'
         cls.contributor = ForumUserFactory()
         cls.plugin_contributor = PluginContributorFactory(
             plugin=cls.plugin,
@@ -243,7 +243,7 @@ class PluginContributorViewSetTestCase(APITestCase):
         )
 
     def test_get_details_failure(self):
-        api_path = f'{self.base_api_path}/invalid/'
+        api_path = f'{self.base_api_path}invalid/'
         response = self.client.get(path=api_path)
         self.assertEqual(
             first=response.status_code,
@@ -403,8 +403,8 @@ class PluginGameViewSetTestCase(APITestCase):
         cls.plugin = PluginFactory(
             owner=cls.owner,
         )
-        cls.base_api_path = f'/api/plugins/games'
-        cls.api_path = f'{cls.base_api_path}/{cls.plugin.slug}/'
+        cls.base_api_path = f'/api/plugins/games/'
+        cls.api_path = f'{cls.base_api_path}{cls.plugin.slug}/'
         cls.contributor = ForumUserFactory()
         PluginContributorFactory(
             plugin=cls.plugin,
@@ -615,7 +615,7 @@ class PluginGameViewSetTestCase(APITestCase):
         )
 
     def test_get_details_failure(self):
-        api_path = f'{self.base_api_path}/invalid/'
+        api_path = f'{self.base_api_path}invalid/'
         response = self.client.get(path=api_path)
         self.assertEqual(
             first=response.status_code,
@@ -762,8 +762,8 @@ class PluginImageViewSetTestCase(APITestCase):
         cls.plugin = PluginFactory(
             owner=cls.owner,
         )
-        cls.base_api_path = f'/api/plugins/images'
-        cls.api_path = f'{cls.base_api_path}/{cls.plugin.slug}/'
+        cls.base_api_path = f'/api/plugins/images/'
+        cls.api_path = f'{cls.base_api_path}{cls.plugin.slug}/'
         cls.contributor = ForumUserFactory()
         PluginContributorFactory(
             plugin=cls.plugin,
@@ -935,7 +935,7 @@ class PluginImageViewSetTestCase(APITestCase):
         )
 
     def test_get_details_failure(self):
-        api_path = f'{self.base_api_path}/invalid/'
+        api_path = f'{self.base_api_path}invalid/'
         response = self.client.get(path=api_path)
         self.assertEqual(
             first=response.status_code,
@@ -1043,8 +1043,8 @@ class PluginTagViewSetTestCase(APITestCase):
         cls.plugin = PluginFactory(
             owner=cls.owner,
         )
-        cls.base_api_path = f'/api/plugins/tags'
-        cls.api_path = f'{cls.base_api_path}/{cls.plugin.slug}/'
+        cls.base_api_path = f'/api/plugins/tags/'
+        cls.api_path = f'{cls.base_api_path}{cls.plugin.slug}/'
         cls.contributor = ForumUserFactory()
         PluginContributorFactory(
             plugin=cls.plugin,
@@ -1203,7 +1203,7 @@ class PluginTagViewSetTestCase(APITestCase):
         )
 
     def test_get_details_failure(self):
-        api_path = f'{self.base_api_path}/invalid/'
+        api_path = f'{self.base_api_path}invalid/'
         response = self.client.get(path=api_path)
         self.assertEqual(
             first=response.status_code,
@@ -1351,8 +1351,8 @@ class SubPluginPathViewSetTestCase(APITestCase):
         cls.plugin = PluginFactory(
             owner=cls.owner,
         )
-        cls.base_api_path = f'/api/plugins/paths'
-        cls.api_path = f'{cls.base_api_path}/{cls.plugin.slug}/'
+        cls.base_api_path = f'/api/plugins/paths/'
+        cls.api_path = f'{cls.base_api_path}{cls.plugin.slug}/'
         cls.contributor = ForumUserFactory()
         PluginContributorFactory(
             plugin=cls.plugin,
@@ -1541,7 +1541,7 @@ class SubPluginPathViewSetTestCase(APITestCase):
         )
 
     def test_get_details_failure(self):
-        api_path = f'{self.base_api_path}/invalid/'
+        api_path = f'{self.base_api_path}invalid/'
         response = self.client.get(path=api_path)
         self.assertEqual(
             first=response.status_code,

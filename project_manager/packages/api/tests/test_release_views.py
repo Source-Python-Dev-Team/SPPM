@@ -57,8 +57,8 @@ class PackageReleaseViewSetTestCase(APITestCase):
         cls.package = PackageFactory(
             owner=cls.owner,
         )
-        cls.base_api_path = f'/api/packages/releases'
-        cls.api_path = f'{cls.base_api_path}/{cls.package.slug}/'
+        cls.base_api_path = f'/api/packages/releases/'
+        cls.api_path = f'{cls.base_api_path}{cls.package.slug}/'
         cls.contributor = ForumUserFactory()
         PackageContributorFactory(
             package=cls.package,
@@ -336,7 +336,7 @@ class PackageReleaseViewSetTestCase(APITestCase):
         )
 
     def test_get_details_failure(self):
-        api_path = f'{self.base_api_path}/invalid/'
+        api_path = f'{self.base_api_path}invalid/'
         response = self.client.get(path=api_path)
         self.assertEqual(
             first=response.status_code,
@@ -361,7 +361,7 @@ class PackageReleaseViewSetTestCase(APITestCase):
             package=package,
             user=self.contributor,
         )
-        api_path = f'{self.base_api_path}/{package.slug}/'
+        api_path = f'{self.base_api_path}{package.slug}/'
         base_path = settings.BASE_DIR / 'fixtures' / 'releases' / 'packages'
         file_path = base_path / 'test-package' / 'test-package-v1.0.0.zip'
 
@@ -494,7 +494,7 @@ class PackageReleaseViewSetTestCase(APITestCase):
             package=package,
             version='1.0.0',
         )
-        api_path = f'{self.base_api_path}/{package.slug}/'
+        api_path = f'{self.base_api_path}{package.slug}/'
         with file_path.open('rb') as open_file:
             zip_file = UploadedFile(open_file, content_type='application/zip')
             response = self.client.post(
@@ -559,7 +559,7 @@ class PackageReleaseViewSetTestCase(APITestCase):
             package=package,
             version='1.0.0',
         )
-        api_path = f'{self.base_api_path}/{package.slug}/'
+        api_path = f'{self.base_api_path}{package.slug}/'
         with file_path.open('rb') as open_file:
             zip_file = UploadedFile(open_file, content_type='application/zip')
             response = self.client.post(
