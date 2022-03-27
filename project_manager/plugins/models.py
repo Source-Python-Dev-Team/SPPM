@@ -5,40 +5,33 @@
 # =============================================================================
 # Django
 from django.core.exceptions import ValidationError
-from django.urls import reverse
 from django.db import models
+from django.urls import reverse
 
 # Third Party Django
+from model_utils.fields import AutoCreatedField
 from model_utils.tracker import FieldTracker
 
 # App
 from project_manager.common.constants import (
     PROJECT_BASENAME_MAX_LENGTH,
     PROJECT_SLUG_MAX_LENGTH,
+    RELEASE_VERSION_MAX_LENGTH,
 )
 from project_manager.common.models import (
+    AbstractUUIDPrimaryKeyModel,
     Project,
-    ProjectContributor,
-    ProjectGame,
-    ProjectImage,
     ProjectRelease,
-    ProjectReleaseDownloadRequirement,
-    ProjectReleasePackageRequirement,
-    ProjectReleasePyPiRequirement,
-    ProjectReleaseVersionControlRequirement,
-    ProjectTag,
 )
-from project_manager.common.validators import basename_validator
-from project_manager.common.models import AbstractUUIDPrimaryKeyModel
+from project_manager.common.validators import (
+    basename_validator,
+    version_validator,
+)
 from project_manager.plugins.constants import PLUGIN_LOGO_URL, PATH_MAX_LENGTH
 from project_manager.plugins.helpers import (
     handle_plugin_image_upload,
     handle_plugin_logo_upload,
     handle_plugin_zip_upload,
-)
-from project_manager.plugins.models.abstract import (
-    PluginReleaseThroughBase,
-    PluginThroughBase,
 )
 from project_manager.plugins.validators import sub_plugin_path_validator
 
@@ -176,7 +169,7 @@ class PluginRelease(ProjectRelease):
         )
 
 
-class PluginImage(ProjectImage):
+class PluginImage(AbstractUUIDPrimaryKeyModel):
     """Plugin image type model."""
 
     plugin = models.ForeignKey(
@@ -184,35 +177,108 @@ class PluginImage(ProjectImage):
         related_name='images',
         on_delete=models.CASCADE,
     )
+    image = models.ImageField(
+        upload_to=handle_plugin_image_upload,
+    )
+    created = AutoCreatedField(
+        verbose_name='created',
+    )
 
-    handle_image_upload = handle_plugin_image_upload
+    class Meta:
+        verbose_name = 'Image'
+        verbose_name_plural = 'Images'
 
 
-class PluginContributor(PluginThroughBase, ProjectContributor):
+class PluginContributor(AbstractUUIDPrimaryKeyModel):
     """Plugin contributors through model."""
+
+    plugin = models.ForeignKey(
+        to='project_manager.Plugin',
+        on_delete=models.CASCADE,
+    )
+    user = models.ForeignKey(
+        to='users.ForumUser',
+        on_delete=models.CASCADE,
+    )
 
     class Meta:
         """Define metaclass attributes."""
 
         unique_together = ('plugin', 'user')
 
+    @property
+    def project(self):
+        """Return the Plugin."""
+        return self.plugin
 
-class PluginGame(ProjectGame, PluginThroughBase):
+    def __str__(self):
+        """Return the base string."""
+        return 'Plugin Contributor'
+
+    def clean(self):
+        """Validate that the plugin's owner cannot be a contributor."""
+        if hasattr(self, 'user') and self.plugin.owner == self.user:
+            raise ValidationError({
+                'user': (
+                    f'{self.user} is the owner and cannot be added '
+                    f'as a contributor.'
+                )
+            })
+        return super().clean()
+
+
+class PluginGame(AbstractUUIDPrimaryKeyModel):
     """Plugin supported_games through model."""
+
+    plugin = models.ForeignKey(
+        to='project_manager.Plugin',
+        on_delete=models.CASCADE,
+    )
+    game = models.ForeignKey(
+        to='games.Game',
+        on_delete=models.CASCADE,
+    )
 
     class Meta:
         """Define metaclass attributes."""
 
         unique_together = ('plugin', 'game')
 
+    @property
+    def project(self):
+        """Return the Plugin."""
+        return self.plugin
 
-class PluginTag(ProjectTag, PluginThroughBase):
+    def __str__(self):
+        """Return the base string."""
+        return 'Plugin Game'
+
+
+class PluginTag(AbstractUUIDPrimaryKeyModel):
     """Plugin tags through model."""
+
+    plugin = models.ForeignKey(
+        to='project_manager.Plugin',
+        on_delete=models.CASCADE,
+    )
+    tag = models.ForeignKey(
+        to='tags.Tag',
+        on_delete=models.CASCADE,
+    )
 
     class Meta:
         """Define metaclass attributes."""
 
         unique_together = ('plugin', 'tag')
+
+    @property
+    def project(self):
+        """Return the Plugin."""
+        return self.plugin
+
+    def __str__(self):
+        """Return the base string."""
+        return 'Plugin Tag'
 
 
 class SubPluginPath(AbstractUUIDPrimaryKeyModel):
@@ -292,45 +358,129 @@ class SubPluginPath(AbstractUUIDPrimaryKeyModel):
         )
 
 
-class PluginReleaseDownloadRequirement(
-    ProjectReleaseDownloadRequirement, PluginReleaseThroughBase
-):
+class PluginReleaseDownloadRequirement(AbstractUUIDPrimaryKeyModel):
     """Plugin Download Requirement for Release model."""
+
+    plugin_release = models.ForeignKey(
+        to='project_manager.PluginRelease',
+        on_delete=models.CASCADE,
+    )
+    download_requirement = models.ForeignKey(
+        to='requirements.DownloadRequirement',
+        on_delete=models.CASCADE,
+    )
+    optional = models.BooleanField(
+        default=False,
+    )
 
     class Meta:
         """Define metaclass attributes."""
 
         unique_together = ('plugin_release', 'download_requirement')
 
+    def __str__(self):
+        """Return the requirement's url."""
+        return self.download_requirement.url
 
-class PluginReleasePackageRequirement(
-    ProjectReleasePackageRequirement, PluginReleaseThroughBase
-):
+
+class PluginReleasePackageRequirement(AbstractUUIDPrimaryKeyModel):
     """Plugin Package Requirement for Release model."""
+
+    plugin_release = models.ForeignKey(
+        to='project_manager.PluginRelease',
+        on_delete=models.CASCADE,
+    )
+    package_requirement = models.ForeignKey(
+        to='project_manager.Package',
+        on_delete=models.CASCADE,
+    )
+    version = models.CharField(
+        max_length=RELEASE_VERSION_MAX_LENGTH,
+        validators=[version_validator],
+        help_text=(
+            'The version of the custom package for this release '
+            'of the plugin.'
+        ),
+        blank=True,
+        null=True,
+    )
+    optional = models.BooleanField(
+        default=False,
+    )
 
     class Meta:
         """Define metaclass attributes."""
 
         unique_together = ('plugin_release', 'package_requirement')
 
+    def __str__(self):
+        """Return the requirement's name and version."""
+        return f'{self.package_requirement.name} - {self.version}'
 
-class PluginReleasePyPiRequirement(
-    ProjectReleasePyPiRequirement, PluginReleaseThroughBase
-):
+
+class PluginReleasePyPiRequirement(AbstractUUIDPrimaryKeyModel):
     """Plugin PyPi Requirement for Release model."""
+
+    plugin_release = models.ForeignKey(
+        to='project_manager.PluginRelease',
+        on_delete=models.CASCADE,
+    )
+    pypi_requirement = models.ForeignKey(
+        to='requirements.PyPiRequirement',
+        on_delete=models.CASCADE,
+    )
+    version = models.CharField(
+        max_length=RELEASE_VERSION_MAX_LENGTH,
+        validators=[version_validator],
+        help_text=(
+            'The version of the PyPi package for this release of the plugin.'
+        ),
+        blank=True,
+        null=True,
+    )
+    optional = models.BooleanField(
+        default=False,
+    )
 
     class Meta:
         """Define metaclass attributes."""
 
         unique_together = ('plugin_release', 'pypi_requirement')
 
+    def __str__(self):
+        """Return the requirement's name and version."""
+        return f'{self.pypi_requirement.name} - {self.version}'
 
-class PluginReleaseVersionControlRequirement(
-    ProjectReleaseVersionControlRequirement, PluginReleaseThroughBase
-):
+
+class PluginReleaseVersionControlRequirement(AbstractUUIDPrimaryKeyModel):
     """Plugin VCS Requirement for Release model."""
+
+    plugin_release = models.ForeignKey(
+        to='project_manager.PluginRelease',
+        on_delete=models.CASCADE,
+    )
+    vcs_requirement = models.ForeignKey(
+        to='requirements.VersionControlRequirement',
+        on_delete=models.CASCADE,
+    )
+    version = models.CharField(
+        max_length=RELEASE_VERSION_MAX_LENGTH,
+        validators=[version_validator],
+        help_text=(
+            'The version of the VCS package for this release of the plugin.'
+        ),
+        blank=True,
+        null=True,
+    )
+    optional = models.BooleanField(
+        default=False,
+    )
 
     class Meta:
         """Define metaclass attributes."""
 
         unique_together = ('plugin_release', 'vcs_requirement')
+
+    def __str__(self):
+        """Return the requirement's name and version."""
+        return f'{self.vcs_requirement.url} - {self.version}'

@@ -7,7 +7,13 @@ import django.utils.timezone
 import embed_video.fields
 import model_utils.fields
 import precise_bbcode.fields
-import project_manager.common.helpers
+from project_manager.common.helpers import (
+    handle_project_logo_upload,
+    handle_release_zip_file_upload,
+)
+from project_manager.packages.helpers import handle_package_image_upload
+from project_manager.plugins.helpers import handle_plugin_image_upload
+from project_manager.sub_plugins.helpers import handle_sub_plugin_image_upload
 import uuid
 
 
@@ -27,7 +33,7 @@ class Migration(migrations.Migration):
                 ('configuration', precise_bbcode.fields.BBCodeTextField(blank=True, help_text='The configuration of the project. If too long, post on the forum and provide the link here. BBCode is allowed. 1024 char limit.', max_length=1024, no_rendered_field=True, null=True)),
                 ('_description_rendered', models.TextField(blank=True, editable=False, null=True)),
                 ('description', precise_bbcode.fields.BBCodeTextField(blank=True, help_text='The full description of the project. BBCode is allowed. 1024 char limit.', max_length=1024, no_rendered_field=True, null=True)),
-                ('logo', models.ImageField(blank=True, help_text="The project's logo image.", null=True, upload_to=project_manager.common.helpers.handle_project_logo_upload)),
+                ('logo', models.ImageField(blank=True, help_text="The project's logo image.", null=True, upload_to=handle_project_logo_upload)),
                 ('video', embed_video.fields.EmbedVideoField(help_text="The project's video.", null=True)),
                 ('_synopsis_rendered', models.TextField(blank=True, editable=False, null=True)),
                 ('synopsis', precise_bbcode.fields.BBCodeTextField(blank=True, help_text='A brief description of the project. BBCode is allowed. 128 char limit.', max_length=128, no_rendered_field=True, null=True)),
@@ -57,7 +63,7 @@ class Migration(migrations.Migration):
             name='PackageImage',
             fields=[
                 ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False, verbose_name='ID')),
-                ('image', models.ImageField(upload_to=project_manager.common.helpers.handle_project_image_upload)),
+                ('image', models.ImageField(upload_to=handle_package_image_upload)),
                 ('created', model_utils.fields.AutoCreatedField(default=django.utils.timezone.now, editable=False, verbose_name='created')),
             ],
             options={
@@ -73,7 +79,7 @@ class Migration(migrations.Migration):
                 ('version', models.CharField(help_text='The version for this release of the project.', max_length=8, validators=[django.core.validators.RegexValidator('^[0-9][0-9a-z.]*[0-9a-z]')])),
                 ('_notes_rendered', models.TextField(blank=True, editable=False, null=True)),
                 ('notes', precise_bbcode.fields.BBCodeTextField(blank=True, help_text='The notes for this particular release of the project.', max_length=512, no_rendered_field=True, null=True)),
-                ('zip_file', models.FileField(upload_to=project_manager.common.helpers.handle_release_zip_file_upload)),
+                ('zip_file', models.FileField(upload_to=handle_release_zip_file_upload)),
                 ('download_count', models.PositiveIntegerField(default=0)),
                 ('created', model_utils.fields.AutoCreatedField(default=django.utils.timezone.now, editable=False, verbose_name='created')),
             ],
@@ -94,7 +100,7 @@ class Migration(migrations.Migration):
             name='PackageReleasePackageRequirement',
             fields=[
                 ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False, verbose_name='ID')),
-                ('version', models.CharField(blank=True, help_text='The version of the custom package for this release of the project.', max_length=8, null=True, validators=[django.core.validators.RegexValidator('^[0-9][0-9a-z.]*[0-9a-z]')])),
+                ('version', models.CharField(blank=True, help_text='The version of the custom package for this release of the package.', max_length=8, null=True, validators=[django.core.validators.RegexValidator('^[0-9][0-9a-z.]*[0-9a-z]')])),
                 ('optional', models.BooleanField(default=False)),
             ],
         ),
@@ -102,7 +108,7 @@ class Migration(migrations.Migration):
             name='PackageReleasePyPiRequirement',
             fields=[
                 ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False, verbose_name='ID')),
-                ('version', models.CharField(blank=True, help_text='The version of the PyPi package for this release of the project.', max_length=8, null=True, validators=[django.core.validators.RegexValidator('^[0-9][0-9a-z.]*[0-9a-z]')])),
+                ('version', models.CharField(blank=True, help_text='The version of the PyPi package for this release of the package.', max_length=8, null=True, validators=[django.core.validators.RegexValidator('^[0-9][0-9a-z.]*[0-9a-z]')])),
                 ('optional', models.BooleanField(default=False)),
             ],
         ),
@@ -110,7 +116,7 @@ class Migration(migrations.Migration):
             name='PackageReleaseVersionControlRequirement',
             fields=[
                 ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False, verbose_name='ID')),
-                ('version', models.CharField(blank=True, help_text='The version of the VCS package for this release of the project.', max_length=8, null=True, validators=[django.core.validators.RegexValidator('^[0-9][0-9a-z.]*[0-9a-z]')])),
+                ('version', models.CharField(blank=True, help_text='The version of the VCS package for this release of the package.', max_length=8, null=True, validators=[django.core.validators.RegexValidator('^[0-9][0-9a-z.]*[0-9a-z]')])),
                 ('optional', models.BooleanField(default=False)),
             ],
         ),
@@ -128,7 +134,7 @@ class Migration(migrations.Migration):
                 ('configuration', precise_bbcode.fields.BBCodeTextField(blank=True, help_text='The configuration of the project. If too long, post on the forum and provide the link here. BBCode is allowed. 1024 char limit.', max_length=1024, no_rendered_field=True, null=True)),
                 ('_description_rendered', models.TextField(blank=True, editable=False, null=True)),
                 ('description', precise_bbcode.fields.BBCodeTextField(blank=True, help_text='The full description of the project. BBCode is allowed. 1024 char limit.', max_length=1024, no_rendered_field=True, null=True)),
-                ('logo', models.ImageField(blank=True, help_text="The project's logo image.", null=True, upload_to=project_manager.common.helpers.handle_project_logo_upload)),
+                ('logo', models.ImageField(blank=True, help_text="The project's logo image.", null=True, upload_to=handle_project_logo_upload)),
                 ('video', embed_video.fields.EmbedVideoField(help_text="The project's video.", null=True)),
                 ('_synopsis_rendered', models.TextField(blank=True, editable=False, null=True)),
                 ('synopsis', precise_bbcode.fields.BBCodeTextField(blank=True, help_text='A brief description of the project. BBCode is allowed. 128 char limit.', max_length=128, no_rendered_field=True, null=True)),
@@ -158,7 +164,7 @@ class Migration(migrations.Migration):
             name='PluginImage',
             fields=[
                 ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False, verbose_name='ID')),
-                ('image', models.ImageField(upload_to=project_manager.common.helpers.handle_project_image_upload)),
+                ('image', models.ImageField(upload_to=handle_plugin_image_upload)),
                 ('created', model_utils.fields.AutoCreatedField(default=django.utils.timezone.now, editable=False, verbose_name='created')),
             ],
             options={
@@ -174,7 +180,7 @@ class Migration(migrations.Migration):
                 ('version', models.CharField(help_text='The version for this release of the project.', max_length=8, validators=[django.core.validators.RegexValidator('^[0-9][0-9a-z.]*[0-9a-z]')])),
                 ('_notes_rendered', models.TextField(blank=True, editable=False, null=True)),
                 ('notes', precise_bbcode.fields.BBCodeTextField(blank=True, help_text='The notes for this particular release of the project.', max_length=512, no_rendered_field=True, null=True)),
-                ('zip_file', models.FileField(upload_to=project_manager.common.helpers.handle_release_zip_file_upload)),
+                ('zip_file', models.FileField(upload_to=handle_release_zip_file_upload)),
                 ('download_count', models.PositiveIntegerField(default=0)),
                 ('created', model_utils.fields.AutoCreatedField(default=django.utils.timezone.now, editable=False, verbose_name='created')),
             ],
@@ -195,7 +201,7 @@ class Migration(migrations.Migration):
             name='PluginReleasePackageRequirement',
             fields=[
                 ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False, verbose_name='ID')),
-                ('version', models.CharField(blank=True, help_text='The version of the custom package for this release of the project.', max_length=8, null=True, validators=[django.core.validators.RegexValidator('^[0-9][0-9a-z.]*[0-9a-z]')])),
+                ('version', models.CharField(blank=True, help_text='The version of the custom package for this release of the plugin.', max_length=8, null=True, validators=[django.core.validators.RegexValidator('^[0-9][0-9a-z.]*[0-9a-z]')])),
                 ('optional', models.BooleanField(default=False)),
             ],
         ),
@@ -203,7 +209,7 @@ class Migration(migrations.Migration):
             name='PluginReleasePyPiRequirement',
             fields=[
                 ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False, verbose_name='ID')),
-                ('version', models.CharField(blank=True, help_text='The version of the PyPi package for this release of the project.', max_length=8, null=True, validators=[django.core.validators.RegexValidator('^[0-9][0-9a-z.]*[0-9a-z]')])),
+                ('version', models.CharField(blank=True, help_text='The version of the PyPi package for this release of the plugin.', max_length=8, null=True, validators=[django.core.validators.RegexValidator('^[0-9][0-9a-z.]*[0-9a-z]')])),
                 ('optional', models.BooleanField(default=False)),
             ],
         ),
@@ -211,7 +217,7 @@ class Migration(migrations.Migration):
             name='PluginReleaseVersionControlRequirement',
             fields=[
                 ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False, verbose_name='ID')),
-                ('version', models.CharField(blank=True, help_text='The version of the VCS package for this release of the project.', max_length=8, null=True, validators=[django.core.validators.RegexValidator('^[0-9][0-9a-z.]*[0-9a-z]')])),
+                ('version', models.CharField(blank=True, help_text='The version of the VCS package for this release of the plugin.', max_length=8, null=True, validators=[django.core.validators.RegexValidator('^[0-9][0-9a-z.]*[0-9a-z]')])),
                 ('optional', models.BooleanField(default=False)),
             ],
         ),
@@ -229,7 +235,7 @@ class Migration(migrations.Migration):
                 ('configuration', precise_bbcode.fields.BBCodeTextField(blank=True, help_text='The configuration of the project. If too long, post on the forum and provide the link here. BBCode is allowed. 1024 char limit.', max_length=1024, no_rendered_field=True, null=True)),
                 ('_description_rendered', models.TextField(blank=True, editable=False, null=True)),
                 ('description', precise_bbcode.fields.BBCodeTextField(blank=True, help_text='The full description of the project. BBCode is allowed. 1024 char limit.', max_length=1024, no_rendered_field=True, null=True)),
-                ('logo', models.ImageField(blank=True, help_text="The project's logo image.", null=True, upload_to=project_manager.common.helpers.handle_project_logo_upload)),
+                ('logo', models.ImageField(blank=True, help_text="The project's logo image.", null=True, upload_to=handle_project_logo_upload)),
                 ('video', embed_video.fields.EmbedVideoField(help_text="The project's video.", null=True)),
                 ('_synopsis_rendered', models.TextField(blank=True, editable=False, null=True)),
                 ('synopsis', precise_bbcode.fields.BBCodeTextField(blank=True, help_text='A brief description of the project. BBCode is allowed. 128 char limit.', max_length=128, no_rendered_field=True, null=True)),
@@ -261,7 +267,7 @@ class Migration(migrations.Migration):
             name='SubPluginImage',
             fields=[
                 ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False, verbose_name='ID')),
-                ('image', models.ImageField(upload_to=project_manager.common.helpers.handle_project_image_upload)),
+                ('image', models.ImageField(upload_to=handle_sub_plugin_image_upload)),
                 ('created', model_utils.fields.AutoCreatedField(default=django.utils.timezone.now, editable=False, verbose_name='created')),
             ],
             options={
@@ -291,7 +297,7 @@ class Migration(migrations.Migration):
                 ('version', models.CharField(help_text='The version for this release of the project.', max_length=8, validators=[django.core.validators.RegexValidator('^[0-9][0-9a-z.]*[0-9a-z]')])),
                 ('_notes_rendered', models.TextField(blank=True, editable=False, null=True)),
                 ('notes', precise_bbcode.fields.BBCodeTextField(blank=True, help_text='The notes for this particular release of the project.', max_length=512, no_rendered_field=True, null=True)),
-                ('zip_file', models.FileField(upload_to=project_manager.common.helpers.handle_release_zip_file_upload)),
+                ('zip_file', models.FileField(upload_to=handle_release_zip_file_upload)),
                 ('download_count', models.PositiveIntegerField(default=0)),
                 ('created', model_utils.fields.AutoCreatedField(default=django.utils.timezone.now, editable=False, verbose_name='created')),
             ],
@@ -312,7 +318,7 @@ class Migration(migrations.Migration):
             name='SubPluginReleasePackageRequirement',
             fields=[
                 ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False, verbose_name='ID')),
-                ('version', models.CharField(blank=True, help_text='The version of the custom package for this release of the project.', max_length=8, null=True, validators=[django.core.validators.RegexValidator('^[0-9][0-9a-z.]*[0-9a-z]')])),
+                ('version', models.CharField(blank=True, help_text='The version of the custom package for this release of the sub_plugin.', max_length=8, null=True, validators=[django.core.validators.RegexValidator('^[0-9][0-9a-z.]*[0-9a-z]')])),
                 ('optional', models.BooleanField(default=False)),
             ],
         ),
@@ -320,7 +326,7 @@ class Migration(migrations.Migration):
             name='SubPluginReleasePyPiRequirement',
             fields=[
                 ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False, verbose_name='ID')),
-                ('version', models.CharField(blank=True, help_text='The version of the PyPi package for this release of the project.', max_length=8, null=True, validators=[django.core.validators.RegexValidator('^[0-9][0-9a-z.]*[0-9a-z]')])),
+                ('version', models.CharField(blank=True, help_text='The version of the PyPi package for this release of the sub_plugin.', max_length=8, null=True, validators=[django.core.validators.RegexValidator('^[0-9][0-9a-z.]*[0-9a-z]')])),
                 ('optional', models.BooleanField(default=False)),
             ],
         ),
@@ -328,7 +334,7 @@ class Migration(migrations.Migration):
             name='SubPluginReleaseVersionControlRequirement',
             fields=[
                 ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False, verbose_name='ID')),
-                ('version', models.CharField(blank=True, help_text='The version of the VCS package for this release of the project.', max_length=8, null=True, validators=[django.core.validators.RegexValidator('^[0-9][0-9a-z.]*[0-9a-z]')])),
+                ('version', models.CharField(blank=True, help_text='The version of the VCS package for this release of the sub_plugin.', max_length=8, null=True, validators=[django.core.validators.RegexValidator('^[0-9][0-9a-z.]*[0-9a-z]')])),
                 ('optional', models.BooleanField(default=False)),
             ],
         ),

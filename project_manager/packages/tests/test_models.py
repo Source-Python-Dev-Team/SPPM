@@ -26,10 +26,9 @@ from project_manager.common.constants import (
     PROJECT_SLUG_MAX_LENGTH,
 )
 from project_manager.common.models import (
+    AbstractUUIDPrimaryKeyModel,
     Project,
-    ProjectContributor,
     ProjectGame,
-    ProjectImage,
     ProjectRelease,
     ProjectReleaseDownloadRequirement,
     ProjectReleasePackageRequirement,
@@ -55,10 +54,6 @@ from project_manager.packages.models import (
     PackageReleasePyPiRequirement,
     PackageReleaseVersionControlRequirement,
     PackageTag,
-)
-from project_manager.packages.models.abstract import (
-    PackageReleaseThroughBase,
-    PackageThroughBase,
 )
 from requirements.models import (
     DownloadRequirement,
@@ -89,64 +84,6 @@ from users.models import ForumUser
 # =============================================================================
 # TEST CASES
 # =============================================================================
-class PackageReleaseThroughBaseTestCase(TestCase):
-    def test_model_inheritance(self):
-        self.assertTrue(
-            expr=issubclass(PackageReleaseThroughBase, models.Model)
-        )
-
-    def test_id_field(self):
-        field = PackageReleaseThroughBase._meta.get_field('package_release')
-        self.assertIsInstance(
-            obj=field,
-            cls=models.ForeignKey,
-        )
-        self.assertEqual(
-            first=field.remote_field.model,
-            second='project_manager.PackageRelease',
-        )
-        self.assertEqual(
-            first=field.remote_field.on_delete,
-            second=models.CASCADE,
-        )
-        self.assertFalse(expr=field.blank)
-        self.assertFalse(expr=field.null)
-
-    def test_meta_class(self):
-        self.assertTrue(
-            expr=PackageReleaseThroughBase._meta.abstract
-        )
-
-
-class PackageThroughBaseTestCase(TestCase):
-    def test_model_inheritance(self):
-        self.assertTrue(
-            expr=issubclass(PackageThroughBase, models.Model)
-        )
-
-    def test_id_field(self):
-        field = PackageThroughBase._meta.get_field('package')
-        self.assertIsInstance(
-            obj=field,
-            cls=models.ForeignKey,
-        )
-        self.assertEqual(
-            first=field.remote_field.model,
-            second='project_manager.Package',
-        )
-        self.assertEqual(
-            first=field.remote_field.on_delete,
-            second=models.CASCADE,
-        )
-        self.assertFalse(expr=field.blank)
-        self.assertFalse(expr=field.null)
-
-    def test_meta_class(self):
-        self.assertTrue(
-            expr=PackageThroughBase._meta.abstract
-        )
-
-
 class PackageTestCase(TestCase):
     def test_model_inheritance(self):
         self.assertTrue(
@@ -579,7 +516,7 @@ class PackageReleaseTestCase(TestCase):
 class PackageImageTestCase(TestCase):
     def test_model_inheritance(self):
         self.assertTrue(
-            expr=issubclass(PackageImage, ProjectImage)
+            expr=issubclass(PackageImage, AbstractUUIDPrimaryKeyModel)
         )
 
     def test_package_field(self):
@@ -613,10 +550,7 @@ class PackageImageTestCase(TestCase):
 class PackageContributorTestCase(TestCase):
     def test_model_inheritance(self):
         self.assertTrue(
-            expr=issubclass(PackageContributor, ProjectContributor)
-        )
-        self.assertTrue(
-            expr=issubclass(PackageContributor, PackageThroughBase)
+            expr=issubclass(PackageContributor, AbstractUUIDPrimaryKeyModel)
         )
 
     def test__str__(self):
@@ -672,7 +606,7 @@ class PackageGameTestCase(TestCase):
             expr=issubclass(PackageGame, ProjectGame)
         )
         self.assertTrue(
-            expr=issubclass(PackageGame, PackageThroughBase)
+            expr=issubclass(PackageGame, AbstractUUIDPrimaryKeyModel)
         )
 
     def test__str__(self):
@@ -694,7 +628,7 @@ class PackageTagTestCase(TestCase):
             expr=issubclass(PackageTag, ProjectTag)
         )
         self.assertTrue(
-            expr=issubclass(PackageTag, PackageThroughBase)
+            expr=issubclass(PackageTag, AbstractUUIDPrimaryKeyModel)
         )
 
     def test__str__(self):
@@ -721,7 +655,7 @@ class PackageReleaseDownloadRequirementTestCase(TestCase):
         self.assertTrue(
             expr=issubclass(
                 PackageReleaseDownloadRequirement,
-                PackageReleaseThroughBase,
+                AbstractUUIDPrimaryKeyModel,
             )
         )
 
@@ -754,7 +688,7 @@ class PackageReleasePackageRequirementTestCase(TestCase):
         self.assertTrue(
             expr=issubclass(
                 PackageReleasePackageRequirement,
-                PackageReleaseThroughBase,
+                AbstractUUIDPrimaryKeyModel,
             )
         )
 
@@ -789,7 +723,7 @@ class PackageReleasePyPiRequirementTestCase(TestCase):
         self.assertTrue(
             expr=issubclass(
                 PackageReleasePyPiRequirement,
-                PackageReleaseThroughBase,
+                AbstractUUIDPrimaryKeyModel,
             )
         )
 
@@ -824,7 +758,7 @@ class PackageReleaseVersionControlRequirementTestCase(TestCase):
         self.assertTrue(
             expr=issubclass(
                 PackageReleaseVersionControlRequirement,
-                PackageReleaseThroughBase,
+                AbstractUUIDPrimaryKeyModel,
             )
         )
 

@@ -25,7 +25,6 @@ __all__ = (
     'GROUP_QUERYSET_NAMES',
     'ProjectZipFile',
     'find_image_number',
-    'handle_project_image_upload',
     'handle_project_logo_upload',
     'handle_release_zip_file_upload',
 )
@@ -343,11 +342,6 @@ def find_image_number(directory, slug):
     path = settings.MEDIA_ROOT / 'images' / directory / slug
     current_files = [x.stem for x in path.files()] if path.isdir() else []
     return f'{max(map(int, current_files or [0])) + 1:04}'
-
-
-def handle_project_image_upload(instance, filename):
-    """Handle uploading the image by directing to the proper directory."""
-    return instance.handle_image_upload(filename)
 
 
 def handle_project_logo_upload(instance, filename):

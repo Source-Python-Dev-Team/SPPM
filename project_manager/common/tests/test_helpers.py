@@ -18,7 +18,6 @@ from project_manager.common.constants import (
 from project_manager.common.helpers import (
     ProjectZipFile,
     find_image_number,
-    handle_project_image_upload,
     handle_project_logo_upload,
     handle_release_zip_file_upload,
 )
@@ -230,16 +229,6 @@ class CommonHelperFunctionsTestCase(TestCase):
             ),
             second=f'{max_value + 1:04}',
         )
-
-    @staticmethod
-    def test_handle_project_image_upload():
-        obj = mock.Mock()
-        filename = 'test.zip'
-        handle_project_image_upload(
-            instance=obj,
-            filename=filename,
-        )
-        obj.handle_image_upload.assert_called_once_with(filename)
 
     @staticmethod
     def test_handle_project_logo_upload():

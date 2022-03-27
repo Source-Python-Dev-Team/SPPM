@@ -26,10 +26,9 @@ from project_manager.common.constants import (
     PROJECT_SLUG_MAX_LENGTH,
 )
 from project_manager.common.models import (
+    AbstractUUIDPrimaryKeyModel,
     Project,
-    ProjectContributor,
     ProjectGame,
-    ProjectImage,
     ProjectRelease,
     ProjectReleaseDownloadRequirement,
     ProjectReleasePackageRequirement,
@@ -57,10 +56,6 @@ from project_manager.sub_plugins.models import (
     SubPluginReleasePyPiRequirement,
     SubPluginReleaseVersionControlRequirement,
     SubPluginTag,
-)
-from project_manager.sub_plugins.models.abstract import (
-    SubPluginReleaseThroughBase,
-    SubPluginThroughBase,
 )
 from requirements.models import (
     DownloadRequirement,
@@ -92,64 +87,6 @@ from users.models import ForumUser
 # =============================================================================
 # TEST CASES
 # =============================================================================
-class SubPluginReleaseThroughBaseTestCase(TestCase):
-    def test_model_inheritance(self):
-        self.assertTrue(
-            expr=issubclass(SubPluginReleaseThroughBase, models.Model)
-        )
-
-    def test_id_field(self):
-        field = SubPluginReleaseThroughBase._meta.get_field('sub_plugin_release')
-        self.assertIsInstance(
-            obj=field,
-            cls=models.ForeignKey,
-        )
-        self.assertEqual(
-            first=field.remote_field.model,
-            second='project_manager.SubPluginRelease',
-        )
-        self.assertEqual(
-            first=field.remote_field.on_delete,
-            second=models.CASCADE,
-        )
-        self.assertFalse(expr=field.blank)
-        self.assertFalse(expr=field.null)
-
-    def test_meta_class(self):
-        self.assertTrue(
-            expr=SubPluginReleaseThroughBase._meta.abstract
-        )
-
-
-class SubPluginThroughBaseTestCase(TestCase):
-    def test_model_inheritance(self):
-        self.assertTrue(
-            expr=issubclass(SubPluginThroughBase, models.Model)
-        )
-
-    def test_id_field(self):
-        field = SubPluginThroughBase._meta.get_field('sub_plugin')
-        self.assertIsInstance(
-            obj=field,
-            cls=models.ForeignKey,
-        )
-        self.assertEqual(
-            first=field.remote_field.model,
-            second='project_manager.SubPlugin',
-        )
-        self.assertEqual(
-            first=field.remote_field.on_delete,
-            second=models.CASCADE,
-        )
-        self.assertFalse(expr=field.blank)
-        self.assertFalse(expr=field.null)
-
-    def test_meta_class(self):
-        self.assertTrue(
-            expr=SubPluginThroughBase._meta.abstract
-        )
-
-
 class SubPluginTestCase(TestCase):
     def test_model_inheritance(self):
         self.assertTrue(
@@ -610,7 +547,7 @@ class SubPluginReleaseTestCase(TestCase):
 class SubPluginImageTestCase(TestCase):
     def test_model_inheritance(self):
         self.assertTrue(
-            expr=issubclass(SubPluginImage, ProjectImage)
+            expr=issubclass(SubPluginImage, AbstractUUIDPrimaryKeyModel)
         )
 
     def test_plugin_field(self):
@@ -644,10 +581,7 @@ class SubPluginImageTestCase(TestCase):
 class SubPluginContributorTestCase(TestCase):
     def test_model_inheritance(self):
         self.assertTrue(
-            expr=issubclass(SubPluginContributor, ProjectContributor)
-        )
-        self.assertTrue(
-            expr=issubclass(SubPluginContributor, SubPluginThroughBase)
+            expr=issubclass(SubPluginContributor, AbstractUUIDPrimaryKeyModel)
         )
 
     def test__str__(self):
@@ -703,7 +637,7 @@ class SubPluginGameTestCase(TestCase):
             expr=issubclass(SubPluginGame, ProjectGame)
         )
         self.assertTrue(
-            expr=issubclass(SubPluginGame, SubPluginThroughBase)
+            expr=issubclass(SubPluginGame, AbstractUUIDPrimaryKeyModel)
         )
 
     def test__str__(self):
@@ -725,7 +659,7 @@ class SubPluginTagTestCase(TestCase):
             expr=issubclass(SubPluginTag, ProjectTag)
         )
         self.assertTrue(
-            expr=issubclass(SubPluginTag, SubPluginThroughBase)
+            expr=issubclass(SubPluginTag, AbstractUUIDPrimaryKeyModel)
         )
 
     def test__str__(self):
@@ -752,7 +686,7 @@ class SubPluginReleaseDownloadRequirementTestCase(TestCase):
         self.assertTrue(
             expr=issubclass(
                 SubPluginReleaseDownloadRequirement,
-                SubPluginReleaseThroughBase,
+                AbstractUUIDPrimaryKeyModel,
             )
         )
 
@@ -785,7 +719,7 @@ class SubPluginReleasePackageRequirementTestCase(TestCase):
         self.assertTrue(
             expr=issubclass(
                 SubPluginReleasePackageRequirement,
-                SubPluginReleaseThroughBase,
+                AbstractUUIDPrimaryKeyModel,
             )
         )
 
@@ -820,7 +754,7 @@ class SubPluginReleasePyPiRequirementTestCase(TestCase):
         self.assertTrue(
             expr=issubclass(
                 SubPluginReleasePyPiRequirement,
-                SubPluginReleaseThroughBase,
+                AbstractUUIDPrimaryKeyModel,
             )
         )
 
@@ -855,7 +789,7 @@ class SubPluginReleaseVersionControlRequirementTestCase(TestCase):
         self.assertTrue(
             expr=issubclass(
                 SubPluginReleaseVersionControlRequirement,
-                SubPluginReleaseThroughBase,
+                AbstractUUIDPrimaryKeyModel,
             )
         )
 
