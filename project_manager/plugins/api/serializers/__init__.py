@@ -16,13 +16,8 @@ from project_manager.common.api.serializers import (
     ProjectSerializer,
     ProjectTagSerializer,
 )
-from project_manager.common.api.serializers.mixins import (
-    AddProjectToViewMixin,
-    ProjectThroughMixin,
-)
-from project_manager.packages.api.serializers.common import (
-    ReleasePackageRequirementSerializer,
-)
+from project_manager.common.api.serializers.mixins import ProjectThroughMixin
+from project_manager.packages.api.common.serializers import ReleasePackageRequirementSerializer
 from project_manager.plugins.api.serializers.mixins import PluginReleaseBase
 from project_manager.plugins.models import (
     Plugin,
@@ -213,7 +208,7 @@ class PluginContributorSerializer(ProjectContributorSerializer):
         model = PluginContributor
 
 
-class SubPluginPathSerializer(ProjectThroughMixin, AddProjectToViewMixin):
+class SubPluginPathSerializer(ProjectThroughMixin):
     """Sub-Plugin Paths Serializer."""
 
     class Meta:
@@ -237,6 +232,7 @@ class SubPluginPathSerializer(ProjectThroughMixin, AddProjectToViewMixin):
             field_names = list(field_names)
             field_names.remove('path')
             field_names = tuple(field_names)
+
         return field_names
 
     def validate(self, attrs):
@@ -261,4 +257,5 @@ class SubPluginPathSerializer(ProjectThroughMixin, AddProjectToViewMixin):
                 'allow_package_using_basename': message,
                 'allow_package_using_init': message,
             })
+
         return super().validate(attrs=attrs)

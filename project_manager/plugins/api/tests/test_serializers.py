@@ -10,7 +10,7 @@ from django.test import TestCase
 # Third Party Django
 from rest_framework.exceptions import ValidationError
 from rest_framework.fields import ReadOnlyField
-from rest_framework.serializers import ListSerializer
+from rest_framework.serializers import ListSerializer, ModelSerializer
 
 # App
 from project_manager.common.api.serializers import (
@@ -22,13 +22,8 @@ from project_manager.common.api.serializers import (
     ProjectSerializer,
     ProjectTagSerializer,
 )
-from project_manager.common.api.serializers.mixins import (
-    ProjectThroughMixin,
-    AddProjectToViewMixin,
-)
-from project_manager.packages.api.serializers.common import (
-    ReleasePackageRequirementSerializer,
-)
+from project_manager.common.api.serializers.mixins import ProjectThroughMixin
+from project_manager.packages.api.common.serializers import ReleasePackageRequirementSerializer
 from project_manager.plugins.api.serializers import (
     PluginContributorSerializer,
     PluginCreateReleaseSerializer,
@@ -44,6 +39,7 @@ from project_manager.plugins.api.serializers import (
     PluginTagSerializer,
     SubPluginPathSerializer,
 )
+from project_manager.plugins.api.common.serializers import MinimalPluginSerializer
 from project_manager.plugins.api.serializers.mixins import PluginReleaseBase
 from project_manager.plugins.helpers import PluginZipFile
 from project_manager.plugins.models import (
@@ -450,9 +446,6 @@ class SubPluginPathSerializerTestCase(TestCase):
         self.assertTrue(
             expr=issubclass(SubPluginPathSerializer, ProjectThroughMixin),
         )
-        self.assertTrue(
-            expr=issubclass(SubPluginPathSerializer, AddProjectToViewMixin),
-        )
 
     def test_get_field_names(self):
         obj = SubPluginPathSerializer(
@@ -564,6 +557,33 @@ class SubPluginPathSerializerTestCase(TestCase):
                 'allow_package_using_init',
                 'path',
             )
+        )
+
+
+class MinimalPluginSerializerTestCase(TestCase):
+    def test_class_inheritance(self):
+        self.assertTrue(
+            expr=issubclass(MinimalPluginSerializer, ModelSerializer),
+        )
+
+    def test_declared_fields(self):
+        declared_fields = getattr(MinimalPluginSerializer, '_declared_fields')
+        self.assertEqual(
+            first=len(declared_fields),
+            second=0,
+        )
+
+    def test_meta_class(self):
+        self.assertEqual(
+            first=MinimalPluginSerializer.Meta.model,
+            second=Plugin,
+        )
+        self.assertTupleEqual(
+            tuple1=MinimalPluginSerializer.Meta.fields,
+            tuple2=(
+                'name',
+                'slug',
+            ),
         )
 
 

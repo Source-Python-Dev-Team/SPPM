@@ -8,9 +8,9 @@ from rest_framework.fields import SerializerMethodField
 from rest_framework.serializers import ModelSerializer
 
 # App
-from project_manager.packages.models import Package
-from project_manager.plugins.models import Plugin
-from project_manager.sub_plugins.models import SubPlugin
+from project_manager.packages.api.common.serializers import MinimalPackageSerializer
+from project_manager.plugins.api.common.serializers import MinimalPluginSerializer
+from project_manager.sub_plugins.api.common.serializers import MinimalSubPluginSerializer
 from users.models import ForumUser
 
 
@@ -19,87 +19,37 @@ from users.models import ForumUser
 # =============================================================================
 __all__ = (
     'ForumUserSerializer',
-    'PackageContributionSerializer',
-    'PluginContributionSerializer',
-    'ProjectContributionSerializer',
-    'SubPluginContributionSerializer',
 )
 
 
 # =============================================================================
 # SERIALIZERS
 # =============================================================================
-class ProjectContributionSerializer(ModelSerializer):
-    """Base class for Project contributions."""
-
-    class Meta:
-        """Define metaclass attributes."""
-
-        fields = (
-            'name',
-            'slug',
-        )
-
-
-class PackageContributionSerializer(ProjectContributionSerializer):
-    """Serializer for Package Contributions."""
-
-    class Meta(ProjectContributionSerializer.Meta):
-        """Define metaclass attributes."""
-
-        model = Package
-
-
-class PluginContributionSerializer(ProjectContributionSerializer):
-    """Serializer for Plugin Contributions."""
-
-    class Meta(ProjectContributionSerializer.Meta):
-        """Define metaclass attributes."""
-
-        model = Plugin
-
-
-class SubPluginContributionSerializer(ModelSerializer):
-    """Serializer for SubPlugin Contributions."""
-
-    plugin = PluginContributionSerializer()
-
-    class Meta:
-        """Define metaclass attributes."""
-
-        model = SubPlugin
-        fields = (
-            'name',
-            'slug',
-            'plugin',
-        )
-
-
 class ForumUserSerializer(ModelSerializer):
     """Serializer for User Contributions."""
 
     username = SerializerMethodField()
-    packages = PackageContributionSerializer(
+    packages = MinimalPackageSerializer(
         many=True,
         read_only=True,
     )
-    package_contributions = PackageContributionSerializer(
+    package_contributions = MinimalPackageSerializer(
         many=True,
         read_only=True,
     )
-    plugins = PluginContributionSerializer(
+    plugins = MinimalPluginSerializer(
         many=True,
         read_only=True,
     )
-    plugin_contributions = PluginContributionSerializer(
+    plugin_contributions = MinimalPluginSerializer(
         many=True,
         read_only=True,
     )
-    subplugins = SubPluginContributionSerializer(
+    subplugins = MinimalSubPluginSerializer(
         many=True,
         read_only=True,
     )
-    subplugin_contributions = SubPluginContributionSerializer(
+    subplugin_contributions = MinimalSubPluginSerializer(
         many=True,
         read_only=True,
     )

@@ -13,9 +13,7 @@ from project_manager.common.api.serializers import (
     ProjectSerializer,
     ProjectTagSerializer,
 )
-from project_manager.packages.api.serializers.common import (
-    ReleasePackageRequirementSerializer,
-)
+from project_manager.packages.api.common.serializers import ReleasePackageRequirementSerializer
 from project_manager.packages.api.serializers.mixins import PackageReleaseBase
 from project_manager.packages.models import (
     Package,

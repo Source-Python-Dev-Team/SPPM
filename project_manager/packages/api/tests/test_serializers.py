@@ -35,7 +35,8 @@ from project_manager.packages.api.serializers import (
     PackageSerializer,
     PackageTagSerializer,
 )
-from project_manager.packages.api.serializers.common import (
+from project_manager.packages.api.common.serializers import (
+    MinimalPackageSerializer,
     ReleasePackageRequirementSerializer,
 )
 from project_manager.packages.api.serializers.mixins import PackageReleaseBase
@@ -454,6 +455,33 @@ class ReleasePackageRequirementSerializerTestCase(TestCase):
                 'slug',
                 'version',
                 'optional',
+            ),
+        )
+
+
+class MinimalPackageSerializerTestCase(TestCase):
+    def test_class_inheritance(self):
+        self.assertTrue(
+            expr=issubclass(MinimalPackageSerializer, ModelSerializer),
+        )
+
+    def test_declared_fields(self):
+        declared_fields = getattr(MinimalPackageSerializer, '_declared_fields')
+        self.assertEqual(
+            first=len(declared_fields),
+            second=0,
+        )
+
+    def test_meta_class(self):
+        self.assertEqual(
+            first=MinimalPackageSerializer.Meta.model,
+            second=Package,
+        )
+        self.assertTupleEqual(
+            tuple1=MinimalPackageSerializer.Meta.fields,
+            tuple2=(
+                'name',
+                'slug',
             ),
         )
 

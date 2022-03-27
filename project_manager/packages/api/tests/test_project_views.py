@@ -558,7 +558,7 @@ class PackageViewSetTestCase(APITestCase):
         )
 
     def test_patch(self):
-        # Verify that non logged in user cannot update a path
+        # Verify that non logged in user cannot update the package
         api_path = f'{self.api_path}{self.package.slug}/'
         response = self.client.patch(
             path=api_path,
@@ -571,7 +571,7 @@ class PackageViewSetTestCase(APITestCase):
             second=status.HTTP_403_FORBIDDEN,
         )
 
-        # Verify that regular user cannot update a path
+        # Verify that regular user cannot update the package
         self.client.force_login(self.regular_user.user)
         response = self.client.patch(
             path=api_path,
@@ -584,7 +584,7 @@ class PackageViewSetTestCase(APITestCase):
             second=status.HTTP_403_FORBIDDEN,
         )
 
-        # Verify that contributor can update a path
+        # Verify that contributor can update the package
         self.client.force_login(self.contributor.user)
         response = self.client.patch(
             path=api_path,
@@ -597,7 +597,7 @@ class PackageViewSetTestCase(APITestCase):
             second=status.HTTP_200_OK,
         )
 
-        # Verify that owner can update a path
+        # Verify that owner can update the package
         self.client.force_login(self.owner.user)
         response = self.client.patch(
             path=api_path,

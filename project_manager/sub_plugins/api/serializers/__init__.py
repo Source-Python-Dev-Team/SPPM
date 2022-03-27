@@ -16,13 +16,9 @@ from project_manager.common.api.serializers import (
     ProjectSerializer,
     ProjectTagSerializer,
 )
-from project_manager.packages.api.serializers.common import (
-    ReleasePackageRequirementSerializer,
-)
+from project_manager.packages.api.common.serializers import ReleasePackageRequirementSerializer
 from project_manager.plugins.models import Plugin
-from project_manager.sub_plugins.api.serializers.mixins import (
-    SubPluginReleaseBase,
-)
+from project_manager.sub_plugins.api.serializers.mixins import SubPluginReleaseBase
 from project_manager.sub_plugins.models import (
     SubPlugin,
     SubPluginContributor,
