@@ -64,6 +64,11 @@ class Package(Project):
         unique=True,
         blank=True,
     )
+    owner = models.ForeignKey(
+        to='users.ForumUser',
+        related_name='packages',
+        on_delete=models.CASCADE,
+    )
     contributors = models.ManyToManyField(
         to='users.ForumUser',
         related_name='package_contributions',
@@ -113,6 +118,12 @@ class PackageRelease(ProjectRelease):
         to='project_manager.Package',
         related_name='releases',
         on_delete=models.CASCADE,
+    )
+    created_by = models.ForeignKey(
+        to='users.ForumUser',
+        related_name='package_releases',
+        on_delete=models.SET_NULL,
+        null=True,
     )
     download_requirements = models.ManyToManyField(
         to='requirements.DownloadRequirement',

@@ -163,27 +163,6 @@ class ProjectTestCase(TestCase):
         self.assertFalse(expr=field.blank)
         self.assertTrue(expr=field.null)
 
-    def test_owner_field(self):
-        field = Project._meta.get_field('owner')
-        self.assertIsInstance(
-            obj=field,
-            cls=models.ForeignKey,
-        )
-        self.assertEqual(
-            first=field.remote_field.model,
-            second='users.ForumUser',
-        )
-        self.assertEqual(
-            first=field.remote_field.on_delete,
-            second=models.CASCADE,
-        )
-        self.assertEqual(
-            first=field.remote_field.related_name,
-            second='%(class)ss',
-        )
-        self.assertFalse(expr=field.blank)
-        self.assertFalse(expr=field.null)
-
     def test_synopsis_field(self):
         field = Project._meta.get_field('synopsis')
         self.assertIsInstance(
@@ -352,27 +331,6 @@ class ProjectReleaseTestCase(TestCase):
             first=field.verbose_name,
             second='created',
         )
-
-    def test_created_by_field(self):
-        field = ProjectRelease._meta.get_field('created_by')
-        self.assertIsInstance(
-            obj=field,
-            cls=models.ForeignKey,
-        )
-        self.assertEqual(
-            first=field.remote_field.model,
-            second='users.ForumUser',
-        )
-        self.assertEqual(
-            first=field.remote_field.on_delete,
-            second=models.SET_NULL,
-        )
-        self.assertEqual(
-            first=field.remote_field.related_name,
-            second='%(class)ss',
-        )
-        self.assertFalse(expr=field.blank)
-        self.assertTrue(expr=field.null)
 
     def test_project_class_required(self):
         obj = ''

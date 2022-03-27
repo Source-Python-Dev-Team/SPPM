@@ -105,11 +105,6 @@ class Project(models.Model):
         null=True,
         help_text="The project's video."
     )
-    owner = models.ForeignKey(
-        to='users.ForumUser',
-        related_name='%(class)ss',
-        on_delete=models.CASCADE,
-    )
     synopsis = BBCodeTextField(
         max_length=PROJECT_SYNOPSIS_MAX_LENGTH,
         blank=True,
@@ -251,12 +246,6 @@ class ProjectRelease(AbstractUUIDPrimaryKeyModel):
     )
     created = AutoCreatedField(
         verbose_name='created',
-    )
-    created_by = models.ForeignKey(
-        to='users.ForumUser',
-        related_name='%(class)ss',
-        on_delete=models.SET_NULL,
-        null=True,
     )
 
     field_tracker = None

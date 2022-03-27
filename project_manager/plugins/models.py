@@ -66,6 +66,11 @@ class Plugin(Project):
         unique=True,
         blank=True,
     )
+    owner = models.ForeignKey(
+        to='users.ForumUser',
+        related_name='plugins',
+        on_delete=models.CASCADE,
+    )
     contributors = models.ManyToManyField(
         to='users.ForumUser',
         related_name='plugin_contributions',
@@ -115,6 +120,12 @@ class PluginRelease(ProjectRelease):
         to='project_manager.Plugin',
         related_name='releases',
         on_delete=models.CASCADE,
+    )
+    created_by = models.ForeignKey(
+        to='users.ForumUser',
+        related_name='plugin_releases',
+        on_delete=models.SET_NULL,
+        null=True,
     )
     download_requirements = models.ManyToManyField(
         to='requirements.DownloadRequirement',

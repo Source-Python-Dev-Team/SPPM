@@ -68,9 +68,14 @@ class SubPlugin(Project):
         validators=[basename_validator],
         blank=True,
     )
+    owner = models.ForeignKey(
+        to='users.ForumUser',
+        related_name='sub_plugins',
+        on_delete=models.CASCADE,
+    )
     contributors = models.ManyToManyField(
         to='users.ForumUser',
-        related_name='subplugin_contributions',
+        related_name='sub_plugin_contributions',
         through='project_manager.SubPluginContributor',
     )
     slug = models.SlugField(
@@ -84,12 +89,12 @@ class SubPlugin(Project):
     )
     supported_games = models.ManyToManyField(
         to='games.Game',
-        related_name='subplugins',
+        related_name='sub_plugins',
         through='project_manager.SubPluginGame',
     )
     tags = models.ManyToManyField(
         to='tags.Tag',
-        related_name='subplugins',
+        related_name='sub_plugins',
         through='project_manager.SubPluginTag',
     )
 
@@ -135,6 +140,12 @@ class SubPluginRelease(ProjectRelease):
         to='project_manager.SubPlugin',
         related_name='releases',
         on_delete=models.CASCADE,
+    )
+    created_by = models.ForeignKey(
+        to='users.ForumUser',
+        related_name='sub_plugin_releases',
+        on_delete=models.SET_NULL,
+        null=True,
     )
     download_requirements = models.ManyToManyField(
         to='requirements.DownloadRequirement',

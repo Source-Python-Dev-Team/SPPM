@@ -103,6 +103,27 @@ class PackageTestCase(TestCase):
         self.assertTrue(expr=field.blank)
         self.assertFalse(expr=field.null)
 
+    def test_owner_field(self):
+        field = Package._meta.get_field('owner')
+        self.assertIsInstance(
+            obj=field,
+            cls=models.ForeignKey,
+        )
+        self.assertEqual(
+            first=field.remote_field.model,
+            second=ForumUser,
+        )
+        self.assertEqual(
+            first=field.remote_field.on_delete,
+            second=models.CASCADE,
+        )
+        self.assertEqual(
+            first=field.remote_field.related_name,
+            second='packages',
+        )
+        self.assertFalse(expr=field.blank)
+        self.assertFalse(expr=field.null)
+
     def test_contributors_field(self):
         field = Package._meta.get_field('contributors')
         self.assertIsInstance(
@@ -324,6 +345,27 @@ class PackageReleaseTestCase(TestCase):
         )
         self.assertFalse(expr=field.blank)
         self.assertFalse(expr=field.null)
+
+    def test_created_by_field(self):
+        field = PackageRelease._meta.get_field('created_by')
+        self.assertIsInstance(
+            obj=field,
+            cls=models.ForeignKey,
+        )
+        self.assertEqual(
+            first=field.remote_field.model,
+            second=ForumUser,
+        )
+        self.assertEqual(
+            first=field.remote_field.on_delete,
+            second=models.SET_NULL,
+        )
+        self.assertEqual(
+            first=field.remote_field.related_name,
+            second='package_releases',
+        )
+        self.assertFalse(expr=field.blank)
+        self.assertTrue(expr=field.null)
 
     def test_download_requirements_field(self):
         field = PackageRelease._meta.get_field('download_requirements')

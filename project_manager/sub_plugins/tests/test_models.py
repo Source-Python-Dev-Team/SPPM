@@ -106,6 +106,27 @@ class SubPluginTestCase(TestCase):
         self.assertTrue(expr=field.blank)
         self.assertFalse(expr=field.null)
 
+    def test_owner_field(self):
+        field = SubPlugin._meta.get_field('owner')
+        self.assertIsInstance(
+            obj=field,
+            cls=models.ForeignKey,
+        )
+        self.assertEqual(
+            first=field.remote_field.model,
+            second=ForumUser,
+        )
+        self.assertEqual(
+            first=field.remote_field.on_delete,
+            second=models.CASCADE,
+        )
+        self.assertEqual(
+            first=field.remote_field.related_name,
+            second='sub_plugins',
+        )
+        self.assertFalse(expr=field.blank)
+        self.assertFalse(expr=field.null)
+
     def test_contributors_field(self):
         field = SubPlugin._meta.get_field('contributors')
         self.assertIsInstance(
@@ -118,7 +139,7 @@ class SubPluginTestCase(TestCase):
         )
         self.assertEqual(
             first=field.remote_field.related_name,
-            second='subplugin_contributions',
+            second='sub_plugin_contributions',
         )
         self.assertEqual(
             first=field.remote_field.through,
@@ -171,7 +192,7 @@ class SubPluginTestCase(TestCase):
         )
         self.assertEqual(
             first=field.remote_field.related_name,
-            second='subplugins',
+            second='sub_plugins',
         )
         self.assertEqual(
             first=field.remote_field.through,
@@ -190,7 +211,7 @@ class SubPluginTestCase(TestCase):
         )
         self.assertEqual(
             first=field.remote_field.related_name,
-            second='subplugins',
+            second='sub_plugins',
         )
         self.assertEqual(
             first=field.remote_field.through,
@@ -334,7 +355,7 @@ class SubPluginReleaseTestCase(TestCase):
             expr=issubclass(SubPluginRelease, ProjectRelease)
         )
 
-    def test_plugin_field(self):
+    def test_sub_plugin_field(self):
         field = SubPluginRelease._meta.get_field('sub_plugin')
         self.assertIsInstance(
             obj=field,
@@ -354,6 +375,27 @@ class SubPluginReleaseTestCase(TestCase):
         )
         self.assertFalse(expr=field.blank)
         self.assertFalse(expr=field.null)
+
+    def test_created_by_field(self):
+        field = SubPluginRelease._meta.get_field('created_by')
+        self.assertIsInstance(
+            obj=field,
+            cls=models.ForeignKey,
+        )
+        self.assertEqual(
+            first=field.remote_field.model,
+            second=ForumUser,
+        )
+        self.assertEqual(
+            first=field.remote_field.on_delete,
+            second=models.SET_NULL,
+        )
+        self.assertEqual(
+            first=field.remote_field.related_name,
+            second='sub_plugin_releases',
+        )
+        self.assertFalse(expr=field.blank)
+        self.assertTrue(expr=field.null)
 
     def test_download_requirements_field(self):
         field = SubPluginRelease._meta.get_field('download_requirements')
