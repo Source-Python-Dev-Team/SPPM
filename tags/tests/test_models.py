@@ -66,7 +66,7 @@ class TagTestCase(TestCase):
         )
         self.assertEqual(
             first=field.remote_field.on_delete,
-            second=models.CASCADE,
+            second=models.SET_NULL,
         )
         self.assertEqual(
             first=field.remote_field.related_name,

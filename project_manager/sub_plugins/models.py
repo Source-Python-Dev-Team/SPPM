@@ -71,7 +71,7 @@ class SubPlugin(Project):
     owner = models.ForeignKey(
         to='users.ForumUser',
         related_name='sub_plugins',
-        on_delete=models.CASCADE,
+        on_delete=models.SET_NULL,
     )
     contributors = models.ManyToManyField(
         to='users.ForumUser',
