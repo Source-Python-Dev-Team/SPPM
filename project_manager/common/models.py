@@ -254,8 +254,6 @@ class ProjectRelease(AbstractUUIDPrimaryKeyModel):
         """Define metaclass attributes."""
 
         abstract = True
-        verbose_name = 'Release'
-        verbose_name_plural = 'Releases'
 
     @property
     def project_class(self):

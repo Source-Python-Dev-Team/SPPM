@@ -60,6 +60,7 @@ from test_utils.factories.packages import (
     PackageContributorFactory,
     PackageFactory,
     PackageGameFactory,
+    PackageImageFactory,
     PackageReleaseFactory,
     PackageReleaseDownloadRequirementFactory,
     PackageReleasePackageRequirementFactory,
@@ -478,7 +479,7 @@ class PackageReleaseTestCase(TestCase):
         release = PackageReleaseFactory()
         self.assertEqual(
             first=str(release),
-            second=f'{release.project} - {release.version}',
+            second=f'{release.package} - {release.version}',
         )
 
     def test_clean(self):
@@ -601,14 +602,21 @@ class PackageImageTestCase(TestCase):
             second='created',
         )
 
+    def test__str__(self):
+        obj = PackageImageFactory()
+        self.assertEqual(
+            first=str(obj),
+            second=f'{obj.package} - {obj.image}',
+        )
+
     def test_meta_class(self):
         self.assertEqual(
             first=PackageImage._meta.verbose_name,
-            second='Image',
+            second='Package Image',
         )
         self.assertEqual(
             first=PackageImage._meta.verbose_name_plural,
-            second='Images',
+            second='Package Images',
         )
 
 
@@ -653,9 +661,10 @@ class PackageContributorTestCase(TestCase):
         self.assertFalse(expr=field.null)
 
     def test__str__(self):
+        obj = PackageContributorFactory()
         self.assertEqual(
-            first=str(PackageContributorFactory()),
-            second='Package Contributor',
+            first=str(obj),
+            second=f'{obj.package} Contributor: {obj.user}',
         )
 
     def test_clean(self):
@@ -696,6 +705,14 @@ class PackageContributorTestCase(TestCase):
         self.assertTupleEqual(
             tuple1=PackageContributor._meta.unique_together,
             tuple2=(('package', 'user'),),
+        )
+        self.assertEqual(
+            first=PackageContributor._meta.verbose_name,
+            second='Package Contributor',
+        )
+        self.assertEqual(
+            first=PackageContributor._meta.verbose_name_plural,
+            second='Package Contributors',
         )
 
 
@@ -740,15 +757,24 @@ class PackageGameTestCase(TestCase):
         self.assertFalse(expr=field.null)
 
     def test__str__(self):
+        obj = PackageGameFactory()
         self.assertEqual(
-            first=str(PackageGameFactory()),
-            second='Package Game',
+            first=str(obj),
+            second=f'{obj.package} Game: {obj.game}',
         )
 
     def test_meta_class(self):
         self.assertTupleEqual(
             tuple1=PackageGame._meta.unique_together,
             tuple2=(('package', 'game'),),
+        )
+        self.assertEqual(
+            first=PackageGame._meta.verbose_name,
+            second='Package Game',
+        )
+        self.assertEqual(
+            first=PackageGame._meta.verbose_name_plural,
+            second='Package Games',
         )
 
 
@@ -793,15 +819,24 @@ class PackageTagTestCase(TestCase):
         self.assertFalse(expr=field.null)
 
     def test__str__(self):
+        obj = PackageTagFactory()
         self.assertEqual(
-            first=str(PackageTagFactory()),
-            second='Package Tag',
+            first=str(obj),
+            second=f'{obj.package} Tag: {obj.tag}',
         )
 
     def test_meta_class(self):
         self.assertTupleEqual(
             tuple1=PackageTag._meta.unique_together,
             tuple2=(('package', 'tag'),),
+        )
+        self.assertEqual(
+            first=PackageTag._meta.verbose_name,
+            second='Package Tag',
+        )
+        self.assertEqual(
+            first=PackageTag._meta.verbose_name_plural,
+            second='Package Tags',
         )
 
 
@@ -875,6 +910,14 @@ class PackageReleaseDownloadRequirementTestCase(TestCase):
         self.assertTupleEqual(
             tuple1=PackageReleaseDownloadRequirement._meta.unique_together,
             tuple2=(('package_release', 'download_requirement'),),
+        )
+        self.assertEqual(
+            first=PackageReleaseDownloadRequirement._meta.verbose_name,
+            second='Package Release Download Requirement',
+        )
+        self.assertEqual(
+            first=PackageReleaseDownloadRequirement._meta.verbose_name_plural,
+            second='Package Release Download Requirements',
         )
 
 
@@ -975,6 +1018,14 @@ class PackageReleasePackageRequirementTestCase(TestCase):
             tuple1=PackageReleasePackageRequirement._meta.unique_together,
             tuple2=(('package_release', 'package_requirement'),),
         )
+        self.assertEqual(
+            first=PackageReleasePackageRequirement._meta.verbose_name,
+            second='Package Release Package Requirement',
+        )
+        self.assertEqual(
+            first=PackageReleasePackageRequirement._meta.verbose_name_plural,
+            second='Package Release Package Requirements',
+        )
 
 
 class PackageReleasePyPiRequirementTestCase(TestCase):
@@ -1073,6 +1124,14 @@ class PackageReleasePyPiRequirementTestCase(TestCase):
         self.assertTupleEqual(
             tuple1=PackageReleasePyPiRequirement._meta.unique_together,
             tuple2=(('package_release', 'pypi_requirement'),),
+        )
+        self.assertEqual(
+            first=PackageReleasePyPiRequirement._meta.verbose_name,
+            second='Package Release PyPi Requirement',
+        )
+        self.assertEqual(
+            first=PackageReleasePyPiRequirement._meta.verbose_name_plural,
+            second='Package Release PyPi Requirements',
         )
 
 
@@ -1176,4 +1235,12 @@ class PackageReleaseVersionControlRequirementTestCase(TestCase):
         self.assertTupleEqual(
             tuple1=PackageReleaseVersionControlRequirement._meta.unique_together,
             tuple2=(('package_release', 'vcs_requirement'),),
+        )
+        self.assertEqual(
+            first=PackageReleaseVersionControlRequirement._meta.verbose_name,
+            second='Package Release Version Control Requirement',
+        )
+        self.assertEqual(
+            first=PackageReleaseVersionControlRequirement._meta.verbose_name_plural,
+            second='Package Release Version Control Requirements',
         )

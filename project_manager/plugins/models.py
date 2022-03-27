@@ -157,17 +157,17 @@ class PluginRelease(ProjectRelease):
         ]
     )
 
-    @property
-    def project(self):
-        """Return the Plugin."""
-        return self.plugin
-
     class Meta(ProjectRelease.Meta):
         """Define metaclass attributes."""
 
         unique_together = ('plugin', 'version')
         verbose_name = 'Plugin Release'
         verbose_name_plural = 'Plugin Releases'
+
+    @property
+    def project(self):
+        """Return the Plugin."""
+        return self.plugin
 
     def get_absolute_url(self):
         """Return the URL for the PluginRelease."""
@@ -198,8 +198,12 @@ class PluginImage(AbstractUUIDPrimaryKeyModel):
     class Meta:
         """Define metaclass attributes."""
 
-        verbose_name = 'Image'
-        verbose_name_plural = 'Images'
+        verbose_name = 'Plugin Image'
+        verbose_name_plural = 'Plugin Images'
+
+    def __str__(self):
+        """Return the proper str value of the object."""
+        return f'{self.plugin} - {self.image}'
 
 
 class PluginContributor(AbstractUUIDPrimaryKeyModel):
@@ -218,6 +222,8 @@ class PluginContributor(AbstractUUIDPrimaryKeyModel):
         """Define metaclass attributes."""
 
         unique_together = ('plugin', 'user')
+        verbose_name = 'Plugin Contributor'
+        verbose_name_plural = 'Plugin Contributors'
 
     @property
     def project(self):
@@ -226,7 +232,7 @@ class PluginContributor(AbstractUUIDPrimaryKeyModel):
 
     def __str__(self):
         """Return the base string."""
-        return 'Plugin Contributor'
+        return f'{self.plugin} Contributor: {self.user}'
 
     def clean(self):
         """Validate that the plugin's owner cannot be a contributor."""
@@ -256,6 +262,8 @@ class PluginGame(AbstractUUIDPrimaryKeyModel):
         """Define metaclass attributes."""
 
         unique_together = ('plugin', 'game')
+        verbose_name = 'Plugin Game'
+        verbose_name_plural = 'Plugin Games'
 
     @property
     def project(self):
@@ -264,7 +272,7 @@ class PluginGame(AbstractUUIDPrimaryKeyModel):
 
     def __str__(self):
         """Return the base string."""
-        return 'Plugin Game'
+        return f'{self.plugin} Game: {self.game}'
 
 
 class PluginTag(AbstractUUIDPrimaryKeyModel):
@@ -283,6 +291,8 @@ class PluginTag(AbstractUUIDPrimaryKeyModel):
         """Define metaclass attributes."""
 
         unique_together = ('plugin', 'tag')
+        verbose_name = 'Plugin Tag'
+        verbose_name_plural = 'Plugin Tags'
 
     @property
     def project(self):
@@ -291,7 +301,7 @@ class PluginTag(AbstractUUIDPrimaryKeyModel):
 
     def __str__(self):
         """Return the base string."""
-        return 'Plugin Tag'
+        return f'{self.plugin} Tag: {self.tag}'
 
 
 class SubPluginPath(AbstractUUIDPrimaryKeyModel):
@@ -325,9 +335,9 @@ class SubPluginPath(AbstractUUIDPrimaryKeyModel):
     class Meta:
         """Define metaclass attributes."""
 
+        unique_together = ('path', 'plugin')
         verbose_name = 'SubPlugin Path'
         verbose_name_plural = 'SubPlugin Paths'
-        unique_together = ('path', 'plugin')
 
     def __str__(self):
         """Return the path."""
@@ -390,6 +400,8 @@ class PluginReleaseDownloadRequirement(AbstractUUIDPrimaryKeyModel):
         """Define metaclass attributes."""
 
         unique_together = ('plugin_release', 'download_requirement')
+        verbose_name = 'Plugin Release Download Requirement'
+        verbose_name_plural = 'Plugin Release Download Requirements'
 
     def __str__(self):
         """Return the requirement's url."""
@@ -425,6 +437,8 @@ class PluginReleasePackageRequirement(AbstractUUIDPrimaryKeyModel):
         """Define metaclass attributes."""
 
         unique_together = ('plugin_release', 'package_requirement')
+        verbose_name = 'Plugin Release Package Requirement'
+        verbose_name_plural = 'Plugin Release Package Requirements'
 
     def __str__(self):
         """Return the requirement's name and version."""
@@ -459,6 +473,8 @@ class PluginReleasePyPiRequirement(AbstractUUIDPrimaryKeyModel):
         """Define metaclass attributes."""
 
         unique_together = ('plugin_release', 'pypi_requirement')
+        verbose_name = 'Plugin Release PyPi Requirement'
+        verbose_name_plural = 'Plugin Release PyPi Requirements'
 
     def __str__(self):
         """Return the requirement's name and version."""
@@ -493,6 +509,8 @@ class PluginReleaseVersionControlRequirement(AbstractUUIDPrimaryKeyModel):
         """Define metaclass attributes."""
 
         unique_together = ('plugin_release', 'vcs_requirement')
+        verbose_name = 'Plugin Release Version Control Requirement'
+        verbose_name_plural = 'Plugin Release Version Control Requirements'
 
     def __str__(self):
         """Return the requirement's name and version."""

@@ -140,6 +140,16 @@ class UserTestCase(TestCase):
         self.assertFalse(expr=field.blank)
         self.assertFalse(expr=field.null)
 
+    def test_meta_class(self):
+        self.assertEqual(
+            first=User._meta.verbose_name,
+            second='User',
+        )
+        self.assertEqual(
+            first=User._meta.verbose_name_plural,
+            second='Users',
+        )
+
     def test_objects(self):
         self.assertIsInstance(
             obj=User.objects,

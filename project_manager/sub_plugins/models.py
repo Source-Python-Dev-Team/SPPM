@@ -104,13 +104,13 @@ class SubPlugin(Project):
     class Meta:
         """Define metaclass attributes."""
 
-        verbose_name = 'SubPlugin'
-        verbose_name_plural = 'SubPlugins'
         unique_together = (
             ('plugin', 'basename'),
             ('plugin', 'name'),
             ('plugin', 'slug'),
         )
+        verbose_name = 'SubPlugin'
+        verbose_name_plural = 'SubPlugins'
 
     def __str__(self):
         """Return the string formatted name for the sub-plugin."""
@@ -177,17 +177,17 @@ class SubPluginRelease(ProjectRelease):
         ]
     )
 
-    @property
-    def project(self):
-        """Return the SubPlugin."""
-        return self.sub_plugin
-
     class Meta(ProjectRelease.Meta):
         """Define metaclass attributes."""
 
         unique_together = ('sub_plugin', 'version')
         verbose_name = 'SubPlugin Release'
         verbose_name_plural = 'SubPlugin Releases'
+
+    @property
+    def project(self):
+        """Return the SubPlugin."""
+        return self.sub_plugin
 
     def get_absolute_url(self):
         """Return the URL for the SubPluginRelease."""
@@ -219,8 +219,12 @@ class SubPluginImage(AbstractUUIDPrimaryKeyModel):
     class Meta:
         """Define metaclass attributes."""
 
-        verbose_name = 'Image'
-        verbose_name_plural = 'Images'
+        verbose_name = 'SubPlugin Image'
+        verbose_name_plural = 'SubPlugin Images'
+
+    def __str__(self):
+        """Return the proper str value of the object."""
+        return f'{self.sub_plugin} - {self.image}'
 
 
 class SubPluginContributor(AbstractUUIDPrimaryKeyModel):
@@ -239,6 +243,8 @@ class SubPluginContributor(AbstractUUIDPrimaryKeyModel):
         """Define metaclass attributes."""
 
         unique_together = ('sub_plugin', 'user')
+        verbose_name = 'SubPlugin Contributor'
+        verbose_name_plural = 'SubPlugin Contributors'
 
     @property
     def project(self):
@@ -247,7 +253,7 @@ class SubPluginContributor(AbstractUUIDPrimaryKeyModel):
 
     def __str__(self):
         """Return the base string."""
-        return 'SubPlugin Contributor'
+        return f'{self.sub_plugin} Contributor: {self.user}'
 
     def clean(self):
         """Validate that the sub_plugin's owner cannot be a contributor."""
@@ -277,6 +283,8 @@ class SubPluginGame(AbstractUUIDPrimaryKeyModel):
         """Define metaclass attributes."""
 
         unique_together = ('sub_plugin', 'game')
+        verbose_name = 'SubPlugin Game'
+        verbose_name_plural = 'SubPlugin Games'
 
     @property
     def project(self):
@@ -285,7 +293,7 @@ class SubPluginGame(AbstractUUIDPrimaryKeyModel):
 
     def __str__(self):
         """Return the base string."""
-        return 'SubPlugin Game'
+        return f'{self.sub_plugin} Game: {self.game}'
 
 
 class SubPluginTag(AbstractUUIDPrimaryKeyModel):
@@ -304,6 +312,8 @@ class SubPluginTag(AbstractUUIDPrimaryKeyModel):
         """Define metaclass attributes."""
 
         unique_together = ('sub_plugin', 'tag')
+        verbose_name = 'SubPlugin Tag'
+        verbose_name_plural = 'SubPlugin Tags'
 
     @property
     def project(self):
@@ -312,7 +322,7 @@ class SubPluginTag(AbstractUUIDPrimaryKeyModel):
 
     def __str__(self):
         """Return the base string."""
-        return 'SubPlugin Tag'
+        return f'{self.sub_plugin} Tag: {self.tag}'
 
 
 class SubPluginReleaseDownloadRequirement(AbstractUUIDPrimaryKeyModel):
@@ -334,6 +344,8 @@ class SubPluginReleaseDownloadRequirement(AbstractUUIDPrimaryKeyModel):
         """Define metaclass attributes."""
 
         unique_together = ('sub_plugin_release', 'download_requirement')
+        verbose_name = 'SubPlugin Release Download Requirement'
+        verbose_name_plural = 'SubPlugin Release Download Requirements'
 
     def __str__(self):
         """Return the requirement's url."""
@@ -369,6 +381,8 @@ class SubPluginReleasePackageRequirement(AbstractUUIDPrimaryKeyModel):
         """Define metaclass attributes."""
 
         unique_together = ('sub_plugin_release', 'package_requirement')
+        verbose_name = 'SubPlugin Release Package Requirement'
+        verbose_name_plural = 'SubPlugin Release Package Requirements'
 
     def __str__(self):
         """Return the requirement's name and version."""
@@ -403,6 +417,8 @@ class SubPluginReleasePyPiRequirement(AbstractUUIDPrimaryKeyModel):
         """Define metaclass attributes."""
 
         unique_together = ('sub_plugin_release', 'pypi_requirement')
+        verbose_name = 'SubPlugin Release PyPi Requirement'
+        verbose_name_plural = 'SubPlugin Release PyPi Requirements'
 
     def __str__(self):
         """Return the requirement's name and version."""
@@ -437,6 +453,8 @@ class SubPluginReleaseVersionControlRequirement(AbstractUUIDPrimaryKeyModel):
         """Define metaclass attributes."""
 
         unique_together = ('sub_plugin_release', 'vcs_requirement')
+        verbose_name = 'SubPlugin Release Version Control Requirement'
+        verbose_name_plural = 'SubPlugin Release Version Control Requirements'
 
     def __str__(self):
         """Return the requirement's name and version."""

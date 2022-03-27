@@ -155,17 +155,17 @@ class PackageRelease(ProjectRelease):
         ]
     )
 
-    @property
-    def project(self):
-        """Return the Package."""
-        return self.package
-
     class Meta(ProjectRelease.Meta):
         """Define metaclass attributes."""
 
         unique_together = ('package', 'version')
         verbose_name = 'Package Release'
         verbose_name_plural = 'Package Releases'
+
+    @property
+    def project(self):
+        """Return the Package."""
+        return self.package
 
     def get_absolute_url(self):
         """Return the URL for the PackageRelease."""
@@ -196,8 +196,12 @@ class PackageImage(AbstractUUIDPrimaryKeyModel):
     class Meta:
         """Define metaclass attributes."""
 
-        verbose_name = 'Image'
-        verbose_name_plural = 'Images'
+        verbose_name = 'Package Image'
+        verbose_name_plural = 'Package Images'
+
+    def __str__(self):
+        """Return the proper str value of the object."""
+        return f'{self.package} - {self.image}'
 
 
 class PackageContributor(AbstractUUIDPrimaryKeyModel):
@@ -216,6 +220,8 @@ class PackageContributor(AbstractUUIDPrimaryKeyModel):
         """Define metaclass attributes."""
 
         unique_together = ('package', 'user')
+        verbose_name = 'Package Contributor'
+        verbose_name_plural = 'Package Contributors'
 
     @property
     def project(self):
@@ -224,7 +230,7 @@ class PackageContributor(AbstractUUIDPrimaryKeyModel):
 
     def __str__(self):
         """Return the base string."""
-        return 'Package Contributor'
+        return f'{self.package} Contributor: {self.user}'
 
     def clean(self):
         """Validate that the package's owner cannot be a contributor."""
@@ -255,6 +261,8 @@ class PackageGame(AbstractUUIDPrimaryKeyModel):
         """Define metaclass attributes."""
 
         unique_together = ('package', 'game')
+        verbose_name = 'Package Game'
+        verbose_name_plural = 'Package Games'
 
     @property
     def project(self):
@@ -263,7 +271,7 @@ class PackageGame(AbstractUUIDPrimaryKeyModel):
 
     def __str__(self):
         """Return the base string."""
-        return 'Package Game'
+        return f'{self.package} Game: {self.game}'
 
 
 class PackageTag(AbstractUUIDPrimaryKeyModel):
@@ -282,6 +290,8 @@ class PackageTag(AbstractUUIDPrimaryKeyModel):
         """Define metaclass attributes."""
 
         unique_together = ('package', 'tag')
+        verbose_name = 'Package Tag'
+        verbose_name_plural = 'Package Tags'
 
     @property
     def project(self):
@@ -290,7 +300,7 @@ class PackageTag(AbstractUUIDPrimaryKeyModel):
 
     def __str__(self):
         """Return the base string."""
-        return 'Package Tag'
+        return f'{self.package} Tag: {self.tag}'
 
 
 class PackageReleaseDownloadRequirement(AbstractUUIDPrimaryKeyModel):
@@ -312,6 +322,8 @@ class PackageReleaseDownloadRequirement(AbstractUUIDPrimaryKeyModel):
         """Define metaclass attributes."""
 
         unique_together = ('package_release', 'download_requirement')
+        verbose_name = 'Package Release Download Requirement'
+        verbose_name_plural = 'Package Release Download Requirements'
 
     def __str__(self):
         """Return the requirement's url."""
@@ -347,6 +359,8 @@ class PackageReleasePackageRequirement(AbstractUUIDPrimaryKeyModel):
         """Define metaclass attributes."""
 
         unique_together = ('package_release', 'package_requirement')
+        verbose_name = 'Package Release Package Requirement'
+        verbose_name_plural = 'Package Release Package Requirements'
 
     def __str__(self):
         """Return the requirement's name and version."""
@@ -381,6 +395,8 @@ class PackageReleasePyPiRequirement(AbstractUUIDPrimaryKeyModel):
         """Define metaclass attributes."""
 
         unique_together = ('package_release', 'pypi_requirement')
+        verbose_name = 'Package Release PyPi Requirement'
+        verbose_name_plural = 'Package Release PyPi Requirements'
 
     def __str__(self):
         """Return the requirement's name and version."""
@@ -415,6 +431,8 @@ class PackageReleaseVersionControlRequirement(AbstractUUIDPrimaryKeyModel):
         """Define metaclass attributes."""
 
         unique_together = ('package_release', 'vcs_requirement')
+        verbose_name = 'Package Release Version Control Requirement'
+        verbose_name_plural = 'Package Release Version Control Requirements'
 
     def __str__(self):
         """Return the requirement's name and version."""

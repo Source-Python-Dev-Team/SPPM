@@ -64,6 +64,7 @@ from test_utils.factories.plugins import (
     PluginContributorFactory,
     PluginFactory,
     PluginGameFactory,
+    PluginImageFactory,
     PluginReleaseFactory,
     PluginReleaseDownloadRequirementFactory,
     PluginReleasePackageRequirementFactory,
@@ -483,7 +484,7 @@ class PluginReleaseTestCase(TestCase):
         release = PluginReleaseFactory()
         self.assertEqual(
             first=str(release),
-            second=f'{release.project} - {release.version}',
+            second=f'{release.plugin} - {release.version}',
         )
 
     def test_clean(self):
@@ -606,14 +607,21 @@ class PluginImageTestCase(TestCase):
             second='created',
         )
 
+    def test__str__(self):
+        obj = PluginImageFactory()
+        self.assertEqual(
+            first=str(obj),
+            second=f'{obj.plugin} - {obj.image}',
+        )
+
     def test_meta_class(self):
         self.assertEqual(
             first=PluginImage._meta.verbose_name,
-            second='Image',
+            second='Plugin Image',
         )
         self.assertEqual(
             first=PluginImage._meta.verbose_name_plural,
-            second='Images',
+            second='Plugin Images',
         )
 
 
@@ -658,9 +666,10 @@ class PluginContributorTestCase(TestCase):
         self.assertFalse(expr=field.null)
 
     def test__str__(self):
+        obj = PluginContributorFactory()
         self.assertEqual(
-            first=str(PluginContributorFactory()),
-            second='Plugin Contributor',
+            first=str(obj),
+            second=f'{obj.plugin} Contributor: {obj.user}',
         )
 
     def test_clean(self):
@@ -701,6 +710,14 @@ class PluginContributorTestCase(TestCase):
         self.assertTupleEqual(
             tuple1=PluginContributor._meta.unique_together,
             tuple2=(('plugin', 'user'),),
+        )
+        self.assertEqual(
+            first=PluginContributor._meta.verbose_name,
+            second='Plugin Contributor',
+        )
+        self.assertEqual(
+            first=PluginContributor._meta.verbose_name_plural,
+            second='Plugin Contributors',
         )
 
 
@@ -745,15 +762,24 @@ class PluginGameTestCase(TestCase):
         self.assertFalse(expr=field.null)
 
     def test__str__(self):
+        obj = PluginGameFactory()
         self.assertEqual(
-            first=str(PluginGameFactory()),
-            second='Plugin Game',
+            first=str(obj),
+            second=f'{obj.plugin} Game: {obj.game}',
         )
 
     def test_meta_class(self):
         self.assertTupleEqual(
             tuple1=PluginGame._meta.unique_together,
             tuple2=(('plugin', 'game'),),
+        )
+        self.assertEqual(
+            first=PluginGame._meta.verbose_name,
+            second='Plugin Game',
+        )
+        self.assertEqual(
+            first=PluginGame._meta.verbose_name_plural,
+            second='Plugin Games',
         )
 
 
@@ -798,15 +824,24 @@ class PluginTagTestCase(TestCase):
         self.assertFalse(expr=field.null)
 
     def test__str__(self):
+        obj = PluginTagFactory()
         self.assertEqual(
-            first=str(PluginTagFactory()),
-            second='Plugin Tag',
+            first=str(obj),
+            second=f'{obj.plugin} Tag: {obj.tag}',
         )
 
     def test_meta_class(self):
         self.assertTupleEqual(
             tuple1=PluginTag._meta.unique_together,
             tuple2=(('plugin', 'tag'),),
+        )
+        self.assertEqual(
+            first=PluginTag._meta.verbose_name,
+            second='Plugin Tag',
+        )
+        self.assertEqual(
+            first=PluginTag._meta.verbose_name_plural,
+            second='Plugin Tags',
         )
 
 
@@ -880,6 +915,14 @@ class PluginReleaseDownloadRequirementTestCase(TestCase):
         self.assertTupleEqual(
             tuple1=PluginReleaseDownloadRequirement._meta.unique_together,
             tuple2=(('plugin_release', 'download_requirement'),),
+        )
+        self.assertEqual(
+            first=PluginReleaseDownloadRequirement._meta.verbose_name,
+            second='Plugin Release Download Requirement',
+        )
+        self.assertEqual(
+            first=PluginReleaseDownloadRequirement._meta.verbose_name_plural,
+            second='Plugin Release Download Requirements',
         )
 
 
@@ -980,6 +1023,14 @@ class PluginReleasePackageRequirementTestCase(TestCase):
             tuple1=PluginReleasePackageRequirement._meta.unique_together,
             tuple2=(('plugin_release', 'package_requirement'),),
         )
+        self.assertEqual(
+            first=PluginReleasePackageRequirement._meta.verbose_name,
+            second='Plugin Release Package Requirement',
+        )
+        self.assertEqual(
+            first=PluginReleasePackageRequirement._meta.verbose_name_plural,
+            second='Plugin Release Package Requirements',
+        )
 
 
 class PluginReleasePyPiRequirementTestCase(TestCase):
@@ -1078,6 +1129,14 @@ class PluginReleasePyPiRequirementTestCase(TestCase):
         self.assertTupleEqual(
             tuple1=PluginReleasePyPiRequirement._meta.unique_together,
             tuple2=(('plugin_release', 'pypi_requirement'),),
+        )
+        self.assertEqual(
+            first=PluginReleasePyPiRequirement._meta.verbose_name,
+            second='Plugin Release PyPi Requirement',
+        )
+        self.assertEqual(
+            first=PluginReleasePyPiRequirement._meta.verbose_name_plural,
+            second='Plugin Release PyPi Requirements',
         )
 
 
@@ -1181,6 +1240,14 @@ class PluginReleaseVersionControlRequirementTestCase(TestCase):
         self.assertTupleEqual(
             tuple1=PluginReleaseVersionControlRequirement._meta.unique_together,
             tuple2=(('plugin_release', 'vcs_requirement'),),
+        )
+        self.assertEqual(
+            first=PluginReleaseVersionControlRequirement._meta.verbose_name,
+            second='Plugin Release Version Control Requirement',
+        )
+        self.assertEqual(
+            first=PluginReleaseVersionControlRequirement._meta.verbose_name_plural,
+            second='Plugin Release Version Control Requirements',
         )
 
 
@@ -1310,6 +1377,10 @@ class SubPluginPathTestCase(TestCase):
         )
 
     def test_meta_class(self):
+        self.assertTupleEqual(
+            tuple1=SubPluginPath._meta.unique_together,
+            tuple2=(('path', 'plugin'),),
+        )
         self.assertEqual(
             first=SubPluginPath._meta.verbose_name,
             second='SubPlugin Path',
@@ -1317,8 +1388,4 @@ class SubPluginPathTestCase(TestCase):
         self.assertEqual(
             first=SubPluginPath._meta.verbose_name_plural,
             second='SubPlugin Paths',
-        )
-        self.assertTupleEqual(
-            tuple1=SubPluginPath._meta.unique_together,
-            tuple2=(('path', 'plugin'),),
         )

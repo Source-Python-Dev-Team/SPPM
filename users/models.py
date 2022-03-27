@@ -54,6 +54,12 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     USERNAME_FIELD = 'username'
 
+    class Meta:
+        """Define metaclass attributes."""
+
+        verbose_name = 'User'
+        verbose_name_plural = 'Users'
+
     def get_short_name(self):
         """Return the short name for the user."""
         return self.username

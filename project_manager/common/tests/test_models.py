@@ -375,11 +375,3 @@ class ProjectReleaseTestCase(TestCase):
         self.assertTrue(
             expr=ProjectRelease._meta.abstract
         )
-        self.assertEqual(
-            first=ProjectRelease._meta.verbose_name,
-            second='Release',
-        )
-        self.assertEqual(
-            first=ProjectRelease._meta.verbose_name_plural,
-            second='Releases',
-        )
