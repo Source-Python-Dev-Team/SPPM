@@ -123,7 +123,7 @@ class PackageTestCase(TestCase):
             second='packages',
         )
         self.assertFalse(expr=field.blank)
-        self.assertFalse(expr=field.null)
+        self.assertTrue(expr=field.null)
 
     def test_contributors_field(self):
         field = Package._meta.get_field('contributors')

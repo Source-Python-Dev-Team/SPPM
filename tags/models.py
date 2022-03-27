@@ -39,6 +39,7 @@ class Tag(models.Model):
         related_name='created_tags',
         blank=True,
         on_delete=models.SET_NULL,
+        null=True,
     )
 
     class Meta:

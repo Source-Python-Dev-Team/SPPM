@@ -72,6 +72,7 @@ class SubPlugin(Project):
         to='users.ForumUser',
         related_name='sub_plugins',
         on_delete=models.SET_NULL,
+        null=True,
     )
     contributors = models.ManyToManyField(
         to='users.ForumUser',

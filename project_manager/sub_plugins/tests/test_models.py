@@ -126,7 +126,7 @@ class SubPluginTestCase(TestCase):
             second='sub_plugins',
         )
         self.assertFalse(expr=field.blank)
-        self.assertFalse(expr=field.null)
+        self.assertTrue(expr=field.null)
 
     def test_contributors_field(self):
         field = SubPlugin._meta.get_field('contributors')

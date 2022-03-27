@@ -68,6 +68,7 @@ class Package(Project):
         to='users.ForumUser',
         related_name='packages',
         on_delete=models.SET_NULL,
+        null=True,
     )
     contributors = models.ManyToManyField(
         to='users.ForumUser',

@@ -85,7 +85,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='subplugin',
             name='owner',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.SET_NULL, related_name='sub_plugins', to='users.forumuser'),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.SET_NULL, null=True, related_name='sub_plugins', to='users.forumuser'),
         ),
         migrations.AddField(
             model_name='subplugin',
@@ -215,7 +215,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='plugin',
             name='owner',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.SET_NULL, related_name='plugins', to='users.forumuser'),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.SET_NULL, null=True, related_name='plugins', to='users.forumuser'),
         ),
         migrations.AddField(
             model_name='plugin',
@@ -340,7 +340,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='package',
             name='owner',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.SET_NULL, related_name='packages', to='users.forumuser'),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.SET_NULL, null=True, related_name='packages', to='users.forumuser'),
         ),
         migrations.AddField(
             model_name='package',

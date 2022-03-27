@@ -70,6 +70,7 @@ class Plugin(Project):
         to='users.ForumUser',
         related_name='plugins',
         on_delete=models.SET_NULL,
+        null=True,
     )
     contributors = models.ManyToManyField(
         to='users.ForumUser',

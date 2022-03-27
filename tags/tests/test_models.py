@@ -73,7 +73,7 @@ class TagTestCase(TestCase):
             second='created_tags',
         )
         self.assertTrue(expr=field.blank)
-        self.assertFalse(expr=field.null)
+        self.assertTrue(expr=field.null)
 
     def test_meta_class(self):
         self.assertEqual(
