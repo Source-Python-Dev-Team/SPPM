@@ -1,10 +1,6 @@
 # =============================================================================
 # IMPORTS
 # =============================================================================
-# Python
-from collections import defaultdict
-from random import randint
-
 # Django
 from django.db.models.expressions import CombinedExpression
 
@@ -148,6 +144,12 @@ class TagViewSetTestCase(APITestCase):
                 first=lookup.queryset.query.order_by,
                 second=('name',),
             )
+
+        lookup = prefetch_lookups[2]
+        self.assertEqual(
+            first=lookup.queryset.query.select_related,
+            second={'plugin': {}}
+        )
 
         queryset = TagViewSet(action='list').get_queryset().filter()
         self.assertFalse(expr=queryset.query.select_related)
@@ -356,17 +358,17 @@ class TagViewSetTestCase(APITestCase):
                 'packages': [
                     {
                         'name': self.package_1.name,
-                        'id': self.package_1.pk,
+                        'slug': self.package_1.slug,
                     },
                 ],
                 'plugins': [
                     {
                         'name': self.plugin_1.name,
-                        'id': self.plugin_1.pk,
+                        'slug': self.plugin_1.slug,
                     },
                     {
                         'name': self.plugin_2.name,
-                        'id': self.plugin_2.pk,
+                        'slug': self.plugin_2.slug,
                     },
                 ],
                 'subplugins': [],
@@ -385,27 +387,35 @@ class TagViewSetTestCase(APITestCase):
                 'packages': [
                     {
                         'name': self.package_1.name,
-                        'id': self.package_1.pk,
+                        'slug': self.package_1.slug,
                     },
                     {
                         'name': self.package_2.name,
-                        'id': self.package_2.pk,
+                        'slug': self.package_2.slug,
                     },
                 ],
                 'plugins': [
                     {
                         'name': self.plugin_1.name,
-                        'id': self.plugin_1.pk,
+                        'slug': self.plugin_1.slug,
                     },
                 ],
                 'subplugins': [
                     {
                         'name': self.sub_plugin_1.name,
-                        'id': self.sub_plugin_1.pk,
+                        'slug': self.sub_plugin_1.slug,
+                        'plugin': {
+                            'name': self.plugin_1.name,
+                            'slug': self.plugin_1.slug,
+                        }
                     },
                     {
                         'name': self.sub_plugin_2.name,
-                        'id': self.sub_plugin_2.pk,
+                        'slug': self.sub_plugin_2.slug,
+                        'plugin': {
+                            'name': self.plugin_1.name,
+                            'slug': self.plugin_1.slug,
+                        }
                     },
                 ],
             }
@@ -424,7 +434,7 @@ class TagViewSetTestCase(APITestCase):
                 'plugins': [
                     {
                         'name': self.plugin_2.name,
-                        'id': self.plugin_2.pk,
+                        'slug': self.plugin_2.slug,
                     },
                 ],
                 'subplugins': [],

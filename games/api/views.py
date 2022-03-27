@@ -3,14 +3,20 @@
 # =============================================================================
 # IMPORTS
 # =============================================================================
+# Django
+from django.db.models import Count, F, Prefetch
+
 # Third Party Django
 from rest_framework.filters import OrderingFilter
-from rest_framework.mixins import ListModelMixin
+from rest_framework.mixins import ListModelMixin, RetrieveModelMixin
 from rest_framework.viewsets import GenericViewSet
 
 # App
-from games.api.serializers import GameSerializer
+from games.api.serializers import GameListSerializer, GameRetrieveSerializer
 from games.models import Game
+from project_manager.packages.models import Package
+from project_manager.plugins.models import Plugin
+from project_manager.sub_plugins.models import SubPlugin
 
 
 # =============================================================================
@@ -24,23 +30,73 @@ __all__ = (
 # =============================================================================
 # VIEWS
 # =============================================================================
-class GameViewSet(ListModelMixin, GenericViewSet):
+class GameViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet):
     """ViewSet for listing Supported Games.
 
     ###Available Ordering:
 
     *  **name** (descending) or **-name** (ascending)
     *  **basename** (descending) or **-basename** (ascending)
+    *  **project_count** (descending) or **-project_count** (ascending)
 
         ####Example:
         `?ordering=name`
 
-        `?ordering=-basename`
+        `?ordering=-project_count`
     """
 
     filter_backends = (OrderingFilter,)
-    serializer_class = GameSerializer
     queryset = Game.objects.all()
     ordering = ('name',)
-    ordering_fields = ('basename', 'name')
+    ordering_fields = ('basename', 'name', 'project_count')
     http_method_names = ('get', 'options')
+
+    def retrieve(self, request, *args, **kwargs):
+        """Overwrite the ordering fields on retrieve to exclude project_count.
+
+        This helps avoid a FieldError since project_count is an annotation
+            that only occurs during the list view.
+        """
+        self.ordering_fields = ('basename', 'name')
+        return super().retrieve(request=request, *args, **kwargs)
+
+    def get_serializer_class(self):
+        """Return the correct serializer based on the action."""
+        if self.action == 'retrieve':
+            return GameRetrieveSerializer
+
+        return GameListSerializer
+
+    def get_queryset(self):
+        """Filter the queryset to not return black-listed tags."""
+        queryset = super().get_queryset()
+        if self.action == 'retrieve':
+            return queryset.prefetch_related(
+                Prefetch(
+                    lookup='packages',
+                    queryset=Package.objects.order_by('name'),
+                ),
+                Prefetch(
+                    lookup='plugins',
+                    queryset=Plugin.objects.order_by('name'),
+                ),
+                Prefetch(
+                    lookup='subplugins',
+                    queryset=SubPlugin.objects.select_related(
+                        'plugin',
+                    ).order_by(
+                        'name',
+                    ),
+                ),
+            )
+
+        package_count = Count('packages', distinct=True)
+        plugin_count = Count('plugins', distinct=True)
+        subplugin_count = Count('subplugins', distinct=True)
+        return queryset.annotate(
+            package_count=package_count,
+            plugin_count=plugin_count,
+            subplugin_count=subplugin_count,
+        ).annotate(
+            project_count=F('package_count') + F('plugin_count') + F('subplugin_count'),
+        )

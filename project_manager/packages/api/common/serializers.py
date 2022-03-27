@@ -7,11 +7,15 @@
 from rest_framework.fields import ReadOnlyField
 from rest_framework.serializers import ModelSerializer
 
+# App
+from project_manager.packages.models import Package
+
 
 # =============================================================================
 # ALL DECLARATION
 # =============================================================================
 __all__ = (
+    'MinimalPackageSerializer',
     'ReleasePackageRequirementSerializer',
 )
 
@@ -34,4 +38,17 @@ class ReleasePackageRequirementSerializer(ModelSerializer):
             'slug',
             'version',
             'optional',
+        )
+
+
+class MinimalPackageSerializer(ModelSerializer):
+    """Serializer for Package Contributions."""
+
+    class Meta:
+        """Define metaclass attributes."""
+
+        model = Package
+        fields = (
+            'name',
+            'slug',
         )

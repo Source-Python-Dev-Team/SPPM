@@ -73,7 +73,6 @@ class TagViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet):
             black_listed=False,
         )
         if self.action == 'retrieve':
-            # self.ordering_fields = ('name',)
             return queryset.prefetch_related(
                 Prefetch(
                     lookup='packages',
@@ -85,7 +84,11 @@ class TagViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet):
                 ),
                 Prefetch(
                     lookup='subplugins',
-                    queryset=SubPlugin.objects.order_by('name'),
+                    queryset=SubPlugin.objects.select_related(
+                        'plugin',
+                    ).order_by(
+                        'name',
+                    ),
                 ),
             )
 

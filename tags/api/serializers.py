@@ -5,10 +5,12 @@
 # =============================================================================
 # Third Party Django
 from rest_framework.fields import IntegerField
-from rest_framework.relations import RelatedField
 from rest_framework.serializers import ModelSerializer
 
 # App
+from project_manager.packages.api.common.serializers import MinimalPackageSerializer
+from project_manager.plugins.api.common.serializers import MinimalPluginSerializer
+from project_manager.sub_plugins.api.common.serializers import MinimalSubPluginSerializer
 from tags.models import Tag
 
 
@@ -16,7 +18,6 @@ from tags.models import Tag
 # ALL DECLARATION
 # =============================================================================
 __all__ = (
-    'RelatedTagSerializer',
     'TagListSerializer',
     'TagRetrieveSerializer',
 )
@@ -25,22 +26,12 @@ __all__ = (
 # =============================================================================
 # SERIALIZERS
 # =============================================================================
-class RelatedTagSerializer(RelatedField):
-    """Serializer for project tag fields."""
-
-    def to_representation(self, value):
-        """Return the name of the project."""
-        # TODO: return the url once the paths exist
-        # return {'name': value.name, 'id': value.pk, 'url': value.get_absolute_url()}
-        return {'name': value.name, 'id': value.pk}
-
-
 class TagRetrieveSerializer(ModelSerializer):
     """Serializer for project Tags on retrieve."""
 
-    packages = RelatedTagSerializer(many=True, read_only=True)
-    plugins = RelatedTagSerializer(many=True, read_only=True)
-    subplugins = RelatedTagSerializer(many=True, read_only=True)
+    packages = MinimalPackageSerializer(many=True, read_only=True)
+    plugins = MinimalPluginSerializer(many=True, read_only=True)
+    subplugins = MinimalSubPluginSerializer(many=True, read_only=True)
 
     class Meta:
         """Define metaclass attributes."""
