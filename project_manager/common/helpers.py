@@ -286,11 +286,10 @@ class ProjectZipFile:
 
         version = item.get('version')
         # TODO: update this logic to work with all version operators
-        available_versions = package.releases.values_list(
-            'version',
-            flat=True,
-        )
-        if version is not None and version not in available_versions:
+        if (
+            version is not None and
+            not package.releases.filter(version=version).exists()
+        ):
             self.requirements_errors.append(
                 f'Custom Package "{basename}" version "{version}", '
                 f'from requirements json file, not found.'
