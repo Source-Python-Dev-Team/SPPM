@@ -22,7 +22,6 @@ from rest_framework.serializers import ModelSerializer
 
 # App
 from project_manager.common.api.serializers.mixins import (
-    AddProjectToViewMixin,
     CreateRequirementsMixin,
     ProjectLocaleMixin,
     ProjectReleaseCreationMixin,
@@ -32,14 +31,12 @@ from project_manager.common.constants import (
     RELEASE_NOTES_MAX_LENGTH,
     RELEASE_VERSION_MAX_LENGTH,
 )
-from games.api.serializers import GameSerializer
+from games.api.common.serializers import MinimalGameSerializer
 from games.constants import GAME_SLUG_MAX_LENGTH
 from games.models import Game
 from tags.constants import TAG_NAME_MAX_LENGTH
 from tags.models import Tag
-from users.api.serializers.common import (
-    ForumUserContributorSerializer,
-)
+from users.api.common.serializers import ForumUserContributorSerializer
 from users.constants import USER_USERNAME_MAX_LENGTH
 from users.models import ForumUser
 
@@ -317,21 +314,15 @@ class ProjectImageSerializer(ProjectThroughMixin):
             'image',
         )
 
-    def create(self, validated_data):
-        """Add the project to the validated_data when creating the image."""
-        view = self.context['view']
-        validated_data[view.project_type.replace('-', '_')] = view.project
-        return super().create(validated_data=validated_data)
 
-
-class ProjectGameSerializer(ProjectThroughMixin, AddProjectToViewMixin):
+class ProjectGameSerializer(ProjectThroughMixin):
     """Base ProjectGame Serializer."""
 
     game_slug = CharField(
         max_length=GAME_SLUG_MAX_LENGTH,
         write_only=True,
     )
-    game = GameSerializer(
+    game = MinimalGameSerializer(
         read_only=True,
     )
 
@@ -347,21 +338,23 @@ class ProjectGameSerializer(ProjectThroughMixin, AddProjectToViewMixin):
         """Validate the given game."""
         name = attrs.pop('game_slug')
         view = self.context['view']
-        if name in view.project.supported_games.values_list('slug', flat=True):
+        if view.project.supported_games.filter(slug=name).exists():
             raise ValidationError({
                 'game': f'Game already linked to {view.project_type}.',
             })
+
         try:
             game = Game.objects.get(basename=name)
         except Game.DoesNotExist as exception:
             raise ValidationError({
                 'game': f'Invalid game "{name}".'
             }) from exception
+
         attrs['game'] = game
         return super().validate(attrs=attrs)
 
 
-class ProjectTagSerializer(ProjectThroughMixin, AddProjectToViewMixin):
+class ProjectTagSerializer(ProjectThroughMixin):
     """Base ProjectTag Serializer."""
 
     tag = CharField(
@@ -379,10 +372,11 @@ class ProjectTagSerializer(ProjectThroughMixin, AddProjectToViewMixin):
         """Validate the given tag."""
         name = attrs['tag']
         view = self.context['view']
-        if name in view.project.tags.values_list('name', flat=True):
+        if view.project.tags.filter(name=name).exists():
             raise ValidationError({
                 'tag': f'Tag already linked to {view.project_type}.',
             })
+
         tag, created = Tag.objects.get_or_create(
             name=name,
             defaults={
@@ -393,11 +387,12 @@ class ProjectTagSerializer(ProjectThroughMixin, AddProjectToViewMixin):
             raise ValidationError({
                 'tag': f"Tag '{name}' is black-listed, unable to add.",
             })
+
         attrs['tag'] = tag
         return super().validate(attrs=attrs)
 
 
-class ProjectContributorSerializer(ProjectThroughMixin, AddProjectToViewMixin):
+class ProjectContributorSerializer(ProjectThroughMixin):
     """Base ProjectContributor Serializer."""
 
     username = CharField(
@@ -420,13 +415,11 @@ class ProjectContributorSerializer(ProjectThroughMixin, AddProjectToViewMixin):
         """Validate the given username."""
         username = attrs.pop('username')
         view = self.context['view']
-        if username in view.project.contributors.values_list(
-            'user__username',
-            flat=True,
-        ):
+        if view.project.contributors.filter(user__username=username).exists():
             raise ValidationError({
                 'username': f'User {username} is already a contributor',
             })
+
         if username == view.project.owner.user.username:
             raise ValidationError({
                 'username': (
@@ -434,11 +427,13 @@ class ProjectContributorSerializer(ProjectThroughMixin, AddProjectToViewMixin):
                     f'cannot add as a contributor'
                 ),
             })
+
         try:
             user = ForumUser.objects.get(user__username=username)
         except ForumUser.DoesNotExist as exception:
             raise ValidationError({
                 'username': f'No user named "{username}".'
             }) from exception
+
         attrs['user'] = user
         return super().validate(attrs=attrs)

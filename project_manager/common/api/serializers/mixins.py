@@ -18,7 +18,6 @@ from project_manager.common.helpers import GROUP_QUERYSET_NAMES
 # ALL DECLARATION
 # =============================================================================
 __all__ = (
-    'AddProjectToViewMixin',
     'CreateRequirementsMixin',
     'ProjectLocaleMixin',
     'ProjectReleaseCreationMixin',
@@ -232,10 +231,6 @@ class ProjectThroughMixin(ModelSerializer):
                 if user in view.contributors and not view.owner_only_id_access:
                     return field_names + ('id',)
         return field_names
-
-
-class AddProjectToViewMixin(ModelSerializer):
-    """Mixin used to add the project to the serialized data."""
 
     def validate(self, attrs):
         """Add the project to the validated data."""

@@ -19,7 +19,7 @@ from rest_framework.fields import (
 from rest_framework.serializers import ModelSerializer
 
 # App
-from games.api.serializers import GameSerializer
+from games.api.common.serializers import MinimalGameSerializer
 from games.constants import GAME_SLUG_MAX_LENGTH
 from project_manager.common.api.serializers import (
     ProjectContributorSerializer,
@@ -31,7 +31,6 @@ from project_manager.common.api.serializers import (
     ProjectTagSerializer,
 )
 from project_manager.common.api.serializers.mixins import (
-    AddProjectToViewMixin,
     CreateRequirementsMixin,
     ProjectLocaleMixin,
     ProjectReleaseCreationMixin,
@@ -43,7 +42,7 @@ from project_manager.common.constants import (
 )
 from tags.constants import TAG_NAME_MAX_LENGTH
 from test_utils.factories.users import ForumUserFactory
-from users.api.serializers.common import ForumUserContributorSerializer
+from users.api.common.serializers import ForumUserContributorSerializer
 from users.constants import USER_USERNAME_MAX_LENGTH
 
 
@@ -182,6 +181,29 @@ class ProjectThroughMixinTestCase(TestCase):
             tuple2=self.field_names,
         )
 
+    def test_validate(self):
+        project_type = 'test-type'
+        project = mock.Mock()
+        obj = ProjectThroughMixin(
+            context={
+                'view': mock.Mock(
+                    project_type=project_type,
+                    project=project,
+                ),
+            },
+        )
+        original_attrs = {
+            'field': 'value',
+        }
+        return_attrs = dict(original_attrs)
+        return_attrs.update({
+            project_type.replace('-', '_'): project,
+        })
+        self.assertDictEqual(
+            d1=obj.validate(original_attrs),
+            d2=return_attrs,
+        )
+
 
 class ProjectReleaseCreationMixinTestCase(TestCase):
     def test_class_inheritance(self):
@@ -245,43 +267,10 @@ class ProjectReleaseCreationMixinTestCase(TestCase):
         )
 
 
-class AddProjectToViewMixinTestCase(TestCase):
-    def test_class_inheritance(self):
-        self.assertTrue(
-            expr=issubclass(AddProjectToViewMixin, ModelSerializer),
-        )
-
-    def test_validate(self):
-        project_type = 'test-type'
-        project = mock.Mock()
-        obj = AddProjectToViewMixin(
-            context={
-                'view': mock.Mock(
-                    project_type=project_type,
-                    project=project,
-                ),
-            },
-        )
-        original_attrs = {
-            'field': 'value',
-        }
-        return_attrs = dict(original_attrs)
-        return_attrs.update({
-            project_type.replace('-', '_'): project,
-        })
-        self.assertDictEqual(
-            d1=obj.validate(original_attrs),
-            d2=return_attrs,
-        )
-
-
 class ProjectContributorSerializerTestCase(TestCase):
     def test_class_inheritance(self):
         self.assertTrue(
             expr=issubclass(ProjectContributorSerializer, ProjectThroughMixin),
-        )
-        self.assertTrue(
-            expr=issubclass(ProjectContributorSerializer, AddProjectToViewMixin),
         )
 
     def test_declared_fields(self):
@@ -390,9 +379,6 @@ class ProjectGameSerializerTestCase(TestCase):
         self.assertTrue(
             expr=issubclass(ProjectGameSerializer, ProjectThroughMixin),
         )
-        self.assertTrue(
-            expr=issubclass(ProjectGameSerializer, AddProjectToViewMixin),
-        )
 
     def test_declared_fields(self):
         declared_fields = getattr(ProjectGameSerializer, '_declared_fields')
@@ -423,7 +409,7 @@ class ProjectGameSerializerTestCase(TestCase):
         field = declared_fields['game']
         self.assertIsInstance(
             obj=field,
-            cls=GameSerializer,
+            cls=MinimalGameSerializer,
         )
         self.assertTrue(expr=field.read_only)
 
@@ -621,9 +607,6 @@ class ProjectTagSerializerTestCase(TestCase):
     def test_class_inheritance(self):
         self.assertTrue(
             expr=issubclass(ProjectTagSerializer, ProjectThroughMixin),
-        )
-        self.assertTrue(
-            expr=issubclass(ProjectTagSerializer, AddProjectToViewMixin),
         )
 
     def test_declared_fields(self):

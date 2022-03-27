@@ -134,9 +134,10 @@ class ProjectViewSet(ModelViewSet):
             user_id = request.user.id
             if (
                 user_id != obj.owner.user.id and
-                user_id not in obj.contributors.values_list('user', flat=True)
+                not obj.contributors.filter(user=user_id).exists()
             ):
                 raise PermissionDenied
+
         return super().check_object_permissions(
             request=request,
             obj=obj,
