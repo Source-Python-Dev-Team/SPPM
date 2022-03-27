@@ -185,6 +185,8 @@ class PluginImage(AbstractUUIDPrimaryKeyModel):
     )
 
     class Meta:
+        """Define metaclass attributes."""
+
         verbose_name = 'Image'
         verbose_name_plural = 'Images'
 

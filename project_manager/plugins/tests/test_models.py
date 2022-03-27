@@ -14,6 +14,7 @@ from django.urls import reverse
 from django.utils.timezone import now
 
 # Third Party Django
+from model_utils.fields import AutoCreatedField
 from model_utils.tracker import FieldTracker
 
 # App
@@ -23,20 +24,14 @@ from project_manager.common.constants import (
     LOGO_MAX_HEIGHT,
     LOGO_MAX_WIDTH,
     PROJECT_BASENAME_MAX_LENGTH,
-    PROJECT_SLUG_MAX_LENGTH,
+    PROJECT_SLUG_MAX_LENGTH, RELEASE_VERSION_MAX_LENGTH,
 )
 from project_manager.common.models import (
     AbstractUUIDPrimaryKeyModel,
     Project,
-    ProjectGame,
     ProjectRelease,
-    ProjectReleaseDownloadRequirement,
-    ProjectReleasePackageRequirement,
-    ProjectReleasePyPiRequirement,
-    ProjectReleaseVersionControlRequirement,
-    ProjectTag,
 )
-from project_manager.common.validators import basename_validator
+from project_manager.common.validators import basename_validator, version_validator
 from project_manager.packages.models import Package
 from project_manager.plugins.constants import PLUGIN_LOGO_URL, PATH_MAX_LENGTH
 from project_manager.plugins.helpers import (
@@ -545,10 +540,38 @@ class PluginImageTestCase(TestCase):
         self.assertFalse(expr=field.blank)
         self.assertFalse(expr=field.null)
 
-    def test_primary_attributes(self):
+    def test_image_field(self):
+        field = PluginImage._meta.get_field('image')
+        self.assertIsInstance(
+            obj=field,
+            cls=models.ImageField,
+        )
         self.assertEqual(
-            first=PluginImage.handle_image_upload,
+            first=field.upload_to,
             second=handle_plugin_image_upload,
+        )
+        self.assertFalse(expr=field.blank)
+        self.assertFalse(expr=field.null)
+
+    def test_created_field(self):
+        field = PluginImage._meta.get_field('created')
+        self.assertIsInstance(
+            obj=field,
+            cls=AutoCreatedField,
+        )
+        self.assertEqual(
+            first=field.verbose_name,
+            second='created',
+        )
+
+    def test_meta_class(self):
+        self.assertEqual(
+            first=PluginImage._meta.verbose_name,
+            second='Image',
+        )
+        self.assertEqual(
+            first=PluginImage._meta.verbose_name_plural,
+            second='Images',
         )
 
 
@@ -558,10 +581,44 @@ class PluginContributorTestCase(TestCase):
             expr=issubclass(PluginContributor, AbstractUUIDPrimaryKeyModel)
         )
 
+    def test_plugin_field(self):
+        field = PluginContributor._meta.get_field('plugin')
+        self.assertIsInstance(
+            obj=field,
+            cls=models.ForeignKey,
+        )
+        self.assertEqual(
+            first=field.remote_field.model,
+            second=Plugin,
+        )
+        self.assertEqual(
+            first=field.remote_field.on_delete,
+            second=models.CASCADE,
+        )
+        self.assertFalse(expr=field.blank)
+        self.assertFalse(expr=field.null)
+
+    def test_user_field(self):
+        field = PluginContributor._meta.get_field('user')
+        self.assertIsInstance(
+            obj=field,
+            cls=models.ForeignKey,
+        )
+        self.assertEqual(
+            first=field.remote_field.model,
+            second=ForumUser,
+        )
+        self.assertEqual(
+            first=field.remote_field.on_delete,
+            second=models.CASCADE,
+        )
+        self.assertFalse(expr=field.blank)
+        self.assertFalse(expr=field.null)
+
     def test__str__(self):
         self.assertEqual(
             first=str(PluginContributorFactory()),
-            second='Project Contributor',
+            second='Plugin Contributor',
         )
 
     def test_clean(self):
@@ -608,16 +665,47 @@ class PluginContributorTestCase(TestCase):
 class PluginGameTestCase(TestCase):
     def test_model_inheritance(self):
         self.assertTrue(
-            expr=issubclass(PluginGame, ProjectGame)
-        )
-        self.assertTrue(
             expr=issubclass(PluginGame, AbstractUUIDPrimaryKeyModel)
         )
+
+    def test_plugin_field(self):
+        field = PluginGame._meta.get_field('plugin')
+        self.assertIsInstance(
+            obj=field,
+            cls=models.ForeignKey,
+        )
+        self.assertEqual(
+            first=field.remote_field.model,
+            second=Plugin,
+        )
+        self.assertEqual(
+            first=field.remote_field.on_delete,
+            second=models.CASCADE,
+        )
+        self.assertFalse(expr=field.blank)
+        self.assertFalse(expr=field.null)
+
+    def test_game_field(self):
+        field = PluginGame._meta.get_field('game')
+        self.assertIsInstance(
+            obj=field,
+            cls=models.ForeignKey,
+        )
+        self.assertEqual(
+            first=field.remote_field.model,
+            second=Game,
+        )
+        self.assertEqual(
+            first=field.remote_field.on_delete,
+            second=models.CASCADE,
+        )
+        self.assertFalse(expr=field.blank)
+        self.assertFalse(expr=field.null)
 
     def test__str__(self):
         self.assertEqual(
             first=str(PluginGameFactory()),
-            second='Project Game',
+            second='Plugin Game',
         )
 
     def test_meta_class(self):
@@ -630,16 +718,47 @@ class PluginGameTestCase(TestCase):
 class PluginTagTestCase(TestCase):
     def test_model_inheritance(self):
         self.assertTrue(
-            expr=issubclass(PluginTag, ProjectTag)
-        )
-        self.assertTrue(
             expr=issubclass(PluginTag, AbstractUUIDPrimaryKeyModel)
         )
+
+    def test_plugin_field(self):
+        field = PluginTag._meta.get_field('plugin')
+        self.assertIsInstance(
+            obj=field,
+            cls=models.ForeignKey,
+        )
+        self.assertEqual(
+            first=field.remote_field.model,
+            second=Plugin,
+        )
+        self.assertEqual(
+            first=field.remote_field.on_delete,
+            second=models.CASCADE,
+        )
+        self.assertFalse(expr=field.blank)
+        self.assertFalse(expr=field.null)
+
+    def test_tag_field(self):
+        field = PluginTag._meta.get_field('tag')
+        self.assertIsInstance(
+            obj=field,
+            cls=models.ForeignKey,
+        )
+        self.assertEqual(
+            first=field.remote_field.model,
+            second=Tag,
+        )
+        self.assertEqual(
+            first=field.remote_field.on_delete,
+            second=models.CASCADE,
+        )
+        self.assertFalse(expr=field.blank)
+        self.assertFalse(expr=field.null)
 
     def test__str__(self):
         self.assertEqual(
             first=str(PluginTagFactory()),
-            second='Project Tag',
+            second='Plugin Tag',
         )
 
     def test_meta_class(self):
@@ -654,15 +773,55 @@ class PluginReleaseDownloadRequirementTestCase(TestCase):
         self.assertTrue(
             expr=issubclass(
                 PluginReleaseDownloadRequirement,
-                ProjectReleaseDownloadRequirement,
-            )
-        )
-        self.assertTrue(
-            expr=issubclass(
-                PluginReleaseDownloadRequirement,
                 AbstractUUIDPrimaryKeyModel,
             )
         )
+
+    def test_plugin_release_field(self):
+        field = PluginReleaseDownloadRequirement._meta.get_field('plugin_release')
+        self.assertIsInstance(
+            obj=field,
+            cls=models.ForeignKey,
+        )
+        self.assertEqual(
+            first=field.remote_field.model,
+            second=PluginRelease,
+        )
+        self.assertEqual(
+            first=field.remote_field.on_delete,
+            second=models.CASCADE,
+        )
+        self.assertFalse(expr=field.blank)
+        self.assertFalse(expr=field.null)
+
+    def test_download_requirement_field(self):
+        field = PluginReleaseDownloadRequirement._meta.get_field(
+            'download_requirement',
+        )
+        self.assertIsInstance(
+            obj=field,
+            cls=models.ForeignKey,
+        )
+        self.assertEqual(
+            first=field.remote_field.model,
+            second=DownloadRequirement,
+        )
+        self.assertEqual(
+            first=field.remote_field.on_delete,
+            second=models.CASCADE,
+        )
+        self.assertFalse(expr=field.blank)
+        self.assertFalse(expr=field.null)
+
+    def test_optional_field(self):
+        field = PluginReleaseDownloadRequirement._meta.get_field('optional')
+        self.assertIsInstance(
+            obj=field,
+            cls=models.BooleanField,
+        )
+        self.assertFalse(expr=field.default)
+        self.assertFalse(expr=field.blank)
+        self.assertFalse(expr=field.null)
 
     def test__str__(self):
         requirement = DownloadRequirementFactory()
@@ -687,15 +846,79 @@ class PluginReleasePackageRequirementTestCase(TestCase):
         self.assertTrue(
             expr=issubclass(
                 PluginReleasePackageRequirement,
-                ProjectReleasePackageRequirement,
-            )
-        )
-        self.assertTrue(
-            expr=issubclass(
-                PluginReleasePackageRequirement,
                 AbstractUUIDPrimaryKeyModel,
             )
         )
+
+    def test_plugin_release_field(self):
+        field = PluginReleasePackageRequirement._meta.get_field('plugin_release')
+        self.assertIsInstance(
+            obj=field,
+            cls=models.ForeignKey,
+        )
+        self.assertEqual(
+            first=field.remote_field.model,
+            second=PluginRelease,
+        )
+        self.assertEqual(
+            first=field.remote_field.on_delete,
+            second=models.CASCADE,
+        )
+        self.assertFalse(expr=field.blank)
+        self.assertFalse(expr=field.null)
+
+    def test_package_requirement_field(self):
+        field = PluginReleasePackageRequirement._meta.get_field(
+            'package_requirement',
+        )
+        self.assertIsInstance(
+            obj=field,
+            cls=models.ForeignKey,
+        )
+        self.assertEqual(
+            first=field.remote_field.model,
+            second=Package,
+        )
+        self.assertEqual(
+            first=field.remote_field.on_delete,
+            second=models.CASCADE,
+        )
+        self.assertFalse(expr=field.blank)
+        self.assertFalse(expr=field.null)
+
+    def test_version_field(self):
+        field = PluginReleasePackageRequirement._meta.get_field('version')
+        self.assertIsInstance(
+            obj=field,
+            cls=models.CharField,
+        )
+        self.assertEqual(
+            first=field.max_length,
+            second=RELEASE_VERSION_MAX_LENGTH,
+        )
+        self.assertIn(
+            member=version_validator,
+            container=field.validators,
+        )
+        self.assertEqual(
+            first=field.help_text,
+            second=(
+                'The version of the custom package for this release of the '
+                'plugin.'
+            )
+        )
+        self.assertTrue(expr=field.blank)
+        self.assertTrue(expr=field.null)
+
+    def test_optional_field(self):
+        field = PluginReleasePackageRequirement._meta.get_field('optional')
+        self.assertIsInstance(
+            obj=field,
+            cls=models.BooleanField,
+        )
+        self.assertFalse(expr=field.default)
+        self.assertFalse(expr=field.blank)
+        self.assertFalse(expr=field.null)
 
     def test__str__(self):
         requirement = PackageFactory()
@@ -722,15 +945,79 @@ class PluginReleasePyPiRequirementTestCase(TestCase):
         self.assertTrue(
             expr=issubclass(
                 PluginReleasePyPiRequirement,
-                ProjectReleasePyPiRequirement,
-            )
-        )
-        self.assertTrue(
-            expr=issubclass(
-                PluginReleasePyPiRequirement,
                 AbstractUUIDPrimaryKeyModel,
             )
         )
+
+    def test_plugin_release_field(self):
+        field = PluginReleasePyPiRequirement._meta.get_field('plugin_release')
+        self.assertIsInstance(
+            obj=field,
+            cls=models.ForeignKey,
+        )
+        self.assertEqual(
+            first=field.remote_field.model,
+            second=PluginRelease,
+        )
+        self.assertEqual(
+            first=field.remote_field.on_delete,
+            second=models.CASCADE,
+        )
+        self.assertFalse(expr=field.blank)
+        self.assertFalse(expr=field.null)
+
+    def test_pypi_requirement_field(self):
+        field = PluginReleasePyPiRequirement._meta.get_field(
+            'pypi_requirement',
+        )
+        self.assertIsInstance(
+            obj=field,
+            cls=models.ForeignKey,
+        )
+        self.assertEqual(
+            first=field.remote_field.model,
+            second=PyPiRequirement,
+        )
+        self.assertEqual(
+            first=field.remote_field.on_delete,
+            second=models.CASCADE,
+        )
+        self.assertFalse(expr=field.blank)
+        self.assertFalse(expr=field.null)
+
+    def test_version_field(self):
+        field = PluginReleasePyPiRequirement._meta.get_field('version')
+        self.assertIsInstance(
+            obj=field,
+            cls=models.CharField,
+        )
+        self.assertEqual(
+            first=field.max_length,
+            second=RELEASE_VERSION_MAX_LENGTH,
+        )
+        self.assertIn(
+            member=version_validator,
+            container=field.validators,
+        )
+        self.assertEqual(
+            first=field.help_text,
+            second=(
+                'The version of the PyPi package for this release of the '
+                'plugin.'
+            )
+        )
+        self.assertTrue(expr=field.blank)
+        self.assertTrue(expr=field.null)
+
+    def test_optional_field(self):
+        field = PluginReleasePyPiRequirement._meta.get_field('optional')
+        self.assertIsInstance(
+            obj=field,
+            cls=models.BooleanField,
+        )
+        self.assertFalse(expr=field.default)
+        self.assertFalse(expr=field.blank)
+        self.assertFalse(expr=field.null)
 
     def test__str__(self):
         requirement = PyPiRequirementFactory()
@@ -757,15 +1044,83 @@ class PluginReleaseVersionControlRequirementTestCase(TestCase):
         self.assertTrue(
             expr=issubclass(
                 PluginReleaseVersionControlRequirement,
-                ProjectReleaseVersionControlRequirement,
-            )
-        )
-        self.assertTrue(
-            expr=issubclass(
-                PluginReleaseVersionControlRequirement,
                 AbstractUUIDPrimaryKeyModel,
             )
         )
+
+    def test_plugin_release_field(self):
+        field = PluginReleaseVersionControlRequirement._meta.get_field('plugin_release')
+        self.assertIsInstance(
+            obj=field,
+            cls=models.ForeignKey,
+        )
+        self.assertEqual(
+            first=field.remote_field.model,
+            second=PluginRelease,
+        )
+        self.assertEqual(
+            first=field.remote_field.on_delete,
+            second=models.CASCADE,
+        )
+        self.assertFalse(expr=field.blank)
+        self.assertFalse(expr=field.null)
+
+    def test_vcs_requirement_field(self):
+        field = PluginReleaseVersionControlRequirement._meta.get_field(
+            'vcs_requirement',
+        )
+        self.assertIsInstance(
+            obj=field,
+            cls=models.ForeignKey,
+        )
+        self.assertEqual(
+            first=field.remote_field.model,
+            second=VersionControlRequirement,
+        )
+        self.assertEqual(
+            first=field.remote_field.on_delete,
+            second=models.CASCADE,
+        )
+        self.assertFalse(expr=field.blank)
+        self.assertFalse(expr=field.null)
+
+    def test_version_field(self):
+        field = PluginReleaseVersionControlRequirement._meta.get_field(
+            'version',
+        )
+        self.assertIsInstance(
+            obj=field,
+            cls=models.CharField,
+        )
+        self.assertEqual(
+            first=field.max_length,
+            second=RELEASE_VERSION_MAX_LENGTH,
+        )
+        self.assertIn(
+            member=version_validator,
+            container=field.validators,
+        )
+        self.assertEqual(
+            first=field.help_text,
+            second=(
+                'The version of the VCS package for this release of the '
+                'plugin.'
+            )
+        )
+        self.assertTrue(expr=field.blank)
+        self.assertTrue(expr=field.null)
+
+    def test_optional_field(self):
+        field = PluginReleaseVersionControlRequirement._meta.get_field(
+            'optional',
+        )
+        self.assertIsInstance(
+            obj=field,
+            cls=models.BooleanField,
+        )
+        self.assertFalse(expr=field.default)
+        self.assertFalse(expr=field.blank)
+        self.assertFalse(expr=field.null)
 
     def test__str__(self):
         requirement = VersionControlRequirementFactory()
