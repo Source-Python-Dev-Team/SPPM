@@ -124,24 +124,17 @@ class GameViewSetTestCase(APITestCase):
         prefetch_lookups = queryset._prefetch_related_lookups
         self.assertEqual(
             first=len(prefetch_lookups),
-            second=3,
+            second=1,
         )
-        for n, lookup_name in enumerate([
-            'packages',
-            'plugins',
-            'sub_plugins',
-        ]):
-            lookup = prefetch_lookups[n]
-            self.assertEqual(
-                first=lookup.prefetch_to,
-                second=lookup_name,
-            )
-            self.assertEqual(
-                first=lookup.queryset.query.order_by,
-                second=('name',),
-            )
-
-        lookup = prefetch_lookups[2]
+        lookup = prefetch_lookups[0]
+        self.assertEqual(
+            first=lookup.prefetch_to,
+            second='sub_plugins',
+        )
+        self.assertEqual(
+            first=lookup.queryset.query.order_by,
+            second=('name',),
+        )
         self.assertEqual(
             first=lookup.queryset.query.select_related,
             second={'plugin': {}}

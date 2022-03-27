@@ -14,8 +14,6 @@ from rest_framework.viewsets import GenericViewSet
 # App
 from games.api.serializers import GameListSerializer, GameRetrieveSerializer
 from games.models import Game
-from project_manager.packages.models import Package
-from project_manager.plugins.models import Plugin
 from project_manager.sub_plugins.models import SubPlugin
 
 
@@ -73,14 +71,6 @@ class GameViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet):
         if self.action == 'retrieve':
             return queryset.prefetch_related(
                 Prefetch(
-                    lookup='packages',
-                    queryset=Package.objects.order_by('name'),
-                ),
-                Prefetch(
-                    lookup='plugins',
-                    queryset=Plugin.objects.order_by('name'),
-                ),
-                Prefetch(
                     lookup='sub_plugins',
                     queryset=SubPlugin.objects.select_related(
                         'plugin',
@@ -90,13 +80,10 @@ class GameViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet):
                 ),
             )
 
-        package_count = Count('packages', distinct=True)
-        plugin_count = Count('plugins', distinct=True)
-        sub_plugin_count = Count('sub_plugins', distinct=True)
         return queryset.annotate(
-            package_count=package_count,
-            plugin_count=plugin_count,
-            sub_plugin_count=sub_plugin_count,
+            package_count=Count('packages', distinct=True),
+            plugin_count=Count('plugins', distinct=True),
+            sub_plugin_count=Count('sub_plugins', distinct=True),
         ).annotate(
             project_count=F('package_count') + F('plugin_count') + F('sub_plugin_count'),
         )
