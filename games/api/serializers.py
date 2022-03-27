@@ -31,7 +31,7 @@ class GameRetrieveSerializer(ModelSerializer):
 
     packages = MinimalPackageSerializer(many=True, read_only=True)
     plugins = MinimalPluginSerializer(many=True, read_only=True)
-    subplugins = MinimalSubPluginSerializer(many=True, read_only=True)
+    sub_plugins = MinimalSubPluginSerializer(many=True, read_only=True)
 
     class Meta:
         """Define metaclass attributes."""
@@ -43,7 +43,7 @@ class GameRetrieveSerializer(ModelSerializer):
             'icon',
             'packages',
             'plugins',
-            'subplugins',
+            'sub_plugins',
         )
 
 
@@ -52,7 +52,7 @@ class GameListSerializer(ModelSerializer):
 
     package_count = IntegerField()
     plugin_count = IntegerField()
-    subplugin_count = IntegerField()
+    sub_plugin_count = IntegerField()
     project_count = IntegerField()
 
     class Meta:
@@ -65,6 +65,6 @@ class GameListSerializer(ModelSerializer):
             'icon',
             'package_count',
             'plugin_count',
-            'subplugin_count',
+            'sub_plugin_count',
             'project_count',
         )

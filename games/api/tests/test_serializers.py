@@ -58,7 +58,7 @@ class GameRetrieveSerializerTestCase(TestCase):
         for field, cls in (
             ('packages', MinimalPackageSerializer),
             ('plugins', MinimalPluginSerializer),
-            ('subplugins', MinimalSubPluginSerializer),
+            ('sub_plugins', MinimalSubPluginSerializer),
         ):
             self.assertIn(
                 member=field,
@@ -88,7 +88,7 @@ class GameRetrieveSerializerTestCase(TestCase):
                 'icon',
                 'packages',
                 'plugins',
-                'subplugins',
+                'sub_plugins',
             ),
         )
 
@@ -109,7 +109,7 @@ class GameListSerializerTestCase(TestCase):
         for field in (
             'package_count',
             'plugin_count',
-            'subplugin_count',
+            'sub_plugin_count',
             'project_count',
         ):
             self.assertIn(
@@ -135,7 +135,7 @@ class GameListSerializerTestCase(TestCase):
                 'icon',
                 'package_count',
                 'plugin_count',
-                'subplugin_count',
+                'sub_plugin_count',
                 'project_count',
             ),
         )

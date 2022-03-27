@@ -25,7 +25,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='subplugin',
             name='contributors',
-            field=models.ManyToManyField(related_name='subplugin_contributions', through='project_manager.SubPluginContributor', to='users.ForumUser'),
+            field=models.ManyToManyField(related_name='sub_plugin_contributions', through='project_manager.SubPluginContributor', to='users.ForumUser'),
         ),
         migrations.AddField(
             model_name='subplugin',
@@ -40,12 +40,12 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='subplugin',
             name='supported_games',
-            field=models.ManyToManyField(related_name='subplugins', through='project_manager.SubPluginGame', to='games.Game'),
+            field=models.ManyToManyField(related_name='sub_plugins', through='project_manager.SubPluginGame', to='games.Game'),
         ),
         migrations.AddField(
             model_name='subplugin',
             name='tags',
-            field=models.ManyToManyField(related_name='subplugins', through='project_manager.SubPluginTag', to='tags.Tag'),
+            field=models.ManyToManyField(related_name='sub_plugins', through='project_manager.SubPluginTag', to='tags.Tag'),
         ),
         migrations.AddField(
             model_name='plugintag',

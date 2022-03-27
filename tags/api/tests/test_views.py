@@ -133,7 +133,7 @@ class TagViewSetTestCase(APITestCase):
         for n, lookup_name in enumerate([
             'packages',
             'plugins',
-            'subplugins',
+            'sub_plugins',
         ]):
             lookup = prefetch_lookups[n]
             self.assertEqual(
@@ -189,17 +189,17 @@ class TagViewSetTestCase(APITestCase):
         )
 
         self.assertIn(
-            member='subplugin_count',
+            member='sub_plugin_count',
             container=annotations,
         )
-        subplugin_count = annotations['subplugin_count']
-        self.assertTrue(expr=subplugin_count.distinct)
+        sub_plugin_count = annotations['sub_plugin_count']
+        self.assertTrue(expr=sub_plugin_count.distinct)
         self.assertEqual(
-            first=len(subplugin_count.source_expressions),
+            first=len(sub_plugin_count.source_expressions),
             second=1,
         )
         self.assertIs(
-            expr1=subplugin_count.source_expressions[0].target,
+            expr1=sub_plugin_count.source_expressions[0].target,
             expr2=getattr(SubPluginTag.sub_plugin, 'field'),
         )
 
@@ -218,7 +218,7 @@ class TagViewSetTestCase(APITestCase):
         )
         self.assertEqual(
             first=project_count.rhs,
-            second=subplugin_count,
+            second=sub_plugin_count,
         )
         lhs = project_count.lhs
         self.assertIsInstance(
@@ -256,7 +256,7 @@ class TagViewSetTestCase(APITestCase):
                 'name': self.tag_1.name,
                 'package_count': 1,
                 'plugin_count': 2,
-                'subplugin_count': 0,
+                'sub_plugin_count': 0,
                 'project_count': 3,
             },
         )
@@ -266,7 +266,7 @@ class TagViewSetTestCase(APITestCase):
                 'name': self.tag_2.name,
                 'package_count': 2,
                 'plugin_count': 1,
-                'subplugin_count': 2,
+                'sub_plugin_count': 2,
                 'project_count': 5,
             },
         )
@@ -276,7 +276,7 @@ class TagViewSetTestCase(APITestCase):
                 'name': self.tag_3.name,
                 'package_count': 0,
                 'plugin_count': 1,
-                'subplugin_count': 0,
+                'sub_plugin_count': 0,
                 'project_count': 1,
             },
         )
@@ -286,7 +286,7 @@ class TagViewSetTestCase(APITestCase):
                 'name': self.tag_4.name,
                 'package_count': 0,
                 'plugin_count': 0,
-                'subplugin_count': 0,
+                'sub_plugin_count': 0,
                 'project_count': 0,
             },
         )
@@ -310,7 +310,7 @@ class TagViewSetTestCase(APITestCase):
                 'name': self.tag_2.name,
                 'package_count': 2,
                 'plugin_count': 1,
-                'subplugin_count': 2,
+                'sub_plugin_count': 2,
                 'project_count': 5,
             },
         )
@@ -320,7 +320,7 @@ class TagViewSetTestCase(APITestCase):
                 'name': self.tag_1.name,
                 'package_count': 1,
                 'plugin_count': 2,
-                'subplugin_count': 0,
+                'sub_plugin_count': 0,
                 'project_count': 3,
             },
         )
@@ -330,7 +330,7 @@ class TagViewSetTestCase(APITestCase):
                 'name': self.tag_3.name,
                 'package_count': 0,
                 'plugin_count': 1,
-                'subplugin_count': 0,
+                'sub_plugin_count': 0,
                 'project_count': 1,
             },
         )
@@ -340,7 +340,7 @@ class TagViewSetTestCase(APITestCase):
                 'name': self.tag_4.name,
                 'package_count': 0,
                 'plugin_count': 0,
-                'subplugin_count': 0,
+                'sub_plugin_count': 0,
                 'project_count': 0,
             },
         )
@@ -371,7 +371,7 @@ class TagViewSetTestCase(APITestCase):
                         'slug': self.plugin_2.slug,
                     },
                 ],
-                'subplugins': [],
+                'sub_plugins': [],
             }
         )
 
@@ -400,7 +400,7 @@ class TagViewSetTestCase(APITestCase):
                         'slug': self.plugin_1.slug,
                     },
                 ],
-                'subplugins': [
+                'sub_plugins': [
                     {
                         'name': self.sub_plugin_1.name,
                         'slug': self.sub_plugin_1.slug,
@@ -437,7 +437,7 @@ class TagViewSetTestCase(APITestCase):
                         'slug': self.plugin_2.slug,
                     },
                 ],
-                'subplugins': [],
+                'sub_plugins': [],
             }
         )
 
@@ -452,7 +452,7 @@ class TagViewSetTestCase(APITestCase):
                 'name': self.tag_4.name,
                 'packages': [],
                 'plugins': [],
-                'subplugins': [],
+                'sub_plugins': [],
             }
         )
 

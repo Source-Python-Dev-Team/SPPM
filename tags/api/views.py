@@ -83,7 +83,7 @@ class TagViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet):
                     queryset=Plugin.objects.order_by('name'),
                 ),
                 Prefetch(
-                    lookup='subplugins',
+                    lookup='sub_plugins',
                     queryset=SubPlugin.objects.select_related(
                         'plugin',
                     ).order_by(
@@ -94,11 +94,11 @@ class TagViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet):
 
         package_count = Count('packages', distinct=True)
         plugin_count = Count('plugins', distinct=True)
-        subplugin_count = Count('subplugins', distinct=True)
+        sub_plugin_count = Count('sub_plugins', distinct=True)
         return queryset.annotate(
             package_count=package_count,
             plugin_count=plugin_count,
-            subplugin_count=subplugin_count,
+            sub_plugin_count=sub_plugin_count,
         ).annotate(
-            project_count=F('package_count') + F('plugin_count') + F('subplugin_count'),
+            project_count=F('package_count') + F('plugin_count') + F('sub_plugin_count'),
         )

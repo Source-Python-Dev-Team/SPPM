@@ -31,7 +31,7 @@ class TagRetrieveSerializer(ModelSerializer):
 
     packages = MinimalPackageSerializer(many=True, read_only=True)
     plugins = MinimalPluginSerializer(many=True, read_only=True)
-    subplugins = MinimalSubPluginSerializer(many=True, read_only=True)
+    sub_plugins = MinimalSubPluginSerializer(many=True, read_only=True)
 
     class Meta:
         """Define metaclass attributes."""
@@ -41,7 +41,7 @@ class TagRetrieveSerializer(ModelSerializer):
             'name',
             'packages',
             'plugins',
-            'subplugins',
+            'sub_plugins',
         )
 
 
@@ -50,7 +50,7 @@ class TagListSerializer(ModelSerializer):
 
     package_count = IntegerField()
     plugin_count = IntegerField()
-    subplugin_count = IntegerField()
+    sub_plugin_count = IntegerField()
     project_count = IntegerField()
 
     class Meta:
@@ -61,6 +61,6 @@ class TagListSerializer(ModelSerializer):
             'name',
             'package_count',
             'plugin_count',
-            'subplugin_count',
+            'sub_plugin_count',
             'project_count',
         )

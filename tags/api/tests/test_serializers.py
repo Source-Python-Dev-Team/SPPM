@@ -35,7 +35,7 @@ class TagRetrieveSerializerTestCase(TestCase):
         for field, cls in (
             ('packages', MinimalPackageSerializer),
             ('plugins', MinimalPluginSerializer),
-            ('subplugins', MinimalSubPluginSerializer),
+            ('sub_plugins', MinimalSubPluginSerializer),
         ):
             self.assertIn(
                 member=field,
@@ -63,7 +63,7 @@ class TagRetrieveSerializerTestCase(TestCase):
                 'name',
                 'packages',
                 'plugins',
-                'subplugins',
+                'sub_plugins',
             ),
         )
 
@@ -84,7 +84,7 @@ class TagListSerializerTestCase(TestCase):
         for field in (
             'package_count',
             'plugin_count',
-            'subplugin_count',
+            'sub_plugin_count',
             'project_count',
         ):
             self.assertIn(
@@ -108,7 +108,7 @@ class TagListSerializerTestCase(TestCase):
                 'name',
                 'package_count',
                 'plugin_count',
-                'subplugin_count',
+                'sub_plugin_count',
                 'project_count',
             ),
         )

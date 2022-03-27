@@ -64,7 +64,7 @@ class ForumUserViewSet(ModelViewSet):
             )
         ),
         Prefetch(
-            lookup='subplugins',
+            lookup='sub_plugins',
             queryset=SubPlugin.objects.order_by(
                 'name',
             ).select_related(
@@ -84,7 +84,7 @@ class ForumUserViewSet(ModelViewSet):
             )
         ),
         Prefetch(
-            lookup='subplugin_contributions',
+            lookup='sub_plugin_contributions',
             queryset=SubPlugin.objects.order_by(
                 'name',
             ).select_related(

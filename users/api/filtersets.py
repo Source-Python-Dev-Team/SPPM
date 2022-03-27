@@ -48,8 +48,8 @@ class ForumUserFilterSet(FilterSet):
             plugin_contribution_count=Count('plugin_contributions'),
             package_count=Count('packages'),
             package_contribution_count=Count('package_contributions'),
-            sub_plugin_count=Count('subplugins'),
-            sub_plugin_contribution_count=Count('subplugin_contributions'),
+            sub_plugin_count=Count('sub_plugins'),
+            sub_plugin_contribution_count=Count('sub_plugin_contributions'),
         )
         method = queryset.filter if value else queryset.exclude
         return method(

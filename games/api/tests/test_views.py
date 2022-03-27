@@ -129,7 +129,7 @@ class GameViewSetTestCase(APITestCase):
         for n, lookup_name in enumerate([
             'packages',
             'plugins',
-            'subplugins',
+            'sub_plugins',
         ]):
             lookup = prefetch_lookups[n]
             self.assertEqual(
@@ -185,17 +185,17 @@ class GameViewSetTestCase(APITestCase):
         )
 
         self.assertIn(
-            member='subplugin_count',
+            member='sub_plugin_count',
             container=annotations,
         )
-        subplugin_count = annotations['subplugin_count']
-        self.assertTrue(expr=subplugin_count.distinct)
+        sub_plugin_count = annotations['sub_plugin_count']
+        self.assertTrue(expr=sub_plugin_count.distinct)
         self.assertEqual(
-            first=len(subplugin_count.source_expressions),
+            first=len(sub_plugin_count.source_expressions),
             second=1,
         )
         self.assertIs(
-            expr1=subplugin_count.source_expressions[0].target,
+            expr1=sub_plugin_count.source_expressions[0].target,
             expr2=getattr(SubPluginGame.sub_plugin, 'field'),
         )
 
@@ -214,7 +214,7 @@ class GameViewSetTestCase(APITestCase):
         )
         self.assertEqual(
             first=project_count.rhs,
-            second=subplugin_count,
+            second=sub_plugin_count,
         )
         lhs = project_count.lhs
         self.assertIsInstance(
@@ -256,7 +256,7 @@ class GameViewSetTestCase(APITestCase):
                 'icon': f'{icon_base_url}{self.game_1.icon.url}',
                 'package_count': 1,
                 'plugin_count': 2,
-                'subplugin_count': 0,
+                'sub_plugin_count': 0,
                 'project_count': 3,
             },
         )
@@ -268,7 +268,7 @@ class GameViewSetTestCase(APITestCase):
                 'icon': f'{icon_base_url}{self.game_2.icon.url}',
                 'package_count': 2,
                 'plugin_count': 1,
-                'subplugin_count': 2,
+                'sub_plugin_count': 2,
                 'project_count': 5,
             },
         )
@@ -280,7 +280,7 @@ class GameViewSetTestCase(APITestCase):
                 'icon': f'{icon_base_url}{self.game_3.icon.url}',
                 'package_count': 0,
                 'plugin_count': 1,
-                'subplugin_count': 0,
+                'sub_plugin_count': 0,
                 'project_count': 1,
             },
         )
@@ -292,7 +292,7 @@ class GameViewSetTestCase(APITestCase):
                 'icon': f'{icon_base_url}{self.game_4.icon.url}',
                 'package_count': 0,
                 'plugin_count': 0,
-                'subplugin_count': 0,
+                'sub_plugin_count': 0,
                 'project_count': 0,
             },
         )
@@ -318,7 +318,7 @@ class GameViewSetTestCase(APITestCase):
                 'icon': f'{icon_base_url}{self.game_2.icon.url}',
                 'package_count': 2,
                 'plugin_count': 1,
-                'subplugin_count': 2,
+                'sub_plugin_count': 2,
                 'project_count': 5,
             },
         )
@@ -330,7 +330,7 @@ class GameViewSetTestCase(APITestCase):
                 'icon': f'{icon_base_url}{self.game_1.icon.url}',
                 'package_count': 1,
                 'plugin_count': 2,
-                'subplugin_count': 0,
+                'sub_plugin_count': 0,
                 'project_count': 3,
             },
         )
@@ -342,7 +342,7 @@ class GameViewSetTestCase(APITestCase):
                 'icon': f'{icon_base_url}{self.game_3.icon.url}',
                 'package_count': 0,
                 'plugin_count': 1,
-                'subplugin_count': 0,
+                'sub_plugin_count': 0,
                 'project_count': 1,
             },
         )
@@ -354,7 +354,7 @@ class GameViewSetTestCase(APITestCase):
                 'icon': f'{icon_base_url}{self.game_4.icon.url}',
                 'package_count': 0,
                 'plugin_count': 0,
-                'subplugin_count': 0,
+                'sub_plugin_count': 0,
                 'project_count': 0,
             },
         )
@@ -389,7 +389,7 @@ class GameViewSetTestCase(APITestCase):
                         'slug': self.plugin_2.slug,
                     },
                 ],
-                'subplugins': [],
+                'sub_plugins': [],
             }
         )
 
@@ -420,7 +420,7 @@ class GameViewSetTestCase(APITestCase):
                         'slug': self.plugin_1.slug,
                     },
                 ],
-                'subplugins': [
+                'sub_plugins': [
                     {
                         'name': self.sub_plugin_1.name,
                         'slug': self.sub_plugin_1.slug,
@@ -459,7 +459,7 @@ class GameViewSetTestCase(APITestCase):
                         'slug': self.plugin_2.slug,
                     },
                 ],
-                'subplugins': [],
+                'sub_plugins': [],
             }
         )
 
@@ -476,7 +476,7 @@ class GameViewSetTestCase(APITestCase):
                 'icon': f'{icon_base_url}{self.game_4.icon.url}',
                 'packages': [],
                 'plugins': [],
-                'subplugins': [],
+                'sub_plugins': [],
             }
         )
 

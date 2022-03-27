@@ -15,31 +15,31 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='package',
             name='owner',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='%(class)ss', to='users.forumuser'),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='packages', to='users.forumuser'),
         ),
         migrations.AlterField(
             model_name='packagerelease',
             name='created_by',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='%(class)ss', to='users.forumuser'),
+            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='package_releases', to='users.forumuser'),
         ),
         migrations.AlterField(
             model_name='plugin',
             name='owner',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='%(class)ss', to='users.forumuser'),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='plugins', to='users.forumuser'),
         ),
         migrations.AlterField(
             model_name='pluginrelease',
             name='created_by',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='%(class)ss', to='users.forumuser'),
+            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='plugin_releases', to='users.forumuser'),
         ),
         migrations.AlterField(
             model_name='subplugin',
             name='owner',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='%(class)ss', to='users.forumuser'),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='sub_plugins', to='users.forumuser'),
         ),
         migrations.AlterField(
             model_name='subpluginrelease',
             name='created_by',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='%(class)ss', to='users.forumuser'),
+            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='sub_plugin_releases', to='users.forumuser'),
         ),
     ]

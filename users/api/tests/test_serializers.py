@@ -107,36 +107,36 @@ class ForumUserSerializerTestCase(TestCase):
         self.assertTrue(expr=declared_fields['plugin_contributions'].child.read_only)
 
         self.assertIn(
-            member='subplugins',
+            member='sub_plugins',
             container=declared_fields,
         )
         self.assertIsInstance(
-            obj=declared_fields['subplugins'],
+            obj=declared_fields['sub_plugins'],
             cls=ListSerializer,
         )
-        self.assertTrue(expr=declared_fields['subplugins'].many)
-        self.assertTrue(expr=declared_fields['subplugins'].read_only)
+        self.assertTrue(expr=declared_fields['sub_plugins'].many)
+        self.assertTrue(expr=declared_fields['sub_plugins'].read_only)
         self.assertIsInstance(
-            obj=declared_fields['subplugins'].child,
+            obj=declared_fields['sub_plugins'].child,
             cls=MinimalSubPluginSerializer,
         )
-        self.assertTrue(expr=declared_fields['subplugins'].child.read_only)
+        self.assertTrue(expr=declared_fields['sub_plugins'].child.read_only)
 
         self.assertIn(
-            member='subplugin_contributions',
+            member='sub_plugin_contributions',
             container=declared_fields,
         )
         self.assertIsInstance(
-            obj=declared_fields['subplugin_contributions'],
+            obj=declared_fields['sub_plugin_contributions'],
             cls=ListSerializer,
         )
-        self.assertTrue(expr=declared_fields['subplugin_contributions'].many)
-        self.assertTrue(expr=declared_fields['subplugin_contributions'].read_only)
+        self.assertTrue(expr=declared_fields['sub_plugin_contributions'].many)
+        self.assertTrue(expr=declared_fields['sub_plugin_contributions'].read_only)
         self.assertIsInstance(
-            obj=declared_fields['subplugin_contributions'].child,
+            obj=declared_fields['sub_plugin_contributions'].child,
             cls=MinimalSubPluginSerializer,
         )
-        self.assertTrue(expr=declared_fields['subplugin_contributions'].child.read_only)
+        self.assertTrue(expr=declared_fields['sub_plugin_contributions'].child.read_only)
 
     def test_meta_class(self):
         self.assertEqual(
@@ -152,8 +152,8 @@ class ForumUserSerializerTestCase(TestCase):
                 'package_contributions',
                 'plugins',
                 'plugin_contributions',
-                'subplugins',
-                'subplugin_contributions',
+                'sub_plugins',
+                'sub_plugin_contributions',
             ),
         )
 

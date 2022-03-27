@@ -45,11 +45,11 @@ class ForumUserSerializer(ModelSerializer):
         many=True,
         read_only=True,
     )
-    subplugins = MinimalSubPluginSerializer(
+    sub_plugins = MinimalSubPluginSerializer(
         many=True,
         read_only=True,
     )
-    subplugin_contributions = MinimalSubPluginSerializer(
+    sub_plugin_contributions = MinimalSubPluginSerializer(
         many=True,
         read_only=True,
     )
@@ -65,8 +65,8 @@ class ForumUserSerializer(ModelSerializer):
             'package_contributions',
             'plugins',
             'plugin_contributions',
-            'subplugins',
-            'subplugin_contributions',
+            'sub_plugins',
+            'sub_plugin_contributions',
         )
 
     @staticmethod

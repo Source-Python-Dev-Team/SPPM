@@ -55,8 +55,8 @@ class StatisticsView(TemplateView):
         users = ForumUser.objects.filter(
             Q(plugins__isnull=False) |
             Q(plugin_contributions__isnull=False) |
-            Q(subplugins__isnull=False) |
-            Q(subplugin_contributions__isnull=False) |
+            Q(sub_plugins__isnull=False) |
+            Q(sub_plugin_contributions__isnull=False) |
             Q(packages__isnull=False) |
             Q(package_contributions__isnull=False)
         ).distinct().count()

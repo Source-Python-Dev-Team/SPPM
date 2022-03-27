@@ -15,16 +15,16 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='packagerelease',
             name='created_by',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='packagereleases', to='users.forumuser'),
+            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='package_releases', to='users.forumuser'),
         ),
         migrations.AddField(
             model_name='pluginrelease',
             name='created_by',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='pluginreleases', to='users.forumuser'),
+            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='plugin_releases', to='users.forumuser'),
         ),
         migrations.AddField(
             model_name='subpluginrelease',
             name='created_by',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='subpluginreleases', to='users.forumuser'),
+            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='sub_plugin_releases', to='users.forumuser'),
         ),
     ]
