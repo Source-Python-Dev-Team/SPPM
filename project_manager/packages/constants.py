@@ -5,7 +5,10 @@
 # =============================================================================
 # App
 from project_manager.common.constants import (
-    ALLOWED_FILE_TYPES, IMAGE_URL, LOGO_URL, READABLE_DATA_FILE_TYPES,
+    ALLOWED_FILE_TYPES,
+    IMAGE_URL,
+    LOGO_URL,
+    READABLE_DATA_FILE_TYPES,
     RELEASE_URL,
 )
 
