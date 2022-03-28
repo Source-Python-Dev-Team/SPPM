@@ -247,11 +247,6 @@ class SubPluginContributor(AbstractUUIDPrimaryKeyModel):
         verbose_name = 'SubPlugin Contributor'
         verbose_name_plural = 'SubPlugin Contributors'
 
-    @property
-    def project(self):
-        """Return the SubPlugin."""
-        return self.sub_plugin
-
     def __str__(self):
         """Return the base string."""
         return f'{self.sub_plugin} Contributor: {self.user}'
@@ -287,11 +282,6 @@ class SubPluginGame(AbstractUUIDPrimaryKeyModel):
         verbose_name = 'SubPlugin Game'
         verbose_name_plural = 'SubPlugin Games'
 
-    @property
-    def project(self):
-        """Return the SubPlugin."""
-        return self.sub_plugin
-
     def __str__(self):
         """Return the base string."""
         return f'{self.sub_plugin} Game: {self.game}'
@@ -315,11 +305,6 @@ class SubPluginTag(AbstractUUIDPrimaryKeyModel):
         unique_together = ('sub_plugin', 'tag')
         verbose_name = 'SubPlugin Tag'
         verbose_name_plural = 'SubPlugin Tags'
-
-    @property
-    def project(self):
-        """Return the SubPlugin."""
-        return self.sub_plugin
 
     def __str__(self):
         """Return the base string."""

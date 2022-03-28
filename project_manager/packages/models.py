@@ -224,11 +224,6 @@ class PackageContributor(AbstractUUIDPrimaryKeyModel):
         verbose_name = 'Package Contributor'
         verbose_name_plural = 'Package Contributors'
 
-    @property
-    def project(self):
-        """Return the Package."""
-        return self.package
-
     def __str__(self):
         """Return the base string."""
         return f'{self.package} Contributor: {self.user}'
@@ -265,11 +260,6 @@ class PackageGame(AbstractUUIDPrimaryKeyModel):
         verbose_name = 'Package Game'
         verbose_name_plural = 'Package Games'
 
-    @property
-    def project(self):
-        """Return the Package."""
-        return self.package
-
     def __str__(self):
         """Return the base string."""
         return f'{self.package} Game: {self.game}'
@@ -293,11 +283,6 @@ class PackageTag(AbstractUUIDPrimaryKeyModel):
         unique_together = ('package', 'tag')
         verbose_name = 'Package Tag'
         verbose_name_plural = 'Package Tags'
-
-    @property
-    def project(self):
-        """Return the Package."""
-        return self.package
 
     def __str__(self):
         """Return the base string."""
