@@ -13,23 +13,27 @@ If you wish to contribute to this application, follow the instructions below on 
    2. If you have to set it up yourself, there are plenty of online guides to help you.
    3. We may Docker-ize the app in the future, which will make this a little simpler, but will require you to install/run Docker.
 3. Log into your virtual environment to complete the rest of these steps.
-4. Run `pip install -r pip-requirements/local.txt` to install all the Python/Django requirements.
-5. Run the [migrate](https://docs.djangoproject.com/en/dev/ref/django-admin/#migrate) management command to create the tables/columns in your database.
-6. Run the `create_game_instances` management command to create the Game objects.
-7. Run the [createsuperuser](https://docs.djangoproject.com/en/dev/ref/django-admin/#createsuperuser) management command to create your main user.
-8. Run the `associate_super_user` management command to associate the Super User you just created with a ForumUser object.
-   1. Arguments for the command are:
-      1. **username** - The username of the Super User.
-      2. **forum_id** - The user id from the Source.Python forums.
-9. If you want to create a test (non-Super User) User, run the `create_test_user` management command.
-   1. Arguments for the command are:
-      1. **username** - The username of the User.
-      2. **password** - The password to use for the User.
-      3. **forum_id** - The user id from the Source.Python forums.
-10. If you want additional users to test with, run the `create_random_users` management command.
+4. In order for things to function correctly, set the environment variable **DJANGO_SETTINGS_MODULE** to `SPPM.settings.local`
+5. Run `pip install -r pip-requirements/local.txt` to install all the Python/Django requirements.
+   1. Be mindful in the future that when you `git pull`, you will want to update the requirements by running the above command again.
+6. Run the [makemigrations](https://docs.djangoproject.com/en/dev/ref/django-admin/#makemigrations) management command in case any of the newly installed requirements has any to create.
+   1. Any time the requirements are updated, you should attempt to run this command again, and `migrate` if there were any new migrations found.
+7. Run the [migrate](https://docs.djangoproject.com/en/dev/ref/django-admin/#migrate) management command to create the tables/columns in your database.
+8. Run the `create_game_instances` management command to create the Game objects.
+9. Run the [createsuperuser](https://docs.djangoproject.com/en/dev/ref/django-admin/#createsuperuser) management command to create your main user.
+10. Run the `associate_super_user` management command to associate the Super User you just created with a ForumUser object.
+    1. Arguments for the command are:
+       1. **username** - The username of the Super User.
+       2. **forum_id** - The user id from the Source.Python forums.
+11. If you want to create a test (non-Super User) User, run the `create_test_user` management command.
+    1. Arguments for the command are:
+       1. **username** - The username of the User.
+       2. **password** - The password to use for the User.
+       3. **forum_id** - The user id from the Source.Python forums.
+12. If you want additional users to test with, run the `create_random_users` management command.
     1. Arguments for the command are:
        1. **count** - The number of random Users to create.
-11. Run the server using the [runserver](https://docs.djangoproject.com/en/dev/ref/django-admin/#runserver) management command.
+13. Run the server using the [runserver](https://docs.djangoproject.com/en/dev/ref/django-admin/#runserver) management command.
     1. Some IDEs, like Pycharm, have tools to run the server instead of manually running the command in a console window.
 
 ## Authentication (logging in)
