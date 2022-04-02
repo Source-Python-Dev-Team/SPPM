@@ -8,7 +8,6 @@ from django.db.models import Prefetch
 
 # Third Party Django
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework.filters import OrderingFilter
 from rest_framework.viewsets import ModelViewSet
 
 # App
@@ -16,6 +15,7 @@ from project_manager.packages.models import Package
 from project_manager.plugins.models import Plugin
 from project_manager.sub_plugins.models import SubPlugin
 from users.api.filtersets import ForumUserFilterSet
+from users.api.ordering import ForumUserOrderingFilter
 from users.api.serializers import ForumUserSerializer
 from users.models import ForumUser
 
@@ -37,19 +37,19 @@ class ForumUserViewSet(ModelViewSet):
     ###Available Ordering:
 
     *  **forum_id** (descending) or **-forum_id** (ascending)
-    *  **user__username** (descending) or **-user__username** (ascending)
+    *  **username** (descending) or **-username** (ascending)
 
         ####Example:
         `?ordering=forum_id`
 
-        `?ordering=-user__username`
+        `?ordering=-username`
     """
 
-    filter_backends = (OrderingFilter, DjangoFilterBackend)
+    filter_backends = (ForumUserOrderingFilter, DjangoFilterBackend)
     filterset_class = ForumUserFilterSet
     http_method_names = ('get', 'options')
-    ordering = ('user__username',)
-    ordering_fields = ('forum_id', 'user__username')
+    ordering = ('username',)
+    ordering_fields = ('forum_id', 'username')
     queryset = ForumUser.objects.prefetch_related(
         Prefetch(
             lookup='packages',
