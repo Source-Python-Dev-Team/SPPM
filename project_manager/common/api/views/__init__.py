@@ -201,7 +201,7 @@ class ProjectReleaseViewSet(ProjectRelatedInfoMixin):
     """
     http_method_names = ('get', 'post', 'options')
     ordering = ('-created',)
-    ordering_fields = ('created',)
+    ordering_fields = ('created', 'version')
     lookup_value_regex = RELEASE_VERSION_REGEX
     lookup_field = 'version'
     related_model_type = 'Release'

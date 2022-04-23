@@ -181,7 +181,7 @@ class ProjectReleaseViewSetTestCase(TestCase):
         )
         self.assertTupleEqual(
             tuple1=ProjectReleaseViewSet.ordering_fields,
-            tuple2=('created',),
+            tuple2=('created', 'version'),
         )
         self.assertEqual(
             first=ProjectReleaseViewSet.lookup_value_regex,
