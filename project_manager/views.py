@@ -4,13 +4,14 @@
 # IMPORTS
 # =============================================================================
 # Django
-from django.db.models import Q
+from django.db.models import Count, Q, Sum
+from django.db.models.functions import Coalesce
 from django.views.generic import TemplateView
 
 # App
-from project_manager.packages.models import Package, PackageRelease
-from project_manager.plugins.models import Plugin, PluginRelease
-from project_manager.sub_plugins.models import SubPlugin, SubPluginRelease
+from project_manager.packages.models import PackageRelease
+from project_manager.plugins.models import PluginRelease
+from project_manager.sub_plugins.models import SubPluginRelease
 from users.models import ForumUser
 
 
@@ -34,23 +35,17 @@ class StatisticsView(TemplateView):
     def get_context_data(self, **kwargs):
         """Return all statistical context data."""
         context = super().get_context_data(**kwargs)
-        package_downloads = sum(
-            PackageRelease.objects.values_list(
-                'download_count',
-                flat=True,
-            )
+        package_info = PackageRelease.objects.aggregate(
+            download_count=Coalesce(Sum('download_count'), 0),
+            project_count=Count('package', distinct=True),
         )
-        plugin_downloads = sum(
-            PluginRelease.objects.values_list(
-                'download_count',
-                flat=True,
-            )
+        plugin_info = PluginRelease.objects.aggregate(
+            download_count=Coalesce(Sum('download_count'), 0),
+            project_count=Count('plugin', distinct=True),
         )
-        sub_plugin_downloads = sum(
-            SubPluginRelease.objects.values_list(
-                'download_count',
-                flat=True,
-            )
+        sub_plugin_info = SubPluginRelease.objects.aggregate(
+            download_count=Coalesce(Sum('download_count'), 0),
+            project_count=Count('sub_plugin', distinct=True),
         )
         users = ForumUser.objects.filter(
             Q(plugins__isnull=False) |
@@ -60,20 +55,23 @@ class StatisticsView(TemplateView):
             Q(packages__isnull=False) |
             Q(package_contributions__isnull=False)
         ).distinct().count()
-        packages = Package.objects.count()
-        plugins = Plugin.objects.count()
-        sub_plugins = SubPlugin.objects.count()
         context.update({
             'users': users,
-            'package_count': packages,
-            'plugin_count': plugins,
-            'sub_plugin_count': sub_plugins,
-            'total_projects': packages + plugins + sub_plugins,
-            'package_downloads': package_downloads,
-            'plugin_downloads': plugin_downloads,
-            'sub_plugin_downloads': sub_plugin_downloads,
+            'package_count': package_info['project_count'],
+            'plugin_count': plugin_info['project_count'],
+            'sub_plugin_count': sub_plugin_info['project_count'],
+            'total_projects': sum([
+                package_info['project_count'],
+                plugin_info['project_count'],
+                sub_plugin_info['project_count'],
+            ]),
+            'package_downloads': package_info['download_count'],
+            'plugin_downloads': plugin_info['download_count'],
+            'sub_plugin_downloads': sub_plugin_info['download_count'],
             'total_downloads': sum([
-                package_downloads, plugin_downloads, sub_plugin_downloads,
+                package_info['download_count'],
+                plugin_info['download_count'],
+                sub_plugin_info['download_count'],
             ])
         })
         return context
