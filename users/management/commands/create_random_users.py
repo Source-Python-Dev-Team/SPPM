@@ -91,7 +91,10 @@ class Command(BaseCommand):
                 objs=obj_list,
             )
 
-        logger.info(f'Successfully created "{count}" users.')
+        logger.info(
+            'Successfully created "%s" users.',
+            count,
+        )
 
     @staticmethod
     def validate_unique_list(username_list, current_usernames, count):

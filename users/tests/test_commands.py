@@ -46,7 +46,9 @@ class CommandsTestCase(TestCase):
             second=forum_id,
         )
         mock_logger.info.assert_called_once_with(
-            f'User "{user.username}" successfully associated with forum id "{forum_id}".'
+            'User "%s" successfully associated with forum id "%s".',
+            user.username,
+            forum_id
         )
 
     @override_settings(LOCAL=False)
@@ -118,7 +120,8 @@ class CommandsTestCase(TestCase):
             list2=id_list,
         )
         mock_logger.info.assert_called_once_with(
-            f'Successfully created "{count}" users.'
+            'Successfully created "%s" users.',
+            count,
         )
 
     @override_settings(LOCAL=False)
@@ -156,7 +159,9 @@ class CommandsTestCase(TestCase):
             second=username,
         )
         mock_logger.info.assert_called_once_with(
-            f'Successfully created user "{username}" and associated it with forum id "{forum_id}".'
+            'Successfully created user "%s" and associated it with forum id "%s".',
+            username,
+            forum_id,
         )
 
     @override_settings(LOCAL=False)

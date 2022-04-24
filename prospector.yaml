@@ -37,12 +37,3 @@ mccabe:
 
 pylint:
   run: true
-  disable:
-    - astroid-error
-    - fixme
-    - django-not-configured
-    - ungrouped-imports
-    - wrong-import-order
-    - wrong-import-position
-  options:
-    max-line-length: 100

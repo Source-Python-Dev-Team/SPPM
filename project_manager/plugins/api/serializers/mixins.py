@@ -33,5 +33,5 @@ class PluginReleaseBase:
     def get_project_kwargs(self):
         """Return kwargs for the project."""
         return {
-            'pk': self.context['view'].kwargs.get('plugin_slug')
+            'pk': getattr(self, 'context')['view'].kwargs.get('plugin_slug')
         }

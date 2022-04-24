@@ -4,6 +4,8 @@ ignore=
     tests,
     migrations,
 
+django-settings-module=SPPM.settings.local
+
 
 [MESSAGES CONTROL]
 # Definitions of codes disabled
@@ -11,12 +13,13 @@ ignore=
 #   http://pylint-messages.wikidot.com/all-codes
 disable=
     abstract-method,
+    astroid-error,
     fixme,
-    locally-disabled,
-    no-member,
-    too-few-public-methods,
     too-many-ancestors,
-    logging-fstring-interpolation,
+
+
+[FORMAT]
+max-line-length=100
 
 
 [BASIC]

@@ -71,6 +71,7 @@ class Command(BaseCommand):
             forum_id=forum_id,
         )
         logger.info(
-            f'User "{username}" successfully associated with forum id '
-            f'"{forum_id}".'
+            'User "%s" successfully associated with forum id "%s".',
+            username,
+            forum_id,
         )

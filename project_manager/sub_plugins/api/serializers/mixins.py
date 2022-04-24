@@ -32,7 +32,7 @@ class SubPluginReleaseBase:
     @property
     def parent_project(self):
         """Return the parent plugin."""
-        kwargs = self.context['view'].kwargs
+        kwargs = getattr(self, 'context')['view'].kwargs
         plugin_slug = kwargs.get('plugin_slug')
         try:
             plugin = Plugin.objects.get(slug=plugin_slug)
@@ -49,7 +49,7 @@ class SubPluginReleaseBase:
 
     def get_project_kwargs(self):
         """Return kwargs for the project."""
-        kwargs = self.context['view'].kwargs
+        kwargs = getattr(self, 'context')['view'].kwargs
         return {
             'slug': kwargs.get('sub_plugin_slug'),
             'plugin': self.parent_project,

@@ -82,6 +82,7 @@ class Command(BaseCommand):
             forum_id=forum_id,
         )
         logger.info(
-            f'Successfully created user "{username}" and associated it with '
-            f'forum id "{forum_id}".'
+            'Successfully created user "%s" and associated it with forum id "%s".',
+            username,
+            forum_id,
         )
