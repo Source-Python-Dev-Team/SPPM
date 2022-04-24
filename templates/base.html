@@ -1,9 +1,6 @@
 {% load static %}
 
 <!DOCTYPE html>
-<script src="https://cdn.jsdelivr.net/npm/vue"></script>
-
-{{ username|json_script:"username" }}
 
 <html lang="en">
     <head>
@@ -11,7 +8,6 @@
         <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
         <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
         <link rel="stylesheet" media="all" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
-{#        <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css">#}
         <link rel="shortcut icon" type="image/png" href="{% static "project_manager/img/sp_icon_plugins.png" %}"/>
         <link rel="stylesheet" href="{% static 'project_manager/css/panel.css' %}">
         <link rel="stylesheet" href="{% static 'project_manager/css/buttons.css' %}">
@@ -23,20 +19,17 @@
         <header>
             <div class="container">
                 <div class="navbar navbar-default navbar-top" role="navigation">
-{#                    <a href="{% url 'plugins:list' %}" class="navbar-brand" id="logo"><img src="{% static "project_manager/img/sp_banner_plugins.png" %}" alt="SPPM"/></a>#}
+                    <a href="{% url 'plugins:list' %}" class="navbar-brand" id="logo"><img src="{% static "project_manager/img/sp_banner_plugins.png" %}" alt="SPPM"/></a>
                     <div class="topright">
                         <div class="topbar">
-                            <div id="login">
-                                <div v-if="login_message">
-                                    [[ login_message ]]
-                                </div>
-                                <div v-else>
-                                    <ul class="nav">
-                                        <li><a href="{{ FORUM_URL }}ucp.php?mode=login">Login</a></li>
-                                        <li><a href="{{ FORUM_URL }}ucp.php?mode=register">Register</a></li>
-                                    </ul>
-                                </div>
-                            </div>
+                            {% if user_authenticated %}
+                                Hello {{ username }}!
+                            {% else %}
+                                <ul class="nav">
+                                    <li><a href="{{ FORUM_URL }}ucp.php?mode=login">LOGIN</a></li>
+                                    <li><a href="{{ FORUM_URL }}ucp.php?mode=register">REGISTER</a></li>
+                                </ul>
+                            {% endif %}
                         </div>
                         <div class="searchbar">
                             <!-- <form id="search" method="get" action="http://www.google.com"> -->
@@ -70,16 +63,16 @@
                                         <li>
                                             <h1>Main Menu</h1>
                                             <ul>
-{#                                                <li><a href="{% url 'plugins:list' %}">Browse Plugins</a></li>#}
-{#                                                <li><a href="{% url 'packages:list' %}">Browse Packages</a></li>#}
+                                                <li><a href="{% url 'plugins:list' %}">Browse Plugins</a></li>
+                                                <li><a href="{% url 'packages:list' %}">Browse Packages</a></li>
 {#                                                <li><a href="{% url 'users:list' %}">Browse Contributors</a></li>#}
                                             </ul>
                                         </li>
                                         <li>
                                             <h1>User Menu</h1>
                                             <ul>
-{#                                                <li><a href="{% url 'plugins:create' %}">Upload a Plugin</a></li>#}
-{#                                                <li><a href="{% url 'packages:create' %}">Upload a Package</a></li>#}
+                                                <li><a href="{% url 'plugins:create' %}">Upload a Plugin</a></li>
+                                                <li><a href="{% url 'packages:create' %}">Upload a Package</a></li>
                                                 <li><a href="#">View Contributions</a></li>
                                                 <li><a href="#">View Favorites</a></li>
                                             </ul>
@@ -120,7 +113,7 @@
                 </div>
             </div>
         </main>
-        
+
         <footer>
             <div class="container">
                 <div class="center">
@@ -142,18 +135,3 @@
     </body>
 
 </html>
-
-<script>
-const username = JSON.parse(document.getElementById('username').textContent)
-const myPath = window.location.origin
-const login_message = ['AnonymousUser', ''].indexOf(username) === -1 ? 'Hello, ' + username + '!' : ''
-const logged_in = true
-const login = new Vue({
-    delimiters: ["[[", "]]"],
-    el: '#login',
-    data: {
-        login_message: login_message,
-        logged_in: logged_in
-    }
-})
-</script>

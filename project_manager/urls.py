@@ -49,11 +49,22 @@ urlpatterns = [
         ),
         name='api',
     ),
-    # path(
-    #     route='plugins/',
-    #     view=,
-    #     name='plugins',
-    # ),
+    path(
+        route='packages/',
+        view=include(
+            'project_manager.packages.urls',
+            namespace='packages',
+        ),
+        name='packages',
+    ),
+    path(
+        route='plugins/',
+        view=include(
+            'project_manager.plugins.urls',
+            namespace='plugins',
+        ),
+        name='plugins',
+    ),
     path(
         # /media/releases/packages/<slug>/<zip_file>
         route='media/releases/packages/<slug:slug>/<str:zip_file>',

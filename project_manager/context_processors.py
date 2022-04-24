@@ -27,4 +27,5 @@ def add_common_context_processors(request):
         'MEDIA_URL': settings.MEDIA_URL,
         'WIKI_URL': settings.WIKI_URL,
         'username': str(request.user),
+        'user_authenticated': request.user.is_authenticated,
     }
