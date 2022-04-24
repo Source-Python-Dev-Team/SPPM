@@ -5,7 +5,7 @@
 from django.test import TestCase
 
 # App
-from project_manager.common.api.filtersets import ProjectFilterSet
+from project_manager.api.common.filtersets import ProjectFilterSet
 from project_manager.packages.api.filtersets import PackageFilterSet
 from project_manager.packages.models import Package
 

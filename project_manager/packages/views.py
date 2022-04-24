@@ -4,7 +4,7 @@
 # IMPORTS
 # =============================================================================
 # App
-from project_manager.common.mixins import DownloadMixin
+from project_manager.mixins import DownloadMixin
 from project_manager.packages.constants import PACKAGE_RELEASE_URL
 from project_manager.packages.models import Package, PackageRelease
 

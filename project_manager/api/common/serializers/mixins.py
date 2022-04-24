@@ -11,7 +11,7 @@ from rest_framework.exceptions import ValidationError
 from rest_framework.serializers import ModelSerializer
 
 # App
-from project_manager.common.helpers import GROUP_QUERYSET_NAMES
+from project_manager.helpers import GROUP_QUERYSET_NAMES
 
 
 # =============================================================================

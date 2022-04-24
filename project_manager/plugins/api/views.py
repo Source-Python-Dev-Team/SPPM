@@ -10,7 +10,7 @@ from django.db.models import Prefetch
 from rest_framework.reverse import reverse
 
 # App
-from project_manager.common.api.views import (
+from project_manager.api.common.views import (
     ProjectAPIView,
     ProjectContributorViewSet,
     ProjectGameViewSet,
@@ -19,7 +19,7 @@ from project_manager.common.api.views import (
     ProjectTagViewSet,
     ProjectViewSet,
 )
-from project_manager.common.api.views.mixins import ProjectThroughModelMixin
+from project_manager.api.common.views.mixins import ProjectThroughModelMixin
 from project_manager.plugins.api.filtersets import PluginFilterSet
 from project_manager.plugins.api.serializers import (
     PluginContributorSerializer,

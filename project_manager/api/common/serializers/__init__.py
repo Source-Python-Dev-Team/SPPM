@@ -21,13 +21,13 @@ from rest_framework.reverse import reverse
 from rest_framework.serializers import ModelSerializer
 
 # App
-from project_manager.common.api.serializers.mixins import (
+from project_manager.api.common.serializers.mixins import (
     CreateRequirementsMixin,
     ProjectLocaleMixin,
     ProjectReleaseCreationMixin,
     ProjectThroughMixin,
 )
-from project_manager.common.constants import (
+from project_manager.constants import (
     RELEASE_NOTES_MAX_LENGTH,
     RELEASE_VERSION_MAX_LENGTH,
 )

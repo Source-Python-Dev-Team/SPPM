@@ -9,8 +9,8 @@ from django.contrib import admin
 from django.test import TestCase
 
 # App
-from project_manager.common.admin import ProjectAdmin, ProjectReleaseAdmin
-from project_manager.common.admin.inlines import (
+from project_manager.admin.base import ProjectAdmin, ProjectReleaseAdmin
+from project_manager.admin.inlines import (
     ProjectContributorInline,
     ProjectGameInline,
     ProjectImageInline,

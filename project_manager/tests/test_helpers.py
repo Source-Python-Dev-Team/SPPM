@@ -11,11 +11,11 @@ from django.core.exceptions import ValidationError
 from django.test import TestCase
 
 # App
-from project_manager.common.constants import (
+from project_manager.constants import (
     CANNOT_BE_NAMED,
     CANNOT_START_WITH,
 )
-from project_manager.common.helpers import (
+from project_manager.helpers import (
     ProjectZipFile,
     find_image_number,
     handle_project_logo_upload,
@@ -31,7 +31,7 @@ class ProjectZipFileTestCase(TestCase):
     def setUp(self) -> None:
         super().setUp()
         self.mock_zip_file = mock.patch(
-            target='project_manager.common.helpers.ZipFile',
+            target='project_manager.helpers.ZipFile',
         ).start()
 
     def tearDown(self) -> None:
@@ -201,7 +201,7 @@ class ProjectZipFileTestCase(TestCase):
 class CommonHelperFunctionsTestCase(TestCase):
 
     @mock.patch(
-        target='project_manager.common.models.settings.MEDIA_ROOT',
+        target='project_manager.models.abstract.settings.MEDIA_ROOT',
     )
     def test_find_image_number(self, mock_media_root):
         base_directory = mock_media_root.__truediv__.return_value

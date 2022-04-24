@@ -6,7 +6,7 @@ from django.test import TestCase
 from django.views.generic import View
 
 # App
-from project_manager.common.mixins import DownloadMixin
+from project_manager.mixins import DownloadMixin
 
 
 # =============================================================================

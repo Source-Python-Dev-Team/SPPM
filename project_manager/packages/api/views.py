@@ -7,7 +7,7 @@
 from django.db.models import Prefetch
 
 # App
-from project_manager.common.api.views import (
+from project_manager.api.common.views import (
     ProjectAPIView,
     ProjectContributorViewSet,
     ProjectGameViewSet,

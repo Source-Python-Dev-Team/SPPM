@@ -12,7 +12,7 @@ from rest_framework.fields import ReadOnlyField
 from rest_framework.serializers import ListSerializer, ModelSerializer
 
 # App
-from project_manager.common.api.serializers import (
+from project_manager.api.common.serializers import (
     ProjectContributorSerializer,
     ProjectCreateReleaseSerializer,
     ProjectGameSerializer,
@@ -120,7 +120,7 @@ class PackageCreateSerializerTestCase(TestCase):
         )
 
     @mock.patch(
-        target='project_manager.common.api.serializers.ProjectSerializer.get_extra_kwargs',
+        target='project_manager.api.common.serializers.ProjectSerializer.get_extra_kwargs',
         return_value={},
     )
     def test_releases(self, _):

@@ -12,7 +12,7 @@ from django.test import TestCase, override_settings
 from rest_framework import status
 
 # App
-from project_manager.common.mixins import DownloadMixin
+from project_manager.mixins import DownloadMixin
 from project_manager.plugins.models import Plugin
 from project_manager.sub_plugins.constants import SUB_PLUGIN_RELEASE_URL
 from project_manager.sub_plugins.models import SubPluginRelease
@@ -82,7 +82,7 @@ class SubPluginReleaseDownloadViewTestCase(TestCase):
         )
 
     @mock.patch(
-        target='project_manager.common.mixins.DownloadMixin.full_path',
+        target='project_manager.mixins.DownloadMixin.full_path',
     )
     def test_get_failure(self, mock_full_path):
         mock_full_path.isfile.return_value = False

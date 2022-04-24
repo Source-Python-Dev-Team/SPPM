@@ -20,7 +20,7 @@ from PIL import Image
 from precise_bbcode.fields import BBCodeTextField
 
 # App
-from project_manager.common.constants import (
+from project_manager.constants import (
     FORUM_THREAD_URL,
     LOGO_MAX_HEIGHT,
     LOGO_MAX_WIDTH,
@@ -31,11 +31,11 @@ from project_manager.common.constants import (
     RELEASE_NOTES_MAX_LENGTH,
     RELEASE_VERSION_MAX_LENGTH,
 )
-from project_manager.common.helpers import (
+from project_manager.helpers import (
     handle_project_logo_upload,
     handle_release_zip_file_upload,
 )
-from project_manager.common.validators import version_validator
+from project_manager.validators import version_validator
 
 
 # =============================================================================

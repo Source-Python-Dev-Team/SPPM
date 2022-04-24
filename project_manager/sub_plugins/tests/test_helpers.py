@@ -11,7 +11,7 @@ from django.core.exceptions import ValidationError
 from django.test import TestCase
 
 # App
-from project_manager.common.helpers import ProjectZipFile
+from project_manager.helpers import ProjectZipFile
 from project_manager.plugins.constants import PLUGIN_PATH
 from project_manager.sub_plugins.constants import (
     SUB_PLUGIN_ALLOWED_FILE_TYPES,
@@ -63,7 +63,7 @@ class SubPluginZipFileTestCase(TestCase):
     def setUp(self) -> None:
         super().setUp()
         self.mock_get_file_list = mock.patch(
-            target='project_manager.common.helpers.ProjectZipFile.get_file_list',
+            target='project_manager.helpers.ProjectZipFile.get_file_list',
         ).start()
 
     def tearDown(self) -> None:
@@ -112,7 +112,7 @@ class SubPluginZipFileTestCase(TestCase):
         )
 
     @mock.patch(
-        target='project_manager.common.helpers.ZipFile',
+        target='project_manager.helpers.ZipFile',
     )
     def test_find_base_info(self, _):
         sub_plugin_basename = 'test_sub_plugin'
@@ -143,7 +143,7 @@ class SubPluginZipFileTestCase(TestCase):
         )
 
     @mock.patch(
-        target='project_manager.common.helpers.ZipFile',
+        target='project_manager.helpers.ZipFile',
     )
     def test_validate_base_file_in_zip(self, _):
         sub_plugin_basename = 'test_plugin'
@@ -213,7 +213,7 @@ class SubPluginZipFileTestCase(TestCase):
         )
 
     @mock.patch(
-        target='project_manager.common.helpers.ZipFile',
+        target='project_manager.helpers.ZipFile',
     )
     def test_get_requirement_paths(self, _):
         sub_plugin_basename = 'test_sub_plugin'
@@ -249,7 +249,7 @@ class SubPluginZipFileTestCase(TestCase):
         )
 
     @mock.patch(
-        target='project_manager.common.helpers.ZipFile',
+        target='project_manager.helpers.ZipFile',
     )
     def test_validate_file_paths(self, _):
         sub_plugin_basename = 'test_plugin'
@@ -358,10 +358,10 @@ class SubPluginZipFileTestCase(TestCase):
         )
 
     @mock.patch(
-        target='project_manager.common.helpers.json.loads',
+        target='project_manager.helpers.json.loads',
     )
     @mock.patch(
-        target='project_manager.common.helpers.ZipFile',
+        target='project_manager.helpers.ZipFile',
     )
     @mock.patch(
         target='project_manager.sub_plugins.helpers.ZipFile',

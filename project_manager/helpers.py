@@ -15,7 +15,7 @@ from django.conf import settings
 from django.core.exceptions import ValidationError
 
 # App
-from project_manager.common.constants import CANNOT_BE_NAMED, CANNOT_START_WITH
+from project_manager.constants import CANNOT_BE_NAMED, CANNOT_START_WITH
 
 
 # =============================================================================

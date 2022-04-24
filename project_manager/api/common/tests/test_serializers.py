@@ -21,7 +21,7 @@ from rest_framework.serializers import ModelSerializer
 # App
 from games.api.common.serializers import MinimalGameSerializer
 from games.constants import GAME_SLUG_MAX_LENGTH
-from project_manager.common.api.serializers import (
+from project_manager.api.common.serializers import (
     ProjectContributorSerializer,
     ProjectCreateReleaseSerializer,
     ProjectGameSerializer,
@@ -30,13 +30,13 @@ from project_manager.common.api.serializers import (
     ProjectSerializer,
     ProjectTagSerializer,
 )
-from project_manager.common.api.serializers.mixins import (
+from project_manager.api.common.serializers.mixins import (
     CreateRequirementsMixin,
     ProjectLocaleMixin,
     ProjectReleaseCreationMixin,
     ProjectThroughMixin,
 )
-from project_manager.common.constants import (
+from project_manager.constants import (
     RELEASE_NOTES_MAX_LENGTH,
     RELEASE_VERSION_MAX_LENGTH,
 )

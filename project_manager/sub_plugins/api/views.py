@@ -12,7 +12,7 @@ from rest_framework.response import Response
 from rest_framework.reverse import reverse
 
 # App
-from project_manager.common.api.views import (
+from project_manager.api.common.views import (
     ProjectAPIView,
     ProjectContributorViewSet,
     ProjectGameViewSet,

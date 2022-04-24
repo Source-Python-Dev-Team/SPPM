@@ -4,7 +4,7 @@
 # IMPORTS
 # =============================================================================
 # App
-from project_manager.common.constants import (
+from project_manager.constants import (
     ALLOWED_FILE_TYPES,
     IMAGE_URL,
     LOGO_URL,

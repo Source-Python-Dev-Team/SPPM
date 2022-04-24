@@ -19,7 +19,7 @@ from rest_framework import status
 from rest_framework.test import APITestCase
 
 # App
-from project_manager.common.api.views import ProjectReleaseViewSet
+from project_manager.api.common.views import ProjectReleaseViewSet
 from project_manager.plugins.api.serializers import PluginReleaseSerializer
 from project_manager.plugins.api.views import PluginReleaseViewSet
 from project_manager.plugins.models import (

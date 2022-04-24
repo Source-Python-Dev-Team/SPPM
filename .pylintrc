@@ -13,8 +13,6 @@ django-settings-module=SPPM.settings.local
 #   http://pylint-messages.wikidot.com/all-codes
 disable=
     abstract-method,
-    astroid-error,
-    fixme,
     too-many-ancestors,
 
 

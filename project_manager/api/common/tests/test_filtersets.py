@@ -9,7 +9,7 @@ from django_filters.filters import CharFilter
 from django_filters.filterset import FilterSet
 
 # App
-from project_manager.common.api.filtersets import ProjectFilterSet
+from project_manager.api.common.filtersets import ProjectFilterSet
 
 
 # =============================================================================

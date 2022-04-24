@@ -19,19 +19,22 @@ from model_utils.tracker import FieldTracker
 
 # App
 from games.models import Game
-from project_manager.common.constants import (
+from project_manager.constants import (
     FORUM_THREAD_URL,
     LOGO_MAX_HEIGHT,
     LOGO_MAX_WIDTH,
     PROJECT_BASENAME_MAX_LENGTH,
     PROJECT_SLUG_MAX_LENGTH, RELEASE_VERSION_MAX_LENGTH,
 )
-from project_manager.common.models import (
+from project_manager.models.abstract import (
     AbstractUUIDPrimaryKeyModel,
     Project,
     ProjectRelease,
 )
-from project_manager.common.validators import basename_validator, version_validator
+from project_manager.validators import (
+    basename_validator,
+    version_validator,
+)
 from project_manager.packages.constants import PACKAGE_LOGO_URL
 from project_manager.packages.helpers import (
     handle_package_image_upload,
@@ -250,7 +253,7 @@ class PackageTestCase(TestCase):
         )
 
     @mock.patch(
-        target='project_manager.common.models.Image.open',
+        target='project_manager.models.abstract.Image.open',
     )
     def test_clean_logo(self, mock_image_open):
         Package().clean()
@@ -281,7 +284,7 @@ class PackageTestCase(TestCase):
         )
 
     @mock.patch(
-        target='project_manager.common.models.settings.MEDIA_ROOT',
+        target='project_manager.models.abstract.settings.MEDIA_ROOT',
     )
     def test_save(self, mock_media_root):
         basename = 'test'

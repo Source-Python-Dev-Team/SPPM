@@ -10,7 +10,7 @@ from copy import deepcopy
 from django.contrib import admin
 
 # App
-from project_manager.common.admin import ProjectAdmin, ProjectReleaseAdmin
+from project_manager.admin.base import ProjectAdmin, ProjectReleaseAdmin
 from project_manager.plugins.admin.inlines import (
     PluginContributorInline,
     PluginGameInline,

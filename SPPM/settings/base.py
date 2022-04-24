@@ -84,7 +84,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'project_manager.common.context_processors.add_common_context_processors',
+                'project_manager.context_processors.add_common_context_processors',
             ],
         },
     },

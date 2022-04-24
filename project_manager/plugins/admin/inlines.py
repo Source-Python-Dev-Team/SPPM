@@ -7,7 +7,7 @@
 from django.contrib import admin
 
 # App
-from project_manager.common.admin.inlines import (
+from project_manager.admin.inlines import (
     ProjectContributorInline,
     ProjectGameInline,
     ProjectImageInline,

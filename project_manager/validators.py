@@ -7,7 +7,7 @@
 from django.core.validators import RegexValidator
 
 # App
-from project_manager.common.constants import RELEASE_VERSION_REGEX
+from project_manager.constants import RELEASE_VERSION_REGEX
 
 
 # =============================================================================

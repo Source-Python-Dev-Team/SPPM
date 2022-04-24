@@ -11,7 +11,7 @@ from zipfile import ZipFile
 from django.core.exceptions import ValidationError
 
 # App
-from project_manager.common.helpers import ProjectZipFile, find_image_number
+from project_manager.helpers import ProjectZipFile, find_image_number
 from project_manager.plugins.constants import PLUGIN_PATH
 from project_manager.sub_plugins.constants import (
     SUB_PLUGIN_ALLOWED_FILE_TYPES,

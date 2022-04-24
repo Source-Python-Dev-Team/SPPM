@@ -7,7 +7,7 @@ import django.utils.timezone
 import embed_video.fields
 import model_utils.fields
 import precise_bbcode.fields
-import project_manager.common.helpers
+import project_manager.helpers
 import project_manager.packages.helpers
 import project_manager.plugins.helpers
 import project_manager.sub_plugins.helpers
@@ -30,7 +30,7 @@ class Migration(migrations.Migration):
                 ('configuration', precise_bbcode.fields.BBCodeTextField(blank=True, help_text='The configuration of the project. If too long, post on the forum and provide the link here. BBCode is allowed. 1024 char limit.', max_length=1024, no_rendered_field=True, null=True)),
                 ('_description_rendered', models.TextField(blank=True, editable=False, null=True)),
                 ('description', precise_bbcode.fields.BBCodeTextField(blank=True, help_text='The full description of the project. BBCode is allowed. 1024 char limit.', max_length=1024, no_rendered_field=True, null=True)),
-                ('logo', models.ImageField(blank=True, help_text="The project's logo image.", null=True, upload_to=project_manager.common.helpers.handle_project_logo_upload)),
+                ('logo', models.ImageField(blank=True, help_text="The project's logo image.", null=True, upload_to=project_manager.helpers.handle_project_logo_upload)),
                 ('video', embed_video.fields.EmbedVideoField(help_text="The project's video.", null=True)),
                 ('_synopsis_rendered', models.TextField(blank=True, editable=False, null=True)),
                 ('synopsis', precise_bbcode.fields.BBCodeTextField(blank=True, help_text='A brief description of the project. BBCode is allowed. 128 char limit.', max_length=128, no_rendered_field=True, null=True)),
@@ -84,7 +84,7 @@ class Migration(migrations.Migration):
                 ('version', models.CharField(help_text='The version for this release of the project.', max_length=8, validators=[django.core.validators.RegexValidator('^[0-9][0-9a-z.]*[0-9a-z]')])),
                 ('_notes_rendered', models.TextField(blank=True, editable=False, null=True)),
                 ('notes', precise_bbcode.fields.BBCodeTextField(blank=True, help_text='The notes for this particular release of the project.', max_length=512, no_rendered_field=True, null=True)),
-                ('zip_file', models.FileField(upload_to=project_manager.common.helpers.handle_release_zip_file_upload)),
+                ('zip_file', models.FileField(upload_to=project_manager.helpers.handle_release_zip_file_upload)),
                 ('download_count', models.PositiveIntegerField(default=0)),
                 ('created', model_utils.fields.AutoCreatedField(default=django.utils.timezone.now, editable=False, verbose_name='created')),
             ],
@@ -159,7 +159,7 @@ class Migration(migrations.Migration):
                 ('configuration', precise_bbcode.fields.BBCodeTextField(blank=True, help_text='The configuration of the project. If too long, post on the forum and provide the link here. BBCode is allowed. 1024 char limit.', max_length=1024, no_rendered_field=True, null=True)),
                 ('_description_rendered', models.TextField(blank=True, editable=False, null=True)),
                 ('description', precise_bbcode.fields.BBCodeTextField(blank=True, help_text='The full description of the project. BBCode is allowed. 1024 char limit.', max_length=1024, no_rendered_field=True, null=True)),
-                ('logo', models.ImageField(blank=True, help_text="The project's logo image.", null=True, upload_to=project_manager.common.helpers.handle_project_logo_upload)),
+                ('logo', models.ImageField(blank=True, help_text="The project's logo image.", null=True, upload_to=project_manager.helpers.handle_project_logo_upload)),
                 ('video', embed_video.fields.EmbedVideoField(help_text="The project's video.", null=True)),
                 ('_synopsis_rendered', models.TextField(blank=True, editable=False, null=True)),
                 ('synopsis', precise_bbcode.fields.BBCodeTextField(blank=True, help_text='A brief description of the project. BBCode is allowed. 128 char limit.', max_length=128, no_rendered_field=True, null=True)),
@@ -213,7 +213,7 @@ class Migration(migrations.Migration):
                 ('version', models.CharField(help_text='The version for this release of the project.', max_length=8, validators=[django.core.validators.RegexValidator('^[0-9][0-9a-z.]*[0-9a-z]')])),
                 ('_notes_rendered', models.TextField(blank=True, editable=False, null=True)),
                 ('notes', precise_bbcode.fields.BBCodeTextField(blank=True, help_text='The notes for this particular release of the project.', max_length=512, no_rendered_field=True, null=True)),
-                ('zip_file', models.FileField(upload_to=project_manager.common.helpers.handle_release_zip_file_upload)),
+                ('zip_file', models.FileField(upload_to=project_manager.helpers.handle_release_zip_file_upload)),
                 ('download_count', models.PositiveIntegerField(default=0)),
                 ('created', model_utils.fields.AutoCreatedField(default=django.utils.timezone.now, editable=False, verbose_name='created')),
             ],
@@ -288,7 +288,7 @@ class Migration(migrations.Migration):
                 ('configuration', precise_bbcode.fields.BBCodeTextField(blank=True, help_text='The configuration of the project. If too long, post on the forum and provide the link here. BBCode is allowed. 1024 char limit.', max_length=1024, no_rendered_field=True, null=True)),
                 ('_description_rendered', models.TextField(blank=True, editable=False, null=True)),
                 ('description', precise_bbcode.fields.BBCodeTextField(blank=True, help_text='The full description of the project. BBCode is allowed. 1024 char limit.', max_length=1024, no_rendered_field=True, null=True)),
-                ('logo', models.ImageField(blank=True, help_text="The project's logo image.", null=True, upload_to=project_manager.common.helpers.handle_project_logo_upload)),
+                ('logo', models.ImageField(blank=True, help_text="The project's logo image.", null=True, upload_to=project_manager.helpers.handle_project_logo_upload)),
                 ('video', embed_video.fields.EmbedVideoField(help_text="The project's video.", null=True)),
                 ('_synopsis_rendered', models.TextField(blank=True, editable=False, null=True)),
                 ('synopsis', precise_bbcode.fields.BBCodeTextField(blank=True, help_text='A brief description of the project. BBCode is allowed. 128 char limit.', max_length=128, no_rendered_field=True, null=True)),
@@ -357,7 +357,7 @@ class Migration(migrations.Migration):
                 ('version', models.CharField(help_text='The version for this release of the project.', max_length=8, validators=[django.core.validators.RegexValidator('^[0-9][0-9a-z.]*[0-9a-z]')])),
                 ('_notes_rendered', models.TextField(blank=True, editable=False, null=True)),
                 ('notes', precise_bbcode.fields.BBCodeTextField(blank=True, help_text='The notes for this particular release of the project.', max_length=512, no_rendered_field=True, null=True)),
-                ('zip_file', models.FileField(upload_to=project_manager.common.helpers.handle_release_zip_file_upload)),
+                ('zip_file', models.FileField(upload_to=project_manager.helpers.handle_release_zip_file_upload)),
                 ('download_count', models.PositiveIntegerField(default=0)),
                 ('created', model_utils.fields.AutoCreatedField(default=django.utils.timezone.now, editable=False, verbose_name='created')),
             ],

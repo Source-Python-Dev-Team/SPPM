@@ -7,7 +7,7 @@
 from django.core.exceptions import ValidationError
 
 # App
-from project_manager.common.helpers import ProjectZipFile, find_image_number
+from project_manager.helpers import ProjectZipFile, find_image_number
 from project_manager.packages.constants import (
     PACKAGE_ALLOWED_FILE_TYPES,
     PACKAGE_IMAGE_URL,

@@ -7,7 +7,7 @@ from rest_framework.reverse import reverse
 from rest_framework.test import APITestCase
 
 # App
-from project_manager.common.api.views import ProjectAPIView
+from project_manager.api.common.views import ProjectAPIView
 from project_manager.sub_plugins.api.views import SubPluginAPIView
 
 

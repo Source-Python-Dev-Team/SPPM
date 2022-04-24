@@ -13,17 +13,17 @@ from model_utils.fields import AutoCreatedField
 from model_utils.tracker import FieldTracker
 
 # App
-from project_manager.common.constants import (
+from project_manager.constants import (
     PROJECT_BASENAME_MAX_LENGTH,
     PROJECT_SLUG_MAX_LENGTH,
     RELEASE_VERSION_MAX_LENGTH,
 )
-from project_manager.common.models import (
+from project_manager.models.abstract import (
     AbstractUUIDPrimaryKeyModel,
     Project,
     ProjectRelease,
 )
-from project_manager.common.validators import (
+from project_manager.validators import (
     basename_validator,
     version_validator,
 )

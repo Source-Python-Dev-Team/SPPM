@@ -20,7 +20,7 @@ from rest_framework.parsers import ParseError
 from rest_framework.test import APITestCase
 
 # App
-from project_manager.common.api.views import ProjectReleaseViewSet
+from project_manager.api.common.views import ProjectReleaseViewSet
 from project_manager.sub_plugins.api.serializers import SubPluginReleaseSerializer
 from project_manager.sub_plugins.api.views import SubPluginReleaseViewSet
 from project_manager.sub_plugins.models import (

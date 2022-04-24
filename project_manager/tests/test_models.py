@@ -14,7 +14,7 @@ from model_utils.fields import AutoCreatedField
 from precise_bbcode.fields import BBCodeTextField
 
 # App
-from project_manager.common.constants import (
+from project_manager.constants import (
     PROJECT_CONFIGURATION_MAX_LENGTH,
     PROJECT_DESCRIPTION_MAX_LENGTH,
     PROJECT_NAME_MAX_LENGTH,
@@ -22,16 +22,16 @@ from project_manager.common.constants import (
     RELEASE_NOTES_MAX_LENGTH,
     RELEASE_VERSION_MAX_LENGTH,
 )
-from project_manager.common.helpers import (
+from project_manager.helpers import (
     handle_project_logo_upload,
     handle_release_zip_file_upload,
 )
-from project_manager.common.models import (
+from project_manager.models.abstract import (
     AbstractUUIDPrimaryKeyModel,
     Project,
     ProjectRelease,
 )
-from project_manager.common.validators import version_validator
+from project_manager.validators import version_validator
 
 
 # =============================================================================

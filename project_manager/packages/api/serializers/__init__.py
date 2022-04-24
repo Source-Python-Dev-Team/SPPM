@@ -4,7 +4,7 @@
 # IMPORTS
 # =============================================================================
 # App
-from project_manager.common.api.serializers import (
+from project_manager.api.common.serializers import (
     ProjectContributorSerializer,
     ProjectCreateReleaseSerializer,
     ProjectGameSerializer,
