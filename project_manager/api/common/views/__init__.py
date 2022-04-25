@@ -148,6 +148,7 @@ class ProjectViewSet(ModelViewSet):
         if request.method not in SAFE_METHODS:
             if not hasattr(request.user, 'forum_user'):
                 raise PermissionDenied
+
         return super().check_permissions(request=request)
 
     def create(self, request, *args, **kwargs):

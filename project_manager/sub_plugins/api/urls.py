@@ -26,33 +26,33 @@ from project_manager.sub_plugins.api.views import (
 # =============================================================================
 router = routers.SimpleRouter()
 router.register(
-    prefix=r'^projects/(?P<plugin_slug>[\w-]+)',
+    prefix='projects/(?P<plugin_slug>[^/.]+)',
     viewset=SubPluginViewSet,
     basename='projects',
 )
 router.register(
-    prefix=r'^images/(?P<plugin_slug>[\w-]+)/(?P<sub_plugin_slug>[\w-]+)',
+    prefix='images/(?P<plugin_slug>[^/.]+)/(?P<sub_plugin_slug>[^/.]+)',
     viewset=SubPluginImageViewSet,
     basename='images',
 )
 router.register(
-    prefix=r'^releases/(?P<plugin_slug>[\w-]+)/(?P<sub_plugin_slug>[\w-]+)',
+    prefix='releases/(?P<plugin_slug>[^/.]+)/(?P<sub_plugin_slug>[^/.]+)',
     viewset=SubPluginReleaseViewSet,
     basename='releases',
 )
 router.register(
-    prefix=r'^games/(?P<plugin_slug>[\w-]+)/(?P<sub_plugin_slug>[\w-]+)',
+    prefix='games/(?P<plugin_slug>[^/.]+)/(?P<sub_plugin_slug>[^/.]+)',
     viewset=SubPluginGameViewSet,
     basename='games',
 )
 router.register(
-    prefix=r'^tags/(?P<plugin_slug>[\w-]+)/(?P<sub_plugin_slug>[\w-]+)',
+    prefix='tags/(?P<plugin_slug>[^/.]+)/(?P<sub_plugin_slug>[^/.]+)',
     viewset=SubPluginTagViewSet,
     basename='tags',
 )
 router.register(
     prefix=(
-        r'^contributors/(?P<plugin_slug>[\w-]+)/(?P<sub_plugin_slug>[\w-]+)'
+        'contributors/(?P<plugin_slug>[^/.]+)/(?P<sub_plugin_slug>[^/.]+)'
     ),
     viewset=SubPluginContributorViewSet,
     basename='contributors',
