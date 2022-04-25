@@ -139,6 +139,7 @@ REST_FRAMEWORK = {
     'DEFAULT_FILTER_BACKENDS': (
         'django_filters.rest_framework.DjangoFilterBackend',
     ),
+    'DEFAULT_METADATA_CLASS': 'project_manager.api.metadata.Metadata',
     'DEFAULT_PAGINATION_CLASS': (
         'project_manager.api.pagination.BasePagination'
     ),
