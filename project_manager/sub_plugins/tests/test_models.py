@@ -333,6 +333,19 @@ class SubPluginTestCase(TestCase):
             second=FORUM_THREAD_URL.format(topic=topic),
         )
 
+    def test_get_absolute_url(self):
+        sub_plugin = SubPluginFactory()
+        self.assertEqual(
+            first=sub_plugin.get_absolute_url(),
+            second=reverse(
+                viewname='plugins:sub-plugins:detail',
+                kwargs={
+                    'slug': sub_plugin.plugin_id,
+                    'sub_plugin_slug': sub_plugin.slug,
+                }
+            )
+        )
+
     def test_meta_class(self):
         self.assertTrue(issubclass(SubPlugin.Meta, Project.Meta))
         self.assertTupleEqual(

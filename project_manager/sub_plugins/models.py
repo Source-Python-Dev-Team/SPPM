@@ -119,18 +119,17 @@ class SubPlugin(Project):
 
     def get_absolute_url(self):
         """Return the URL for the SubPlugin."""
-        # TODO: add tests once this view is created
         return reverse(
             viewname='plugins:sub-plugins:detail',
             kwargs={
-                'slug': self.plugin.slug,
+                'slug': self.plugin_id,
                 'sub_plugin_slug': self.slug,
             }
         )
 
     def save(self, *args, **kwargs):
         """Set the id using the plugin's slug and the sub_plugin's slug."""
-        self.id = f'{self.plugin.slug}.{self.get_slug_value()}'
+        self.id = f'{self.plugin_id}.{self.get_slug_value()}'
         super().save(*args, **kwargs)
 
 
@@ -195,7 +194,7 @@ class SubPluginRelease(ProjectRelease):
         return reverse(
             viewname='sub-plugin-download',
             kwargs={
-                'slug': self.sub_plugin.plugin.slug,
+                'slug': self.sub_plugin.plugin_id,
                 'sub_plugin_slug': self.sub_plugin.slug,
                 'zip_file': self.file_name,
             }

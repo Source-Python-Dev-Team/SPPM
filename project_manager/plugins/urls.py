@@ -4,7 +4,7 @@
 # IMPORTS
 # =============================================================================
 # Django
-from django.urls import path
+from django.urls import include, path
 
 # App
 from project_manager.plugins.views import PluginCreateView, PluginView
@@ -33,5 +33,14 @@ urlpatterns = [
         route='<slug:slug>',
         view=PluginView.as_view(),
         name='detail',
+    ),
+    path(
+        # /plugins/<slug>/sub-plugins
+        route='<slug:slug>/sub-plugins/',
+        view=include(
+            'project_manager.sub_plugins.urls',
+            namespace='sub-plugins',
+        ),
+        name='sub-plugins',
     ),
 ]

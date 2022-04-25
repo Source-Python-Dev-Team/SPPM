@@ -3,6 +3,9 @@
 # =============================================================================
 # IMPORTS
 # =============================================================================
+# Django
+from django.views.generic import TemplateView
+
 # App
 from project_manager.mixins import DownloadMixin
 from project_manager.plugins.models import Plugin
@@ -15,6 +18,8 @@ from project_manager.sub_plugins.models import SubPlugin, SubPluginRelease
 # =============================================================================
 __all__ = (
     'SubPluginReleaseDownloadView',
+    'SubPluginCreateView',
+    'SubPluginView',
 )
 
 
@@ -42,3 +47,62 @@ class SubPluginReleaseDownloadView(DownloadMixin):
         base_path = super().get_base_path()
         slug = self.kwargs.get('sub_plugin_slug')
         return base_path / slug
+
+
+class SubPluginView(TemplateView):
+    """Frontend view for viewing SubPlugins."""
+
+    template_name = 'sub-plugins.html'
+    http_method_names = ('get', 'options')
+
+    @staticmethod
+    def _get_title(context):
+        slug = context.get('slug')
+        try:
+            plugin = Plugin.objects.get(slug=slug)
+        except Plugin.DoesNotExist:
+            return f'Plugin "{slug}" not found.'
+
+        if not plugin.paths.exists():
+            return f'Plugin "{plugin.name}" does not support sub-plugins.'
+
+        sub_plugin_slug = context.get('sub_plugin_slug')
+        if sub_plugin_slug is None:
+            return f'SubPlugin Listing for {plugin.name}'
+
+        try:
+            sub_plugin = SubPlugin.objects.get(
+                plugin=plugin,
+                slug=sub_plugin_slug,
+            )
+            return f'{plugin.name} - {sub_plugin.name}'
+        except SubPlugin.DoesNotExist:
+            return f'SubPlugin "{sub_plugin_slug}" not found for Plugin "{plugin.name}".'
+
+    def get_context_data(self, **kwargs):
+        """Add the page title to the context."""
+        context = super().get_context_data(**kwargs)
+        context['title'] = self._get_title(context=context)
+        return context
+
+
+class SubPluginCreateView(TemplateView):
+    """Frontend view for creating SubPlugins."""
+
+    template_name = 'sub-plugins.html'
+    http_method_names = ('get', 'options')
+
+    def get_context_data(self, **kwargs):
+        """Add the page title to the context."""
+        context = super().get_context_data(**kwargs)
+        slug = context.get('slug')
+        try:
+            plugin = Plugin.objects.get(slug=slug)
+            if not plugin.paths.exists():
+                context['title'] = f'Plugin "{plugin.name}" does not support sub-plugins.'
+            else:
+                context['title'] = f'Create a SubPlugin for {plugin.name}'
+        except Plugin.DoesNotExist:
+            context['title'] = f'Plugin "{slug}" not found.'
+
+        return context

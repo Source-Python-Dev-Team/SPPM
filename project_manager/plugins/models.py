@@ -105,7 +105,6 @@ class Plugin(Project):
 
     def get_absolute_url(self):
         """Return the URL for the Plugin."""
-        # TODO: add tests once this view is created
         return reverse(
             viewname='plugins:detail',
             kwargs={
@@ -175,7 +174,7 @@ class PluginRelease(ProjectRelease):
         return reverse(
             viewname='plugin-download',
             kwargs={
-                'slug': self.plugin.slug,
+                'slug': self.plugin_id,
                 'zip_file': self.file_name,
             }
         )
@@ -362,7 +361,7 @@ class SubPluginPath(AbstractUUIDPrimaryKeyModel):
         return reverse(
             viewname='plugins:path_list',
             kwargs={
-                'slug': self.plugin.slug,
+                'slug': self.plugin_id,
             }
         )
 
