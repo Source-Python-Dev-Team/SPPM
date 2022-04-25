@@ -5,6 +5,7 @@
 # =============================================================================
 # Django
 from django.db.models import Prefetch
+from django.utils.functional import cached_property
 
 # Third Party Django
 from rest_framework.parsers import ParseError
@@ -133,7 +134,7 @@ class SubPluginImageViewSet(ProjectImageViewSet):
     project_type = 'sub-plugin'
     project_model = SubPlugin
 
-    @property
+    @cached_property
     def parent_project(self):
         """Return the Plugin for the SubPlugin image view."""
         plugin_slug = self.kwargs.get('plugin_slug')
@@ -202,7 +203,7 @@ class SubPluginReleaseViewSet(ProjectReleaseViewSet):
     project_type = 'sub-plugin'
     project_model = SubPlugin
 
-    @property
+    @cached_property
     def parent_project(self):
         """Return the Plugin for the SubPlugin image view."""
         plugin_slug = self.kwargs.get('plugin_slug')

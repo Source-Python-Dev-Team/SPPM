@@ -3,6 +3,9 @@
 # =============================================================================
 # IMPORTS
 # =============================================================================
+# Django
+from django.utils.functional import cached_property
+
 # Third Party Django
 from rest_framework.exceptions import ValidationError
 
@@ -29,7 +32,7 @@ class SubPluginReleaseBase:
     project_class = SubPlugin
     project_type = 'sub-plugin'
 
-    @property
+    @cached_property
     def parent_project(self):
         """Return the parent plugin."""
         kwargs = getattr(self, 'context')['view'].kwargs

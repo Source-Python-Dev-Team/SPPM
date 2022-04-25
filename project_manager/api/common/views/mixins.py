@@ -3,6 +3,9 @@
 # =============================================================================
 # IMPORTS
 # =============================================================================
+# Django
+from django.utils.functional import cached_property
+
 # Third Party Django
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.authentication import SessionAuthentication
@@ -30,42 +33,32 @@ class ProjectRelatedInfoMixin(ModelViewSet):
     filter_backends = (OrderingFilter, DjangoFilterBackend)
 
     related_model_type = None
-    _project = None
-    _owner = None
-    _contributors = None
 
-    @property
+    @cached_property
     def owner(self):
         """Return the project's owner."""
-        if self._owner is None:
-            self._owner = self.project.owner.user_id
-        return self._owner
+        return self.project.owner.user_id
 
-    @property
+    @cached_property
     def contributors(self):
         """Return a Queryset for the project's contributors."""
-        if self._contributors is None:
-            self._contributors = self.project.contributors.values_list(
-                'user',
-                flat=True,
-            )
-        return self._contributors
+        return self.project.contributors.values_list(
+            'user',
+            flat=True,
+        )
 
-    @property
+    @cached_property
     def project(self):
         """Return the project for the image."""
-        if self._project is not None:
-            return self._project
         kwargs = self.get_project_kwargs()
         try:
-            self._project = self.project_model.objects.select_related(
+            return self.project_model.objects.select_related(
                 'owner__user'
             ).get(**kwargs)
         except self.project_model.DoesNotExist as exception:
             raise NotFound(
                 detail=f"Invalid {self.project_type.replace('-', '_')}_slug.",
             ) from exception
-        return self._project
 
     @property
     def project_model(self):

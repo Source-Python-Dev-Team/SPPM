@@ -8,6 +8,7 @@ from django.conf import settings
 from django.db.models import F
 from django.http import Http404, HttpResponse
 from django.views.generic import View
+from django.utils.functional import cached_property
 
 
 # =============================================================================
@@ -23,8 +24,6 @@ __all__ = (
 # =============================================================================
 class DownloadMixin(View):
     """Mixin for handling downloads and download counts."""
-
-    _full_path = None
 
     @property
     def model(self):
@@ -58,13 +57,10 @@ class DownloadMixin(View):
             '"model_kwarg" attribute.'
         )
 
-    @property
+    @cached_property
     def full_path(self):
         """Return the full path for the download."""
-        if self._full_path is None:
-            self._full_path = self.get_base_path()
-            self._full_path /= self.kwargs['zip_file']
-        return self._full_path
+        return self.get_base_path() / self.kwargs['zip_file']
 
     def get_base_path(self):
         """Return the base path for the download."""

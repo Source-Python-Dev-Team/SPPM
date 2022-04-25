@@ -3,6 +3,9 @@
 # =============================================================================
 # IMPORTS
 # =============================================================================
+# Django
+from django.utils.functional import cached_property
+
 # Third Party Django
 from rest_framework.exceptions import ValidationError
 
@@ -175,7 +178,7 @@ class SubPluginSerializer(ProjectSerializer):
 
         model = SubPlugin
 
-    @property
+    @cached_property
     def parent_project(self):
         """Return the parent plugin."""
         kwargs = self.context['view'].kwargs
