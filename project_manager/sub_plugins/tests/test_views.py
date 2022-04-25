@@ -56,7 +56,14 @@ class SubPluginReleaseDownloadViewTestCase(TestCase):
             version=version,
             zip_file=cls.zip_file,
         )
-        cls.api_path = f'/media/{SUB_PLUGIN_RELEASE_URL}{plugin.slug}/{cls.sub_plugin.slug}/{cls.zip_file}'
+        cls.api_path = reverse(
+            viewname='sub-plugin-download',
+            kwargs={
+                'slug': plugin.slug,
+                'sub_plugin_slug': cls.sub_plugin.slug,
+                'zip_file': cls.zip_file,
+            }
+        )
 
     def test_model_inheritance(self):
         self.assertTrue(
@@ -171,7 +178,7 @@ class SubPluginCreateViewTestCase(TestCase):
         SubPluginPathFactory(
             plugin=self.plugin,
         )
-        response = self.client.get(self.api_path)
+        response = self.client.get(path=self.api_path)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -210,7 +217,7 @@ class SubPluginCreateViewTestCase(TestCase):
         )
 
     def test_get_not_supported(self):
-        response = self.client.get(self.api_path)
+        response = self.client.get(path=self.api_path)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -226,7 +233,7 @@ class SubPluginCreateViewTestCase(TestCase):
         )
 
     def test_options(self):
-        response = self.client.options(self.api_path)
+        response = self.client.options(path=self.api_path)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -268,7 +275,7 @@ class SubPluginViewTestCase(TestCase):
         SubPluginPathFactory(
             plugin=self.plugin,
         )
-        response = self.client.get(self.api_path)
+        response = self.client.get(path=self.api_path)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -310,7 +317,7 @@ class SubPluginViewTestCase(TestCase):
         )
 
     def test_list_not_supported(self):
-        response = self.client.get(self.api_path)
+        response = self.client.get(path=self.api_path)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -332,7 +339,15 @@ class SubPluginViewTestCase(TestCase):
         sub_plugin = SubPluginFactory(
             plugin=self.plugin,
         )
-        response = self.client.get(f'{self.api_path}{sub_plugin.slug}')
+        response = self.client.get(
+            path=reverse(
+                viewname='plugins:sub-plugins:detail',
+                kwargs={
+                    'slug': self.plugin.slug,
+                    'sub_plugin_slug': sub_plugin.slug,
+                }
+            )
+        )
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -352,7 +367,15 @@ class SubPluginViewTestCase(TestCase):
         SubPluginPathFactory(
             plugin=self.plugin,
         )
-        response = self.client.get(f'{self.api_path}invalid')
+        response = self.client.get(
+            path=reverse(
+                viewname='plugins:sub-plugins:detail',
+                kwargs={
+                    'slug': self.plugin.slug,
+                    'sub_plugin_slug': 'invalid',
+                }
+            )
+        )
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,

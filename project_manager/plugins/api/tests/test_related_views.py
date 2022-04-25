@@ -121,7 +121,7 @@ class PluginContributorViewSetTestCase(APITestCase):
         )
 
     def test_get_list(self):
-        # Verify that non logged in user can see results but not 'id'
+        # Verify that non-logged-in user can see results but not 'id'
         response = self.client.get(path=self.api_path)
         self.assertEqual(
             first=response.status_code,
@@ -200,7 +200,7 @@ class PluginContributorViewSetTestCase(APITestCase):
         )
 
     def test_get_details(self):
-        # Verify that non logged in user cannot see details
+        # Verify that non-logged-in user cannot see details
         api_path = f'{self.api_path}{self.plugin_contributor.id}/'
         response = self.client.get(path=api_path)
         self.assertEqual(
@@ -255,7 +255,7 @@ class PluginContributorViewSetTestCase(APITestCase):
         )
 
     def test_post(self):
-        # Verify that non logged in user cannot add a contributor
+        # Verify that non-logged-in user cannot add a contributor
         response = self.client.post(
             path=self.api_path,
             data={'username': self.new_contributor.user.username},
@@ -345,7 +345,7 @@ class PluginContributorViewSetTestCase(APITestCase):
         )
 
     def test_delete(self):
-        # Verify that non logged in user cannot delete a contributor
+        # Verify that non-logged-in user cannot delete a contributor
         response = self.client.delete(
             path=self.api_path + f'{self.plugin_contributor.id}/',
         )
@@ -474,7 +474,7 @@ class PluginGameViewSetTestCase(APITestCase):
         )
 
     def test_get_list(self):
-        # Verify that non logged in user can see results but not 'id'
+        # Verify that non-logged-in user can see results but not 'id'
         response = self.client.get(path=self.api_path)
         self.assertEqual(
             first=response.status_code,
@@ -558,7 +558,7 @@ class PluginGameViewSetTestCase(APITestCase):
         )
 
     def test_get_details(self):
-        # Verify that non logged in user cannot see details
+        # Verify that non-logged-in user cannot see details
         api_path = f'{self.api_path}{self.plugin_game_1.id}/'
         response = self.client.get(path=api_path)
         self.assertEqual(
@@ -627,7 +627,7 @@ class PluginGameViewSetTestCase(APITestCase):
         )
 
     def test_post(self):
-        # Verify that non logged in user cannot add a game
+        # Verify that non-logged-in user cannot add a game
         response = self.client.post(
             path=self.api_path,
             data={'game_slug': self.game_3.slug},
@@ -703,7 +703,7 @@ class PluginGameViewSetTestCase(APITestCase):
         )
 
     def test_delete(self):
-        # Verify that non logged in user cannot delete a game
+        # Verify that non-logged-in user cannot delete a game
         response = self.client.delete(
             path=self.api_path + f'{self.plugin_game_1.id}/',
         )
@@ -817,7 +817,7 @@ class PluginImageViewSetTestCase(APITestCase):
         )
 
     def test_get_list(self):
-        # Verify that non logged in user can see results but not 'id'
+        # Verify that non-logged-in user can see results but not 'id'
         response = self.client.get(path=self.api_path)
         self.assertEqual(
             first=response.status_code,
@@ -886,7 +886,7 @@ class PluginImageViewSetTestCase(APITestCase):
         )
 
     def test_get_details(self):
-        # Verify that non logged in user cannot see details
+        # Verify that non-logged-in user cannot see details
         api_path = f'{self.api_path}{self.plugin_image_1.id}/'
         response = self.client.get(path=api_path)
         self.assertEqual(
@@ -1090,7 +1090,7 @@ class PluginTagViewSetTestCase(APITestCase):
         )
 
     def test_get_list(self):
-        # Verify that non logged in user can see results but not 'id'
+        # Verify that non-logged-in user can see results but not 'id'
         response = self.client.get(path=self.api_path)
         self.assertEqual(
             first=response.status_code,
@@ -1156,7 +1156,7 @@ class PluginTagViewSetTestCase(APITestCase):
         )
 
     def test_get_details(self):
-        # Verify that non logged in user cannot see details
+        # Verify that non-logged-in user cannot see details
         api_path = f'{self.api_path}{self.plugin_tag_1.id}/'
         response = self.client.get(path=api_path)
         self.assertEqual(
@@ -1215,7 +1215,7 @@ class PluginTagViewSetTestCase(APITestCase):
         )
 
     def test_post(self):
-        # Verify that non logged in user cannot add a tag
+        # Verify that non-logged-in user cannot add a tag
         response = self.client.post(
             path=self.api_path,
             data={'tag': 'new-tag-1'},
@@ -1293,7 +1293,7 @@ class PluginTagViewSetTestCase(APITestCase):
         )
 
     def test_delete(self):
-        # Verify that non logged in user cannot delete a tag
+        # Verify that non-logged-in user cannot delete a tag
         response = self.client.delete(
             path=self.api_path + f'{self.plugin_tag_1.id}/',
         )
@@ -1410,7 +1410,7 @@ class SubPluginPathViewSetTestCase(APITestCase):
         )
 
     def test_get_list(self):
-        # Verify that non logged in user can see results but not 'id'
+        # Verify that non-logged-in user can see results but not 'id'
         response = self.client.get(path=self.api_path)
         self.assertEqual(
             first=response.status_code,
@@ -1488,7 +1488,7 @@ class SubPluginPathViewSetTestCase(APITestCase):
         )
 
     def test_get_details(self):
-        # Verify that non logged in user cannot see details
+        # Verify that non-logged-in user cannot see details
         api_path = f'{self.api_path}{self.sub_plugin_path_1.id}/'
         response = self.client.get(path=api_path)
         self.assertEqual(
@@ -1553,7 +1553,7 @@ class SubPluginPathViewSetTestCase(APITestCase):
         )
 
     def test_post(self):
-        # Verify that non logged in user cannot add a path
+        # Verify that non-logged-in user cannot add a path
         response = self.client.post(
             path=self.api_path,
             data={
@@ -1617,7 +1617,7 @@ class SubPluginPathViewSetTestCase(APITestCase):
         )
 
     def test_patch(self):
-        # Verify that non logged in user cannot update a path
+        # Verify that non-logged-in user cannot update a path
         api_path = f'{self.api_path}{self.sub_plugin_path_1.id}/'
         response = self.client.patch(
             path=api_path,
@@ -1674,7 +1674,7 @@ class SubPluginPathViewSetTestCase(APITestCase):
         )
 
     def test_delete(self):
-        # Verify that non logged in user cannot delete a path
+        # Verify that non-logged-in user cannot delete a path
         response = self.client.delete(
             path=self.api_path + f'{self.sub_plugin_path_1.id}/',
         )

@@ -137,7 +137,7 @@ class StatisticsViewTestCase(TestCase):
                             download_count=download_count,
                         )
 
-        response = self.client.get(self.api_path)
+        response = self.client.get(path=self.api_path)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -168,7 +168,7 @@ class StatisticsViewTestCase(TestCase):
         )
 
     def test_options(self):
-        response = self.client.get(self.api_path)
+        response = self.client.get(path=self.api_path)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,

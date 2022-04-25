@@ -154,7 +154,7 @@ class PluginCreateViewTestCase(TestCase):
         )
 
     def test_get(self):
-        response = self.client.get(self.api_path)
+        response = self.client.get(path=self.api_path)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -167,7 +167,7 @@ class PluginCreateViewTestCase(TestCase):
         )
 
     def test_options(self):
-        response = self.client.options(self.api_path)
+        response = self.client.options(path=self.api_path)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -175,10 +175,6 @@ class PluginCreateViewTestCase(TestCase):
 
 
 class PluginViewTestCase(TestCase):
-
-    api_path = reverse(
-        viewname='plugins:list',
-    )
 
     def test_model_inheritance(self):
         self.assertTrue(
@@ -198,7 +194,11 @@ class PluginViewTestCase(TestCase):
         )
 
     def test_list(self):
-        response = self.client.get(self.api_path)
+        response = self.client.get(
+            path=reverse(
+                viewname='plugins:list',
+            ),
+        )
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -212,7 +212,14 @@ class PluginViewTestCase(TestCase):
 
     def test_detail(self):
         plugin = PluginFactory()
-        response = self.client.get(f'{self.api_path}{plugin.slug}')
+        response = self.client.get(
+            path=reverse(
+                viewname='plugins:detail',
+                kwargs={
+                    'slug': plugin.slug,
+                }
+            ),
+        )
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -228,7 +235,14 @@ class PluginViewTestCase(TestCase):
         )
 
     def test_detail_invalid_slug(self):
-        response = self.client.get(f'{self.api_path}invalid')
+        response = self.client.get(
+            path=reverse(
+                viewname='plugins:detail',
+                kwargs={
+                    'slug': 'invalid',
+                }
+            ),
+        )
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,

@@ -184,7 +184,7 @@ class PluginReleaseViewSetTestCase(APITestCase):
         )
 
     def test_get_list(self):
-        # Verify that a non logged in user can see results
+        # Verify that a non-logged-in user can see results
         response = self.client.get(path=self.api_path)
         self.assertEqual(
             first=response.status_code,
@@ -264,7 +264,7 @@ class PluginReleaseViewSetTestCase(APITestCase):
         )
 
     def test_get_details(self):
-        # Verify that non logged in user can see details
+        # Verify that non-logged-in user can see details
         api_path = f'{self.api_path}{self.plugin_release.version}/'
         response = self.client.get(path=api_path)
         timestamp = self.plugin_release.created
@@ -366,7 +366,7 @@ class PluginReleaseViewSetTestCase(APITestCase):
         base_path = settings.BASE_DIR / 'fixtures' / 'releases' / 'plugins'
         file_path = base_path / 'test-plugin' / 'test-plugin-v1.0.0.zip'
 
-        # Verify that non logged in user cannot create a release
+        # Verify that non-logged-in user cannot create a release
         version = '1.0.1'
         with file_path.open('rb') as open_file:
             zip_file = UploadedFile(open_file, content_type='application/zip')

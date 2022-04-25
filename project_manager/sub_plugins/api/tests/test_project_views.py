@@ -17,6 +17,7 @@ from path import Path
 # Third Party Django
 from rest_framework import status
 from rest_framework.parsers import ParseError
+from rest_framework.reverse import reverse
 from rest_framework.test import APITestCase
 
 # App
@@ -55,7 +56,7 @@ from test_utils.factories.users import ForumUserFactory
 # =============================================================================
 class SubPluginViewSetTestCase(APITestCase):
 
-    base_api_path = contributor = owner = sub_plugin = None
+    contributor = owner = reverse_base = sub_plugin = None
     MEDIA_ROOT = Path(tempfile.mkdtemp())
 
     @classmethod
@@ -71,8 +72,18 @@ class SubPluginViewSetTestCase(APITestCase):
             sub_plugin=cls.sub_plugin,
             zip_file='/media/release_v1.0.0.zip',
         )
-        cls.base_api_path = f'/api/sub-plugins/projects/'
-        cls.api_path = f'{cls.base_api_path}{plugin.slug}/'
+        cls.reverse_base = 'api:sub-plugins:projects'
+        cls.list_path = reverse(
+            viewname=f'{cls.reverse_base}-list',
+            kwargs={'plugin_slug': plugin.slug},
+        )
+        cls.detail_path = reverse(
+            viewname=f'{cls.reverse_base}-detail',
+            kwargs={
+                'plugin_slug': plugin.slug,
+                'slug': cls.sub_plugin.slug,
+            }
+        )
         cls.contributor = ForumUserFactory()
         SubPluginContributorFactory(
             sub_plugin=cls.sub_plugin,
@@ -143,8 +154,8 @@ class SubPluginViewSetTestCase(APITestCase):
         )
 
     def test_get_list(self):
-        # Verify that non logged in user can see results but not 'id'
-        response = self.client.get(path=self.api_path)
+        # Verify that non-logged-in user can see results but not 'id'
+        response = self.client.get(path=self.list_path)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -193,7 +204,7 @@ class SubPluginViewSetTestCase(APITestCase):
 
         # Verify that regular user can see results but not 'id'
         self.client.force_login(self.regular_user.user)
-        response = self.client.get(path=self.api_path)
+        response = self.client.get(path=self.list_path)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -207,7 +218,7 @@ class SubPluginViewSetTestCase(APITestCase):
 
         # Verify that contributors can see results AND 'id'
         self.client.force_login(self.contributor.user)
-        response = self.client.get(path=self.api_path)
+        response = self.client.get(path=self.list_path)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -221,7 +232,7 @@ class SubPluginViewSetTestCase(APITestCase):
 
         # Verify that the owner can see results AND 'id'
         self.client.force_login(self.owner.user)
-        response = self.client.get(path=self.api_path)
+        response = self.client.get(path=self.list_path)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -234,7 +245,7 @@ class SubPluginViewSetTestCase(APITestCase):
         )
 
     def test_get_list_filters(self):
-        response = self.client.get(path=self.api_path)
+        response = self.client.get(path=self.list_path)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -245,7 +256,10 @@ class SubPluginViewSetTestCase(APITestCase):
         )
 
         # Validate tag filtering
-        response = self.client.get(path=f'{self.api_path}?tag=test_tag')
+        response = self.client.get(
+            path=self.list_path,
+            data={'tag': 'test_tag'},
+        )
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -259,7 +273,10 @@ class SubPluginViewSetTestCase(APITestCase):
             sub_plugin=self.sub_plugin,
             tag=tag,
         )
-        response = self.client.get(path=f'{self.api_path}?tag=test_tag')
+        response = self.client.get(
+            path=self.list_path,
+            data={'tag': 'test_tag'},
+        )
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -270,7 +287,10 @@ class SubPluginViewSetTestCase(APITestCase):
         )
 
         # Validate game filtering
-        response = self.client.get(path=f'{self.api_path}?game=game1')
+        response = self.client.get(
+            path=self.list_path,
+            data={'game': 'game1'},
+        )
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -288,7 +308,10 @@ class SubPluginViewSetTestCase(APITestCase):
             sub_plugin=self.sub_plugin,
             game=game,
         )
-        response = self.client.get(path=f'{self.api_path}?game=game1')
+        response = self.client.get(
+            path=self.list_path,
+            data={'game': 'game1'},
+        )
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -298,9 +321,10 @@ class SubPluginViewSetTestCase(APITestCase):
             second=1,
         )
 
-        # Validate game filtering
+        # Validate user filtering
         response = self.client.get(
-            path=f'{self.api_path}?user={self.regular_user.user.username}',
+            path=self.list_path,
+            data={'user': self.regular_user.user.username},
         )
         self.assertEqual(
             first=response.status_code,
@@ -311,7 +335,8 @@ class SubPluginViewSetTestCase(APITestCase):
             second=0,
         )
         response = self.client.get(
-            path=f'{self.api_path}?user={self.contributor.user.username}',
+            path=self.list_path,
+            data={'user': self.contributor.user.username},
         )
         self.assertEqual(
             first=response.status_code,
@@ -322,7 +347,8 @@ class SubPluginViewSetTestCase(APITestCase):
             second=1,
         )
         response = self.client.get(
-            path=f'{self.api_path}?user={self.owner.user.username}',
+            path=self.list_path,
+            data={'user': self.owner.user.username},
         )
         self.assertEqual(
             first=response.status_code,
@@ -334,9 +360,8 @@ class SubPluginViewSetTestCase(APITestCase):
         )
 
     def test_get_details(self):
-        # Verify that non logged in user can see details
-        api_path = f'{self.api_path}{self.sub_plugin.slug}/'
-        response = self.client.get(path=api_path)
+        # Verify that non-logged-in user can see details
+        response = self.client.get(path=self.detail_path)
         request = response.wsgi_request
         domain = f'{request.scheme}://{request.get_host()}'
         zip_file = f'{domain}{self.sub_plugin_release.get_absolute_url()}'
@@ -387,7 +412,7 @@ class SubPluginViewSetTestCase(APITestCase):
 
         # Verify that regular user can see details
         self.client.force_login(self.regular_user.user)
-        response = self.client.get(path=api_path)
+        response = self.client.get(path=self.detail_path)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -399,7 +424,7 @@ class SubPluginViewSetTestCase(APITestCase):
 
         # Verify that contributors can see details
         self.client.force_login(self.contributor.user)
-        response = self.client.get(path=api_path)
+        response = self.client.get(path=self.detail_path)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -411,7 +436,7 @@ class SubPluginViewSetTestCase(APITestCase):
 
         # Verify that the owner can see details
         self.client.force_login(self.owner.user)
-        response = self.client.get(path=api_path)
+        response = self.client.get(path=self.detail_path)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -423,7 +448,7 @@ class SubPluginViewSetTestCase(APITestCase):
 
     @override_settings(MEDIA_ROOT=MEDIA_ROOT)
     def test_post(self):
-        # Verify non logged in user cannot create a sub-plugin
+        # Verify non-logged-in user cannot create a sub-plugin
         plugin = PluginFactory(
             basename='test_plugin',
         )
@@ -435,7 +460,10 @@ class SubPluginViewSetTestCase(APITestCase):
         base_path = settings.BASE_DIR / 'fixtures' / 'releases' / 'sub-plugins'
         file_path = base_path / 'test-plugin' / 'test-sub-plugin' / 'test-sub-plugin-v1.0.0.zip'
         version = '1.0.0'
-        api_path = f'{self.base_api_path}{plugin.slug}/'
+        api_path = reverse(
+            viewname=f'{self.reverse_base}-list',
+            kwargs={'plugin_slug': plugin.slug},
+        )
         with file_path.open('rb') as open_file:
             zip_file = UploadedFile(open_file, content_type='application/zip')
             response = self.client.post(
@@ -453,7 +481,7 @@ class SubPluginViewSetTestCase(APITestCase):
             second=status.HTTP_403_FORBIDDEN,
         )
 
-        # Verify that a logged in user can create a sub-plugin
+        # Verify that a logged-in user can create a sub-plugin
         self.assertEqual(
             first=SubPlugin.objects.count(),
             second=1,
@@ -530,7 +558,10 @@ class SubPluginViewSetTestCase(APITestCase):
         base_path = settings.BASE_DIR / 'fixtures' / 'releases' / 'sub-plugins'
         file_path = base_path / 'test-plugin' / 'test-sub-plugin' / 'test-sub-plugin-requirements-v1.0.0.zip'
         version = '1.0.0'
-        api_path = f'{self.base_api_path}{plugin.slug}/'
+        api_path = reverse(
+            viewname=f'{self.reverse_base}-list',
+            kwargs={'plugin_slug': plugin.slug},
+        )
         custom_package_1 = PackageFactory(
             basename='custom_package_1',
         )
@@ -603,10 +634,9 @@ class SubPluginViewSetTestCase(APITestCase):
         )
 
     def test_patch(self):
-        # Verify that non logged in user cannot update a path
-        api_path = f'{self.api_path}{self.sub_plugin.slug}/'
+        # Verify that non-logged-in user cannot update a path
         response = self.client.patch(
-            path=api_path,
+            path=self.detail_path,
             data={
                 'synopsis': 'Test Synopsis',
             }
@@ -619,7 +649,7 @@ class SubPluginViewSetTestCase(APITestCase):
         # Verify that regular user cannot update a path
         self.client.force_login(self.regular_user.user)
         response = self.client.patch(
-            path=api_path,
+            path=self.detail_path,
             data={
                 'synopsis': 'Test Synopsis',
             }
@@ -632,7 +662,7 @@ class SubPluginViewSetTestCase(APITestCase):
         # Verify that contributor can update a path
         self.client.force_login(self.contributor.user)
         response = self.client.patch(
-            path=api_path,
+            path=self.detail_path,
             data={
                 'synopsis': 'Test Synopsis',
             }
@@ -645,7 +675,7 @@ class SubPluginViewSetTestCase(APITestCase):
         # Verify that owner can update a path
         self.client.force_login(self.owner.user)
         response = self.client.patch(
-            path=api_path,
+            path=self.detail_path,
             data={
                 'synopsis': 'New Test Synopsis',
             }
@@ -656,9 +686,70 @@ class SubPluginViewSetTestCase(APITestCase):
         )
 
     def test_options(self):
-        response = self.client.options(path=self.api_path)
+        # Verify that non-logged-in user cannot POST
+        response = self.client.options(path=self.list_path)
         self.assertEqual(first=response.status_code, second=status.HTTP_200_OK)
+        content = response.json()
         self.assertEqual(
-            first=response.json()['name'],
+            first=content['name'],
             second='Sub Plugin List',
         )
+        self.assertNotIn(member='actions', container=content)
+
+        # Verify that normal user can POST
+        self.client.force_login(user=self.regular_user.user)
+        response = self.client.options(path=self.list_path)
+        self.assertEqual(first=response.status_code, second=status.HTTP_200_OK)
+        content = response.json()
+        self.assertEqual(
+            first=content['name'],
+            second='Sub Plugin List',
+        )
+        self.assertIn(member='actions', container=content)
+        self.assertSetEqual(set1=set(content['actions']), set2={'POST'})
+
+    def test_options_object(self):
+        # Verify that non-logged-in user cannot PATCH
+        response = self.client.options(path=self.detail_path)
+        self.assertEqual(first=response.status_code, second=status.HTTP_200_OK)
+        content = response.json()
+        self.assertEqual(
+            first=content['name'],
+            second='Sub Plugin Instance',
+        )
+        self.assertNotIn(member='actions', container=content)
+
+        # Verify that normal user cannot PATCH
+        self.client.force_login(user=self.regular_user.user)
+        response = self.client.options(path=self.detail_path)
+        self.assertEqual(first=response.status_code, second=status.HTTP_200_OK)
+        content = response.json()
+        self.assertEqual(
+            first=content['name'],
+            second='Sub Plugin Instance',
+        )
+        self.assertNotIn(member='actions', container=content)
+
+        # Verify that contributors can PATCH
+        self.client.force_login(user=self.contributor.user)
+        response = self.client.options(path=self.detail_path)
+        self.assertEqual(first=response.status_code, second=status.HTTP_200_OK)
+        content = response.json()
+        self.assertEqual(
+            first=content['name'],
+            second='Sub Plugin Instance',
+        )
+        self.assertIn(member='actions', container=content)
+        self.assertSetEqual(set1=set(content['actions']), set2={'PATCH'})
+
+        # Verify that the owner can PATCH
+        self.client.force_login(user=self.owner.user)
+        response = self.client.options(path=self.detail_path)
+        self.assertEqual(first=response.status_code, second=status.HTTP_200_OK)
+        content = response.json()
+        self.assertEqual(
+            first=content['name'],
+            second='Sub Plugin Instance',
+        )
+        self.assertIn(member='actions', container=content)
+        self.assertSetEqual(set1=set(content['actions']), set2={'PATCH'})

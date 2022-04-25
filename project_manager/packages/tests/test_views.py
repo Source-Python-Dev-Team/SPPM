@@ -46,7 +46,13 @@ class PackageReleaseDownloadViewTestCase(TestCase):
             version=version,
             zip_file=cls.zip_file,
         )
-        cls.api_path = f'/media/{PACKAGE_RELEASE_URL}{cls.package.slug}/{cls.zip_file}'
+        cls.api_path = reverse(
+            viewname='package-download',
+            kwargs={
+                'slug': cls.package.slug,
+                'zip_file': cls.zip_file,
+            }
+        )
 
     def test_model_inheritance(self):
         self.assertTrue(
@@ -142,7 +148,7 @@ class PackageCreateViewTestCase(TestCase):
         )
 
     def test_get(self):
-        response = self.client.get(self.api_path)
+        response = self.client.get(path=self.api_path)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -155,7 +161,7 @@ class PackageCreateViewTestCase(TestCase):
         )
 
     def test_options(self):
-        response = self.client.options(self.api_path)
+        response = self.client.options(path=self.api_path)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -163,10 +169,6 @@ class PackageCreateViewTestCase(TestCase):
 
 
 class PackageViewTestCase(TestCase):
-
-    api_path = reverse(
-        viewname='packages:list',
-    )
 
     def test_model_inheritance(self):
         self.assertTrue(
@@ -186,7 +188,11 @@ class PackageViewTestCase(TestCase):
         )
 
     def test_list(self):
-        response = self.client.get(self.api_path)
+        response = self.client.get(
+            path=reverse(
+                viewname='packages:list',
+            ),
+        )
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -200,7 +206,14 @@ class PackageViewTestCase(TestCase):
 
     def test_detail(self):
         package = PackageFactory()
-        response = self.client.get(f'{self.api_path}{package.slug}')
+        response = self.client.get(
+            path=reverse(
+                viewname='packages:detail',
+                kwargs={
+                    'slug': package.slug,
+                }
+            ),
+        )
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -216,7 +229,14 @@ class PackageViewTestCase(TestCase):
         )
 
     def test_detail_invalid_slug(self):
-        response = self.client.get(f'{self.api_path}invalid')
+        response = self.client.get(
+            path=reverse(
+                viewname='packages:detail',
+                kwargs={
+                    'slug': 'invalid',
+                }
+            ),
+        )
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,

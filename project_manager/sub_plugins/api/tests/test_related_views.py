@@ -120,7 +120,7 @@ class SubPluginContributorViewSetTestCase(APITestCase):
         )
 
     def test_get_list(self):
-        # Verify that non logged in user can see results but not 'id'
+        # Verify that non-logged-in user can see results but not 'id'
         response = self.client.get(path=self.api_path)
         self.assertEqual(
             first=response.status_code,
@@ -199,7 +199,7 @@ class SubPluginContributorViewSetTestCase(APITestCase):
         )
 
     def test_get_details(self):
-        # Verify that non logged in user cannot see details
+        # Verify that non-logged-in user cannot see details
         api_path = f'{self.api_path}{self.sub_plugin_contributor.id}/'
         response = self.client.get(path=api_path)
         self.assertEqual(
@@ -254,7 +254,7 @@ class SubPluginContributorViewSetTestCase(APITestCase):
         )
 
     def test_post(self):
-        # Verify that non logged in user cannot add a contributor
+        # Verify that non-logged-in user cannot add a contributor
         response = self.client.post(
             path=self.api_path,
             data={'username': self.new_contributor.user.username},
@@ -344,7 +344,7 @@ class SubPluginContributorViewSetTestCase(APITestCase):
         )
 
     def test_delete(self):
-        # Verify that non logged in user cannot delete a contributor
+        # Verify that non-logged-in user cannot delete a contributor
         api_path = f'{self.api_path}{self.sub_plugin_contributor.id}/'
         response = self.client.delete(path=api_path)
         self.assertEqual(
@@ -468,7 +468,7 @@ class SubPluginGameViewSetTestCase(APITestCase):
         )
 
     def test_get_list(self):
-        # Verify that non logged in user can see results but not 'id'
+        # Verify that non-logged-in user can see results but not 'id'
         response = self.client.get(path=self.api_path)
         self.assertEqual(
             first=response.status_code,
@@ -552,7 +552,7 @@ class SubPluginGameViewSetTestCase(APITestCase):
         )
 
     def test_get_details(self):
-        # Verify that non logged in user cannot see details
+        # Verify that non-logged-in user cannot see details
         api_path = f'{self.api_path}{self.sub_plugin_game_1.id}/'
         response = self.client.get(path=api_path)
         self.assertEqual(
@@ -621,7 +621,7 @@ class SubPluginGameViewSetTestCase(APITestCase):
         )
 
     def test_post(self):
-        # Verify that non logged in user cannot add a game
+        # Verify that non-logged-in user cannot add a game
         response = self.client.post(
             path=self.api_path,
             data={'game_slug': self.game_3.slug},
@@ -697,7 +697,7 @@ class SubPluginGameViewSetTestCase(APITestCase):
         )
 
     def test_delete(self):
-        # Verify that non logged in user cannot delete a game
+        # Verify that non-logged-in user cannot delete a game
         api_path = f'{self.api_path}{self.sub_plugin_game_1.id}/'
         response = self.client.delete(path=api_path)
         self.assertEqual(
@@ -843,7 +843,7 @@ class SubPluginImageViewSetTestCase(APITestCase):
         )
 
     def test_get_list(self):
-        # Verify that non logged in user can see results but not 'id'
+        # Verify that non-logged-in user can see results but not 'id'
         response = self.client.get(path=self.api_path)
         self.assertEqual(
             first=response.status_code,
@@ -912,7 +912,7 @@ class SubPluginImageViewSetTestCase(APITestCase):
         )
 
     def test_get_details(self):
-        # Verify that non logged in user cannot see details
+        # Verify that non-logged-in user cannot see details
         api_path = f'{self.api_path}{self.sub_plugin_image_1.id}/'
         response = self.client.get(path=api_path)
         self.assertEqual(
@@ -974,7 +974,7 @@ class SubPluginImageViewSetTestCase(APITestCase):
 
     @override_settings(MEDIA_ROOT=MEDIA_ROOT)
     def test_post(self):
-        # Verify that non logged in user cannot add a game
+        # Verify that non-logged-in user cannot add a game
         image = Image.new('RGB', (100, 100))
         tmp_file = tempfile.NamedTemporaryFile(suffix='.jpg')
         image.save(tmp_file)
@@ -1034,7 +1034,7 @@ class SubPluginImageViewSetTestCase(APITestCase):
         )
 
     def test_delete(self):
-        # Verify that non logged in user cannot delete a game
+        # Verify that non-logged-in user cannot delete a game
         api_path = f'{self.api_path}{self.sub_plugin_image_1.id}/'
         response = self.client.delete(path=api_path)
         self.assertEqual(
@@ -1136,7 +1136,7 @@ class SubPluginTagViewSetTestCase(APITestCase):
         )
 
     def test_get_list(self):
-        # Verify that non logged in user can see results but not 'id'
+        # Verify that non-logged-in user can see results but not 'id'
         response = self.client.get(path=self.api_path)
         self.assertEqual(
             first=response.status_code,
@@ -1202,7 +1202,7 @@ class SubPluginTagViewSetTestCase(APITestCase):
         )
 
     def test_get_details(self):
-        # Verify that non logged in user cannot see details
+        # Verify that non-logged-in user cannot see details
         api_path = f'{self.api_path}{self.sub_plugin_tag_1.id}/'
         response = self.client.get(path=api_path)
         self.assertEqual(
@@ -1261,7 +1261,7 @@ class SubPluginTagViewSetTestCase(APITestCase):
         )
 
     def test_post(self):
-        # Verify that non logged in user cannot add a tag
+        # Verify that non-logged-in user cannot add a tag
         response = self.client.post(
             path=self.api_path,
             data={'tag': 'new-tag-1'},
@@ -1339,7 +1339,7 @@ class SubPluginTagViewSetTestCase(APITestCase):
         )
 
     def test_delete(self):
-        # Verify that non logged in user cannot delete a tag
+        # Verify that non-logged-in user cannot delete a tag
         api_path = f'{self.api_path}{self.sub_plugin_tag_1.id}/'
         response = self.client.delete(path=api_path)
         self.assertEqual(

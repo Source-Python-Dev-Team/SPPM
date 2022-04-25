@@ -116,7 +116,7 @@ class PackageContributorViewSetTestCase(APITestCase):
         )
 
     def test_get_list(self):
-        # Verify that non logged in user can see results but not 'id'
+        # Verify that non-logged-in user can see results but not 'id'
         response = self.client.get(path=self.api_path)
         self.assertEqual(
             first=response.status_code,
@@ -195,7 +195,7 @@ class PackageContributorViewSetTestCase(APITestCase):
         )
 
     def test_get_details(self):
-        # Verify that non logged in user cannot see details
+        # Verify that non-logged-in user cannot see details
         api_path = f'{self.api_path}{self.package_contributor.id}/'
         response = self.client.get(path=api_path)
         self.assertEqual(
@@ -250,7 +250,7 @@ class PackageContributorViewSetTestCase(APITestCase):
         )
 
     def test_post(self):
-        # Verify that non logged in user cannot add a contributor
+        # Verify that non-logged-in user cannot add a contributor
         response = self.client.post(
             path=self.api_path,
             data={'username': self.new_contributor.user.username},
@@ -340,7 +340,7 @@ class PackageContributorViewSetTestCase(APITestCase):
         )
 
     def test_delete(self):
-        # Verify that non logged in user cannot delete a contributor
+        # Verify that non-logged-in user cannot delete a contributor
         response = self.client.delete(
             path=self.api_path + f'{self.package_contributor.id}/',
         )
@@ -469,7 +469,7 @@ class PackageGameViewSetTestCase(APITestCase):
         )
 
     def test_get_list(self):
-        # Verify that non logged in user can see results but not 'id'
+        # Verify that non-logged-in user can see results but not 'id'
         response = self.client.get(path=self.api_path)
         self.assertEqual(
             first=response.status_code,
@@ -553,7 +553,7 @@ class PackageGameViewSetTestCase(APITestCase):
         )
 
     def test_get_details(self):
-        # Verify that non logged in user cannot see details
+        # Verify that non-logged-in user cannot see details
         api_path = f'{self.api_path}{self.package_game_1.id}/'
         response = self.client.get(path=api_path)
         self.assertEqual(
@@ -622,7 +622,7 @@ class PackageGameViewSetTestCase(APITestCase):
         )
 
     def test_post(self):
-        # Verify that non logged in user cannot add a game
+        # Verify that non-logged-in user cannot add a game
         response = self.client.post(
             path=self.api_path,
             data={'game_slug': self.game_3.slug},
@@ -698,7 +698,7 @@ class PackageGameViewSetTestCase(APITestCase):
         )
 
     def test_delete(self):
-        # Verify that non logged in user cannot delete a game
+        # Verify that non-logged-in user cannot delete a game
         response = self.client.delete(
             path=self.api_path + f'{self.package_game_1.id}/',
         )
@@ -812,7 +812,7 @@ class PackageImageViewSetTestCase(APITestCase):
         )
 
     def test_get_list(self):
-        # Verify that a non logged in user can see results but not 'id'
+        # Verify that a non-logged-in user can see results but not 'id'
         response = self.client.get(path=self.api_path)
         self.assertEqual(
             first=response.status_code,
@@ -880,7 +880,7 @@ class PackageImageViewSetTestCase(APITestCase):
         )
 
     def test_get_details(self):
-        # Verify that non logged in user cannot see details
+        # Verify that non-logged-in user cannot see details
         api_path = f'{self.api_path}{self.package_image_1.id}/'
         response = self.client.get(path=api_path)
         self.assertEqual(
@@ -1084,7 +1084,7 @@ class PackageTagViewSetTestCase(APITestCase):
         )
 
     def test_get_list(self):
-        # Verify that non logged in user can see results but not 'id'
+        # Verify that non-logged-in user can see results but not 'id'
         response = self.client.get(path=self.api_path)
         self.assertEqual(
             first=response.status_code,
@@ -1150,7 +1150,7 @@ class PackageTagViewSetTestCase(APITestCase):
         )
 
     def test_get_details(self):
-        # Verify that non logged in user cannot see details
+        # Verify that non-logged-in user cannot see details
         api_path = f'{self.api_path}{self.package_tag_1.id}/'
         response = self.client.get(path=api_path)
         self.assertEqual(
@@ -1209,7 +1209,7 @@ class PackageTagViewSetTestCase(APITestCase):
         )
 
     def test_post(self):
-        # Verify that non logged in user cannot add a tag
+        # Verify that non-logged-in user cannot add a tag
         response = self.client.post(
             path=self.api_path,
             data={'tag': 'new-tag-1'},
@@ -1287,7 +1287,7 @@ class PackageTagViewSetTestCase(APITestCase):
         )
 
     def test_delete(self):
-        # Verify that non logged in user cannot delete a tag
+        # Verify that non-logged-in user cannot delete a tag
         response = self.client.delete(
             path=self.api_path + f'{self.package_tag_1.id}/',
         )
