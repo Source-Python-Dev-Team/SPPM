@@ -93,6 +93,7 @@ class DownloadMixin(View):
 
     def update_download_count(self, kwargs, zip_file):
         """Increments the download count for the release."""
+        # TODO: update without having to use a query from get_instance
         instance = self.get_instance(kwargs)
         version = zip_file.split(
             f'{instance.slug}-v', 1

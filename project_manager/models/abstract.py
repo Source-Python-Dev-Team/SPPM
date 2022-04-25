@@ -157,6 +157,7 @@ class Project(models.Model):
     @property
     def current_version(self):
         """Return the current release's version."""
+        # TODO: rework this query
         return self.releases.values_list(
             'version',
             flat=True,
@@ -167,6 +168,7 @@ class Project(models.Model):
     @property
     def total_downloads(self):
         """Return the total number of downloads for the project."""
+        # TODO: rework this query
         return sum(
             map(
                 attrgetter('download_count'),
