@@ -16,7 +16,9 @@ from project_manager.sub_plugins.api.views import SubPluginAPIView
 # =============================================================================
 class SubPluginAPIViewTestCase(APITestCase):
 
-    api_path = '/api/sub-plugins/'
+    api_path = reverse(
+        viewname='api:sub-plugins:endpoints',
+    )
 
     def test_inheritance(self):
         self.assertTrue(expr=issubclass(SubPluginAPIView, ProjectAPIView))
@@ -37,18 +39,18 @@ class SubPluginAPIViewTestCase(APITestCase):
         response = self.client.get(path=self.api_path)
         self.assertEqual(first=response.status_code, second=status.HTTP_200_OK)
         base_path = reverse(
-            viewname=f'api:sub-plugins:endpoints',
+            viewname='api:sub-plugins:endpoints',
             request=response.wsgi_request,
         )
         self.assertDictEqual(
             d1=response.json(),
             d2={
-                'contributors': base_path + f'contributors/<plugin>/<sub-plugin>/',
-                'games': base_path + f'games/<plugin>/<sub-plugin>/',
-                'images': base_path + f'images/<plugin>/<sub-plugin>/',
-                'projects': base_path + f'projects/<plugin>/',
-                'releases': base_path + f'releases/<plugin>/<sub-plugin>/',
-                'tags': base_path + f'tags/<plugin>/<sub-plugin>/',
+                'contributors': f'{base_path}contributors/<plugin>/<sub-plugin>/',
+                'games': f'{base_path}games/<plugin>/<sub-plugin>/',
+                'images': f'{base_path}images/<plugin>/<sub-plugin>/',
+                'projects': f'{base_path}projects/<plugin>/',
+                'releases': f'{base_path}releases/<plugin>/<sub-plugin>/',
+                'tags': f'{base_path}tags/<plugin>/<sub-plugin>/',
             }
         )
 

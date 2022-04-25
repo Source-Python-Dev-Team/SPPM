@@ -16,7 +16,9 @@ from project_manager.plugins.api.views import PluginAPIView
 # =============================================================================
 class PluginAPIViewTestCase(APITestCase):
 
-    api_path = '/api/plugins/'
+    api_path = reverse(
+        viewname='api:plugins:endpoints',
+    )
 
     def test_inheritance(self):
         self.assertTrue(expr=issubclass(PluginAPIView, ProjectAPIView))
@@ -37,19 +39,19 @@ class PluginAPIViewTestCase(APITestCase):
         response = self.client.get(path=self.api_path)
         self.assertEqual(first=response.status_code, second=status.HTTP_200_OK)
         base_path = reverse(
-            viewname=f'api:plugins:endpoints',
+            viewname='api:plugins:endpoints',
             request=response.wsgi_request,
         )
         self.assertDictEqual(
             d1=response.json(),
             d2={
-                'contributors': base_path + f'contributors/<plugin>/',
-                'games': base_path + f'games/<plugin>/',
-                'images': base_path + f'images/<plugin>/',
-                'projects': base_path + f'projects/',
-                'releases': base_path + f'releases/<plugin>/',
-                'tags': base_path + f'tags/<plugin>/',
-                'paths': base_path + f'paths/<plugin>/',
+                'contributors': f'{base_path}contributors/<plugin>/',
+                'games': f'{base_path}games/<plugin>/',
+                'images': f'{base_path}images/<plugin>/',
+                'projects': f'{base_path}projects/',
+                'releases': f'{base_path}releases/<plugin>/',
+                'tags': f'{base_path}tags/<plugin>/',
+                'paths': f'{base_path}paths/<plugin>/',
             }
         )
 

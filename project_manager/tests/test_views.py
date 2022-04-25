@@ -10,6 +10,7 @@ from django.views.generic import TemplateView
 
 # Third Party Django
 from rest_framework import status
+from rest_framework.reverse import reverse
 
 # App
 from project_manager.views import StatisticsView
@@ -36,7 +37,9 @@ from test_utils.factories.users import ForumUserFactory
 # =============================================================================
 class StatisticsViewTestCase(TestCase):
 
-    api_path = '/statistics/'
+    api_path = reverse(
+        viewname='statistics',
+    )
 
     def test_class_inheritance(self):
         self.assertTrue(

@@ -4,6 +4,7 @@
 # Third Party Django
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import status
+from rest_framework.reverse import reverse
 from rest_framework.test import APITestCase
 
 # App
@@ -19,7 +20,9 @@ from users.api.views import ForumUserViewSet
 # =============================================================================
 class ForumUserViewSetTestCase(APITestCase):
 
-    api_path = '/api/users/'
+    api_path = reverse(
+        viewname='api:users:users-list',
+    )
 
     def test_filter_backends(self):
         self.assertTupleEqual(
@@ -96,7 +99,10 @@ class ForumUserViewSetTestCase(APITestCase):
             )
 
         # Test alphabetized custom ordering
-        response = self.client.get(path=f'{self.api_path}?ordering=username')
+        response = self.client.get(
+            path=self.api_path,
+            data={'ordering': 'username'},
+        )
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -118,7 +124,10 @@ class ForumUserViewSetTestCase(APITestCase):
             )
 
         # Test reverse alphabetized custom ordering
-        response = self.client.get(path=f'{self.api_path}?ordering=-username')
+        response = self.client.get(
+            path=self.api_path,
+            data={'ordering': '-username'},
+        )
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -140,7 +149,10 @@ class ForumUserViewSetTestCase(APITestCase):
             )
 
         # Test forum_id ordering
-        response = self.client.get(path=f'{self.api_path}?ordering=forum_id')
+        response = self.client.get(
+            path=self.api_path,
+            data={'ordering': 'forum_id'},
+        )
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -162,7 +174,10 @@ class ForumUserViewSetTestCase(APITestCase):
             )
 
         # Test reverse forum_id ordering
-        response = self.client.get(path=f'{self.api_path}?ordering=-forum_id')
+        response = self.client.get(
+            path=self.api_path,
+            data={'ordering': '-forum_id'},
+        )
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -185,7 +200,14 @@ class ForumUserViewSetTestCase(APITestCase):
 
     def test_get_details(self):
         user = ForumUserFactory()
-        response = self.client.get(path=f'{self.api_path}{user.forum_id}/')
+        response = self.client.get(
+            path=reverse(
+                viewname='api:users:users-detail',
+                kwargs={
+                    'pk': user.forum_id,
+                }
+            ),
+        )
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -202,7 +224,10 @@ class ForumUserViewSetTestCase(APITestCase):
 
     def test_get_filter(self):
         user = ForumUserFactory()
-        response = self.client.get(path=f'{self.api_path}?has_contributions=true')
+        response = self.client.get(
+            path=self.api_path,
+            data={'has_contributions': True},
+        )
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -212,7 +237,10 @@ class ForumUserViewSetTestCase(APITestCase):
             second=0,
         )
 
-        response = self.client.get(path=f'{self.api_path}?has_contributions=false')
+        response = self.client.get(
+            path=self.api_path,
+            data={'has_contributions': False},
+        )
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,

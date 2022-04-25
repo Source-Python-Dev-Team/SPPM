@@ -7,6 +7,7 @@ from django.db.models.expressions import CombinedExpression
 # Third Party Django
 from rest_framework import status
 from rest_framework.filters import OrderingFilter
+from rest_framework.reverse import reverse
 from rest_framework.test import APITestCase
 
 # App
@@ -32,7 +33,9 @@ class GameViewSetTestCase(APITestCase):
     package_1 = package_2 = None
     plugin_1 = plugin_2 = None
     sub_plugin_1 = sub_plugin_2 = None
-    api_path = '/api/games/'
+    api_path = reverse(
+        viewname='api:games:games-list'
+    )
 
     @classmethod
     def setUpTestData(cls):
@@ -291,7 +294,8 @@ class GameViewSetTestCase(APITestCase):
         )
 
         response = self.client.get(
-            path=f'{self.api_path}?ordering=-project_count',
+            path=self.api_path,
+            data={'ordering': '-project_count'},
         )
         self.assertEqual(
             first=response.status_code,
@@ -353,7 +357,12 @@ class GameViewSetTestCase(APITestCase):
         )
 
     def test_retrieve(self):
-        response = self.client.get(path=f'{self.api_path}{self.game_1.slug}/')
+        response = self.client.get(
+            path=reverse(
+                viewname='api:games:games-detail',
+                kwargs={'pk': self.game_1.slug},
+            ),
+        )
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -386,7 +395,12 @@ class GameViewSetTestCase(APITestCase):
             }
         )
 
-        response = self.client.get(path=f'{self.api_path}{self.game_2.slug}/')
+        response = self.client.get(
+            path=reverse(
+                viewname='api:games:games-detail',
+                kwargs={'pk': self.game_2.slug},
+            ),
+        )
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -434,7 +448,12 @@ class GameViewSetTestCase(APITestCase):
             }
         )
 
-        response = self.client.get(path=f'{self.api_path}{self.game_3.slug}/')
+        response = self.client.get(
+            path=reverse(
+                viewname='api:games:games-detail',
+                kwargs={'pk': self.game_3.slug},
+            ),
+        )
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -456,7 +475,12 @@ class GameViewSetTestCase(APITestCase):
             }
         )
 
-        response = self.client.get(path=f'{self.api_path}{self.game_4.slug}/')
+        response = self.client.get(
+            path=reverse(
+                viewname='api:games:games-detail',
+                kwargs={'pk': self.game_4.slug},
+            ),
+        )
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,

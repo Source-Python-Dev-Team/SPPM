@@ -8,6 +8,7 @@ from django.db.models.expressions import CombinedExpression
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import status
 from rest_framework.filters import OrderingFilter
+from rest_framework.reverse import reverse
 from rest_framework.test import APITestCase
 
 # App
@@ -33,7 +34,9 @@ class TagViewSetTestCase(APITestCase):
     package_1 = package_2 = None
     plugin_1 = plugin_2 = None
     sub_plugin_1 = sub_plugin_2 = None
-    api_path = '/api/tags/'
+    api_path = reverse(
+        viewname='api:tags:tags-list',
+    )
 
     @classmethod
     def setUpTestData(cls):
@@ -285,7 +288,8 @@ class TagViewSetTestCase(APITestCase):
         )
 
         response = self.client.get(
-            path=f'{self.api_path}?ordering=-project_count',
+            path=self.api_path,
+            data={'ordering': '-project_count'},
         )
         self.assertEqual(
             first=response.status_code,
@@ -339,7 +343,14 @@ class TagViewSetTestCase(APITestCase):
         )
 
     def test_retrieve(self):
-        response = self.client.get(path=f'{self.api_path}{self.tag_1.name}/')
+        response = self.client.get(
+            path=reverse(
+                viewname='api:tags:tags-detail',
+                kwargs={
+                    'pk': self.tag_1.name,
+                },
+            ),
+        )
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -368,7 +379,14 @@ class TagViewSetTestCase(APITestCase):
             }
         )
 
-        response = self.client.get(path=f'{self.api_path}{self.tag_2.name}/')
+        response = self.client.get(
+            path=reverse(
+                viewname='api:tags:tags-detail',
+                kwargs={
+                    'pk': self.tag_2.name,
+                },
+            ),
+        )
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -414,7 +432,14 @@ class TagViewSetTestCase(APITestCase):
             }
         )
 
-        response = self.client.get(path=f'{self.api_path}{self.tag_3.name}/')
+        response = self.client.get(
+            path=reverse(
+                viewname='api:tags:tags-detail',
+                kwargs={
+                    'pk': self.tag_3.name,
+                },
+            ),
+        )
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -434,7 +459,14 @@ class TagViewSetTestCase(APITestCase):
             }
         )
 
-        response = self.client.get(path=f'{self.api_path}{self.tag_4.name}/')
+        response = self.client.get(
+            path=reverse(
+                viewname='api:tags:tags-detail',
+                kwargs={
+                    'pk': self.tag_4.name,
+                },
+            ),
+        )
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -450,7 +482,12 @@ class TagViewSetTestCase(APITestCase):
         )
 
         response = self.client.get(
-            path=f'{self.api_path}{self.black_listed_tag.name}/',
+            path=reverse(
+                viewname='api:tags:tags-detail',
+                kwargs={
+                    'pk': self.black_listed_tag.name,
+                },
+            ),
         )
         self.assertEqual(
             first=response.status_code,

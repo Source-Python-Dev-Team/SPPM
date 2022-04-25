@@ -16,7 +16,9 @@ from project_manager.packages.api.views import PackageAPIView
 # =============================================================================
 class PackageAPIViewTestCase(APITestCase):
 
-    api_path = '/api/packages/'
+    api_path = reverse(
+        viewname='api:packages:endpoints',
+    )
 
     def test_inheritance(self):
         self.assertTrue(expr=issubclass(PackageAPIView, ProjectAPIView))
@@ -37,18 +39,18 @@ class PackageAPIViewTestCase(APITestCase):
         response = self.client.get(path=self.api_path)
         self.assertEqual(first=response.status_code, second=status.HTTP_200_OK)
         base_path = reverse(
-            viewname=f'api:packages:endpoints',
+            viewname='api:packages:endpoints',
             request=response.wsgi_request,
         )
         self.assertDictEqual(
             d1=response.json(),
             d2={
-                'contributors': base_path + f'contributors/<package>/',
-                'games': base_path + f'games/<package>/',
-                'images': base_path + f'images/<package>/',
-                'projects': base_path + f'projects/',
-                'releases': base_path + f'releases/<package>/',
-                'tags': base_path + f'tags/<package>/',
+                'contributors': f'{base_path}contributors/<package>/',
+                'games': f'{base_path}games/<package>/',
+                'images': f'{base_path}images/<package>/',
+                'projects': f'{base_path}projects/',
+                'releases': f'{base_path}releases/<package>/',
+                'tags': f'{base_path}tags/<package>/',
             }
         )
 
