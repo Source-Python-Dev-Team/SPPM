@@ -52,7 +52,7 @@ class SubPluginReleaseDownloadView(DownloadMixin):
 class SubPluginView(TemplateView):
     """Frontend view for viewing SubPlugins."""
 
-    template_name = 'sub-plugins.html'
+    template_name = 'main.html'
     http_method_names = ('get', 'options')
 
     @staticmethod
@@ -89,7 +89,7 @@ class SubPluginView(TemplateView):
 class SubPluginCreateView(TemplateView):
     """Frontend view for creating SubPlugins."""
 
-    template_name = 'sub-plugins.html'
+    template_name = 'main.html'
     http_method_names = ('get', 'options')
 
     def get_context_data(self, **kwargs):

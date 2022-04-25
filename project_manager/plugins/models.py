@@ -355,16 +355,6 @@ class SubPluginPath(AbstractUUIDPrimaryKeyModel):
 
         return super().clean()
 
-    def get_absolute_url(self):
-        """Return the SubPluginPath listing URL for the Plugin."""
-        # TODO: add tests once this view is created
-        return reverse(
-            viewname='plugins:path_list',
-            kwargs={
-                'slug': self.plugin_id,
-            }
-        )
-
 
 class PluginReleaseDownloadRequirement(AbstractUUIDPrimaryKeyModel):
     """Plugin Download Requirement for Release model."""

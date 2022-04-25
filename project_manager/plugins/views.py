@@ -37,7 +37,7 @@ class PluginReleaseDownloadView(DownloadMixin):
 class PluginView(TemplateView):
     """Frontend view for viewing Plugins."""
 
-    template_name = 'plugins.html'
+    template_name = 'main.html'
     http_method_names = ('get', 'options')
 
     def get_context_data(self, **kwargs):
@@ -58,7 +58,7 @@ class PluginView(TemplateView):
 class PluginCreateView(TemplateView):
     """Frontend view for creating Plugins."""
 
-    template_name = 'plugins.html'
+    template_name = 'main.html'
     http_method_names = ('get', 'options')
 
     def get_context_data(self, **kwargs):

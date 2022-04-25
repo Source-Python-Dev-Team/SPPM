@@ -138,7 +138,7 @@ class PackageCreateViewTestCase(TestCase):
     def test_template_name(self):
         self.assertEqual(
             first=PackageCreateView.template_name,
-            second='packages.html',
+            second='main.html',
         )
 
     def test_get(self):
@@ -182,7 +182,7 @@ class PackageViewTestCase(TestCase):
     def test_template_name(self):
         self.assertEqual(
             first=PackageView.template_name,
-            second='packages.html',
+            second='main.html',
         )
 
     def test_list(self):

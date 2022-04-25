@@ -37,7 +37,7 @@ class PackageReleaseDownloadView(DownloadMixin):
 class PackageView(TemplateView):
     """Frontend view for viewing Packages."""
 
-    template_name = 'packages.html'
+    template_name = 'main.html'
     http_method_names = ('get', 'options')
 
     def get_context_data(self, **kwargs):
@@ -58,7 +58,7 @@ class PackageView(TemplateView):
 class PackageCreateView(TemplateView):
     """Frontend view for creating Packages."""
 
-    template_name = 'packages.html'
+    template_name = 'main.html'
     http_method_names = ('get', 'options')
 
     def get_context_data(self, **kwargs):

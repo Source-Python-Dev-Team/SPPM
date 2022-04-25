@@ -150,7 +150,7 @@ class PluginCreateViewTestCase(TestCase):
     def test_template_name(self):
         self.assertEqual(
             first=PluginCreateView.template_name,
-            second='plugins.html',
+            second='main.html',
         )
 
     def test_get(self):
@@ -194,7 +194,7 @@ class PluginViewTestCase(TestCase):
     def test_template_name(self):
         self.assertEqual(
             first=PluginView.template_name,
-            second='plugins.html',
+            second='main.html',
         )
 
     def test_list(self):
