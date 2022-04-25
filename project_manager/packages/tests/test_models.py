@@ -311,6 +311,18 @@ class PackageTestCase(TestCase):
             second=FORUM_THREAD_URL.format(topic=topic),
         )
 
+    def test_get_absolute_url(self):
+        package = PackageFactory()
+        self.assertEqual(
+            first=package.get_absolute_url(),
+            second=reverse(
+                viewname='packages:detail',
+                kwargs={
+                    'slug': package.slug,
+                }
+            )
+        )
+
     def test_meta_class(self):
         self.assertTrue(issubclass(Package.Meta, Project.Meta))
         self.assertEqual(

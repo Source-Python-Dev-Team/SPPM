@@ -7,6 +7,8 @@ from unittest import mock
 # Django
 from django.conf import settings
 from django.test import TestCase, override_settings
+from django.urls import reverse
+from django.views.generic import TemplateView
 
 # Third Party Django
 from rest_framework import status
@@ -15,7 +17,11 @@ from rest_framework import status
 from project_manager.mixins import DownloadMixin
 from project_manager.packages.constants import PACKAGE_RELEASE_URL
 from project_manager.packages.models import Package, PackageRelease
-from project_manager.packages.views import PackageReleaseDownloadView
+from project_manager.packages.views import (
+    PackageReleaseDownloadView,
+    PackageCreateView,
+    PackageView,
+)
 from test_utils.factories.packages import PackageFactory, PackageReleaseFactory
 
 
@@ -109,4 +115,118 @@ class PackageReleaseDownloadViewTestCase(TestCase):
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
+        )
+
+
+class PackageCreateViewTestCase(TestCase):
+
+    api_path = reverse(
+        viewname='packages:create',
+    )
+
+    def test_model_inheritance(self):
+        self.assertTrue(
+            expr=issubclass(PackageCreateView, TemplateView),
+        )
+
+    def test_http_method_names(self):
+        self.assertTupleEqual(
+            tuple1=PackageCreateView.http_method_names,
+            tuple2=('get', 'options'),
+        )
+
+    def test_template_name(self):
+        self.assertEqual(
+            first=PackageCreateView.template_name,
+            second='packages.html',
+        )
+
+    def test_get(self):
+        response = self.client.get(self.api_path)
+        self.assertEqual(
+            first=response.status_code,
+            second=status.HTTP_200_OK,
+        )
+        data = dict(response.context_data)
+        del data['view']
+        self.assertDictEqual(
+            d1=data,
+            d2={'title': 'Create a Package'},
+        )
+
+    def test_options(self):
+        response = self.client.options(self.api_path)
+        self.assertEqual(
+            first=response.status_code,
+            second=status.HTTP_200_OK,
+        )
+
+
+class PackageViewTestCase(TestCase):
+
+    api_path = reverse(
+        viewname='packages:list',
+    )
+
+    def test_model_inheritance(self):
+        self.assertTrue(
+            expr=issubclass(PackageView, TemplateView),
+        )
+
+    def test_http_method_names(self):
+        self.assertTupleEqual(
+            tuple1=PackageView.http_method_names,
+            tuple2=('get', 'options'),
+        )
+
+    def test_template_name(self):
+        self.assertEqual(
+            first=PackageView.template_name,
+            second='packages.html',
+        )
+
+    def test_list(self):
+        response = self.client.get(self.api_path)
+        self.assertEqual(
+            first=response.status_code,
+            second=status.HTTP_200_OK,
+        )
+        data = dict(response.context_data)
+        del data['view']
+        self.assertDictEqual(
+            d1=data,
+            d2={'title': 'Package Listing'},
+        )
+
+    def test_detail(self):
+        package = PackageFactory()
+        response = self.client.get(f'{self.api_path}{package.slug}')
+        self.assertEqual(
+            first=response.status_code,
+            second=status.HTTP_200_OK,
+        )
+        data = dict(response.context_data)
+        del data['view']
+        self.assertDictEqual(
+            d1=data,
+            d2={
+                'slug': package.slug,
+                'title': package.name,
+            },
+        )
+
+    def test_detail_invalid_slug(self):
+        response = self.client.get(f'{self.api_path}invalid')
+        self.assertEqual(
+            first=response.status_code,
+            second=status.HTTP_200_OK,
+        )
+        data = dict(response.context_data)
+        del data['view']
+        self.assertDictEqual(
+            d1=data,
+            d2={
+                'slug': 'invalid',
+                'title': 'Package "invalid" not found.',
+            },
         )

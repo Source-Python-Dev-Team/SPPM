@@ -7,6 +7,8 @@ from unittest import mock
 # Django
 from django.conf import settings
 from django.test import TestCase, override_settings
+from django.urls import reverse
+from django.views.generic import TemplateView
 
 # Third Party Django
 from rest_framework import status
@@ -15,7 +17,11 @@ from rest_framework import status
 from project_manager.mixins import DownloadMixin
 from project_manager.plugins.constants import PLUGIN_RELEASE_URL
 from project_manager.plugins.models import Plugin, PluginRelease
-from project_manager.plugins.views import PluginReleaseDownloadView
+from project_manager.plugins.views import (
+    PluginReleaseDownloadView,
+    PluginCreateView,
+    PluginView,
+)
 from test_utils.factories.plugins import PluginFactory, PluginReleaseFactory
 
 
@@ -40,7 +46,13 @@ class PluginReleaseDownloadViewTestCase(TestCase):
             version=version,
             zip_file=cls.zip_file,
         )
-        cls.api_path = f'/media/{PLUGIN_RELEASE_URL}{cls.plugin.slug}/{cls.zip_file}'
+        cls.api_path = reverse(
+            viewname='plugin-download',
+            kwargs={
+                'slug': cls.plugin.slug,
+                'zip_file': cls.zip_file,
+            }
+        )
 
     def test_model_inheritance(self):
         self.assertTrue(
@@ -115,4 +127,118 @@ class PluginReleaseDownloadViewTestCase(TestCase):
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
+        )
+
+
+class PluginCreateViewTestCase(TestCase):
+
+    api_path = reverse(
+        viewname='plugins:create',
+    )
+
+    def test_model_inheritance(self):
+        self.assertTrue(
+            expr=issubclass(PluginCreateView, TemplateView),
+        )
+
+    def test_http_method_names(self):
+        self.assertTupleEqual(
+            tuple1=PluginCreateView.http_method_names,
+            tuple2=('get', 'options'),
+        )
+
+    def test_template_name(self):
+        self.assertEqual(
+            first=PluginCreateView.template_name,
+            second='plugins.html',
+        )
+
+    def test_get(self):
+        response = self.client.get(self.api_path)
+        self.assertEqual(
+            first=response.status_code,
+            second=status.HTTP_200_OK,
+        )
+        data = dict(response.context_data)
+        del data['view']
+        self.assertDictEqual(
+            d1=data,
+            d2={'title': 'Create a Plugin'},
+        )
+
+    def test_options(self):
+        response = self.client.options(self.api_path)
+        self.assertEqual(
+            first=response.status_code,
+            second=status.HTTP_200_OK,
+        )
+
+
+class PluginViewTestCase(TestCase):
+
+    api_path = reverse(
+        viewname='plugins:list',
+    )
+
+    def test_model_inheritance(self):
+        self.assertTrue(
+            expr=issubclass(PluginView, TemplateView),
+        )
+
+    def test_http_method_names(self):
+        self.assertTupleEqual(
+            tuple1=PluginView.http_method_names,
+            tuple2=('get', 'options'),
+        )
+
+    def test_template_name(self):
+        self.assertEqual(
+            first=PluginView.template_name,
+            second='plugins.html',
+        )
+
+    def test_list(self):
+        response = self.client.get(self.api_path)
+        self.assertEqual(
+            first=response.status_code,
+            second=status.HTTP_200_OK,
+        )
+        data = dict(response.context_data)
+        del data['view']
+        self.assertDictEqual(
+            d1=data,
+            d2={'title': 'Plugin Listing'},
+        )
+
+    def test_detail(self):
+        plugin = PluginFactory()
+        response = self.client.get(f'{self.api_path}{plugin.slug}')
+        self.assertEqual(
+            first=response.status_code,
+            second=status.HTTP_200_OK,
+        )
+        data = dict(response.context_data)
+        del data['view']
+        self.assertDictEqual(
+            d1=data,
+            d2={
+                'slug': plugin.slug,
+                'title': plugin.name,
+            },
+        )
+
+    def test_detail_invalid_slug(self):
+        response = self.client.get(f'{self.api_path}invalid')
+        self.assertEqual(
+            first=response.status_code,
+            second=status.HTTP_200_OK,
+        )
+        data = dict(response.context_data)
+        del data['view']
+        self.assertDictEqual(
+            d1=data,
+            d2={
+                'slug': 'invalid',
+                'title': 'Plugin "invalid" not found.',
+            },
         )

@@ -316,6 +316,18 @@ class PluginTestCase(TestCase):
             second=FORUM_THREAD_URL.format(topic=topic),
         )
 
+    def test_get_absolute_url(self):
+        plugin = PluginFactory()
+        self.assertEqual(
+            first=plugin.get_absolute_url(),
+            second=reverse(
+                viewname='plugins:detail',
+                kwargs={
+                    'slug': plugin.slug,
+                }
+            )
+        )
+
     def test_meta_class(self):
         self.assertTrue(issubclass(Plugin.Meta, Project.Meta))
         self.assertEqual(

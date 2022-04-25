@@ -59,7 +59,7 @@ class PackageCreateView(TemplateView):
     """Frontend view for creating Packages."""
 
     template_name = 'packages.html'
-    http_method_names = ('get', 'post', 'options')
+    http_method_names = ('get', 'options')
 
     def get_context_data(self, **kwargs):
         """Add the page title to the context."""
