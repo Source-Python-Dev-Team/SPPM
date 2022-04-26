@@ -27,37 +27,37 @@ from project_manager.plugins.api.views import (
 # =============================================================================
 router = routers.SimpleRouter()
 router.register(
-    prefix=r'projects',
+    prefix='projects',
     viewset=PluginViewSet,
     basename='projects',
 )
 router.register(
-    prefix=r'^images/(?P<plugin_slug>[\w-]+)',
+    prefix='images/(?P<plugin_slug>[^/.]+)',
     viewset=PluginImageViewSet,
     basename='images',
 )
 router.register(
-    prefix=r'^releases/(?P<plugin_slug>[\w-]+)',
+    prefix='releases/(?P<plugin_slug>[^/.]+)',
     viewset=PluginReleaseViewSet,
     basename='releases',
 )
 router.register(
-    prefix=r'^games/(?P<plugin_slug>[\w-]+)',
+    prefix='games/(?P<plugin_slug>[^/.]+)',
     viewset=PluginGameViewSet,
     basename='games',
 )
 router.register(
-    prefix=r'^tags/(?P<plugin_slug>[\w-]+)',
+    prefix='tags/(?P<plugin_slug>[^/.]+)',
     viewset=PluginTagViewSet,
     basename='tags',
 )
 router.register(
-    prefix=r'^contributors/(?P<plugin_slug>[\w-]+)',
+    prefix='contributors/(?P<plugin_slug>[^/.]+)',
     viewset=PluginContributorViewSet,
     basename='contributors',
 )
 router.register(
-    prefix=r'^paths/(?P<plugin_slug>[\w-]+)',
+    prefix='paths/(?P<plugin_slug>[^/.]+)',
     viewset=SubPluginPathViewSet,
     basename='paths',
 )

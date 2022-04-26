@@ -18,7 +18,7 @@ from users.api.views import ForumUserViewSet
 # =============================================================================
 router = routers.SimpleRouter()
 router.register(
-    prefix=r'',
+    prefix='',
     viewset=ForumUserViewSet,
     basename='users'
 )

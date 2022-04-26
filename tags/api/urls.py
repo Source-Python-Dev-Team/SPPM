@@ -15,7 +15,7 @@ from tags.api.views import TagViewSet
 # =============================================================================
 router = routers.SimpleRouter()
 router.register(
-    prefix=r'',
+    prefix='',
     viewset=TagViewSet,
     basename='tags',
 )

@@ -26,32 +26,32 @@ from project_manager.packages.api.views import (
 # =============================================================================
 router = routers.SimpleRouter()
 router.register(
-    prefix=r'projects',
+    prefix='projects',
     viewset=PackageViewSet,
     basename='projects',
 )
 router.register(
-    prefix=r'^images/(?P<package_slug>[\w-]+)',
+    prefix='images/(?P<package_slug>[^/.]+)',
     viewset=PackageImageViewSet,
     basename='images',
 )
 router.register(
-    prefix=r'^releases/(?P<package_slug>[\w-]+)',
+    prefix='releases/(?P<package_slug>[^/.]+)',
     viewset=PackageReleaseViewSet,
     basename='releases',
 )
 router.register(
-    prefix=r'^games/(?P<package_slug>[\w-]+)',
+    prefix='games/(?P<package_slug>[^/.]+)',
     viewset=PackageGameViewSet,
     basename='games',
 )
 router.register(
-    prefix=r'^tags/(?P<package_slug>[\w-]+)',
+    prefix='tags/(?P<package_slug>[^/.]+)',
     viewset=PackageTagViewSet,
     basename='tags',
 )
 router.register(
-    prefix=r'^contributors/(?P<package_slug>[\w-]+)',
+    prefix='contributors/(?P<package_slug>[^/.]+)',
     viewset=PackageContributorViewSet,
     basename='contributors',
 )

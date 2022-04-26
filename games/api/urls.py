@@ -15,7 +15,7 @@ from games.api.views import GameViewSet
 # =============================================================================
 router = routers.SimpleRouter()
 router.register(
-    prefix=r'',
+    prefix='',
     viewset=GameViewSet,
     basename='games',
 )
