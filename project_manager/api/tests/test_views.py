@@ -16,6 +16,10 @@ from project_manager.api.views import ProjectManagerAPIView
 # =============================================================================
 class ProjectManagerAPIViewTestCase(APITestCase):
 
+    api_path = reverse(
+        viewname='api:api-root',
+    )
+
     def test_class_inheritance(self):
         self.assertTrue(expr=issubclass(ProjectManagerAPIView, APIView))
 
@@ -26,7 +30,7 @@ class ProjectManagerAPIViewTestCase(APITestCase):
         )
 
     def test_get(self):
-        response = self.client.get(path='/api/')
+        response = self.client.get(path=self.api_path)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -62,7 +66,7 @@ class ProjectManagerAPIViewTestCase(APITestCase):
         )
 
     def test_options(self):
-        response = self.client.options(path='/api/')
+        response = self.client.options(path=self.api_path)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,

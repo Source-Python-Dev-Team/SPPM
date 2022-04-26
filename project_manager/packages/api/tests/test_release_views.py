@@ -16,6 +16,7 @@ from path import Path
 
 # Third Party Django
 from rest_framework import status
+from rest_framework.reverse import reverse
 from rest_framework.test import APITestCase
 
 # App
@@ -48,7 +49,8 @@ from test_utils.factories.users import ForumUserFactory
 # =============================================================================
 class PackageReleaseViewSetTestCase(APITestCase):
 
-    base_api_path = contributor = owner = package = None
+    contributor = detail_api = list_api = owner = package = None
+    package_release = None
     MEDIA_ROOT = Path(tempfile.mkdtemp())
 
     @classmethod
@@ -57,8 +59,6 @@ class PackageReleaseViewSetTestCase(APITestCase):
         cls.package = PackageFactory(
             owner=cls.owner,
         )
-        cls.base_api_path = f'/api/packages/releases/'
-        cls.api_path = f'{cls.base_api_path}{cls.package.slug}/'
         cls.contributor = ForumUserFactory()
         PackageContributorFactory(
             package=cls.package,
@@ -69,6 +69,21 @@ class PackageReleaseViewSetTestCase(APITestCase):
             zip_file='release_v1.0.0.zip',
         )
         cls.regular_user = ForumUserFactory()
+        cls.detail_api = 'api:packages:releases-detail'
+        cls.list_api = 'api:packages:releases-list'
+        cls.detail_path = reverse(
+            viewname=cls.detail_api,
+            kwargs={
+                'package_slug': cls.package.slug,
+                'version': cls.package_release.version,
+            },
+        )
+        cls.list_path = reverse(
+            viewname=cls.list_api,
+            kwargs={
+                'package_slug': cls.package.slug,
+            },
+        )
 
     @classmethod
     def tearDownClass(cls):
@@ -184,7 +199,7 @@ class PackageReleaseViewSetTestCase(APITestCase):
 
     def test_get_list(self):
         # Verify that a non-logged-in user can see results
-        response = self.client.get(path=self.api_path)
+        response = self.client.get(path=self.list_path)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -222,7 +237,7 @@ class PackageReleaseViewSetTestCase(APITestCase):
 
         # Verify that regular user can see results
         self.client.force_login(self.regular_user.user)
-        response = self.client.get(path=self.api_path)
+        response = self.client.get(path=self.list_path)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -236,7 +251,7 @@ class PackageReleaseViewSetTestCase(APITestCase):
 
         # Verify that contributors can see results
         self.client.force_login(self.contributor.user)
-        response = self.client.get(path=self.api_path)
+        response = self.client.get(path=self.list_path)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -250,7 +265,7 @@ class PackageReleaseViewSetTestCase(APITestCase):
 
         # Verify that the owner can see results
         self.client.force_login(self.owner.user)
-        response = self.client.get(path=self.api_path)
+        response = self.client.get(path=self.list_path)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -262,10 +277,27 @@ class PackageReleaseViewSetTestCase(APITestCase):
             d2=payload,
         )
 
+    def test_get_list_failure(self):
+        response = self.client.get(
+            path=reverse(
+                viewname=self.list_api,
+                kwargs={
+                    'package_slug': 'invalid',
+                },
+            ),
+        )
+        self.assertEqual(
+            first=response.status_code,
+            second=status.HTTP_404_NOT_FOUND,
+        )
+        self.assertDictEqual(
+            d1=response.json(),
+            d2={'detail': 'Invalid package_slug.'},
+        )
+
     def test_get_details(self):
         # Verify that non-logged-in user can see details
-        api_path = f'{self.api_path}{self.package_release.version}/'
-        response = self.client.get(path=api_path)
+        response = self.client.get(path=self.detail_path)
         timestamp = self.package_release.created
         request = response.wsgi_request
         zip_file = f'{request.scheme}://{request.get_host()}{self.package_release.zip_file.url}'
@@ -301,7 +333,7 @@ class PackageReleaseViewSetTestCase(APITestCase):
 
         # Verify that regular user can see details
         self.client.force_login(self.regular_user.user)
-        response = self.client.get(path=api_path)
+        response = self.client.get(path=self.detail_path)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -313,7 +345,7 @@ class PackageReleaseViewSetTestCase(APITestCase):
 
         # Verify that contributors can see details
         self.client.force_login(self.contributor.user)
-        response = self.client.get(path=api_path)
+        response = self.client.get(path=self.detail_path)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -325,7 +357,7 @@ class PackageReleaseViewSetTestCase(APITestCase):
 
         # Verify that the owner can see details
         self.client.force_login(self.owner.user)
-        response = self.client.get(path=api_path)
+        response = self.client.get(path=self.detail_path)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -335,16 +367,24 @@ class PackageReleaseViewSetTestCase(APITestCase):
             d2=payload,
         )
 
-    def test_get_details_failure(self):
-        api_path = f'{self.base_api_path}invalid/'
-        response = self.client.get(path=api_path)
+    def test_get_detail_failure(self):
+        self.client.force_login(self.owner.user)
+        response = self.client.get(
+            path=reverse(
+                viewname=self.detail_api,
+                kwargs={
+                    'package_slug': self.package.slug,
+                    'version': '0.0.0',
+                },
+            ),
+        )
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_404_NOT_FOUND,
         )
         self.assertDictEqual(
             d1=response.json(),
-            d2={'detail': 'Invalid package_slug.'},
+            d2={'detail': 'Not found.'},
         )
 
     @override_settings(MEDIA_ROOT=MEDIA_ROOT)
@@ -361,7 +401,12 @@ class PackageReleaseViewSetTestCase(APITestCase):
             package=package,
             user=self.contributor,
         )
-        api_path = f'{self.base_api_path}{package.slug}/'
+        api_path = reverse(
+            viewname=self.list_api,
+            kwargs={
+                'package_slug': package.slug,
+            },
+        )
         base_path = settings.BASE_DIR / 'fixtures' / 'releases' / 'packages'
         file_path = base_path / 'test-package' / 'test-package-v1.0.0.zip'
 
@@ -494,11 +539,15 @@ class PackageReleaseViewSetTestCase(APITestCase):
             package=package,
             version='1.0.0',
         )
-        api_path = f'{self.base_api_path}{package.slug}/'
         with file_path.open('rb') as open_file:
             zip_file = UploadedFile(open_file, content_type='application/zip')
             response = self.client.post(
-                path=api_path,
+                path=reverse(
+                    viewname=self.list_api,
+                    kwargs={
+                        'package_slug': package.slug,
+                    },
+                ),
                 data={
                     'version': version,
                     'zip_file': zip_file,
@@ -559,11 +608,15 @@ class PackageReleaseViewSetTestCase(APITestCase):
             package=package,
             version='1.0.0',
         )
-        api_path = f'{self.base_api_path}{package.slug}/'
         with file_path.open('rb') as open_file:
             zip_file = UploadedFile(open_file, content_type='application/zip')
             response = self.client.post(
-                path=api_path,
+                path=reverse(
+                    viewname=self.list_api,
+                    kwargs={
+                        'package_slug': package.slug,
+                    },
+                ),
                 data={
                     'version': version,
                     'zip_file': zip_file,
@@ -601,9 +654,14 @@ class PackageReleaseViewSetTestCase(APITestCase):
         )
 
     def test_options(self):
-        response = self.client.options(path=self.api_path)
+        response = self.client.options(path=self.list_path)
         self.assertEqual(first=response.status_code, second=status.HTTP_200_OK)
         self.assertEqual(
             first=response.json()['name'],
             second=f'{self.package} - Release',
         )
+        # TODO: test actions
+
+    def test_options_detail(self):
+        # TODO: test actions
+        pass

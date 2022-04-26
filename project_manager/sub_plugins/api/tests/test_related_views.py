@@ -17,6 +17,7 @@ from path import Path
 from PIL import Image
 from rest_framework import status
 from rest_framework.parsers import ParseError
+from rest_framework.reverse import reverse
 from rest_framework.test import APITestCase
 
 # App
@@ -63,7 +64,8 @@ from test_utils.factories.users import ForumUserFactory
 # =============================================================================
 class SubPluginContributorViewSetTestCase(APITestCase):
 
-    base_api_path = contributor = owner = plugin = sub_plugin = None
+    contributor = detail_api = list_api = owner = plugin = sub_plugin = None
+    sub_plugin_contributor = None
 
     @classmethod
     def setUpTestData(cls):
@@ -73,8 +75,6 @@ class SubPluginContributorViewSetTestCase(APITestCase):
             plugin=cls.plugin,
             owner=cls.owner,
         )
-        cls.base_api_path = f'/api/sub-plugins/contributors/{cls.plugin.slug}/'
-        cls.api_path = f'{cls.base_api_path}{cls.sub_plugin.slug}/'
         cls.contributor = ForumUserFactory()
         cls.sub_plugin_contributor = SubPluginContributorFactory(
             sub_plugin=cls.sub_plugin,
@@ -82,6 +82,23 @@ class SubPluginContributorViewSetTestCase(APITestCase):
         )
         cls.new_contributor = ForumUserFactory()
         cls.regular_user = ForumUserFactory()
+        cls.detail_api = 'api:sub-plugins:contributors-detail'
+        cls.list_api = 'api:sub-plugins:contributors-list'
+        cls.detail_path = reverse(
+            viewname=cls.detail_api,
+            kwargs={
+                'plugin_slug': cls.plugin.slug,
+                'sub_plugin_slug': cls.sub_plugin.slug,
+                'pk': cls.sub_plugin_contributor.id,
+            },
+        )
+        cls.list_path = reverse(
+            viewname=cls.list_api,
+            kwargs={
+                'plugin_slug': cls.plugin.slug,
+                'sub_plugin_slug': cls.sub_plugin.slug,
+            },
+        )
 
     def test_inheritance(self):
         self.assertTrue(
@@ -121,7 +138,7 @@ class SubPluginContributorViewSetTestCase(APITestCase):
 
     def test_get_list(self):
         # Verify that non-logged-in user can see results but not 'id'
-        response = self.client.get(path=self.api_path)
+        response = self.client.get(path=self.list_path)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -141,7 +158,7 @@ class SubPluginContributorViewSetTestCase(APITestCase):
 
         # Verify that regular user can see results but not 'id'
         self.client.force_login(self.regular_user.user)
-        response = self.client.get(path=self.api_path)
+        response = self.client.get(path=self.list_path)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -161,7 +178,7 @@ class SubPluginContributorViewSetTestCase(APITestCase):
 
         # Verify that contributors can see results but not 'id'
         self.client.force_login(self.contributor.user)
-        response = self.client.get(path=self.api_path)
+        response = self.client.get(path=self.list_path)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -180,7 +197,7 @@ class SubPluginContributorViewSetTestCase(APITestCase):
 
         # Verify that the owner can see results AND 'id'
         self.client.force_login(self.owner.user)
-        response = self.client.get(path=self.api_path)
+        response = self.client.get(path=self.list_path)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -198,10 +215,28 @@ class SubPluginContributorViewSetTestCase(APITestCase):
             },
         )
 
+    def test_get_list_failure(self):
+        response = self.client.get(
+            path=reverse(
+                viewname=self.list_api,
+                kwargs={
+                    'plugin_slug': self.plugin.slug,
+                    'sub_plugin_slug': 'invalid',
+                },
+            ),
+        )
+        self.assertEqual(
+            first=response.status_code,
+            second=status.HTTP_404_NOT_FOUND,
+        )
+        self.assertDictEqual(
+            d1=response.json(),
+            d2={'detail': 'Invalid sub_plugin_slug.'},
+        )
+
     def test_get_details(self):
         # Verify that non-logged-in user cannot see details
-        api_path = f'{self.api_path}{self.sub_plugin_contributor.id}/'
-        response = self.client.get(path=api_path)
+        response = self.client.get(path=self.detail_path)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_403_FORBIDDEN,
@@ -209,7 +244,7 @@ class SubPluginContributorViewSetTestCase(APITestCase):
 
         # Verify that regular user cannot see details
         self.client.force_login(self.regular_user.user)
-        response = self.client.get(path=api_path)
+        response = self.client.get(path=self.detail_path)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_403_FORBIDDEN,
@@ -217,7 +252,7 @@ class SubPluginContributorViewSetTestCase(APITestCase):
 
         # Verify that contributors cannot see details
         self.client.force_login(self.contributor.user)
-        response = self.client.get(path=api_path)
+        response = self.client.get(path=self.detail_path)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_403_FORBIDDEN,
@@ -225,7 +260,7 @@ class SubPluginContributorViewSetTestCase(APITestCase):
 
         # Verify that the owner can see details
         self.client.force_login(self.owner.user)
-        response = self.client.get(path=api_path)
+        response = self.client.get(path=self.detail_path)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -241,22 +276,31 @@ class SubPluginContributorViewSetTestCase(APITestCase):
             },
         )
 
-    def test_get_details_failure(self):
-        api_path = f'{self.base_api_path}invalid/'
-        response = self.client.get(path=api_path)
+    def test_get_detail_failure(self):
+        self.client.force_login(self.owner.user)
+        response = self.client.get(
+            path=reverse(
+                viewname=self.detail_api,
+                kwargs={
+                    'plugin_slug': self.plugin.slug,
+                    'sub_plugin_slug': self.sub_plugin.slug,
+                    'pk': 'invalid',
+                },
+            ),
+        )
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_404_NOT_FOUND,
         )
         self.assertDictEqual(
             d1=response.json(),
-            d2={'detail': 'Invalid sub_plugin_slug.'},
+            d2={'detail': 'Not found.'},
         )
 
     def test_post(self):
         # Verify that non-logged-in user cannot add a contributor
         response = self.client.post(
-            path=self.api_path,
+            path=self.list_path,
             data={'username': self.new_contributor.user.username},
         )
         self.assertEqual(
@@ -267,7 +311,7 @@ class SubPluginContributorViewSetTestCase(APITestCase):
         # Verify that regular user cannot add a contributor
         self.client.force_login(self.regular_user.user)
         response = self.client.post(
-            path=self.api_path,
+            path=self.list_path,
             data={'username': self.new_contributor.user.username},
         )
         self.assertEqual(
@@ -278,7 +322,7 @@ class SubPluginContributorViewSetTestCase(APITestCase):
         # Verify that contributor cannot add a contributor
         self.client.force_login(self.contributor.user)
         response = self.client.post(
-            path=self.api_path,
+            path=self.list_path,
             data={'username': self.new_contributor.user.username},
         )
         self.assertEqual(
@@ -289,7 +333,7 @@ class SubPluginContributorViewSetTestCase(APITestCase):
         # Verify that owner can add a contributor
         self.client.force_login(self.owner.user)
         response = self.client.post(
-            path=self.api_path,
+            path=self.list_path,
             data={'username': self.new_contributor.user.username},
         )
         self.assertEqual(
@@ -302,7 +346,7 @@ class SubPluginContributorViewSetTestCase(APITestCase):
 
         # Verify existing contributor cannot be added
         response = self.client.post(
-            path=self.api_path,
+            path=self.list_path,
             data={'username': self.contributor.user.username},
         )
         self.assertEqual(
@@ -316,7 +360,7 @@ class SubPluginContributorViewSetTestCase(APITestCase):
 
         # Verify owner cannot be added
         response = self.client.post(
-            path=self.api_path,
+            path=self.list_path,
             data={'username': self.owner.user.username},
         )
         self.assertEqual(
@@ -331,7 +375,7 @@ class SubPluginContributorViewSetTestCase(APITestCase):
         # Verify unknown username cannot be added
         invalid_username = 'invalid'
         response = self.client.post(
-            path=self.api_path,
+            path=self.list_path,
             data={'username': invalid_username},
         )
         self.assertEqual(
@@ -345,8 +389,7 @@ class SubPluginContributorViewSetTestCase(APITestCase):
 
     def test_delete(self):
         # Verify that non-logged-in user cannot delete a contributor
-        api_path = f'{self.api_path}{self.sub_plugin_contributor.id}/'
-        response = self.client.delete(path=api_path)
+        response = self.client.delete(path=self.detail_path)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_403_FORBIDDEN,
@@ -354,7 +397,7 @@ class SubPluginContributorViewSetTestCase(APITestCase):
 
         # Verify that regular user cannot delete a contributor
         self.client.force_login(self.contributor.user)
-        response = self.client.delete(path=api_path)
+        response = self.client.delete(path=self.detail_path)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_403_FORBIDDEN,
@@ -362,7 +405,7 @@ class SubPluginContributorViewSetTestCase(APITestCase):
 
         # Verify that contributor cannot delete a contributor
         self.client.force_login(self.contributor.user)
-        response = self.client.delete(path=api_path)
+        response = self.client.delete(path=self.detail_path)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_403_FORBIDDEN,
@@ -370,24 +413,30 @@ class SubPluginContributorViewSetTestCase(APITestCase):
 
         # Verify that owner can delete a contributor
         self.client.force_login(self.owner.user)
-        response = self.client.delete(path=api_path)
+        response = self.client.delete(path=self.detail_path)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_204_NO_CONTENT,
         )
 
     def test_options(self):
-        response = self.client.options(path=self.api_path)
+        response = self.client.options(path=self.list_path)
         self.assertEqual(first=response.status_code, second=status.HTTP_200_OK)
         self.assertEqual(
             first=response.json()['name'],
             second=f'{self.sub_plugin} - Contributor',
         )
+        # TODO: test actions
+
+    def test_options_detail(self):
+        # TODO: test actions
+        pass
 
 
 class SubPluginGameViewSetTestCase(APITestCase):
 
-    base_api_path = contributor = owner = game_1 = game_2 = plugin = sub_plugin = None
+    contributor = detail_api = game_1 = game_2 = list_api = owner = None
+    plugin = sub_plugin = sub_plugin_game_1 = None
 
     @classmethod
     def setUpTestData(cls):
@@ -397,8 +446,6 @@ class SubPluginGameViewSetTestCase(APITestCase):
             owner=cls.owner,
             plugin=cls.plugin,
         )
-        cls.base_api_path = f'/api/sub-plugins/games/{cls.plugin.slug}/'
-        cls.api_path = f'{cls.base_api_path}{cls.sub_plugin.slug}/'
         cls.contributor = ForumUserFactory()
         cls.package_contributor = SubPluginContributorFactory(
             sub_plugin=cls.sub_plugin,
@@ -433,6 +480,23 @@ class SubPluginGameViewSetTestCase(APITestCase):
             game=cls.game_2,
         )
         cls.regular_user = ForumUserFactory()
+        cls.detail_api = 'api:sub-plugins:games-detail'
+        cls.list_api = 'api:sub-plugins:games-list'
+        cls.detail_path = reverse(
+            viewname=cls.detail_api,
+            kwargs={
+                'plugin_slug': cls.plugin.slug,
+                'sub_plugin_slug': cls.sub_plugin.slug,
+                'pk': cls.sub_plugin_game_1.id,
+            },
+        )
+        cls.list_path = reverse(
+            viewname=cls.list_api,
+            kwargs={
+                'plugin_slug': cls.plugin.slug,
+                'sub_plugin_slug': cls.sub_plugin.slug,
+            },
+        )
 
     def test_inheritance(self):
         self.assertTrue(
@@ -469,7 +533,7 @@ class SubPluginGameViewSetTestCase(APITestCase):
 
     def test_get_list(self):
         # Verify that non-logged-in user can see results but not 'id'
-        response = self.client.get(path=self.api_path)
+        response = self.client.get(path=self.list_path)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -491,7 +555,7 @@ class SubPluginGameViewSetTestCase(APITestCase):
 
         # Verify that regular user can see results but not 'id'
         self.client.force_login(self.regular_user.user)
-        response = self.client.get(path=self.api_path)
+        response = self.client.get(path=self.list_path)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -511,7 +575,7 @@ class SubPluginGameViewSetTestCase(APITestCase):
 
         # Verify that contributors can see results AND 'id'
         self.client.force_login(self.contributor.user)
-        response = self.client.get(path=self.api_path)
+        response = self.client.get(path=self.list_path)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -532,7 +596,7 @@ class SubPluginGameViewSetTestCase(APITestCase):
 
         # Verify that the owner can see results AND 'id'
         self.client.force_login(self.owner.user)
-        response = self.client.get(path=self.api_path)
+        response = self.client.get(path=self.list_path)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -551,10 +615,28 @@ class SubPluginGameViewSetTestCase(APITestCase):
             },
         )
 
+    def test_get_list_failure(self):
+        response = self.client.get(
+            path=reverse(
+                viewname=self.list_api,
+                kwargs={
+                    'plugin_slug': self.plugin.slug,
+                    'sub_plugin_slug': 'invalid',
+                },
+            ),
+        )
+        self.assertEqual(
+            first=response.status_code,
+            second=status.HTTP_404_NOT_FOUND,
+        )
+        self.assertDictEqual(
+            d1=response.json(),
+            d2={'detail': 'Invalid sub_plugin_slug.'},
+        )
+
     def test_get_details(self):
         # Verify that non-logged-in user cannot see details
-        api_path = f'{self.api_path}{self.sub_plugin_game_1.id}/'
-        response = self.client.get(path=api_path)
+        response = self.client.get(path=self.detail_path)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_403_FORBIDDEN,
@@ -562,7 +644,7 @@ class SubPluginGameViewSetTestCase(APITestCase):
 
         # Verify that regular user cannot see details
         self.client.force_login(self.regular_user.user)
-        response = self.client.get(path=api_path)
+        response = self.client.get(path=self.detail_path)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_403_FORBIDDEN,
@@ -570,7 +652,7 @@ class SubPluginGameViewSetTestCase(APITestCase):
 
         # Verify that contributors can see details
         self.client.force_login(self.contributor.user)
-        response = self.client.get(path=api_path)
+        response = self.client.get(path=self.detail_path)
         request = response.wsgi_request
         icon = f'{request.scheme}://{request.get_host()}{self.game_1.icon.url}'
         self.assertEqual(
@@ -591,7 +673,7 @@ class SubPluginGameViewSetTestCase(APITestCase):
 
         # Verify that the owner can see details
         self.client.force_login(self.owner.user)
-        response = self.client.get(path=api_path)
+        response = self.client.get(path=self.detail_path)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -608,22 +690,31 @@ class SubPluginGameViewSetTestCase(APITestCase):
             },
         )
 
-    def test_get_details_failure(self):
-        api_path = f'{self.base_api_path}invalid/'
-        response = self.client.get(path=api_path)
+    def test_get_detail_failure(self):
+        self.client.force_login(self.owner.user)
+        response = self.client.get(
+            path=reverse(
+                viewname=self.detail_api,
+                kwargs={
+                    'plugin_slug': self.plugin.slug,
+                    'sub_plugin_slug': self.sub_plugin.slug,
+                    'pk': 'invalid',
+                },
+            ),
+        )
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_404_NOT_FOUND,
         )
         self.assertDictEqual(
             d1=response.json(),
-            d2={'detail': 'Invalid sub_plugin_slug.'},
+            d2={'detail': 'Not found.'},
         )
 
     def test_post(self):
         # Verify that non-logged-in user cannot add a game
         response = self.client.post(
-            path=self.api_path,
+            path=self.list_path,
             data={'game_slug': self.game_3.slug},
         )
         self.assertEqual(
@@ -634,7 +725,7 @@ class SubPluginGameViewSetTestCase(APITestCase):
         # Verify that regular user cannot add a game
         self.client.force_login(self.regular_user.user)
         response = self.client.post(
-            path=self.api_path,
+            path=self.list_path,
             data={'game_slug': self.game_3.slug},
         )
         self.assertEqual(
@@ -645,7 +736,7 @@ class SubPluginGameViewSetTestCase(APITestCase):
         # Verify that contributor can add a game
         self.client.force_login(self.contributor.user)
         response = self.client.post(
-            path=self.api_path,
+            path=self.list_path,
             data={'game_slug': self.game_3.slug},
         )
         self.assertEqual(
@@ -656,7 +747,7 @@ class SubPluginGameViewSetTestCase(APITestCase):
         # Verify that owner can add a game
         self.client.force_login(self.owner.user)
         response = self.client.post(
-            path=self.api_path,
+            path=self.list_path,
             data={'game_slug': self.game_4.slug},
         )
         self.assertEqual(
@@ -669,7 +760,7 @@ class SubPluginGameViewSetTestCase(APITestCase):
 
         # Verify existing affiliated game cannot be added
         response = self.client.post(
-            path=self.api_path,
+            path=self.list_path,
             data={'game_slug': self.game_1.slug},
         )
         self.assertEqual(
@@ -684,7 +775,7 @@ class SubPluginGameViewSetTestCase(APITestCase):
         # Verify non-existing game cannot be added
         invalid_slug = 'invalid'
         response = self.client.post(
-            path=self.api_path,
+            path=self.list_path,
             data={'game_slug': invalid_slug},
         )
         self.assertEqual(
@@ -698,8 +789,7 @@ class SubPluginGameViewSetTestCase(APITestCase):
 
     def test_delete(self):
         # Verify that non-logged-in user cannot delete a game
-        api_path = f'{self.api_path}{self.sub_plugin_game_1.id}/'
-        response = self.client.delete(path=api_path)
+        response = self.client.delete(path=self.detail_path)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_403_FORBIDDEN,
@@ -707,7 +797,7 @@ class SubPluginGameViewSetTestCase(APITestCase):
 
         # Verify that regular user cannot delete a game
         self.client.force_login(self.regular_user.user)
-        response = self.client.delete(path=api_path)
+        response = self.client.delete(path=self.detail_path)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_403_FORBIDDEN,
@@ -715,7 +805,7 @@ class SubPluginGameViewSetTestCase(APITestCase):
 
         # Verify that contributor can delete a game
         self.client.force_login(self.contributor.user)
-        response = self.client.delete(path=api_path)
+        response = self.client.delete(path=self.detail_path)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_204_NO_CONTENT,
@@ -724,7 +814,14 @@ class SubPluginGameViewSetTestCase(APITestCase):
         # Verify that owner can delete a game
         self.client.force_login(self.owner.user)
         response = self.client.delete(
-            path=f'{self.api_path}{self.sub_plugin_game_2.id}/',
+            path=reverse(
+                viewname=self.detail_api,
+                kwargs={
+                    'plugin_slug': self.plugin.slug,
+                    'sub_plugin_slug': self.sub_plugin.slug,
+                    'pk': self.sub_plugin_game_2.id,
+                },
+            ),
         )
         self.assertEqual(
             first=response.status_code,
@@ -732,17 +829,23 @@ class SubPluginGameViewSetTestCase(APITestCase):
         )
 
     def test_options(self):
-        response = self.client.options(path=self.api_path)
+        response = self.client.options(path=self.list_path)
         self.assertEqual(first=response.status_code, second=status.HTTP_200_OK)
         self.assertEqual(
             first=response.json()['name'],
             second=f'{self.sub_plugin} - Game',
         )
+        # TODO: test actions
+
+    def test_options_detail(self):
+        # TODO: test actions
+        pass
 
 
 class SubPluginImageViewSetTestCase(APITestCase):
 
-    base_api_path = contributor = owner = plugin = sub_plugin = None
+    contributor = detail_api = list_api = owner = plugin = sub_plugin = None
+    sub_plugin_image_1 = None
     MEDIA_ROOT = Path(tempfile.mkdtemp())
 
     @classmethod
@@ -753,8 +856,6 @@ class SubPluginImageViewSetTestCase(APITestCase):
             owner=cls.owner,
             plugin=cls.plugin,
         )
-        cls.base_api_path = f'/api/sub-plugins/images/{cls.plugin.slug}/'
-        cls.api_path = f'{cls.base_api_path}{cls.sub_plugin.slug}/'
         cls.contributor = ForumUserFactory()
         SubPluginContributorFactory(
             sub_plugin=cls.sub_plugin,
@@ -768,6 +869,23 @@ class SubPluginImageViewSetTestCase(APITestCase):
             created=now() + timedelta(seconds=1)
         )
         cls.regular_user = ForumUserFactory()
+        cls.detail_api = 'api:sub-plugins:images-detail'
+        cls.list_api = 'api:sub-plugins:images-list'
+        cls.detail_path = reverse(
+            viewname=cls.detail_api,
+            kwargs={
+                'plugin_slug': cls.plugin.slug,
+                'sub_plugin_slug': cls.sub_plugin.slug,
+                'pk': cls.sub_plugin_image_1.id,
+            },
+        )
+        cls.list_path = reverse(
+            viewname=cls.list_api,
+            kwargs={
+                'plugin_slug': cls.plugin.slug,
+                'sub_plugin_slug': cls.sub_plugin.slug,
+            },
+        )
 
     @classmethod
     def tearDownClass(cls):
@@ -844,7 +962,7 @@ class SubPluginImageViewSetTestCase(APITestCase):
 
     def test_get_list(self):
         # Verify that non-logged-in user can see results but not 'id'
-        response = self.client.get(path=self.api_path)
+        response = self.client.get(path=self.list_path)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -862,14 +980,13 @@ class SubPluginImageViewSetTestCase(APITestCase):
 
         # Verify that regular user can see results but not 'id'
         self.client.force_login(self.regular_user.user)
-        response = self.client.get(path=self.api_path)
+        response = self.client.get(path=self.list_path)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
         )
         content = response.json()
         self.assertEqual(first=content['count'], second=2)
-        request = response.wsgi_request
         self.assertDictEqual(
             d1=content['results'][0],
             d2={
@@ -879,7 +996,7 @@ class SubPluginImageViewSetTestCase(APITestCase):
 
         # Verify that contributors can see results AND 'id'
         self.client.force_login(self.contributor.user)
-        response = self.client.get(path=self.api_path)
+        response = self.client.get(path=self.list_path)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -896,7 +1013,7 @@ class SubPluginImageViewSetTestCase(APITestCase):
 
         # Verify that the owner can see results AND 'id'
         self.client.force_login(self.owner.user)
-        response = self.client.get(path=self.api_path)
+        response = self.client.get(path=self.list_path)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -911,10 +1028,28 @@ class SubPluginImageViewSetTestCase(APITestCase):
             },
         )
 
+    def test_get_list_failure(self):
+        response = self.client.get(
+            path=reverse(
+                viewname=self.list_api,
+                kwargs={
+                    'plugin_slug': self.plugin.slug,
+                    'sub_plugin_slug': 'invalid',
+                },
+            ),
+        )
+        self.assertEqual(
+            first=response.status_code,
+            second=status.HTTP_404_NOT_FOUND,
+        )
+        self.assertDictEqual(
+            d1=response.json(),
+            d2={'detail': 'Invalid sub_plugin_slug.'},
+        )
+
     def test_get_details(self):
         # Verify that non-logged-in user cannot see details
-        api_path = f'{self.api_path}{self.sub_plugin_image_1.id}/'
-        response = self.client.get(path=api_path)
+        response = self.client.get(path=self.detail_path)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_403_FORBIDDEN,
@@ -922,7 +1057,7 @@ class SubPluginImageViewSetTestCase(APITestCase):
 
         # Verify that regular user cannot see details
         self.client.force_login(self.regular_user.user)
-        response = self.client.get(path=api_path)
+        response = self.client.get(path=self.detail_path)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_403_FORBIDDEN,
@@ -930,7 +1065,7 @@ class SubPluginImageViewSetTestCase(APITestCase):
 
         # Verify that contributors can see details
         self.client.force_login(self.contributor.user)
-        response = self.client.get(path=api_path)
+        response = self.client.get(path=self.detail_path)
         request = response.wsgi_request
         image = f'{request.scheme}://{request.get_host()}{self.sub_plugin_image_1.image.url}'
         self.assertEqual(
@@ -947,7 +1082,7 @@ class SubPluginImageViewSetTestCase(APITestCase):
 
         # Verify that the owner can see details
         self.client.force_login(self.owner.user)
-        response = self.client.get(path=api_path)
+        response = self.client.get(path=self.detail_path)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -960,16 +1095,25 @@ class SubPluginImageViewSetTestCase(APITestCase):
             },
         )
 
-    def test_get_details_failure(self):
-        api_path = f'{self.base_api_path}invalid/'
-        response = self.client.get(path=api_path)
+    def test_get_detail_failure(self):
+        self.client.force_login(self.owner.user)
+        response = self.client.get(
+            path=reverse(
+                viewname=self.detail_api,
+                kwargs={
+                    'plugin_slug': self.plugin.slug,
+                    'sub_plugin_slug': self.sub_plugin.slug,
+                    'pk': 'invalid',
+                },
+            ),
+        )
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_404_NOT_FOUND,
         )
         self.assertDictEqual(
             d1=response.json(),
-            d2={'detail': 'Invalid sub_plugin_slug.'},
+            d2={'detail': 'Not found.'},
         )
 
     @override_settings(MEDIA_ROOT=MEDIA_ROOT)
@@ -980,7 +1124,7 @@ class SubPluginImageViewSetTestCase(APITestCase):
         image.save(tmp_file)
         tmp_file.seek(0)
         response = self.client.post(
-            path=self.api_path,
+            path=self.list_path,
             data={'image': tmp_file},
         )
         self.assertEqual(
@@ -995,7 +1139,7 @@ class SubPluginImageViewSetTestCase(APITestCase):
         image.save(tmp_file)
         tmp_file.seek(0)
         response = self.client.post(
-            path=self.api_path,
+            path=self.list_path,
             data={'image': tmp_file},
         )
         self.assertEqual(
@@ -1010,7 +1154,7 @@ class SubPluginImageViewSetTestCase(APITestCase):
         image.save(tmp_file)
         tmp_file.seek(0)
         response = self.client.post(
-            path=self.api_path,
+            path=self.list_path,
             data={'image': tmp_file},
         )
         self.assertEqual(
@@ -1025,7 +1169,7 @@ class SubPluginImageViewSetTestCase(APITestCase):
         image.save(tmp_file)
         tmp_file.seek(0)
         response = self.client.post(
-            path=self.api_path,
+            path=self.list_path,
             data={'image': tmp_file},
         )
         self.assertEqual(
@@ -1035,8 +1179,7 @@ class SubPluginImageViewSetTestCase(APITestCase):
 
     def test_delete(self):
         # Verify that non-logged-in user cannot delete a game
-        api_path = f'{self.api_path}{self.sub_plugin_image_1.id}/'
-        response = self.client.delete(path=api_path)
+        response = self.client.delete(path=self.detail_path)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_403_FORBIDDEN,
@@ -1044,7 +1187,7 @@ class SubPluginImageViewSetTestCase(APITestCase):
 
         # Verify that regular user cannot delete an image
         self.client.force_login(self.regular_user.user)
-        response = self.client.delete(path=api_path)
+        response = self.client.delete(path=self.detail_path)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_403_FORBIDDEN,
@@ -1052,7 +1195,7 @@ class SubPluginImageViewSetTestCase(APITestCase):
 
         # Verify that contributor can delete an image
         self.client.force_login(self.contributor.user)
-        response = self.client.delete(path=api_path)
+        response = self.client.delete(path=self.detail_path)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_204_NO_CONTENT,
@@ -1061,7 +1204,14 @@ class SubPluginImageViewSetTestCase(APITestCase):
         # Verify that owner can delete an image
         self.client.force_login(self.owner.user)
         response = self.client.delete(
-            path=f'{self.api_path}{self.sub_plugin_image_2.id}/',
+            path=reverse(
+                viewname=self.detail_api,
+                kwargs={
+                    'plugin_slug': self.plugin.slug,
+                    'sub_plugin_slug': self.sub_plugin.slug,
+                    'pk': self.sub_plugin_image_2.id,
+                },
+            ),
         )
         self.assertEqual(
             first=response.status_code,
@@ -1069,17 +1219,23 @@ class SubPluginImageViewSetTestCase(APITestCase):
         )
 
     def test_options(self):
-        response = self.client.options(path=self.api_path)
+        response = self.client.options(path=self.list_path)
         self.assertEqual(first=response.status_code, second=status.HTTP_200_OK)
         self.assertEqual(
             first=response.json()['name'],
             second=f'{self.sub_plugin} - Image',
         )
+        # TODO: test actions
+
+    def test_options_detail(self):
+        # TODO: test actions
+        pass
 
 
 class SubPluginTagViewSetTestCase(APITestCase):
 
-    base_api_path = contributor = owner = plugin = sub_plugin = None
+    contributor = detail_api = list_api = owner = plugin = sub_plugin = None
+    sub_plugin_tag_1 = None
 
     @classmethod
     def setUpTestData(cls):
@@ -1089,8 +1245,6 @@ class SubPluginTagViewSetTestCase(APITestCase):
             owner=cls.owner,
             plugin=cls.plugin,
         )
-        cls.base_api_path = f'/api/sub-plugins/tags/{cls.plugin.slug}/'
-        cls.api_path = f'{cls.base_api_path}{cls.sub_plugin.slug}/'
         cls.contributor = ForumUserFactory()
         SubPluginContributorFactory(
             sub_plugin=cls.sub_plugin,
@@ -1103,6 +1257,23 @@ class SubPluginTagViewSetTestCase(APITestCase):
             sub_plugin=cls.sub_plugin,
         )
         cls.regular_user = ForumUserFactory()
+        cls.detail_api = 'api:sub-plugins:tags-detail'
+        cls.list_api = 'api:sub-plugins:tags-list'
+        cls.detail_path = reverse(
+            viewname=cls.detail_api,
+            kwargs={
+                'plugin_slug': cls.plugin.slug,
+                'sub_plugin_slug': cls.sub_plugin.slug,
+                'pk': cls.sub_plugin_tag_1.id,
+            },
+        )
+        cls.list_path = reverse(
+            viewname=cls.list_api,
+            kwargs={
+                'plugin_slug': cls.plugin.slug,
+                'sub_plugin_slug': cls.sub_plugin.slug,
+            },
+        )
 
     def test_inheritance(self):
         self.assertTrue(expr=issubclass(SubPluginTagViewSet, ProjectTagViewSet))
@@ -1137,7 +1308,7 @@ class SubPluginTagViewSetTestCase(APITestCase):
 
     def test_get_list(self):
         # Verify that non-logged-in user can see results but not 'id'
-        response = self.client.get(path=self.api_path)
+        response = self.client.get(path=self.list_path)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -1153,7 +1324,7 @@ class SubPluginTagViewSetTestCase(APITestCase):
 
         # Verify that regular user can see results but not 'id'
         self.client.force_login(self.regular_user.user)
-        response = self.client.get(path=self.api_path)
+        response = self.client.get(path=self.list_path)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -1169,7 +1340,7 @@ class SubPluginTagViewSetTestCase(APITestCase):
 
         # Verify that contributors can see results AND 'id'
         self.client.force_login(self.contributor.user)
-        response = self.client.get(path=self.api_path)
+        response = self.client.get(path=self.list_path)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -1186,7 +1357,7 @@ class SubPluginTagViewSetTestCase(APITestCase):
 
         # Verify that the owner can see results AND 'id'
         self.client.force_login(self.owner.user)
-        response = self.client.get(path=self.api_path)
+        response = self.client.get(path=self.list_path)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -1201,10 +1372,28 @@ class SubPluginTagViewSetTestCase(APITestCase):
             },
         )
 
+    def test_get_list_failure(self):
+        response = self.client.get(
+            path=reverse(
+                viewname=self.list_api,
+                kwargs={
+                    'plugin_slug': self.plugin.slug,
+                    'sub_plugin_slug': 'invalid',
+                },
+            ),
+        )
+        self.assertEqual(
+            first=response.status_code,
+            second=status.HTTP_404_NOT_FOUND,
+        )
+        self.assertDictEqual(
+            d1=response.json(),
+            d2={'detail': 'Invalid sub_plugin_slug.'},
+        )
+
     def test_get_details(self):
         # Verify that non-logged-in user cannot see details
-        api_path = f'{self.api_path}{self.sub_plugin_tag_1.id}/'
-        response = self.client.get(path=api_path)
+        response = self.client.get(path=self.detail_path)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_403_FORBIDDEN,
@@ -1212,7 +1401,7 @@ class SubPluginTagViewSetTestCase(APITestCase):
 
         # Verify that regular user cannot see details
         self.client.force_login(self.regular_user.user)
-        response = self.client.get(path=api_path)
+        response = self.client.get(path=self.detail_path)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_403_FORBIDDEN,
@@ -1220,7 +1409,7 @@ class SubPluginTagViewSetTestCase(APITestCase):
 
         # Verify that contributors can see details
         self.client.force_login(self.contributor.user)
-        response = self.client.get(path=api_path)
+        response = self.client.get(path=self.detail_path)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -1235,7 +1424,7 @@ class SubPluginTagViewSetTestCase(APITestCase):
 
         # Verify that the owner can see details
         self.client.force_login(self.owner.user)
-        response = self.client.get(path=api_path)
+        response = self.client.get(path=self.detail_path)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -1248,22 +1437,31 @@ class SubPluginTagViewSetTestCase(APITestCase):
             },
         )
 
-    def test_get_details_failure(self):
-        api_path = f'{self.base_api_path}invalid/'
-        response = self.client.get(path=api_path)
+    def test_get_detail_failure(self):
+        self.client.force_login(self.owner.user)
+        response = self.client.get(
+            path=reverse(
+                viewname=self.detail_api,
+                kwargs={
+                    'plugin_slug': self.plugin.slug,
+                    'sub_plugin_slug': self.sub_plugin.slug,
+                    'pk': 'invalid',
+                },
+            ),
+        )
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_404_NOT_FOUND,
         )
         self.assertDictEqual(
             d1=response.json(),
-            d2={'detail': 'Invalid sub_plugin_slug.'},
+            d2={'detail': 'Not found.'},
         )
 
     def test_post(self):
         # Verify that non-logged-in user cannot add a tag
         response = self.client.post(
-            path=self.api_path,
+            path=self.list_path,
             data={'tag': 'new-tag-1'},
         )
         self.assertEqual(
@@ -1274,7 +1472,7 @@ class SubPluginTagViewSetTestCase(APITestCase):
         # Verify that regular user cannot add a tag
         self.client.force_login(self.regular_user.user)
         response = self.client.post(
-            path=self.api_path,
+            path=self.list_path,
             data={'tag': 'new-tag-1'},
         )
         self.assertEqual(
@@ -1285,7 +1483,7 @@ class SubPluginTagViewSetTestCase(APITestCase):
         # Verify that contributor can add a tag
         self.client.force_login(self.contributor.user)
         response = self.client.post(
-            path=self.api_path,
+            path=self.list_path,
             data={'tag': 'new-tag-1'},
         )
         self.assertEqual(
@@ -1296,7 +1494,7 @@ class SubPluginTagViewSetTestCase(APITestCase):
         # Verify that owner can add a tag
         self.client.force_login(self.owner.user)
         response = self.client.post(
-            path=self.api_path,
+            path=self.list_path,
             data={'tag': 'new-tag-2'},
         )
         self.assertEqual(
@@ -1309,7 +1507,7 @@ class SubPluginTagViewSetTestCase(APITestCase):
 
         # Verify existing affiliated tag cannot be added
         response = self.client.post(
-            path=self.api_path,
+            path=self.list_path,
             data={'tag': self.sub_plugin_tag_1.tag},
         )
         self.assertEqual(
@@ -1326,7 +1524,7 @@ class SubPluginTagViewSetTestCase(APITestCase):
             black_listed=True,
         )
         response = self.client.post(
-            path=self.api_path,
+            path=self.list_path,
             data={'tag': tag.name},
         )
         self.assertEqual(
@@ -1340,8 +1538,7 @@ class SubPluginTagViewSetTestCase(APITestCase):
 
     def test_delete(self):
         # Verify that non-logged-in user cannot delete a tag
-        api_path = f'{self.api_path}{self.sub_plugin_tag_1.id}/'
-        response = self.client.delete(path=api_path)
+        response = self.client.delete(path=self.detail_path)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_403_FORBIDDEN,
@@ -1349,7 +1546,7 @@ class SubPluginTagViewSetTestCase(APITestCase):
 
         # Verify that regular user cannot delete a tag
         self.client.force_login(self.regular_user.user)
-        response = self.client.delete(path=api_path)
+        response = self.client.delete(path=self.detail_path)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_403_FORBIDDEN,
@@ -1357,7 +1554,7 @@ class SubPluginTagViewSetTestCase(APITestCase):
 
         # Verify that contributor can delete a tag
         self.client.force_login(self.contributor.user)
-        response = self.client.delete(path=api_path)
+        response = self.client.delete(path=self.detail_path)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_204_NO_CONTENT,
@@ -1366,7 +1563,14 @@ class SubPluginTagViewSetTestCase(APITestCase):
         # Verify that owner can delete a tag
         self.client.force_login(self.owner.user)
         response = self.client.delete(
-            path=f'{self.api_path}{self.sub_plugin_tag_2.id}/',
+            path=reverse(
+                viewname=self.detail_api,
+                kwargs={
+                    'plugin_slug': self.plugin.slug,
+                    'sub_plugin_slug': self.sub_plugin.slug,
+                    'pk': self.sub_plugin_tag_2.id,
+                },
+            ),
         )
         self.assertEqual(
             first=response.status_code,
@@ -1374,9 +1578,14 @@ class SubPluginTagViewSetTestCase(APITestCase):
         )
 
     def test_options(self):
-        response = self.client.options(path=self.api_path)
+        response = self.client.options(path=self.list_path)
         self.assertEqual(first=response.status_code, second=status.HTTP_200_OK)
         self.assertEqual(
             first=response.json()['name'],
             second=f'{self.sub_plugin} - Tag',
         )
+        # TODO: test actions
+
+    def test_options_detail(self):
+        # TODO: test actions
+        pass

@@ -17,6 +17,7 @@ from path import Path
 # Third Party Django
 from rest_framework import status
 from rest_framework.parsers import ParseError
+from rest_framework.reverse import reverse
 from rest_framework.test import APITestCase
 
 # App
@@ -51,7 +52,8 @@ from test_utils.factories.users import ForumUserFactory
 # =============================================================================
 class SubPluginReleaseViewSetTestCase(APITestCase):
 
-    base_api_path = contributor = owner = plugin = sub_plugin = None
+    contributor = detail_api = list_api = owner = plugin = sub_plugin = None
+    sub_plugin_release = None
     MEDIA_ROOT = Path(tempfile.mkdtemp())
 
     @classmethod
@@ -62,8 +64,6 @@ class SubPluginReleaseViewSetTestCase(APITestCase):
             owner=cls.owner,
             plugin=cls.plugin,
         )
-        cls.base_api_path = f'/api/sub-plugins/releases/'
-        cls.api_path = f'{cls.base_api_path}{cls.plugin.slug}/{cls.sub_plugin.slug}/'
         cls.contributor = ForumUserFactory()
         SubPluginContributorFactory(
             sub_plugin=cls.sub_plugin,
@@ -74,6 +74,23 @@ class SubPluginReleaseViewSetTestCase(APITestCase):
             zip_file='release_v1.0.0.zip',
         )
         cls.regular_user = ForumUserFactory()
+        cls.detail_api = 'api:sub-plugins:releases-detail'
+        cls.list_api = 'api:sub-plugins:releases-list'
+        cls.detail_path = reverse(
+            viewname=cls.detail_api,
+            kwargs={
+                'plugin_slug': cls.plugin.slug,
+                'sub_plugin_slug': cls.sub_plugin.slug,
+                'version': cls.sub_plugin_release.version,
+            },
+        )
+        cls.list_path = reverse(
+            viewname=cls.list_api,
+            kwargs={
+                'plugin_slug': cls.plugin.slug,
+                'sub_plugin_slug': cls.sub_plugin.slug,
+            },
+        )
 
     @classmethod
     def tearDownClass(cls):
@@ -224,7 +241,7 @@ class SubPluginReleaseViewSetTestCase(APITestCase):
 
     def test_get_list(self):
         # Verify that a non-logged-in user can see results
-        response = self.client.get(path=self.api_path)
+        response = self.client.get(path=self.list_path)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -262,7 +279,7 @@ class SubPluginReleaseViewSetTestCase(APITestCase):
 
         # Verify that regular user can see results
         self.client.force_login(self.regular_user.user)
-        response = self.client.get(path=self.api_path)
+        response = self.client.get(path=self.list_path)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -276,7 +293,7 @@ class SubPluginReleaseViewSetTestCase(APITestCase):
 
         # Verify that contributors can see results
         self.client.force_login(self.contributor.user)
-        response = self.client.get(path=self.api_path)
+        response = self.client.get(path=self.list_path)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -290,7 +307,7 @@ class SubPluginReleaseViewSetTestCase(APITestCase):
 
         # Verify that the owner can see results
         self.client.force_login(self.owner.user)
-        response = self.client.get(path=self.api_path)
+        response = self.client.get(path=self.list_path)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -302,10 +319,28 @@ class SubPluginReleaseViewSetTestCase(APITestCase):
             d2=payload,
         )
 
+    def test_get_list_failure(self):
+        response = self.client.get(
+            path=reverse(
+                viewname=self.list_api,
+                kwargs={
+                    'plugin_slug': self.plugin.slug,
+                    'sub_plugin_slug': 'invalid',
+                },
+            ),
+        )
+        self.assertEqual(
+            first=response.status_code,
+            second=status.HTTP_404_NOT_FOUND,
+        )
+        self.assertDictEqual(
+            d1=response.json(),
+            d2={'detail': 'Invalid sub_plugin_slug.'},
+        )
+
     def test_get_details(self):
         # Verify that non-logged-in user can see details
-        api_path = f'{self.api_path}{self.sub_plugin_release.version}/'
-        response = self.client.get(path=api_path)
+        response = self.client.get(path=self.detail_path)
         timestamp = self.sub_plugin_release.created
         request = response.wsgi_request
         zip_file = f'{request.scheme}://{request.get_host()}{self.sub_plugin_release.zip_file.url}'
@@ -341,7 +376,7 @@ class SubPluginReleaseViewSetTestCase(APITestCase):
 
         # Verify that regular user can see details
         self.client.force_login(self.regular_user.user)
-        response = self.client.get(path=api_path)
+        response = self.client.get(path=self.detail_path)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -353,7 +388,7 @@ class SubPluginReleaseViewSetTestCase(APITestCase):
 
         # Verify that contributors can see details
         self.client.force_login(self.contributor.user)
-        response = self.client.get(path=api_path)
+        response = self.client.get(path=self.detail_path)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -365,7 +400,7 @@ class SubPluginReleaseViewSetTestCase(APITestCase):
 
         # Verify that the owner can see details
         self.client.force_login(self.owner.user)
-        response = self.client.get(path=api_path)
+        response = self.client.get(path=self.detail_path)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -375,16 +410,25 @@ class SubPluginReleaseViewSetTestCase(APITestCase):
             d2=payload,
         )
 
-    def test_get_details_failure(self):
-        api_path = f'{self.base_api_path}{self.plugin.slug}/invalid/'
-        response = self.client.get(path=api_path)
+    def test_get_detail_failure(self):
+        self.client.force_login(self.owner.user)
+        response = self.client.get(
+            path=reverse(
+                viewname=self.detail_api,
+                kwargs={
+                    'plugin_slug': self.plugin.slug,
+                    'sub_plugin_slug': self.sub_plugin.slug,
+                    'version': '0.0.0',
+                },
+            ),
+        )
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_404_NOT_FOUND,
         )
         self.assertDictEqual(
             d1=response.json(),
-            d2={'detail': 'Invalid sub_plugin_slug.'},
+            d2={'detail': 'Not found.'},
         )
 
     @override_settings(MEDIA_ROOT=MEDIA_ROOT)
@@ -410,7 +454,13 @@ class SubPluginReleaseViewSetTestCase(APITestCase):
             sub_plugin=sub_plugin,
             user=self.contributor,
         )
-        api_path = f'{self.base_api_path}{plugin.slug}/{sub_plugin.slug}/'
+        api_path = reverse(
+            viewname=self.list_api,
+            kwargs={
+                'plugin_slug': plugin.slug,
+                'sub_plugin_slug': sub_plugin.slug,
+            },
+        )
         base_path = settings.BASE_DIR / 'fixtures' / 'releases' / 'sub-plugins'
         file_path = base_path / 'test-plugin' / 'test-sub-plugin' / 'test-sub-plugin-v1.0.0.zip'
 
@@ -544,11 +594,16 @@ class SubPluginReleaseViewSetTestCase(APITestCase):
             sub_plugin=sub_plugin,
             version='1.0.0',
         )
-        api_path = f'{self.base_api_path}{plugin.slug}/{sub_plugin.slug}/'
         with file_path.open('rb') as open_file:
             zip_file = UploadedFile(open_file, content_type='application/zip')
             response = self.client.post(
-                path=api_path,
+                path=reverse(
+                    viewname=self.list_api,
+                    kwargs={
+                        'plugin_slug': plugin.slug,
+                        'sub_plugin_slug': sub_plugin.slug,
+                    },
+                ),
                 data={
                     'version': version,
                     'zip_file': zip_file,
@@ -588,7 +643,6 @@ class SubPluginReleaseViewSetTestCase(APITestCase):
             sub_plugin=sub_plugin,
             version='1.0.0',
         )
-        api_path = f'{self.base_api_path}{plugin.slug}/{sub_plugin.slug}/'
         base_path = settings.BASE_DIR / 'fixtures' / 'releases' / 'sub-plugins'
         file_path = base_path / 'test-plugin' / 'test-sub-plugin' / 'test-sub-plugin-requirements-v1.0.0.zip'
         version = '1.0.1'
@@ -630,7 +684,13 @@ class SubPluginReleaseViewSetTestCase(APITestCase):
         with file_path.open('rb') as open_file:
             zip_file = UploadedFile(open_file, content_type='application/zip')
             response = self.client.post(
-                path=api_path,
+                path=reverse(
+                    viewname=self.list_api,
+                    kwargs={
+                        'plugin_slug': plugin.slug,
+                        'sub_plugin_slug': sub_plugin.slug,
+                    },
+                ),
                 data={
                     'version': version,
                     'zip_file': zip_file,
@@ -668,9 +728,14 @@ class SubPluginReleaseViewSetTestCase(APITestCase):
         )
 
     def test_options(self):
-        response = self.client.options(path=self.api_path)
+        response = self.client.options(path=self.list_path)
         self.assertEqual(first=response.status_code, second=status.HTTP_200_OK)
         self.assertEqual(
             first=response.json()['name'],
             second=f'{self.sub_plugin} - Release',
         )
+        # TODO: test actions
+
+    def test_options_detail(self):
+        # TODO: test actions
+        pass

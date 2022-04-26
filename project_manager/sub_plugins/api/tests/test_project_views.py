@@ -56,7 +56,7 @@ from test_utils.factories.users import ForumUserFactory
 # =============================================================================
 class SubPluginViewSetTestCase(APITestCase):
 
-    contributor = owner = reverse_base = sub_plugin = None
+    contributor = list_api = owner = sub_plugin = None
     MEDIA_ROOT = Path(tempfile.mkdtemp())
 
     @classmethod
@@ -72,13 +72,13 @@ class SubPluginViewSetTestCase(APITestCase):
             sub_plugin=cls.sub_plugin,
             zip_file='/media/release_v1.0.0.zip',
         )
-        cls.reverse_base = 'api:sub-plugins:projects'
+        cls.list_api = 'api:sub-plugins:projects-list'
         cls.list_path = reverse(
-            viewname=f'{cls.reverse_base}-list',
+            viewname=cls.list_api,
             kwargs={'plugin_slug': plugin.slug},
         )
         cls.detail_path = reverse(
-            viewname=f'{cls.reverse_base}-detail',
+            viewname='api:sub-plugins:projects-detail',
             kwargs={
                 'plugin_slug': plugin.slug,
                 'slug': cls.sub_plugin.slug,
@@ -461,7 +461,7 @@ class SubPluginViewSetTestCase(APITestCase):
         file_path = base_path / 'test-plugin' / 'test-sub-plugin' / 'test-sub-plugin-v1.0.0.zip'
         version = '1.0.0'
         api_path = reverse(
-            viewname=f'{self.reverse_base}-list',
+            viewname=self.list_api,
             kwargs={'plugin_slug': plugin.slug},
         )
         with file_path.open('rb') as open_file:
@@ -558,10 +558,6 @@ class SubPluginViewSetTestCase(APITestCase):
         base_path = settings.BASE_DIR / 'fixtures' / 'releases' / 'sub-plugins'
         file_path = base_path / 'test-plugin' / 'test-sub-plugin' / 'test-sub-plugin-requirements-v1.0.0.zip'
         version = '1.0.0'
-        api_path = reverse(
-            viewname=f'{self.reverse_base}-list',
-            kwargs={'plugin_slug': plugin.slug},
-        )
         custom_package_1 = PackageFactory(
             basename='custom_package_1',
         )
@@ -592,7 +588,10 @@ class SubPluginViewSetTestCase(APITestCase):
         with file_path.open('rb') as open_file:
             zip_file = UploadedFile(open_file, content_type='application/zip')
             response = self.client.post(
-                path=api_path,
+                path=reverse(
+                    viewname=self.list_api,
+                    kwargs={'plugin_slug': plugin.slug},
+                ),
                 data={
                     'name': 'Test Package',
                     'releases.notes': '',

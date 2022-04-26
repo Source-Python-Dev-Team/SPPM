@@ -16,6 +16,7 @@ from path import Path
 # Third Party Django
 from PIL import Image
 from rest_framework import status
+from rest_framework.reverse import reverse
 from rest_framework.test import APITestCase
 
 # App
@@ -61,7 +62,8 @@ from test_utils.factories.users import ForumUserFactory
 # =============================================================================
 class PackageContributorViewSetTestCase(APITestCase):
 
-    base_api_path = contributor = owner = package = None
+    contributor = detail_api = list_api = owner = package = None
+    package_contributor = None
 
     @classmethod
     def setUpTestData(cls):
@@ -69,8 +71,6 @@ class PackageContributorViewSetTestCase(APITestCase):
         cls.package = PackageFactory(
             owner=cls.owner,
         )
-        cls.base_api_path = f'/api/packages/contributors/'
-        cls.api_path = f'{cls.base_api_path}{cls.package.slug}/'
         cls.contributor = ForumUserFactory()
         cls.package_contributor = PackageContributorFactory(
             package=cls.package,
@@ -78,6 +78,21 @@ class PackageContributorViewSetTestCase(APITestCase):
         )
         cls.new_contributor = ForumUserFactory()
         cls.regular_user = ForumUserFactory()
+        cls.detail_api = 'api:packages:contributors-detail'
+        cls.list_api = 'api:packages:contributors-list'
+        cls.detail_path = reverse(
+            viewname=cls.detail_api,
+            kwargs={
+                'package_slug': cls.package.slug,
+                'pk': cls.package_contributor.id,
+            },
+        )
+        cls.list_path = reverse(
+            viewname=cls.list_api,
+            kwargs={
+                'package_slug': cls.package.slug,
+            },
+        )
 
     def test_inheritance(self):
         self.assertTrue(
@@ -117,7 +132,7 @@ class PackageContributorViewSetTestCase(APITestCase):
 
     def test_get_list(self):
         # Verify that non-logged-in user can see results but not 'id'
-        response = self.client.get(path=self.api_path)
+        response = self.client.get(path=self.list_path)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -137,7 +152,7 @@ class PackageContributorViewSetTestCase(APITestCase):
 
         # Verify that regular user can see results but not 'id'
         self.client.force_login(self.regular_user.user)
-        response = self.client.get(path=self.api_path)
+        response = self.client.get(path=self.list_path)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -157,7 +172,7 @@ class PackageContributorViewSetTestCase(APITestCase):
 
         # Verify that contributors can see results but not 'id'
         self.client.force_login(self.contributor.user)
-        response = self.client.get(path=self.api_path)
+        response = self.client.get(path=self.list_path)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -176,7 +191,7 @@ class PackageContributorViewSetTestCase(APITestCase):
 
         # Verify that the owner can see results AND 'id'
         self.client.force_login(self.owner.user)
-        response = self.client.get(path=self.api_path)
+        response = self.client.get(path=self.list_path)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -194,10 +209,27 @@ class PackageContributorViewSetTestCase(APITestCase):
             },
         )
 
+    def test_get_list_failure(self):
+        response = self.client.get(
+            path=reverse(
+                viewname=self.list_api,
+                kwargs={
+                    'package_slug': 'invalid',
+                },
+            ),
+        )
+        self.assertEqual(
+            first=response.status_code,
+            second=status.HTTP_404_NOT_FOUND,
+        )
+        self.assertDictEqual(
+            d1=response.json(),
+            d2={'detail': 'Invalid package_slug.'},
+        )
+
     def test_get_details(self):
         # Verify that non-logged-in user cannot see details
-        api_path = f'{self.api_path}{self.package_contributor.id}/'
-        response = self.client.get(path=api_path)
+        response = self.client.get(path=self.detail_path)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_403_FORBIDDEN,
@@ -205,7 +237,7 @@ class PackageContributorViewSetTestCase(APITestCase):
 
         # Verify that regular user cannot see details
         self.client.force_login(self.regular_user.user)
-        response = self.client.get(path=api_path)
+        response = self.client.get(path=self.detail_path)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_403_FORBIDDEN,
@@ -213,7 +245,7 @@ class PackageContributorViewSetTestCase(APITestCase):
 
         # Verify that contributors cannot see details
         self.client.force_login(self.contributor.user)
-        response = self.client.get(path=api_path)
+        response = self.client.get(path=self.detail_path)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_403_FORBIDDEN,
@@ -221,7 +253,7 @@ class PackageContributorViewSetTestCase(APITestCase):
 
         # Verify that the owner can see details
         self.client.force_login(self.owner.user)
-        response = self.client.get(path=api_path)
+        response = self.client.get(path=self.detail_path)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -237,22 +269,30 @@ class PackageContributorViewSetTestCase(APITestCase):
             },
         )
 
-    def test_get_details_failure(self):
-        api_path = f'{self.base_api_path}invalid/'
-        response = self.client.get(path=api_path)
+    def test_get_detail_failure(self):
+        self.client.force_login(self.owner.user)
+        response = self.client.get(
+            path=reverse(
+                viewname=self.detail_api,
+                kwargs={
+                    'package_slug': self.package.slug,
+                    'pk': 'invalid',
+                },
+            ),
+        )
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_404_NOT_FOUND,
         )
         self.assertDictEqual(
             d1=response.json(),
-            d2={'detail': 'Invalid package_slug.'},
+            d2={'detail': 'Not found.'},
         )
 
     def test_post(self):
         # Verify that non-logged-in user cannot add a contributor
         response = self.client.post(
-            path=self.api_path,
+            path=self.list_path,
             data={'username': self.new_contributor.user.username},
         )
         self.assertEqual(
@@ -263,7 +303,7 @@ class PackageContributorViewSetTestCase(APITestCase):
         # Verify that regular user cannot add a contributor
         self.client.force_login(self.regular_user.user)
         response = self.client.post(
-            path=self.api_path,
+            path=self.list_path,
             data={'username': self.new_contributor.user.username},
         )
         self.assertEqual(
@@ -274,7 +314,7 @@ class PackageContributorViewSetTestCase(APITestCase):
         # Verify that contributor cannot add a contributor
         self.client.force_login(self.contributor.user)
         response = self.client.post(
-            path=self.api_path,
+            path=self.list_path,
             data={'username': self.new_contributor.user.username},
         )
         self.assertEqual(
@@ -285,7 +325,7 @@ class PackageContributorViewSetTestCase(APITestCase):
         # Verify that owner can add a contributor
         self.client.force_login(self.owner.user)
         response = self.client.post(
-            path=self.api_path,
+            path=self.list_path,
             data={'username': self.new_contributor.user.username},
         )
         self.assertEqual(
@@ -298,7 +338,7 @@ class PackageContributorViewSetTestCase(APITestCase):
 
         # Verify existing contributor cannot be added
         response = self.client.post(
-            path=self.api_path,
+            path=self.list_path,
             data={'username': self.contributor.user.username},
         )
         self.assertEqual(
@@ -312,7 +352,7 @@ class PackageContributorViewSetTestCase(APITestCase):
 
         # Verify owner cannot be added
         response = self.client.post(
-            path=self.api_path,
+            path=self.list_path,
             data={'username': self.owner.user.username},
         )
         self.assertEqual(
@@ -327,7 +367,7 @@ class PackageContributorViewSetTestCase(APITestCase):
         # Verify unknown username cannot be added
         invalid_username = 'invalid'
         response = self.client.post(
-            path=self.api_path,
+            path=self.list_path,
             data={'username': invalid_username},
         )
         self.assertEqual(
@@ -341,9 +381,7 @@ class PackageContributorViewSetTestCase(APITestCase):
 
     def test_delete(self):
         # Verify that non-logged-in user cannot delete a contributor
-        response = self.client.delete(
-            path=self.api_path + f'{self.package_contributor.id}/',
-        )
+        response = self.client.delete(path=self.detail_path)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_403_FORBIDDEN,
@@ -351,9 +389,7 @@ class PackageContributorViewSetTestCase(APITestCase):
 
         # Verify that regular user cannot delete a contributor
         self.client.force_login(self.contributor.user)
-        response = self.client.delete(
-            path=self.api_path + f'{self.package_contributor.id}/',
-        )
+        response = self.client.delete(path=self.detail_path)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_403_FORBIDDEN,
@@ -361,9 +397,7 @@ class PackageContributorViewSetTestCase(APITestCase):
 
         # Verify that contributor cannot delete a contributor
         self.client.force_login(self.contributor.user)
-        response = self.client.delete(
-            path=self.api_path + f'{self.package_contributor.id}/',
-        )
+        response = self.client.delete(path=self.detail_path)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_403_FORBIDDEN,
@@ -371,26 +405,30 @@ class PackageContributorViewSetTestCase(APITestCase):
 
         # Verify that owner can delete a contributor
         self.client.force_login(self.owner.user)
-        response = self.client.delete(
-            path=self.api_path + f'{self.package_contributor.id}/',
-        )
+        response = self.client.delete(path=self.detail_path)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_204_NO_CONTENT,
         )
 
     def test_options(self):
-        response = self.client.options(path=self.api_path)
+        response = self.client.options(path=self.list_path)
         self.assertEqual(first=response.status_code, second=status.HTTP_200_OK)
         self.assertEqual(
             first=response.json()['name'],
             second=f'{self.package} - Contributor',
         )
+        # TODO: test actions
+
+    def test_options_detail(self):
+        # TODO: test actions
+        pass
 
 
 class PackageGameViewSetTestCase(APITestCase):
 
-    base_api_path = contributor = owner = game_1 = game_2 = package = None
+    contributor = detail_api = game_1 = game_2 = list_api = owner = None
+    package = package_game_1 = None
 
     @classmethod
     def setUpTestData(cls):
@@ -398,8 +436,6 @@ class PackageGameViewSetTestCase(APITestCase):
         cls.package = PackageFactory(
             owner=cls.owner,
         )
-        cls.base_api_path = f'/api/packages/games/'
-        cls.api_path = f'{cls.base_api_path}{cls.package.slug}/'
         cls.contributor = ForumUserFactory()
         PackageContributorFactory(
             package=cls.package,
@@ -434,6 +470,21 @@ class PackageGameViewSetTestCase(APITestCase):
             game=cls.game_2,
         )
         cls.regular_user = ForumUserFactory()
+        cls.detail_api = 'api:packages:games-detail'
+        cls.list_api = 'api:packages:games-list'
+        cls.list_path = reverse(
+            viewname=cls.list_api,
+            kwargs={
+                'package_slug': cls.package.slug,
+            },
+        )
+        cls.detail_path = reverse(
+            viewname=cls.detail_api,
+            kwargs={
+                'package_slug': cls.package.slug,
+                'pk': cls.package_game_1.id,
+            },
+        )
 
     def test_inheritance(self):
         self.assertTrue(
@@ -470,7 +521,7 @@ class PackageGameViewSetTestCase(APITestCase):
 
     def test_get_list(self):
         # Verify that non-logged-in user can see results but not 'id'
-        response = self.client.get(path=self.api_path)
+        response = self.client.get(path=self.list_path)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -492,7 +543,7 @@ class PackageGameViewSetTestCase(APITestCase):
 
         # Verify that regular user can see results but not 'id'
         self.client.force_login(self.regular_user.user)
-        response = self.client.get(path=self.api_path)
+        response = self.client.get(path=self.list_path)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -512,7 +563,7 @@ class PackageGameViewSetTestCase(APITestCase):
 
         # Verify that contributors can see results AND 'id'
         self.client.force_login(self.contributor.user)
-        response = self.client.get(path=self.api_path)
+        response = self.client.get(path=self.list_path)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -533,7 +584,7 @@ class PackageGameViewSetTestCase(APITestCase):
 
         # Verify that the owner can see results AND 'id'
         self.client.force_login(self.owner.user)
-        response = self.client.get(path=self.api_path)
+        response = self.client.get(path=self.list_path)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -552,10 +603,27 @@ class PackageGameViewSetTestCase(APITestCase):
             },
         )
 
+    def test_get_list_failure(self):
+        response = self.client.get(
+            path=reverse(
+                viewname=self.list_api,
+                kwargs={
+                    'package_slug': 'invalid',
+                }
+            ),
+        )
+        self.assertEqual(
+            first=response.status_code,
+            second=status.HTTP_404_NOT_FOUND,
+        )
+        self.assertDictEqual(
+            d1=response.json(),
+            d2={'detail': 'Invalid package_slug.'},
+        )
+
     def test_get_details(self):
         # Verify that non-logged-in user cannot see details
-        api_path = f'{self.api_path}{self.package_game_1.id}/'
-        response = self.client.get(path=api_path)
+        response = self.client.get(path=self.detail_path)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_403_FORBIDDEN,
@@ -563,7 +631,7 @@ class PackageGameViewSetTestCase(APITestCase):
 
         # Verify that regular user cannot see details
         self.client.force_login(self.regular_user.user)
-        response = self.client.get(path=api_path)
+        response = self.client.get(path=self.detail_path)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_403_FORBIDDEN,
@@ -571,7 +639,7 @@ class PackageGameViewSetTestCase(APITestCase):
 
         # Verify that contributors can see details
         self.client.force_login(self.contributor.user)
-        response = self.client.get(path=api_path)
+        response = self.client.get(path=self.detail_path)
         request = response.wsgi_request
         icon = f'{request.scheme}://{request.get_host()}{self.game_1.icon.url}'
         self.assertEqual(
@@ -592,7 +660,7 @@ class PackageGameViewSetTestCase(APITestCase):
 
         # Verify that the owner can see details
         self.client.force_login(self.owner.user)
-        response = self.client.get(path=api_path)
+        response = self.client.get(path=self.detail_path)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -609,22 +677,30 @@ class PackageGameViewSetTestCase(APITestCase):
             },
         )
 
-    def test_get_details_failure(self):
-        api_path = f'{self.base_api_path}invalid/'
-        response = self.client.get(path=api_path)
+    def test_get_detail_failure(self):
+        self.client.force_login(self.owner.user)
+        response = self.client.get(
+            path=reverse(
+                viewname=self.detail_api,
+                kwargs={
+                    'package_slug': self.package.slug,
+                    'pk': 'invalid',
+                },
+            ),
+        )
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_404_NOT_FOUND,
         )
         self.assertDictEqual(
             d1=response.json(),
-            d2={'detail': 'Invalid package_slug.'},
+            d2={'detail': 'Not found.'},
         )
 
     def test_post(self):
         # Verify that non-logged-in user cannot add a game
         response = self.client.post(
-            path=self.api_path,
+            path=self.list_path,
             data={'game_slug': self.game_3.slug},
         )
         self.assertEqual(
@@ -635,7 +711,7 @@ class PackageGameViewSetTestCase(APITestCase):
         # Verify that regular user cannot add a game
         self.client.force_login(self.regular_user.user)
         response = self.client.post(
-            path=self.api_path,
+            path=self.list_path,
             data={'game_slug': self.game_3.slug},
         )
         self.assertEqual(
@@ -646,7 +722,7 @@ class PackageGameViewSetTestCase(APITestCase):
         # Verify that contributor can add a game
         self.client.force_login(self.contributor.user)
         response = self.client.post(
-            path=self.api_path,
+            path=self.list_path,
             data={'game_slug': self.game_3.slug},
         )
         self.assertEqual(
@@ -657,7 +733,7 @@ class PackageGameViewSetTestCase(APITestCase):
         # Verify that owner can add a game
         self.client.force_login(self.owner.user)
         response = self.client.post(
-            path=self.api_path,
+            path=self.list_path,
             data={'game_slug': self.game_4.slug},
         )
         self.assertEqual(
@@ -670,7 +746,7 @@ class PackageGameViewSetTestCase(APITestCase):
 
         # Verify existing affiliated game cannot be added
         response = self.client.post(
-            path=self.api_path,
+            path=self.list_path,
             data={'game_slug': self.game_1.slug},
         )
         self.assertEqual(
@@ -685,7 +761,7 @@ class PackageGameViewSetTestCase(APITestCase):
         # Verify non-existing game cannot be added
         invalid_slug = 'invalid'
         response = self.client.post(
-            path=self.api_path,
+            path=self.list_path,
             data={'game_slug': invalid_slug},
         )
         self.assertEqual(
@@ -699,9 +775,7 @@ class PackageGameViewSetTestCase(APITestCase):
 
     def test_delete(self):
         # Verify that non-logged-in user cannot delete a game
-        response = self.client.delete(
-            path=self.api_path + f'{self.package_game_1.id}/',
-        )
+        response = self.client.delete(path=self.detail_path)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_403_FORBIDDEN,
@@ -709,9 +783,7 @@ class PackageGameViewSetTestCase(APITestCase):
 
         # Verify that regular user cannot delete a game
         self.client.force_login(self.regular_user.user)
-        response = self.client.delete(
-            path=self.api_path + f'{self.package_game_1.id}/',
-        )
+        response = self.client.delete(path=self.detail_path)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_403_FORBIDDEN,
@@ -719,9 +791,7 @@ class PackageGameViewSetTestCase(APITestCase):
 
         # Verify that contributor can delete a game
         self.client.force_login(self.contributor.user)
-        response = self.client.delete(
-            path=self.api_path + f'{self.package_game_1.id}/',
-        )
+        response = self.client.delete(path=self.detail_path)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_204_NO_CONTENT,
@@ -730,7 +800,13 @@ class PackageGameViewSetTestCase(APITestCase):
         # Verify that owner can delete a game
         self.client.force_login(self.owner.user)
         response = self.client.delete(
-            path=self.api_path + f'{self.package_game_2.id}/',
+            path=reverse(
+                viewname=self.detail_api,
+                kwargs={
+                    'package_slug': self.package.slug,
+                    'pk': self.package_game_2.id,
+                },
+            ),
         )
         self.assertEqual(
             first=response.status_code,
@@ -738,17 +814,23 @@ class PackageGameViewSetTestCase(APITestCase):
         )
 
     def test_options(self):
-        response = self.client.options(path=self.api_path)
+        response = self.client.options(path=self.list_path)
         self.assertEqual(first=response.status_code, second=status.HTTP_200_OK)
         self.assertEqual(
             first=response.json()['name'],
             second=f'{self.package} - Game',
         )
+        # TODO: test actions
+
+    def test_options_detail(self):
+        # TODO: test actions
+        pass
 
 
 class PackageImageViewSetTestCase(APITestCase):
 
-    base_api_path = contributor = owner = package = None
+    contributor = detail_api = list_api = owner = package = None
+    package_image_1 = None
     MEDIA_ROOT = Path(tempfile.mkdtemp())
 
     @classmethod
@@ -757,8 +839,6 @@ class PackageImageViewSetTestCase(APITestCase):
         cls.package = PackageFactory(
             owner=cls.owner,
         )
-        cls.base_api_path = f'/api/packages/images/'
-        cls.api_path = f'{cls.base_api_path}{cls.package.slug}/'
         cls.contributor = ForumUserFactory()
         PackageContributorFactory(
             package=cls.package,
@@ -772,6 +852,21 @@ class PackageImageViewSetTestCase(APITestCase):
             created=now() + timedelta(seconds=1)
         )
         cls.regular_user = ForumUserFactory()
+        cls.detail_api = 'api:packages:images-detail'
+        cls.list_api = 'api:packages:images-list'
+        cls.detail_path = reverse(
+            viewname=cls.detail_api,
+            kwargs={
+                'package_slug': cls.package.slug,
+                'pk': cls.package_image_1.id,
+            },
+        )
+        cls.list_path = reverse(
+            viewname=cls.list_api,
+            kwargs={
+                'package_slug': cls.package.slug,
+            },
+        )
 
     @classmethod
     def tearDownClass(cls):
@@ -813,7 +908,7 @@ class PackageImageViewSetTestCase(APITestCase):
 
     def test_get_list(self):
         # Verify that a non-logged-in user can see results but not 'id'
-        response = self.client.get(path=self.api_path)
+        response = self.client.get(path=self.list_path)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -831,7 +926,7 @@ class PackageImageViewSetTestCase(APITestCase):
 
         # Verify that regular user can see results but not 'id'
         self.client.force_login(self.regular_user.user)
-        response = self.client.get(path=self.api_path)
+        response = self.client.get(path=self.list_path)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -847,7 +942,7 @@ class PackageImageViewSetTestCase(APITestCase):
 
         # Verify that contributors can see results AND 'id'
         self.client.force_login(self.contributor.user)
-        response = self.client.get(path=self.api_path)
+        response = self.client.get(path=self.list_path)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -864,7 +959,7 @@ class PackageImageViewSetTestCase(APITestCase):
 
         # Verify that the owner can see results AND 'id'
         self.client.force_login(self.owner.user)
-        response = self.client.get(path=self.api_path)
+        response = self.client.get(path=self.list_path)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -879,10 +974,27 @@ class PackageImageViewSetTestCase(APITestCase):
             },
         )
 
+    def test_get_list_failure(self):
+        response = self.client.get(
+            path=reverse(
+                viewname=self.list_api,
+                kwargs={
+                    'package_slug': 'invalid',
+                },
+            ),
+        )
+        self.assertEqual(
+            first=response.status_code,
+            second=status.HTTP_404_NOT_FOUND,
+        )
+        self.assertDictEqual(
+            d1=response.json(),
+            d2={'detail': 'Invalid package_slug.'},
+        )
+
     def test_get_details(self):
         # Verify that non-logged-in user cannot see details
-        api_path = f'{self.api_path}{self.package_image_1.id}/'
-        response = self.client.get(path=api_path)
+        response = self.client.get(path=self.detail_path)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_403_FORBIDDEN,
@@ -890,7 +1002,7 @@ class PackageImageViewSetTestCase(APITestCase):
 
         # Verify that regular user cannot see details
         self.client.force_login(self.regular_user.user)
-        response = self.client.get(path=api_path)
+        response = self.client.get(path=self.detail_path)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_403_FORBIDDEN,
@@ -898,7 +1010,7 @@ class PackageImageViewSetTestCase(APITestCase):
 
         # Verify that contributors can see details
         self.client.force_login(self.contributor.user)
-        response = self.client.get(path=api_path)
+        response = self.client.get(path=self.detail_path)
         request = response.wsgi_request
         image = f'{request.scheme}://{request.get_host()}{self.package_image_1.image.url}'
         self.assertEqual(
@@ -915,7 +1027,7 @@ class PackageImageViewSetTestCase(APITestCase):
 
         # Verify that the owner can see details
         self.client.force_login(self.owner.user)
-        response = self.client.get(path=api_path)
+        response = self.client.get(path=self.detail_path)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -928,16 +1040,24 @@ class PackageImageViewSetTestCase(APITestCase):
             },
         )
 
-    def test_get_details_failure(self):
-        api_path = f'{self.base_api_path}invalid/'
-        response = self.client.get(path=api_path)
+    def test_get_detail_failure(self):
+        self.client.force_login(self.owner.user)
+        response = self.client.get(
+            path=reverse(
+                viewname=self.detail_api,
+                kwargs={
+                    'package_slug': self.package.slug,
+                    'pk': 'invalid',
+                },
+            ),
+        )
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_404_NOT_FOUND,
         )
         self.assertDictEqual(
             d1=response.json(),
-            d2={'detail': 'Invalid package_slug.'},
+            d2={'detail': 'Not found.'},
         )
 
     @override_settings(MEDIA_ROOT=MEDIA_ROOT)
@@ -949,7 +1069,7 @@ class PackageImageViewSetTestCase(APITestCase):
         image.save(tmp_file)
         tmp_file.seek(0)
         response = self.client.post(
-            path=self.api_path,
+            path=self.list_path,
             data={'image': tmp_file},
         )
         self.assertEqual(
@@ -964,7 +1084,7 @@ class PackageImageViewSetTestCase(APITestCase):
         image.save(tmp_file)
         tmp_file.seek(0)
         response = self.client.post(
-            path=self.api_path,
+            path=self.list_path,
             data={'image': tmp_file},
         )
         self.assertEqual(
@@ -979,7 +1099,7 @@ class PackageImageViewSetTestCase(APITestCase):
         image.save(tmp_file)
         tmp_file.seek(0)
         response = self.client.post(
-            path=self.api_path,
+            path=self.list_path,
             data={'image': tmp_file},
         )
         self.assertEqual(
@@ -988,11 +1108,16 @@ class PackageImageViewSetTestCase(APITestCase):
         )
 
     def test_delete(self):
+        # Verify that non-logged-in user cannot delete a game
+        response = self.client.delete(path=self.detail_path)
+        self.assertEqual(
+            first=response.status_code,
+            second=status.HTTP_403_FORBIDDEN,
+        )
+
         # Verify that regular user cannot delete an image
         self.client.force_login(self.regular_user.user)
-        response = self.client.delete(
-            path=self.api_path + f'{self.package_image_1.id}/',
-        )
+        response = self.client.delete(path=self.detail_path)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_403_FORBIDDEN,
@@ -1000,9 +1125,7 @@ class PackageImageViewSetTestCase(APITestCase):
 
         # Verify that contributor can delete an image
         self.client.force_login(self.contributor.user)
-        response = self.client.delete(
-            path=self.api_path + f'{self.package_image_1.id}/',
-        )
+        response = self.client.delete(path=self.detail_path)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_204_NO_CONTENT,
@@ -1011,7 +1134,13 @@ class PackageImageViewSetTestCase(APITestCase):
         # Verify that owner can delete an image
         self.client.force_login(self.owner.user)
         response = self.client.delete(
-            path=self.api_path + f'{self.package_image_2.id}/',
+            path=reverse(
+                viewname=self.detail_api,
+                kwargs={
+                    'package_slug': self.package.slug,
+                    'pk': self.package_image_2.id,
+                },
+            ),
         )
         self.assertEqual(
             first=response.status_code,
@@ -1019,17 +1148,23 @@ class PackageImageViewSetTestCase(APITestCase):
         )
 
     def test_options(self):
-        response = self.client.options(path=self.api_path)
+        response = self.client.options(path=self.list_path)
         self.assertEqual(first=response.status_code, second=status.HTTP_200_OK)
         self.assertEqual(
             first=response.json()['name'],
             second=f'{self.package} - Image',
         )
+        # TODO: test actions
+
+    def test_options_detail(self):
+        # TODO: test actions
+        pass
 
 
 class PackageTagViewSetTestCase(APITestCase):
 
-    base_api_path = contributor = owner = package = None
+    contributor = detail_api = list_api = owner = package = None
+    package_tag_1 = None
 
     @classmethod
     def setUpTestData(cls):
@@ -1037,8 +1172,6 @@ class PackageTagViewSetTestCase(APITestCase):
         cls.package = PackageFactory(
             owner=cls.owner,
         )
-        cls.base_api_path = f'/api/packages/tags/'
-        cls.api_path = f'{cls.base_api_path}{cls.package.slug}/'
         cls.contributor = ForumUserFactory()
         PackageContributorFactory(
             package=cls.package,
@@ -1051,6 +1184,21 @@ class PackageTagViewSetTestCase(APITestCase):
             package=cls.package,
         )
         cls.regular_user = ForumUserFactory()
+        cls.detail_api = 'api:packages:tags-detail'
+        cls.list_api = 'api:packages:tags-list'
+        cls.detail_path = reverse(
+            viewname=cls.detail_api,
+            kwargs={
+                'package_slug': cls.package.slug,
+                'pk': cls.package_tag_1.id,
+            },
+        )
+        cls.list_path = reverse(
+            viewname=cls.list_api,
+            kwargs={
+                'package_slug': cls.package.slug,
+            },
+        )
 
     def test_inheritance(self):
         self.assertTrue(expr=issubclass(PackageTagViewSet, ProjectTagViewSet))
@@ -1085,7 +1233,7 @@ class PackageTagViewSetTestCase(APITestCase):
 
     def test_get_list(self):
         # Verify that non-logged-in user can see results but not 'id'
-        response = self.client.get(path=self.api_path)
+        response = self.client.get(path=self.list_path)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -1101,7 +1249,7 @@ class PackageTagViewSetTestCase(APITestCase):
 
         # Verify that regular user can see results but not 'id'
         self.client.force_login(self.regular_user.user)
-        response = self.client.get(path=self.api_path)
+        response = self.client.get(path=self.list_path)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -1117,7 +1265,7 @@ class PackageTagViewSetTestCase(APITestCase):
 
         # Verify that contributors can see results AND 'id'
         self.client.force_login(self.contributor.user)
-        response = self.client.get(path=self.api_path)
+        response = self.client.get(path=self.list_path)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -1134,7 +1282,7 @@ class PackageTagViewSetTestCase(APITestCase):
 
         # Verify that the owner can see results AND 'id'
         self.client.force_login(self.owner.user)
-        response = self.client.get(path=self.api_path)
+        response = self.client.get(path=self.list_path)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -1149,10 +1297,27 @@ class PackageTagViewSetTestCase(APITestCase):
             },
         )
 
+    def test_get_list_failure(self):
+        response = self.client.get(
+            path=reverse(
+                viewname=self.list_api,
+                kwargs={
+                    'package_slug': 'invalid',
+                },
+            ),
+        )
+        self.assertEqual(
+            first=response.status_code,
+            second=status.HTTP_404_NOT_FOUND,
+        )
+        self.assertDictEqual(
+            d1=response.json(),
+            d2={'detail': 'Invalid package_slug.'},
+        )
+
     def test_get_details(self):
         # Verify that non-logged-in user cannot see details
-        api_path = f'{self.api_path}{self.package_tag_1.id}/'
-        response = self.client.get(path=api_path)
+        response = self.client.get(path=self.detail_path)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_403_FORBIDDEN,
@@ -1160,7 +1325,7 @@ class PackageTagViewSetTestCase(APITestCase):
 
         # Verify that regular user cannot see details
         self.client.force_login(self.regular_user.user)
-        response = self.client.get(path=api_path)
+        response = self.client.get(path=self.detail_path)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_403_FORBIDDEN,
@@ -1168,7 +1333,7 @@ class PackageTagViewSetTestCase(APITestCase):
 
         # Verify that contributors can see details
         self.client.force_login(self.contributor.user)
-        response = self.client.get(path=api_path)
+        response = self.client.get(path=self.detail_path)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -1183,7 +1348,7 @@ class PackageTagViewSetTestCase(APITestCase):
 
         # Verify that the owner can see details
         self.client.force_login(self.owner.user)
-        response = self.client.get(path=api_path)
+        response = self.client.get(path=self.detail_path)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -1196,22 +1361,30 @@ class PackageTagViewSetTestCase(APITestCase):
             },
         )
 
-    def test_get_details_failure(self):
-        api_path = f'{self.base_api_path}invalid/'
-        response = self.client.get(path=api_path)
+    def test_get_detail_failure(self):
+        self.client.force_login(self.owner.user)
+        response = self.client.get(
+            path=reverse(
+                viewname=self.detail_api,
+                kwargs={
+                    'package_slug': self.package.slug,
+                    'pk': 'invalid',
+                },
+            ),
+        )
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_404_NOT_FOUND,
         )
         self.assertDictEqual(
             d1=response.json(),
-            d2={'detail': 'Invalid package_slug.'},
+            d2={'detail': 'Not found.'},
         )
 
     def test_post(self):
         # Verify that non-logged-in user cannot add a tag
         response = self.client.post(
-            path=self.api_path,
+            path=self.list_path,
             data={'tag': 'new-tag-1'},
         )
         self.assertEqual(
@@ -1222,7 +1395,7 @@ class PackageTagViewSetTestCase(APITestCase):
         # Verify that regular user cannot add a tag
         self.client.force_login(self.regular_user.user)
         response = self.client.post(
-            path=self.api_path,
+            path=self.list_path,
             data={'tag': 'new-tag-1'},
         )
         self.assertEqual(
@@ -1233,7 +1406,7 @@ class PackageTagViewSetTestCase(APITestCase):
         # Verify that contributor can add a tag
         self.client.force_login(self.contributor.user)
         response = self.client.post(
-            path=self.api_path,
+            path=self.list_path,
             data={'tag': 'new-tag-1'},
         )
         self.assertEqual(
@@ -1244,7 +1417,7 @@ class PackageTagViewSetTestCase(APITestCase):
         # Verify that owner can add a tag
         self.client.force_login(self.owner.user)
         response = self.client.post(
-            path=self.api_path,
+            path=self.list_path,
             data={'tag': 'new-tag-2'},
         )
         self.assertEqual(
@@ -1257,7 +1430,7 @@ class PackageTagViewSetTestCase(APITestCase):
 
         # Verify existing affiliated tag cannot be added
         response = self.client.post(
-            path=self.api_path,
+            path=self.list_path,
             data={'tag': self.package_tag_1.tag},
         )
         self.assertEqual(
@@ -1274,7 +1447,7 @@ class PackageTagViewSetTestCase(APITestCase):
             black_listed=True,
         )
         response = self.client.post(
-            path=self.api_path,
+            path=self.list_path,
             data={'tag': tag.name},
         )
         self.assertEqual(
@@ -1288,9 +1461,7 @@ class PackageTagViewSetTestCase(APITestCase):
 
     def test_delete(self):
         # Verify that non-logged-in user cannot delete a tag
-        response = self.client.delete(
-            path=self.api_path + f'{self.package_tag_1.id}/',
-        )
+        response = self.client.delete(path=self.detail_path)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_403_FORBIDDEN,
@@ -1298,9 +1469,7 @@ class PackageTagViewSetTestCase(APITestCase):
 
         # Verify that regular user cannot delete a tag
         self.client.force_login(self.regular_user.user)
-        response = self.client.delete(
-            path=self.api_path + f'{self.package_tag_1.id}/',
-        )
+        response = self.client.delete(path=self.detail_path)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_403_FORBIDDEN,
@@ -1308,9 +1477,7 @@ class PackageTagViewSetTestCase(APITestCase):
 
         # Verify that contributor can delete a tag
         self.client.force_login(self.contributor.user)
-        response = self.client.delete(
-            path=self.api_path + f'{self.package_tag_1.id}/',
-        )
+        response = self.client.delete(path=self.detail_path)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_204_NO_CONTENT,
@@ -1319,7 +1486,13 @@ class PackageTagViewSetTestCase(APITestCase):
         # Verify that owner can delete a tag
         self.client.force_login(self.owner.user)
         response = self.client.delete(
-            path=self.api_path + f'{self.package_tag_2.id}/',
+            path=reverse(
+                viewname=self.detail_api,
+                kwargs={
+                    'package_slug': self.package.slug,
+                    'pk': self.package_tag_2.id,
+                },
+            ),
         )
         self.assertEqual(
             first=response.status_code,
@@ -1327,9 +1500,14 @@ class PackageTagViewSetTestCase(APITestCase):
         )
 
     def test_options(self):
-        response = self.client.options(path=self.api_path)
+        response = self.client.options(path=self.list_path)
         self.assertEqual(first=response.status_code, second=status.HTTP_200_OK)
         self.assertEqual(
             first=response.json()['name'],
             second=f'{self.package} - Tag',
         )
+        # TODO: test actions
+
+    def test_options_detail(self):
+        # TODO: test actions
+        pass

@@ -68,12 +68,11 @@ class PluginViewSetTestCase(APITestCase):
             plugin=cls.plugin,
             zip_file='/media/release_v1.0.0.zip',
         )
-        reverse_base = 'api:plugins:projects'
         cls.list_path = reverse(
-            viewname=f'{reverse_base}-list',
+            viewname='api:plugins:projects-list',
         )
         cls.detail_path = reverse(
-            viewname=f'{reverse_base}-detail',
+            viewname='api:plugins:projects-detail',
             kwargs={
                 'pk': cls.plugin.slug,
             }

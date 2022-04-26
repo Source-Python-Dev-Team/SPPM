@@ -67,12 +67,11 @@ class PackageViewSetTestCase(APITestCase):
             package=cls.package,
             zip_file='/media/release_v1.0.0.zip',
         )
-        reverse_base = 'api:packages:projects'
         cls.list_path = reverse(
-            viewname=f'{reverse_base}-list',
+            viewname='api:packages:projects-list',
         )
         cls.detail_path = reverse(
-            viewname=f'{reverse_base}-detail',
+            viewname='api:packages:projects-detail',
             kwargs={
                 'pk': cls.package.slug,
             }
