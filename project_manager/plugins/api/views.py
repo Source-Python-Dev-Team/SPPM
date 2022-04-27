@@ -19,7 +19,7 @@ from project_manager.api.common.views import (
     ProjectTagViewSet,
     ProjectViewSet,
 )
-from project_manager.api.common.views.mixins import ProjectThroughModelMixin
+from project_manager.api.common.views.mixins import ProjectRelatedInfoMixin
 from project_manager.plugins.api.filtersets import PluginFilterSet
 from project_manager.plugins.api.serializers import (
     PluginContributorSerializer,
@@ -201,7 +201,7 @@ class PluginContributorViewSet(ProjectContributorViewSet):
     project_model = Plugin
 
 
-class SubPluginPathViewSet(ProjectThroughModelMixin):
+class SubPluginPathViewSet(ProjectRelatedInfoMixin):
     """Sub-Plugin Paths listing.
 
     ###Available Ordering:

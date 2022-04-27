@@ -8,10 +8,9 @@ from django.utils.functional import cached_property
 
 # Third Party Django
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework.authentication import SessionAuthentication
 from rest_framework.exceptions import NotFound, PermissionDenied
 from rest_framework.filters import OrderingFilter
-from rest_framework.permissions import IsAuthenticatedOrReadOnly, SAFE_METHODS
+from rest_framework.permissions import SAFE_METHODS
 from rest_framework.viewsets import ModelViewSet
 
 
@@ -20,7 +19,6 @@ from rest_framework.viewsets import ModelViewSet
 # =============================================================================
 __all__ = (
     'ProjectRelatedInfoMixin',
-    'ProjectThroughModelMixin',
 )
 
 
@@ -31,7 +29,10 @@ class ProjectRelatedInfoMixin(ModelViewSet):
     """Mixin used to retrieve information for a specific project."""
 
     filter_backends = (OrderingFilter, DjangoFilterBackend)
+    http_method_names = ('get', 'post', 'delete', 'options')
 
+    allow_retrieve_access = False
+    owner_only_id_access = False
     related_model_type = None
 
     @cached_property
@@ -98,23 +99,29 @@ class ProjectRelatedInfoMixin(ModelViewSet):
             return f'{self.project} - {self.related_model_type}{plural}'
         return super().get_view_name()  # pragma: no cover
 
+    def check_object_permissions(self, request, obj):
+        """Only allow the owner and contributors to delete related data.
 
-class ProjectThroughModelMixin(ProjectRelatedInfoMixin):
-    """Mixin for through model ViewSets."""
+        This is here so that the OPTIONS calls return correctly.
+        """
+        if request.method not in SAFE_METHODS or not self.allow_retrieve_access:
+            self._check_permissions(user_id=request.user.id)
 
-    authentication_classes = (SessionAuthentication,)
-    http_method_names = ('get', 'post', 'delete', 'options')
-    permission_classes = (IsAuthenticatedOrReadOnly,)
-
-    owner_only_id_access = False
+        return super().check_object_permissions(
+            request=request,
+            obj=obj,
+        )
 
     def check_permissions(self, request):
         """Only allow the owner and contributors to add data relationships."""
-        if request.method not in SAFE_METHODS or self.action == 'retrieve':
-            user = request.user.id
-            is_contributor = user in self.contributors
-            if user != self.owner and not is_contributor:
-                raise PermissionDenied
-            if self.owner_only_id_access and is_contributor:
-                raise PermissionDenied
+        if request.method == 'POST':
+            self._check_permissions(user_id=request.user.id)
+
         return super().check_permissions(request=request)
+
+    def _check_permissions(self, user_id):
+        is_contributor = self.contributors.filter(user=user_id).exists()
+        if user_id != self.owner and not is_contributor:
+            raise PermissionDenied
+        if self.owner_only_id_access and is_contributor:
+            raise PermissionDenied

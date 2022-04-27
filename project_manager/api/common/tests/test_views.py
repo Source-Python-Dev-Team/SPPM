@@ -6,9 +6,7 @@ from django.test import TestCase
 
 # Third Party Django
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework.authentication import SessionAuthentication
 from rest_framework.filters import OrderingFilter
-from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 
@@ -22,10 +20,7 @@ from project_manager.api.common.views import (
     ProjectTagViewSet,
     ProjectViewSet,
 )
-from project_manager.api.common.views.mixins import (
-    ProjectRelatedInfoMixin,
-    ProjectThroughModelMixin,
-)
+from project_manager.api.common.views.mixins import ProjectRelatedInfoMixin
 from project_manager.constants import RELEASE_VERSION_REGEX
 
 
@@ -40,6 +35,10 @@ class ProjectRelatedInfoMixinTestCase(TestCase):
         self.assertTupleEqual(
             tuple1=ProjectRelatedInfoMixin.filter_backends,
             tuple2=(OrderingFilter, DjangoFilterBackend),
+        )
+        self.assertTupleEqual(
+            tuple1=ProjectRelatedInfoMixin.http_method_names,
+            tuple2=('get', 'post', 'delete', 'options'),
         )
 
     def test_project_type_required(self):
@@ -69,25 +68,6 @@ class ProjectRelatedInfoMixinTestCase(TestCase):
         )
 
 
-class ProjectThroughModelMixinTestCase(TestCase):
-    def test_class_inheritance(self):
-        self.assertTrue(expr=issubclass(ProjectThroughModelMixin, ModelViewSet))
-
-    def test_primary_attributes(self):
-        self.assertTupleEqual(
-            tuple1=ProjectThroughModelMixin.authentication_classes,
-            tuple2=(SessionAuthentication,),
-        )
-        self.assertTupleEqual(
-            tuple1=ProjectThroughModelMixin.http_method_names,
-            tuple2=('get', 'post', 'delete', 'options'),
-        )
-        self.assertTupleEqual(
-            tuple1=ProjectThroughModelMixin.permission_classes,
-            tuple2=(IsAuthenticatedOrReadOnly,),
-        )
-
-
 class ProjectAPIViewTestCase(TestCase):
     def test_class_inheritance(self):
         self.assertTrue(expr=issubclass(ProjectAPIView, APIView))
@@ -105,10 +85,6 @@ class ProjectViewSetTestCase(TestCase):
 
     def test_base_attributes(self):
         self.assertTupleEqual(
-            tuple1=ProjectViewSet.authentication_classes,
-            tuple2=(SessionAuthentication,),
-        )
-        self.assertTupleEqual(
             tuple1=ProjectViewSet.filter_backends,
             tuple2=(OrderingFilter, DjangoFilterBackend),
         )
@@ -123,10 +99,6 @@ class ProjectViewSetTestCase(TestCase):
         self.assertTupleEqual(
             tuple1=ProjectViewSet.ordering_fields,
             tuple2=('name', 'basename', 'updated', 'created'),
-        )
-        self.assertTupleEqual(
-            tuple1=ProjectViewSet.permission_classes,
-            tuple2=(IsAuthenticatedOrReadOnly,),
         )
 
     def test_creation_serializer_class_required(self):
@@ -146,7 +118,7 @@ class ProjectViewSetTestCase(TestCase):
 class ProjectImageViewSetTestCase(TestCase):
     def test_class_inheritance(self):
         self.assertTrue(
-            expr=issubclass(ProjectImageViewSet, ProjectThroughModelMixin),
+            expr=issubclass(ProjectImageViewSet, ProjectRelatedInfoMixin),
         )
 
     def test_base_attributes(self):
@@ -200,7 +172,7 @@ class ProjectReleaseViewSetTestCase(TestCase):
 class ProjectGameViewSetTestCase(TestCase):
     def test_class_inheritance(self):
         self.assertTrue(
-            expr=issubclass(ProjectGameViewSet, ProjectThroughModelMixin),
+            expr=issubclass(ProjectGameViewSet, ProjectRelatedInfoMixin),
         )
 
     def test_base_attributes(self):
@@ -221,7 +193,7 @@ class ProjectGameViewSetTestCase(TestCase):
 class ProjectTagViewSetTestCase(TestCase):
     def test_class_inheritance(self):
         self.assertTrue(
-            expr=issubclass(ProjectTagViewSet, ProjectThroughModelMixin),
+            expr=issubclass(ProjectTagViewSet, ProjectRelatedInfoMixin),
         )
 
     def test_base_attributes(self):
@@ -244,7 +216,7 @@ class ProjectContributorViewSetTestCase(TestCase):
         self.assertTrue(
             expr=issubclass(
                 ProjectContributorViewSet,
-                ProjectThroughModelMixin,
+                ProjectRelatedInfoMixin,
             ),
         )
 

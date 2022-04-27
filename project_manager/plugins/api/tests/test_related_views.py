@@ -26,7 +26,7 @@ from project_manager.api.common.views import (
     ProjectImageViewSet,
     ProjectTagViewSet,
 )
-from project_manager.api.common.views.mixins import ProjectThroughModelMixin
+from project_manager.api.common.views.mixins import ProjectRelatedInfoMixin
 from project_manager.plugins.api.serializers import (
     PluginContributorSerializer,
     PluginGameSerializer,
@@ -417,17 +417,94 @@ class PluginContributorViewSetTestCase(APITestCase):
         )
 
     def test_options(self):
+        # Verify that non-logged-in user cannot POST
         response = self.client.options(path=self.list_path)
         self.assertEqual(first=response.status_code, second=status.HTTP_200_OK)
+        content = response.json()
         self.assertEqual(
-            first=response.json()['name'],
+            first=content['name'],
             second=f'{self.plugin} - Contributor',
         )
-        # TODO: test actions
+        self.assertNotIn(member='actions', container=content)
 
-    def test_options_detail(self):
-        # TODO: test actions
-        pass
+        # Verify that normal user cannot POST
+        self.client.force_login(user=self.regular_user.user)
+        response = self.client.options(path=self.list_path)
+        self.assertEqual(first=response.status_code, second=status.HTTP_200_OK)
+        content = response.json()
+        self.assertEqual(
+            first=content['name'],
+            second=f'{self.plugin} - Contributor',
+        )
+        self.assertNotIn(member='actions', container=content)
+
+        # Verify that contributors cannot POST
+        self.client.force_login(user=self.contributor.user)
+        response = self.client.options(path=self.list_path)
+        self.assertEqual(first=response.status_code, second=status.HTTP_200_OK)
+        content = response.json()
+        self.assertEqual(
+            first=content['name'],
+            second=f'{self.plugin} - Contributor',
+        )
+        self.assertNotIn(member='actions', container=content)
+
+        # Verify that the owner can POST
+        self.client.force_login(user=self.owner.user)
+        response = self.client.options(path=self.list_path)
+        self.assertEqual(first=response.status_code, second=status.HTTP_200_OK)
+        content = response.json()
+        self.assertEqual(
+            first=content['name'],
+            second=f'{self.plugin} - Contributor',
+        )
+        self.assertIn(member='actions', container=content)
+        self.assertSetEqual(set1=set(content['actions']), set2={'POST'})
+
+    def test_options_object(self):
+        # Verify that non-logged-in user cannot DELETE
+        response = self.client.options(path=self.detail_path)
+        self.assertEqual(first=response.status_code, second=status.HTTP_200_OK)
+        content = response.json()
+        self.assertEqual(
+            first=content['name'],
+            second=f'{self.plugin} - Contributor',
+        )
+        self.assertNotIn(member='actions', container=content)
+
+        # Verify that normal user cannot DELETE
+        self.client.force_login(user=self.regular_user.user)
+        response = self.client.options(path=self.detail_path)
+        self.assertEqual(first=response.status_code, second=status.HTTP_200_OK)
+        content = response.json()
+        self.assertEqual(
+            first=content['name'],
+            second=f'{self.plugin} - Contributor',
+        )
+        self.assertNotIn(member='actions', container=content)
+
+        # Verify that contributors cannot DELETE
+        self.client.force_login(user=self.contributor.user)
+        response = self.client.options(path=self.detail_path)
+        self.assertEqual(first=response.status_code, second=status.HTTP_200_OK)
+        content = response.json()
+        self.assertEqual(
+            first=content['name'],
+            second=f'{self.plugin} - Contributor',
+        )
+        self.assertNotIn(member='actions', container=content)
+
+        # Verify that the owner can DELETE
+        self.client.force_login(user=self.owner.user)
+        response = self.client.options(path=self.detail_path)
+        self.assertEqual(first=response.status_code, second=status.HTTP_200_OK)
+        content = response.json()
+        self.assertEqual(
+            first=content['name'],
+            second=f'{self.plugin} - Contributor',
+        )
+        self.assertIn(member='actions', container=content)
+        self.assertSetEqual(set1=set(content['actions']), set2={'DELETE'})
 
 
 class PluginGameViewSetTestCase(APITestCase):
@@ -819,17 +896,96 @@ class PluginGameViewSetTestCase(APITestCase):
         )
 
     def test_options(self):
+        # Verify that non-logged-in user cannot POST
         response = self.client.options(path=self.list_path)
         self.assertEqual(first=response.status_code, second=status.HTTP_200_OK)
+        content = response.json()
         self.assertEqual(
-            first=response.json()['name'],
+            first=content['name'],
             second=f'{self.plugin} - Game',
         )
-        # TODO: test actions
+        self.assertNotIn(member='actions', container=content)
 
-    def test_options_detail(self):
-        # TODO: test actions
-        pass
+        # Verify that normal user cannot POST
+        self.client.force_login(user=self.regular_user.user)
+        response = self.client.options(path=self.list_path)
+        self.assertEqual(first=response.status_code, second=status.HTTP_200_OK)
+        content = response.json()
+        self.assertEqual(
+            first=content['name'],
+            second=f'{self.plugin} - Game',
+        )
+        self.assertNotIn(member='actions', container=content)
+
+        # Verify that contributors can POST
+        self.client.force_login(user=self.contributor.user)
+        response = self.client.options(path=self.list_path)
+        self.assertEqual(first=response.status_code, second=status.HTTP_200_OK)
+        content = response.json()
+        self.assertEqual(
+            first=content['name'],
+            second=f'{self.plugin} - Game',
+        )
+        self.assertIn(member='actions', container=content)
+        self.assertSetEqual(set1=set(content['actions']), set2={'POST'})
+
+        # Verify that the owner can POST
+        self.client.force_login(user=self.owner.user)
+        response = self.client.options(path=self.list_path)
+        self.assertEqual(first=response.status_code, second=status.HTTP_200_OK)
+        content = response.json()
+        self.assertEqual(
+            first=content['name'],
+            second=f'{self.plugin} - Game',
+        )
+        self.assertIn(member='actions', container=content)
+        self.assertSetEqual(set1=set(content['actions']), set2={'POST'})
+
+    def test_options_object(self):
+        # Verify that non-logged-in user cannot DELETE
+        response = self.client.options(path=self.detail_path)
+        self.assertEqual(first=response.status_code, second=status.HTTP_200_OK)
+        content = response.json()
+        self.assertEqual(
+            first=content['name'],
+            second=f'{self.plugin} - Game',
+        )
+        self.assertNotIn(member='actions', container=content)
+
+        # Verify that normal user cannot DELETE
+        self.client.force_login(user=self.regular_user.user)
+        response = self.client.options(path=self.detail_path)
+        self.assertEqual(first=response.status_code, second=status.HTTP_200_OK)
+        content = response.json()
+        self.assertEqual(
+            first=content['name'],
+            second=f'{self.plugin} - Game',
+        )
+        self.assertNotIn(member='actions', container=content)
+
+        # Verify that contributors can DELETE
+        self.client.force_login(user=self.contributor.user)
+        response = self.client.options(path=self.detail_path)
+        self.assertEqual(first=response.status_code, second=status.HTTP_200_OK)
+        content = response.json()
+        self.assertEqual(
+            first=content['name'],
+            second=f'{self.plugin} - Game',
+        )
+        self.assertIn(member='actions', container=content)
+        self.assertSetEqual(set1=set(content['actions']), set2={'DELETE'})
+
+        # Verify that the owner can DELETE
+        self.client.force_login(user=self.owner.user)
+        response = self.client.options(path=self.detail_path)
+        self.assertEqual(first=response.status_code, second=status.HTTP_200_OK)
+        content = response.json()
+        self.assertEqual(
+            first=content['name'],
+            second=f'{self.plugin} - Game',
+        )
+        self.assertIn(member='actions', container=content)
+        self.assertSetEqual(set1=set(content['actions']), set2={'DELETE'})
 
 
 class PluginImageViewSetTestCase(APITestCase):
@@ -1154,17 +1310,96 @@ class PluginImageViewSetTestCase(APITestCase):
         )
 
     def test_options(self):
+        # Verify that non-logged-in user cannot POST
         response = self.client.options(path=self.list_path)
         self.assertEqual(first=response.status_code, second=status.HTTP_200_OK)
+        content = response.json()
         self.assertEqual(
-            first=response.json()['name'],
+            first=content['name'],
             second=f'{self.plugin} - Image',
         )
-        # TODO: test actions
+        self.assertNotIn(member='actions', container=content)
 
-    def test_options_detail(self):
-        # TODO: test actions
-        pass
+        # Verify that normal user cannot POST
+        self.client.force_login(user=self.regular_user.user)
+        response = self.client.options(path=self.list_path)
+        self.assertEqual(first=response.status_code, second=status.HTTP_200_OK)
+        content = response.json()
+        self.assertEqual(
+            first=content['name'],
+            second=f'{self.plugin} - Image',
+        )
+        self.assertNotIn(member='actions', container=content)
+
+        # Verify that contributors can POST
+        self.client.force_login(user=self.contributor.user)
+        response = self.client.options(path=self.list_path)
+        self.assertEqual(first=response.status_code, second=status.HTTP_200_OK)
+        content = response.json()
+        self.assertEqual(
+            first=content['name'],
+            second=f'{self.plugin} - Image',
+        )
+        self.assertIn(member='actions', container=content)
+        self.assertSetEqual(set1=set(content['actions']), set2={'POST'})
+
+        # Verify that the owner can POST
+        self.client.force_login(user=self.owner.user)
+        response = self.client.options(path=self.list_path)
+        self.assertEqual(first=response.status_code, second=status.HTTP_200_OK)
+        content = response.json()
+        self.assertEqual(
+            first=content['name'],
+            second=f'{self.plugin} - Image',
+        )
+        self.assertIn(member='actions', container=content)
+        self.assertSetEqual(set1=set(content['actions']), set2={'POST'})
+
+    def test_options_object(self):
+        # Verify that non-logged-in user cannot DELETE
+        response = self.client.options(path=self.detail_path)
+        self.assertEqual(first=response.status_code, second=status.HTTP_200_OK)
+        content = response.json()
+        self.assertEqual(
+            first=content['name'],
+            second=f'{self.plugin} - Image',
+        )
+        self.assertNotIn(member='actions', container=content)
+
+        # Verify that normal user cannot DELETE
+        self.client.force_login(user=self.regular_user.user)
+        response = self.client.options(path=self.detail_path)
+        self.assertEqual(first=response.status_code, second=status.HTTP_200_OK)
+        content = response.json()
+        self.assertEqual(
+            first=content['name'],
+            second=f'{self.plugin} - Image',
+        )
+        self.assertNotIn(member='actions', container=content)
+
+        # Verify that contributors can DELETE
+        self.client.force_login(user=self.contributor.user)
+        response = self.client.options(path=self.detail_path)
+        self.assertEqual(first=response.status_code, second=status.HTTP_200_OK)
+        content = response.json()
+        self.assertEqual(
+            first=content['name'],
+            second=f'{self.plugin} - Image',
+        )
+        self.assertIn(member='actions', container=content)
+        self.assertSetEqual(set1=set(content['actions']), set2={'DELETE'})
+
+        # Verify that the owner can DELETE
+        self.client.force_login(user=self.owner.user)
+        response = self.client.options(path=self.detail_path)
+        self.assertEqual(first=response.status_code, second=status.HTTP_200_OK)
+        content = response.json()
+        self.assertEqual(
+            first=content['name'],
+            second=f'{self.plugin} - Image',
+        )
+        self.assertIn(member='actions', container=content)
+        self.assertSetEqual(set1=set(content['actions']), set2={'DELETE'})
 
 
 class PluginTagViewSetTestCase(APITestCase):
@@ -1505,17 +1740,96 @@ class PluginTagViewSetTestCase(APITestCase):
         )
 
     def test_options(self):
+        # Verify that non-logged-in user cannot POST
         response = self.client.options(path=self.list_path)
         self.assertEqual(first=response.status_code, second=status.HTTP_200_OK)
+        content = response.json()
         self.assertEqual(
-            first=response.json()['name'],
+            first=content['name'],
             second=f'{self.plugin} - Tag',
         )
-        # TODO: test actions
+        self.assertNotIn(member='actions', container=content)
 
-    def test_options_detail(self):
-        # TODO: test actions
-        pass
+        # Verify that normal user cannot POST
+        self.client.force_login(user=self.regular_user.user)
+        response = self.client.options(path=self.list_path)
+        self.assertEqual(first=response.status_code, second=status.HTTP_200_OK)
+        content = response.json()
+        self.assertEqual(
+            first=content['name'],
+            second=f'{self.plugin} - Tag',
+        )
+        self.assertNotIn(member='actions', container=content)
+
+        # Verify that contributors can POST
+        self.client.force_login(user=self.contributor.user)
+        response = self.client.options(path=self.list_path)
+        self.assertEqual(first=response.status_code, second=status.HTTP_200_OK)
+        content = response.json()
+        self.assertEqual(
+            first=content['name'],
+            second=f'{self.plugin} - Tag',
+        )
+        self.assertIn(member='actions', container=content)
+        self.assertSetEqual(set1=set(content['actions']), set2={'POST'})
+
+        # Verify that the owner can POST
+        self.client.force_login(user=self.owner.user)
+        response = self.client.options(path=self.list_path)
+        self.assertEqual(first=response.status_code, second=status.HTTP_200_OK)
+        content = response.json()
+        self.assertEqual(
+            first=content['name'],
+            second=f'{self.plugin} - Tag',
+        )
+        self.assertIn(member='actions', container=content)
+        self.assertSetEqual(set1=set(content['actions']), set2={'POST'})
+
+    def test_options_object(self):
+        # Verify that non-logged-in user cannot DELETE
+        response = self.client.options(path=self.detail_path)
+        self.assertEqual(first=response.status_code, second=status.HTTP_200_OK)
+        content = response.json()
+        self.assertEqual(
+            first=content['name'],
+            second=f'{self.plugin} - Tag',
+        )
+        self.assertNotIn(member='actions', container=content)
+
+        # Verify that normal user cannot DELETE
+        self.client.force_login(user=self.regular_user.user)
+        response = self.client.options(path=self.detail_path)
+        self.assertEqual(first=response.status_code, second=status.HTTP_200_OK)
+        content = response.json()
+        self.assertEqual(
+            first=content['name'],
+            second=f'{self.plugin} - Tag',
+        )
+        self.assertNotIn(member='actions', container=content)
+
+        # Verify that contributors can DELETE
+        self.client.force_login(user=self.contributor.user)
+        response = self.client.options(path=self.detail_path)
+        self.assertEqual(first=response.status_code, second=status.HTTP_200_OK)
+        content = response.json()
+        self.assertEqual(
+            first=content['name'],
+            second=f'{self.plugin} - Tag',
+        )
+        self.assertIn(member='actions', container=content)
+        self.assertSetEqual(set1=set(content['actions']), set2={'DELETE'})
+
+        # Verify that the owner can DELETE
+        self.client.force_login(user=self.owner.user)
+        response = self.client.options(path=self.detail_path)
+        self.assertEqual(first=response.status_code, second=status.HTTP_200_OK)
+        content = response.json()
+        self.assertEqual(
+            first=content['name'],
+            second=f'{self.plugin} - Tag',
+        )
+        self.assertIn(member='actions', container=content)
+        self.assertSetEqual(set1=set(content['actions']), set2={'DELETE'})
 
 
 class SubPluginPathViewSetTestCase(APITestCase):
@@ -1561,7 +1875,7 @@ class SubPluginPathViewSetTestCase(APITestCase):
 
     def test_inheritance(self):
         self.assertTrue(
-            expr=issubclass(SubPluginPathViewSet, ProjectThroughModelMixin),
+            expr=issubclass(SubPluginPathViewSet, ProjectRelatedInfoMixin),
         )
 
     def test_base_attributes(self):
@@ -1929,14 +2243,99 @@ class SubPluginPathViewSetTestCase(APITestCase):
         )
 
     def test_options(self):
+        # Verify that non-logged-in user cannot POST
         response = self.client.options(path=self.list_path)
         self.assertEqual(first=response.status_code, second=status.HTTP_200_OK)
+        content = response.json()
         self.assertEqual(
-            first=response.json()['name'],
+            first=content['name'],
             second=f'{self.plugin} - Sub-Plugin Path',
         )
-        # TODO: test actions
+        self.assertNotIn(member='actions', container=content)
 
-    def test_options_detail(self):
-        # TODO: test actions
-        pass
+        # Verify that normal user cannot POST
+        self.client.force_login(user=self.regular_user.user)
+        response = self.client.options(path=self.list_path)
+        self.assertEqual(first=response.status_code, second=status.HTTP_200_OK)
+        content = response.json()
+        self.assertEqual(
+            first=content['name'],
+            second=f'{self.plugin} - Sub-Plugin Path',
+        )
+        self.assertNotIn(member='actions', container=content)
+
+        # Verify that contributors can POST
+        self.client.force_login(user=self.contributor.user)
+        response = self.client.options(path=self.list_path)
+        self.assertEqual(first=response.status_code, second=status.HTTP_200_OK)
+        content = response.json()
+        self.assertEqual(
+            first=content['name'],
+            second=f'{self.plugin} - Sub-Plugin Path',
+        )
+        self.assertIn(member='actions', container=content)
+        self.assertSetEqual(set1=set(content['actions']), set2={'POST'})
+
+        # Verify that the owner can POST
+        self.client.force_login(user=self.owner.user)
+        response = self.client.options(path=self.list_path)
+        self.assertEqual(first=response.status_code, second=status.HTTP_200_OK)
+        content = response.json()
+        self.assertEqual(
+            first=content['name'],
+            second=f'{self.plugin} - Sub-Plugin Path',
+        )
+        self.assertIn(member='actions', container=content)
+        self.assertSetEqual(set1=set(content['actions']), set2={'POST'})
+
+    def test_options_object(self):
+        # Verify that non-logged-in user cannot DELETE/PATCH
+        response = self.client.options(path=self.detail_path)
+        self.assertEqual(first=response.status_code, second=status.HTTP_200_OK)
+        content = response.json()
+        self.assertEqual(
+            first=content['name'],
+            second=f'{self.plugin} - Sub-Plugin Path',
+        )
+        self.assertNotIn(member='actions', container=content)
+
+        # Verify that normal user cannot DELETE/PATCH
+        self.client.force_login(user=self.regular_user.user)
+        response = self.client.options(path=self.detail_path)
+        self.assertEqual(first=response.status_code, second=status.HTTP_200_OK)
+        content = response.json()
+        self.assertEqual(
+            first=content['name'],
+            second=f'{self.plugin} - Sub-Plugin Path',
+        )
+        self.assertNotIn(member='actions', container=content)
+
+        # Verify that contributors can DELETE/PATCH
+        self.client.force_login(user=self.contributor.user)
+        response = self.client.options(path=self.detail_path)
+        self.assertEqual(first=response.status_code, second=status.HTTP_200_OK)
+        content = response.json()
+        self.assertEqual(
+            first=content['name'],
+            second=f'{self.plugin} - Sub-Plugin Path',
+        )
+        self.assertIn(member='actions', container=content)
+        self.assertSetEqual(
+            set1=set(content['actions']),
+            set2={'DELETE', 'PATCH'},
+        )
+
+        # Verify that the owner can DELETE/PATCH
+        self.client.force_login(user=self.owner.user)
+        response = self.client.options(path=self.detail_path)
+        self.assertEqual(first=response.status_code, second=status.HTTP_200_OK)
+        content = response.json()
+        self.assertEqual(
+            first=content['name'],
+            second=f'{self.plugin} - Sub-Plugin Path',
+        )
+        self.assertIn(member='actions', container=content)
+        self.assertSetEqual(
+            set1=set(content['actions']),
+            set2={'DELETE', 'PATCH'},
+        )

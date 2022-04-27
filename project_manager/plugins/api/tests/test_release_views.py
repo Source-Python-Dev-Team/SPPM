@@ -653,14 +653,91 @@ class PluginReleaseViewSetTestCase(APITestCase):
         )
 
     def test_options(self):
+        # Verify that non-logged-in user cannot POST
         response = self.client.options(path=self.list_path)
         self.assertEqual(first=response.status_code, second=status.HTTP_200_OK)
+        content = response.json()
         self.assertEqual(
-            first=response.json()['name'],
+            first=content['name'],
             second=f'{self.plugin} - Release',
         )
-        # TODO: test actions
+        self.assertNotIn(member='actions', container=content)
 
-    def test_options_detail(self):
-        # TODO: test actions
-        pass
+        # Verify that normal user cannot POST
+        self.client.force_login(user=self.regular_user.user)
+        response = self.client.options(path=self.list_path)
+        self.assertEqual(first=response.status_code, second=status.HTTP_200_OK)
+        content = response.json()
+        self.assertEqual(
+            first=content['name'],
+            second=f'{self.plugin} - Release',
+        )
+        self.assertNotIn(member='actions', container=content)
+
+        # Verify that contributors can POST
+        self.client.force_login(user=self.contributor.user)
+        response = self.client.options(path=self.list_path)
+        self.assertEqual(first=response.status_code, second=status.HTTP_200_OK)
+        content = response.json()
+        self.assertEqual(
+            first=content['name'],
+            second=f'{self.plugin} - Release',
+        )
+        self.assertIn(member='actions', container=content)
+        self.assertSetEqual(set1=set(content['actions']), set2={'POST'})
+
+        # Verify that the owner can POST
+        self.client.force_login(user=self.owner.user)
+        response = self.client.options(path=self.list_path)
+        self.assertEqual(first=response.status_code, second=status.HTTP_200_OK)
+        content = response.json()
+        self.assertEqual(
+            first=content['name'],
+            second=f'{self.plugin} - Release',
+        )
+        self.assertIn(member='actions', container=content)
+        self.assertSetEqual(set1=set(content['actions']), set2={'POST'})
+
+    def test_options_object(self):
+        # Verify that non-logged-in user cannot DELETE/PATCH
+        response = self.client.options(path=self.detail_path)
+        self.assertEqual(first=response.status_code, second=status.HTTP_200_OK)
+        content = response.json()
+        self.assertEqual(
+            first=content['name'],
+            second=f'{self.plugin} - Release',
+        )
+        self.assertNotIn(member='actions', container=content)
+
+        # Verify that normal user cannot DELETE/PATCH
+        self.client.force_login(user=self.regular_user.user)
+        response = self.client.options(path=self.detail_path)
+        self.assertEqual(first=response.status_code, second=status.HTTP_200_OK)
+        content = response.json()
+        self.assertEqual(
+            first=content['name'],
+            second=f'{self.plugin} - Release',
+        )
+        self.assertNotIn(member='actions', container=content)
+
+        # Verify that contributors cannot DELETE/PATCH
+        self.client.force_login(user=self.contributor.user)
+        response = self.client.options(path=self.detail_path)
+        self.assertEqual(first=response.status_code, second=status.HTTP_200_OK)
+        content = response.json()
+        self.assertEqual(
+            first=content['name'],
+            second=f'{self.plugin} - Release',
+        )
+        self.assertNotIn(member='actions', container=content)
+
+        # Verify that the owner cannot DELETE/PATCH
+        self.client.force_login(user=self.owner.user)
+        response = self.client.options(path=self.detail_path)
+        self.assertEqual(first=response.status_code, second=status.HTTP_200_OK)
+        content = response.json()
+        self.assertEqual(
+            first=content['name'],
+            second=f'{self.plugin} - Release',
+        )
+        self.assertNotIn(member='actions', container=content)

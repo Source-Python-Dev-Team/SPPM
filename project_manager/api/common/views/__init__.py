@@ -8,20 +8,16 @@ from django.db import IntegrityError
 
 # Third Party Django
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework.authentication import SessionAuthentication
 from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.filters import OrderingFilter
-from rest_framework.permissions import IsAuthenticatedOrReadOnly, SAFE_METHODS
+from rest_framework.permissions import SAFE_METHODS
 from rest_framework.response import Response
 from rest_framework.reverse import reverse
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 
 # App
-from project_manager.api.common.views.mixins import (
-    ProjectRelatedInfoMixin,
-    ProjectThroughModelMixin,
-)
+from project_manager.api.common.views.mixins import ProjectRelatedInfoMixin
 from project_manager.constants import RELEASE_VERSION_REGEX
 
 
@@ -57,12 +53,12 @@ class ProjectAPIView(APIView):
         )
         return Response(
             data={
-                'contributors': base_path + f'contributors/<{self.project_type}>/',
-                'games': base_path + f'games/<{self.project_type}>/',
-                'images': base_path + f'images/<{self.project_type}>/',
-                'projects': base_path + 'projects/',
-                'releases': base_path + f'releases/<{self.project_type}>/',
-                'tags': base_path + f'tags/<{self.project_type}>/',
+                'contributors': f'{base_path}contributors/<{self.project_type}>/',
+                'games': f'{base_path}games/<{self.project_type}>/',
+                'images': f'{base_path}images/<{self.project_type}>/',
+                'projects': '{base_path}projects/',
+                'releases': f'{base_path}releases/<{self.project_type}>/',
+                'tags': f'{base_path}tags/<{self.project_type}>/',
             }
         )
 
@@ -113,12 +109,10 @@ class ProjectViewSet(ModelViewSet):
 
         `?ordering=-updated`
     """
-    authentication_classes = (SessionAuthentication,)
     filter_backends = (OrderingFilter, DjangoFilterBackend)
     http_method_names = ('get', 'post', 'patch', 'options')
     ordering = ('-updated',)
     ordering_fields = ('name', 'basename', 'updated', 'created')
-    permission_classes = (IsAuthenticatedOrReadOnly,)
 
     @property
     def creation_serializer_class(self):
@@ -143,14 +137,6 @@ class ProjectViewSet(ModelViewSet):
             obj=obj,
         )
 
-    def check_permissions(self, request):
-        """Only allow users who have a ForumUser to create projects."""
-        if request.method not in SAFE_METHODS:
-            if not hasattr(request.user, 'forum_user'):
-                raise PermissionDenied
-
-        return super().check_permissions(request=request)
-
     def create(self, request, *args, **kwargs):
         """Store the many-to-many fields before creation."""
         try:
@@ -167,7 +153,7 @@ class ProjectViewSet(ModelViewSet):
         return super().get_serializer_class()
 
 
-class ProjectImageViewSet(ProjectThroughModelMixin):
+class ProjectImageViewSet(ProjectRelatedInfoMixin):
     """Base Image View."""
 
     doc_string = """
@@ -205,23 +191,12 @@ class ProjectReleaseViewSet(ProjectRelatedInfoMixin):
     ordering_fields = ('created', 'version')
     lookup_value_regex = RELEASE_VERSION_REGEX
     lookup_field = 'version'
+
+    allow_retrieve_access = True
     related_model_type = 'Release'
 
-    def check_permissions(self, request):
-        """Only allow the owner and contributors to create releases."""
-        if request.method not in SAFE_METHODS:
-            if not hasattr(request.user, 'forum_user'):
-                raise PermissionDenied
 
-            user = request.user.id
-            is_contributor = user in self.contributors
-            if user != self.owner and not is_contributor:
-                raise PermissionDenied
-
-        return super().check_permissions(request=request)
-
-
-class ProjectGameViewSet(ProjectThroughModelMixin):
+class ProjectGameViewSet(ProjectRelatedInfoMixin):
     """Base Game Support ViewSet."""
 
     doc_string = """
@@ -240,7 +215,7 @@ class ProjectGameViewSet(ProjectThroughModelMixin):
     related_model_type = 'Game'
 
 
-class ProjectTagViewSet(ProjectThroughModelMixin):
+class ProjectTagViewSet(ProjectRelatedInfoMixin):
     """Base Project Tag ViewSet."""
 
     doc_string = """
@@ -259,7 +234,7 @@ class ProjectTagViewSet(ProjectThroughModelMixin):
     related_model_type = 'Tag'
 
 
-class ProjectContributorViewSet(ProjectThroughModelMixin):
+class ProjectContributorViewSet(ProjectRelatedInfoMixin):
     """Base Project Contributor ViewSet."""
 
     doc_string = """

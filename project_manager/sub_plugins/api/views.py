@@ -77,12 +77,12 @@ class SubPluginAPIView(ProjectAPIView):
         )
         return Response(
             data={
-                'contributors': base_path + f'contributors/<plugin>/<{self.project_type}>/',
-                'games': base_path + f'games/<plugin>/<{self.project_type}>/',
-                'images': base_path + f'images/<plugin>/<{self.project_type}>/',
-                'projects': base_path + 'projects/<plugin>/',
-                'releases': base_path + f'releases/<plugin>/<{self.project_type}>/',
-                'tags': base_path + f'tags/<plugin>/<{self.project_type}>/',
+                'contributors': f'{base_path}contributors/<plugin>/<{self.project_type}>/',
+                'games': f'{base_path}games/<plugin>/<{self.project_type}>/',
+                'images': f'{base_path}images/<plugin>/<{self.project_type}>/',
+                'projects': f'{base_path}projects/<plugin>/',
+                'releases': f'{base_path}releases/<plugin>/<{self.project_type}>/',
+                'tags': f'{base_path}tags/<plugin>/<{self.project_type}>/',
             }
         )
 

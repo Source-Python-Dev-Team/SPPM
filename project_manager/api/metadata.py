@@ -31,7 +31,7 @@ class Metadata(SimpleMetadata):
                     view.check_object_permissions(view.request, obj)
 
                 # Test global permissions
-                elif hasattr(view, 'check_permissions'):
+                elif hasattr(view, 'check_permissions'):  # pragma: no branch
                     view.check_permissions(view.request)
             except (exceptions.APIException, PermissionDenied, Http404):
                 pass

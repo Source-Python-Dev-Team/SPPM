@@ -143,6 +143,8 @@ REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': (
         'project_manager.api.pagination.BasePagination'
     ),
+    'DEFAULT_PERMISSION_CLASSES': ['rest_framework.permissions.IsAuthenticatedOrReadOnly'],
+    'DEFAULT_AUTHENTICATION_CLASSES': ['rest_framework.authentication.SessionAuthentication'],
 }
 
 LOGGING = {
