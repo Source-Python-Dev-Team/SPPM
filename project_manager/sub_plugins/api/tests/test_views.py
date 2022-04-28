@@ -1,6 +1,9 @@
 # =============================================================================
 # IMPORTS
 # =============================================================================
+# Python
+from urllib.parse import unquote
+
 # Third Party Django
 from rest_framework import status
 from rest_framework.reverse import reverse
@@ -38,19 +41,30 @@ class SubPluginAPIViewTestCase(APITestCase):
     def test_get(self):
         response = self.client.get(path=self.api_path)
         self.assertEqual(first=response.status_code, second=status.HTTP_200_OK)
-        base_path = reverse(
-            viewname='api:sub-plugins:endpoints',
-            request=response.wsgi_request,
-        )
+        base_kwargs = {
+            'plugin_slug': '<plugin>',
+        }
+        kwargs = {
+            'sub_plugin_slug': '<sub-plugin>',
+            **base_kwargs,
+        }
         self.assertDictEqual(
             d1=response.json(),
             d2={
-                'contributors': f'{base_path}contributors/<plugin>/<sub-plugin>/',
-                'games': f'{base_path}games/<plugin>/<sub-plugin>/',
-                'images': f'{base_path}images/<plugin>/<sub-plugin>/',
-                'projects': f'{base_path}projects/<plugin>/',
-                'releases': f'{base_path}releases/<plugin>/<sub-plugin>/',
-                'tags': f'{base_path}tags/<plugin>/<sub-plugin>/',
+                key: unquote(
+                    reverse(
+                        viewname=f'api:sub-plugins:{key}-list',
+                        kwargs=base_kwargs if key == 'projects' else kwargs,
+                        request=response.wsgi_request,
+                    )
+                ) for key in (
+                    'contributors',
+                    'games',
+                    'images',
+                    'projects',
+                    'releases',
+                    'tags',
+                )
             }
         )
 

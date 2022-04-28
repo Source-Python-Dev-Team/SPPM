@@ -3,6 +3,9 @@
 # =============================================================================
 # IMPORTS
 # =============================================================================
+# Python
+from urllib.parse import unquote
+
 # Django
 from django.db import IntegrityError
 
@@ -44,27 +47,41 @@ class ProjectAPIView(APIView):
     http_method_names = ('get', 'options')
 
     project_type = None
+    views = (
+        'contributors',
+        'games',
+        'images',
+        'projects',
+        'releases',
+        'tags',
+    )
+    base_kwargs = {}
 
     def get(self, request):
         """Return all the API routes for Projects."""
-        base_path = reverse(
-            viewname=f'api:{self.project_type}s:endpoints',
-            request=request,
-        )
+        kwargs = self.get_project_kwargs()
         return Response(
             data={
-                'contributors': f'{base_path}contributors/<{self.project_type}>/',
-                'games': f'{base_path}games/<{self.project_type}>/',
-                'images': f'{base_path}images/<{self.project_type}>/',
-                'projects': f'{base_path}projects/',
-                'releases': f'{base_path}releases/<{self.project_type}>/',
-                'tags': f'{base_path}tags/<{self.project_type}>/',
+                key: unquote(
+                    reverse(
+                        viewname=f'api:{self.project_type}s:{key}-list',
+                        kwargs=self.base_kwargs if key == 'projects' else kwargs,
+                        request=request,
+                    )
+                ) for key in sorted(self.views)
             }
         )
 
     def get_view_name(self):
         """Return the project type API name."""
         return f'{self.project_type.title()} APIs'
+
+    def get_project_kwargs(self):
+        key = f'{self.project_type.replace("-", "_")}_slug'
+        return {
+            key: f'<{self.project_type}>',
+            **self.base_kwargs,
+        }
 
 
 class ProjectViewSet(ModelViewSet):

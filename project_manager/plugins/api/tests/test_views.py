@@ -1,6 +1,9 @@
 # =============================================================================
 # IMPORTS
 # =============================================================================
+# Python
+from urllib.parse import unquote
+
 # Third Party Django
 from rest_framework import status
 from rest_framework.reverse import reverse
@@ -38,20 +41,27 @@ class PluginAPIViewTestCase(APITestCase):
     def test_get(self):
         response = self.client.get(path=self.api_path)
         self.assertEqual(first=response.status_code, second=status.HTTP_200_OK)
-        base_path = reverse(
-            viewname='api:plugins:endpoints',
-            request=response.wsgi_request,
-        )
+        kwargs = {
+            'plugin_slug': '<plugin>',
+        }
         self.assertDictEqual(
             d1=response.json(),
             d2={
-                'contributors': f'{base_path}contributors/<plugin>/',
-                'games': f'{base_path}games/<plugin>/',
-                'images': f'{base_path}images/<plugin>/',
-                'projects': f'{base_path}projects/',
-                'releases': f'{base_path}releases/<plugin>/',
-                'tags': f'{base_path}tags/<plugin>/',
-                'paths': f'{base_path}paths/<plugin>/',
+                key: unquote(
+                    reverse(
+                        viewname=f'api:plugins:{key}-list',
+                        kwargs=None if key == 'projects' else kwargs,
+                        request=response.wsgi_request,
+                    )
+                ) for key in (
+                    'contributors',
+                    'games',
+                    'images',
+                    'paths',
+                    'projects',
+                    'releases',
+                    'tags',
+                )
             }
         )
 

@@ -68,23 +68,9 @@ class SubPluginAPIView(ProjectAPIView):
     """SubPlugin API routes."""
 
     project_type = 'sub-plugin'
-
-    def get(self, request):
-        """Return all the API routes for Projects."""
-        base_path = reverse(
-            viewname=f'api:{self.project_type}s:endpoints',
-            request=request,
-        )
-        return Response(
-            data={
-                'contributors': f'{base_path}contributors/<plugin>/<{self.project_type}>/',
-                'games': f'{base_path}games/<plugin>/<{self.project_type}>/',
-                'images': f'{base_path}images/<plugin>/<{self.project_type}>/',
-                'projects': f'{base_path}projects/<plugin>/',
-                'releases': f'{base_path}releases/<plugin>/<{self.project_type}>/',
-                'tags': f'{base_path}tags/<plugin>/<{self.project_type}>/',
-            }
-        )
+    base_kwargs = {
+        'plugin_slug': '<plugin>',
+    }
 
 
 class SubPluginViewSet(ProjectViewSet):
