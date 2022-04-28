@@ -30,7 +30,7 @@ urlpatterns = [
     ),
     path(
         # /packages/<slug>
-        route='<slug:slug>',
+        route='<slug:slug>/',
         view=PackageView.as_view(),
         name='detail',
     ),

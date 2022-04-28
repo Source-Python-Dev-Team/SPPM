@@ -30,7 +30,7 @@ urlpatterns = [
     ),
     path(
         # /plugins/<slug>
-        route='<slug:slug>',
+        route='<slug:slug>/',
         view=PluginView.as_view(),
         name='detail',
     ),

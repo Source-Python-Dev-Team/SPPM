@@ -24,7 +24,7 @@ urlpatterns = [
     ),
     path(
         # /users/<pk>
-        route='<pk>',
+        route='<pk>/',
         view=ForumUserView.as_view(),
         name='detail',
     ),
