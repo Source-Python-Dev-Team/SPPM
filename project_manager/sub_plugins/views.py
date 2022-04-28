@@ -4,11 +4,12 @@
 # IMPORTS
 # =============================================================================
 # Django
+from django.db.models import Exists, OuterRef
 from django.views.generic import TemplateView
 
 # App
 from project_manager.mixins import DownloadMixin
-from project_manager.plugins.models import Plugin
+from project_manager.plugins.models import Plugin, SubPluginPath
 from project_manager.sub_plugins.constants import SUB_PLUGIN_RELEASE_URL
 from project_manager.sub_plugins.models import SubPlugin, SubPluginRelease
 
@@ -59,11 +60,17 @@ class SubPluginView(TemplateView):
     def _get_title(context):
         slug = context.get('slug')
         try:
-            plugin = Plugin.objects.get(slug=slug)
+            plugin = Plugin.objects.annotate(
+                paths_exist=Exists(
+                    queryset=SubPluginPath.objects.filter(
+                        plugin_id=OuterRef('basename'),
+                    )
+                )
+            ).get(slug=slug)
         except Plugin.DoesNotExist:
             return f'Plugin "{slug}" not found.'
 
-        if not plugin.paths.exists():
+        if not plugin.paths_exist:
             return f'Plugin "{plugin.name}" does not support sub-plugins.'
 
         sub_plugin_slug = context.get('sub_plugin_slug')
