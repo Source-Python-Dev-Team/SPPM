@@ -86,6 +86,14 @@ urlpatterns = [
         view=SubPluginReleaseDownloadView.as_view(),
         name='sub-plugin-download',
     ),
+    path(
+        route='users/',
+        view=include(
+            'users.urls',
+            namespace='users',
+        ),
+        name='users',
+    ),
 ] + static(
     settings.MEDIA_URL, document_root=settings.MEDIA_ROOT
 ) + static(

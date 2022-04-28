@@ -1,4 +1,4 @@
-"""SubPlugin URLs."""
+"""User URLs."""
 
 # =============================================================================
 # IMPORTS
@@ -7,34 +7,25 @@
 from django.urls import path
 
 # App
-from project_manager.sub_plugins.views import (
-    SubPluginCreateView,
-    SubPluginView,
-)
+from users.views import ForumUserView
 
 
 # =============================================================================
 # GLOBAL VARIABLES
 # =============================================================================
-app_name = 'sub-plugins'
+app_name = 'users'
 
 urlpatterns = [
     path(
-        # /plugins/<slug>/sub-plugins
+        # /users
         route='',
-        view=SubPluginView.as_view(),
+        view=ForumUserView.as_view(),
         name='list',
     ),
     path(
-        # /plugins/<slug>/sub-plugins/create
-        route='create',
-        view=SubPluginCreateView.as_view(),
-        name='create',
-    ),
-    path(
-        # /plugins/<slug>/sub-plugins/<sub_plugin_slug>
-        route='<slug:sub_plugin_slug>',
-        view=SubPluginView.as_view(),
+        # /users/<pk>
+        route='<pk>',
+        view=ForumUserView.as_view(),
         name='detail',
     ),
 ]

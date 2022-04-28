@@ -11,6 +11,9 @@ from django.contrib.auth.models import (
 from django.db import models
 from django.test import TestCase
 
+# Third Party Django
+from rest_framework.reverse import reverse
+
 # App
 from test_utils.factories.users import ForumUserFactory, NonAdminUserFactory
 from users.constants import (
@@ -90,6 +93,18 @@ class ForumUserTestCase(TestCase):
         self.assertEqual(
             first=user.get_forum_url(),
             second=FORUM_MEMBER_URL.format(user_id=user.forum_id)
+        )
+
+    def test_get_absolute_url(self):
+        user = ForumUserFactory()
+        self.assertEqual(
+            first=user.get_absolute_url(),
+            second=reverse(
+                viewname='users:detail',
+                kwargs={
+                    'pk': user.forum_id,
+                }
+            )
         )
 
 

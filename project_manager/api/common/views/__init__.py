@@ -56,7 +56,7 @@ class ProjectAPIView(APIView):
                 'contributors': f'{base_path}contributors/<{self.project_type}>/',
                 'games': f'{base_path}games/<{self.project_type}>/',
                 'images': f'{base_path}images/<{self.project_type}>/',
-                'projects': '{base_path}projects/',
+                'projects': f'{base_path}projects/',
                 'releases': f'{base_path}releases/<{self.project_type}>/',
                 'tags': f'{base_path}tags/<{self.project_type}>/',
             }
