@@ -9,8 +9,6 @@ from django.utils.functional import cached_property
 
 # Third Party Django
 from rest_framework.parsers import ParseError
-from rest_framework.response import Response
-from rest_framework.reverse import reverse
 
 # App
 from project_manager.api.common.views import (

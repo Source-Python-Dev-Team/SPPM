@@ -6,9 +6,6 @@
 # Django
 from django.db.models import Prefetch
 
-# Third Party Django
-from rest_framework.reverse import reverse
-
 # App
 from project_manager.api.common.views import (
     ProjectAPIView,

@@ -77,6 +77,7 @@ class ProjectAPIView(APIView):
         return f'{self.project_type.title()} APIs'
 
     def get_project_kwargs(self):
+        """Return the reverse kwargs for the project."""
         key = f'{self.project_type.replace("-", "_")}_slug'
         return {
             key: f'<{self.project_type}>',
