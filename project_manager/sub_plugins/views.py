@@ -63,7 +63,7 @@ class SubPluginView(TemplateView):
             plugin = Plugin.objects.annotate(
                 paths_exist=Exists(
                     queryset=SubPluginPath.objects.filter(
-                        plugin_id=OuterRef('basename'),
+                        plugin_id=OuterRef('slug'),
                     )
                 )
             ).get(slug=slug)
