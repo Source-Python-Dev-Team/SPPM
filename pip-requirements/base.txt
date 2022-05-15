@@ -5,5 +5,5 @@ django-filter==21.1
 django-model-utils==4.2.0
 django-precise-bbcode==1.2.14
 djangorestframework==3.13.1
-Markdown==3.3.6
+Markdown==3.3.7
 path==16.4.0
