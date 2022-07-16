@@ -490,10 +490,6 @@ class SubPluginPathSerializerTestCase(TestCase):
         )
 
     def test_validate(self):
-        """
-        view = self.context['view']
-        attrs[view.project_type.replace('-', '_')] = view.project
-        """
         plugin = PluginFactory()
         obj = SubPluginPathSerializer(
             context={

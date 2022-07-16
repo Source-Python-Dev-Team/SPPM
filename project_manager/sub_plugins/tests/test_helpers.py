@@ -341,7 +341,8 @@ class SubPluginZipFileTestCase(TestCase):
 
         file_path = base_path / 'test-sub-plugin' / 'test-sub-plugin-invalid-v1.0.0.zip'
         self.mock_get_file_list.return_value = [
-            'addons/source-python/plugins/test_plugin/sub_plugins/test_sub_plugin/requirements.json',
+            'addons/source-python/plugins/test_plugin/sub_plugins/'
+            'test_sub_plugin/requirements.json',
         ]
         obj = SubPluginZipFile(
             zip_file=file_path,

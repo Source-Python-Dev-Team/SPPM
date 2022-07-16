@@ -366,7 +366,11 @@ class PluginContributorViewSetTestCase(APITestCase):
         )
         self.assertDictEqual(
             d1=response.json(),
-            d2={'username': [f'User {self.owner.user.username} is the owner, cannot add as a contributor']},
+            d2={
+                'username': [
+                    f'User {self.owner.user.username} is the owner, cannot add as a contributor',
+                ],
+            },
         )
 
         # Verify unknown username cannot be added

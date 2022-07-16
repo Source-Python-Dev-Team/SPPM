@@ -156,7 +156,6 @@ class ProjectReleaseCreationMixin(CreateRequirementsMixin, ModelSerializer):
 
         return attrs
 
-    # pylint: disable=no-self-use
     def get_zip_file_args(self, zip_file):
         """Return the arguments necessary to instantiate the ZipFile class."""
         return [zip_file]

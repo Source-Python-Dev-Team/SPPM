@@ -556,7 +556,8 @@ class SubPluginViewSetTestCase(APITestCase):
             allow_package_using_basename=True,
         )
         base_path = settings.BASE_DIR / 'fixtures' / 'releases' / 'sub-plugins'
-        file_path = base_path / 'test-plugin' / 'test-sub-plugin' / 'test-sub-plugin-requirements-v1.0.0.zip'
+        sub_plugin_file_path = base_path / 'test-plugin' / 'test-sub-plugin'
+        file_path = sub_plugin_file_path / 'test-sub-plugin-requirements-v1.0.0.zip'
         version = '1.0.0'
         custom_package_1 = PackageFactory(
             basename='custom_package_1',

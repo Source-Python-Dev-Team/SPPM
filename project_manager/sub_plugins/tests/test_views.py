@@ -212,7 +212,7 @@ class SubPluginCreateViewTestCase(TestCase):
             d1=data,
             d2={
                 'slug': 'invalid',
-                'title': f'Plugin "invalid" not found.',
+                'title': 'Plugin "invalid" not found.',
             },
         )
 

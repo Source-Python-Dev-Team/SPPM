@@ -32,8 +32,11 @@ pydocstyle:
     - D203
     - D213
 
-mccabe:
-  run: false
+pyflakes:
+  run: true
 
 pylint:
   run: true
+
+mccabe:
+  run: false

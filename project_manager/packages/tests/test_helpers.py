@@ -160,8 +160,8 @@ class PackageZipFileTestCase(TestCase):
         self.assertListEqual(
             list1=obj.get_base_paths(),
             list2=[
-               f'{PACKAGE_PATH}{package_basename}/{package_basename}.py',
-               f'{PACKAGE_PATH}{package_basename}/__init__.py',
+                f'{PACKAGE_PATH}{package_basename}/{package_basename}.py',
+                f'{PACKAGE_PATH}{package_basename}/__init__.py',
             ],
         )
 
