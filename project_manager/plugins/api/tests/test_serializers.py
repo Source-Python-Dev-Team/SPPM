@@ -128,6 +128,9 @@ class PluginCreateSerializerTestCase(TestCase):
     )
     def test_releases(self, _):
         obj = PluginCreateSerializer()
+        obj.context['view'] = mock.Mock(
+            action='list',
+        )
         self.assertIn(member='releases', container=obj.fields)
         field = obj.fields['releases']
         self.assertIsInstance(obj=field, cls=PluginCreateReleaseSerializer)
@@ -407,6 +410,54 @@ class PluginSerializerTestCase(TestCase):
         self.assertEqual(
             first=PluginSerializer.release_model,
             second=PluginRelease,
+        )
+
+    def test_get_fields(self):
+        obj = PluginSerializer()
+        obj.context['view'] = mock.Mock(
+            action='list',
+        )
+        fields = obj.get_fields()
+        self.assertSetEqual(
+            set1=set(fields.keys()),
+            set2={
+                'name',
+                'slug',
+                'total_downloads',
+                'current_release',
+                'created',
+                'updated',
+                'synopsis',
+                'description',
+                'configuration',
+                'logo',
+                'video',
+                'owner',
+                'contributors',
+            },
+        )
+
+        obj = PluginSerializer()
+        obj.context['view'] = mock.Mock(
+            action='retrieve',
+        )
+        fields = obj.get_fields()
+        self.assertSetEqual(
+            set1=set(fields.keys()),
+            set2={
+                'name',
+                'slug',
+                'total_downloads',
+                'current_release',
+                'created',
+                'updated',
+                'synopsis',
+                'description',
+                'configuration',
+                'logo',
+                'video',
+                'owner',
+            },
         )
 
     def test_meta_class(self):

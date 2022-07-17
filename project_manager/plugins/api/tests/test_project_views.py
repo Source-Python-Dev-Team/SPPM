@@ -47,6 +47,7 @@ from test_utils.factories.plugins import (
 )
 from test_utils.factories.tags import TagFactory
 from test_utils.factories.users import ForumUserFactory
+from users.models import ForumUser
 
 
 # =============================================================================
@@ -107,19 +108,12 @@ class PluginViewSetTestCase(APITestCase):
         )
         self.assertIs(expr1=PluginViewSet.queryset.model, expr2=Plugin)
         prefetch_lookups = PluginViewSet.queryset._prefetch_related_lookups
-        self.assertEqual(first=len(prefetch_lookups), second=2)
+        self.assertEqual(first=len(prefetch_lookups), second=1)
         lookup = prefetch_lookups[0]
         self.assertEqual(first=lookup.prefetch_to, second='releases')
         self.assertEqual(
             first=lookup.queryset.query.order_by,
             second=('-created',),
-        )
-
-        lookup = prefetch_lookups[1]
-        self.assertEqual(first=lookup.prefetch_to, second='contributors')
-        self.assertDictEqual(
-            d1=lookup.queryset.query.select_related,
-            d2={'user': {}},
         )
 
         self.assertDictEqual(
@@ -131,6 +125,26 @@ class PluginViewSetTestCase(APITestCase):
         self.assertTupleEqual(
             tuple1=PluginViewSet.http_method_names,
             tuple2=('get', 'post', 'patch', 'options'),
+        )
+
+    def test_get_queryset(self):
+        obj = PluginViewSet()
+        setattr(obj, 'action', 'retrieve')
+        prefetch_lookups = obj.get_queryset()._prefetch_related_lookups
+        self.assertEqual(first=len(prefetch_lookups), second=1)
+
+        setattr(obj, 'action', 'list')
+        prefetch_lookups = obj.get_queryset()._prefetch_related_lookups
+        self.assertEqual(first=len(prefetch_lookups), second=2)
+        lookup = prefetch_lookups[1]
+        self.assertEqual(first=lookup.prefetch_to, second='contributors')
+        self.assertIs(
+            expr1=lookup.queryset.model,
+            expr2=ForumUser,
+        )
+        self.assertEqual(
+            first=lookup.queryset.query.select_related,
+            second={'user': {}}
         )
 
     def test_get_list(self):
@@ -386,12 +400,6 @@ class PluginViewSetTestCase(APITestCase):
                 'forum_id': self.plugin.owner.forum_id,
                 'username': self.plugin.owner.user.username,
             },
-            'contributors': [
-                {
-                    'forum_id': self.contributor.forum_id,
-                    'username': self.contributor.user.username,
-                },
-            ],
         }
         self.assertEqual(
             first=response.status_code,

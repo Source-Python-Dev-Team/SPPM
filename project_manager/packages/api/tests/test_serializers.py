@@ -125,6 +125,9 @@ class PackageCreateSerializerTestCase(TestCase):
     )
     def test_releases(self, _):
         obj = PackageCreateSerializer()
+        obj.context['view'] = mock.Mock(
+            action='list',
+        )
         self.assertIn(member='releases', container=obj.fields)
         field = obj.fields['releases']
         self.assertIsInstance(obj=field, cls=PackageCreateReleaseSerializer)
@@ -404,6 +407,54 @@ class PackageSerializerTestCase(TestCase):
         self.assertEqual(
             first=PackageSerializer.release_model,
             second=PackageRelease,
+        )
+
+    def test_get_fields(self):
+        obj = PackageSerializer()
+        obj.context['view'] = mock.Mock(
+            action='list',
+        )
+        fields = obj.get_fields()
+        self.assertSetEqual(
+            set1=set(fields.keys()),
+            set2={
+                'name',
+                'slug',
+                'total_downloads',
+                'current_release',
+                'created',
+                'updated',
+                'synopsis',
+                'description',
+                'configuration',
+                'logo',
+                'video',
+                'owner',
+                'contributors',
+            },
+        )
+
+        obj = PackageSerializer()
+        obj.context['view'] = mock.Mock(
+            action='retrieve',
+        )
+        fields = obj.get_fields()
+        self.assertSetEqual(
+            set1=set(fields.keys()),
+            set2={
+                'name',
+                'slug',
+                'total_downloads',
+                'current_release',
+                'created',
+                'updated',
+                'synopsis',
+                'description',
+                'configuration',
+                'logo',
+                'video',
+                'owner',
+            },
         )
 
     def test_meta_class(self):

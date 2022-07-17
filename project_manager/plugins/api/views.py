@@ -41,7 +41,6 @@ from project_manager.plugins.models import (
     PluginTag,
     SubPluginPath,
 )
-from users.models import ForumUser
 
 
 # =============================================================================
@@ -82,10 +81,6 @@ class PluginViewSet(ProjectViewSet):
             queryset=PluginRelease.objects.order_by(
                 '-created',
             ),
-        ),
-        Prefetch(
-            lookup='contributors',
-            queryset=ForumUser.objects.select_related('user'),
         ),
     )
     serializer_class = PluginSerializer

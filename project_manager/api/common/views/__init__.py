@@ -8,6 +8,7 @@ from urllib.parse import unquote
 
 # Django
 from django.db import IntegrityError
+from django.db.models import Prefetch
 
 # Third Party Django
 from django_filters.rest_framework import DjangoFilterBackend
@@ -22,6 +23,7 @@ from rest_framework.viewsets import ModelViewSet
 # App
 from project_manager.api.common.views.mixins import ProjectRelatedInfoMixin
 from project_manager.constants import RELEASE_VERSION_REGEX
+from users.models import ForumUser
 
 
 # =============================================================================
@@ -169,6 +171,18 @@ class ProjectViewSet(ModelViewSet):
         if self.request.method == 'POST':
             return self.creation_serializer_class
         return super().get_serializer_class()
+
+    def get_queryset(self):
+        """Prefetch the contributors in the list view."""
+        queryset = super().get_queryset()
+        if self.action == 'list':
+            queryset = queryset.prefetch_related(
+                Prefetch(
+                    lookup='contributors',
+                    queryset=ForumUser.objects.select_related('user'),
+                ),
+            )
+        return queryset
 
 
 class ProjectImageViewSet(ProjectRelatedInfoMixin):

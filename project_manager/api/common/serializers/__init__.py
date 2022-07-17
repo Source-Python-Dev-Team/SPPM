@@ -116,6 +116,13 @@ class ProjectSerializer(
             '"release_model" attribute.'
         )
 
+    def get_fields(self):
+        """Only include contributors in the list view."""
+        fields = super().get_fields()
+        if self.context['view'].action != 'list':
+            del fields['contributors']
+        return fields
+
     def create(self, validated_data):
         """Create the instance and the first release of the project."""
         validated_data = self.get_extra_validated_data(validated_data)
