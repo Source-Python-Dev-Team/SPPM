@@ -43,6 +43,7 @@ from project_manager.sub_plugins.models import (
     SubPluginReleaseVersionControlRequirement,
     SubPluginTag,
 )
+from users.models import ForumUser
 
 
 # =============================================================================
@@ -76,16 +77,20 @@ class SubPluginViewSet(ProjectViewSet):
 
     __doc__ += ProjectViewSet.doc_string
     filterset_class = SubPluginFilterSet
-    queryset = SubPlugin.objects.prefetch_related(
+    queryset = SubPlugin.objects.select_related(
+        'owner__user',
+        'plugin',
+    ).prefetch_related(
         Prefetch(
             lookup='releases',
             queryset=SubPluginRelease.objects.order_by(
                 '-created',
             ),
         ),
-    ).select_related(
-        'owner__user',
-        'plugin',
+        Prefetch(
+            lookup='contributors',
+            queryset=ForumUser.objects.select_related('user'),
+        ),
     )
     serializer_class = SubPluginSerializer
     lookup_field = 'slug'

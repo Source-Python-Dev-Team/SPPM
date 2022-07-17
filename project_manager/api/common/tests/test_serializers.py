@@ -16,7 +16,7 @@ from rest_framework.fields import (
     IntegerField,
     SerializerMethodField,
 )
-from rest_framework.serializers import ModelSerializer
+from rest_framework.serializers import ListSerializer, ModelSerializer
 
 # App
 from games.api.common.serializers import MinimalGameSerializer
@@ -512,7 +512,7 @@ class ProjectSerializerTestCase(TestCase):
         declared_fields = getattr(ProjectSerializer, '_declared_fields')
         self.assertEqual(
             first=len(declared_fields),
-            second=4,
+            second=5,
         )
 
         self.assertIn(
@@ -551,6 +551,22 @@ class ProjectSerializerTestCase(TestCase):
         self.assertIsInstance(
             obj=declared_fields['updated'],
             cls=SerializerMethodField,
+        )
+
+        self.assertIn(
+            member='contributors',
+            container=declared_fields,
+        )
+        field = declared_fields['contributors']
+        self.assertIsInstance(
+            obj=field,
+            cls=ListSerializer,
+        )
+        self.assertTrue(expr=field.read_only)
+        self.assertTrue(expr=field.many)
+        self.assertIsInstance(
+            obj=field.child,
+            cls=ForumUserContributorSerializer,
         )
 
     def test_project_type_required(self):
@@ -595,6 +611,7 @@ class ProjectSerializerTestCase(TestCase):
                 'logo',
                 'video',
                 'owner',
+                'contributors',
             ),
         )
         self.assertTupleEqual(

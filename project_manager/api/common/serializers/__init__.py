@@ -69,6 +69,10 @@ class ProjectSerializer(
     owner = ForumUserContributorSerializer(
         read_only=True,
     )
+    contributors = ForumUserContributorSerializer(
+        many=True,
+        read_only=True,
+    )
     created = SerializerMethodField()
     updated = SerializerMethodField()
 
@@ -90,6 +94,7 @@ class ProjectSerializer(
             'logo',
             'video',
             'owner',
+            'contributors',
         )
         read_only_fields = (
             'slug',

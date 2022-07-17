@@ -38,6 +38,7 @@ from project_manager.packages.models import (
     PackageReleaseVersionControlRequirement,
     PackageTag,
 )
+from users.models import ForumUser
 
 
 # =============================================================================
@@ -68,15 +69,19 @@ class PackageViewSet(ProjectViewSet):
 
     __doc__ += ProjectViewSet.doc_string
     filterset_class = PackageFilterSet
-    queryset = Package.objects.prefetch_related(
+    queryset = Package.objects.select_related(
+        'owner__user',
+    ).prefetch_related(
         Prefetch(
             lookup='releases',
             queryset=PackageRelease.objects.order_by(
                 '-created',
             ),
         ),
-    ).select_related(
-        'owner__user',
+        Prefetch(
+            lookup='contributors',
+            queryset=ForumUser.objects.select_related('user'),
+        ),
     )
     serializer_class = PackageSerializer
 

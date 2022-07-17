@@ -114,13 +114,21 @@ class SubPluginViewSetTestCase(APITestCase):
         )
         self.assertIs(expr1=SubPluginViewSet.queryset.model, expr2=SubPlugin)
         prefetch_lookups = SubPluginViewSet.queryset._prefetch_related_lookups
-        self.assertEqual(first=len(prefetch_lookups), second=1)
+        self.assertEqual(first=len(prefetch_lookups), second=2)
         lookup = prefetch_lookups[0]
         self.assertEqual(first=lookup.prefetch_to, second='releases')
         self.assertEqual(
             first=lookup.queryset.query.order_by,
             second=('-created',),
         )
+
+        lookup = prefetch_lookups[1]
+        self.assertEqual(first=lookup.prefetch_to, second='contributors')
+        self.assertDictEqual(
+            d1=lookup.queryset.query.select_related,
+            d2={'user': {}},
+        )
+
         self.assertDictEqual(
             d1=SubPluginViewSet.queryset.query.select_related,
             d2={'owner': {'user': {}}, 'plugin': {}},
@@ -195,7 +203,13 @@ class SubPluginViewSetTestCase(APITestCase):
             'owner': {
                 'forum_id': self.sub_plugin.owner.forum_id,
                 'username': self.sub_plugin.owner.user.username,
-            }
+            },
+            'contributors': [
+                {
+                    'forum_id': self.contributor.forum_id,
+                    'username': self.contributor.user.username,
+                },
+            ],
         }
         self.assertDictEqual(
             d1=content['results'][0],
@@ -399,7 +413,13 @@ class SubPluginViewSetTestCase(APITestCase):
             'owner': {
                 'forum_id': self.sub_plugin.owner.forum_id,
                 'username': self.sub_plugin.owner.user.username,
-            }
+            },
+            'contributors': [
+                {
+                    'forum_id': self.contributor.forum_id,
+                    'username': self.contributor.user.username,
+                },
+            ],
         }
         self.assertEqual(
             first=response.status_code,
