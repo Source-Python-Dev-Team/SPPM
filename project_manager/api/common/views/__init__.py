@@ -179,7 +179,12 @@ class ProjectViewSet(ModelViewSet):
             queryset = queryset.prefetch_related(
                 Prefetch(
                     lookup='contributors',
-                    queryset=ForumUser.objects.select_related('user'),
+                    queryset=ForumUser.objects.select_related(
+                        'user'
+                    ).only(
+                        'forum_id',
+                        'user__username',
+                    ),
                 ),
             )
         return queryset

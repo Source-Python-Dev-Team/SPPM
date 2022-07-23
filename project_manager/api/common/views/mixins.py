@@ -43,9 +43,11 @@ class ProjectRelatedInfoMixin(ModelViewSet):
     @cached_property
     def contributors(self):
         """Return a Queryset for the project's contributors."""
-        return self.project.contributors.values_list(
-            'user',
-            flat=True,
+        return list(
+            self.project.contributors.values_list(
+                'user',
+                flat=True,
+            )
         )
 
     @cached_property
@@ -120,7 +122,7 @@ class ProjectRelatedInfoMixin(ModelViewSet):
         return super().check_permissions(request=request)
 
     def _check_permissions(self, user_id):
-        is_contributor = self.contributors.filter(user=user_id).exists()
+        is_contributor = user_id in self.contributors
         if user_id != self.owner and not is_contributor:
             raise PermissionDenied
         if self.owner_only_id_access and is_contributor:
