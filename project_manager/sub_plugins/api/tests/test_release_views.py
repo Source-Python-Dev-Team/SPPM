@@ -270,7 +270,6 @@ class SubPluginReleaseViewSetTestCase(APITestCase):
             'package_requirements': [],
             'pypi_requirements': [],
             'vcs_requirements': [],
-            'id': str(self.sub_plugin_release.id),
         }
         self.assertDictEqual(
             d1=content['results'][0],
@@ -363,7 +362,6 @@ class SubPluginReleaseViewSetTestCase(APITestCase):
             'package_requirements': [],
             'pypi_requirements': [],
             'vcs_requirements': [],
-            'id': str(self.sub_plugin_release.id),
         }
         self.assertEqual(
             first=response.status_code,
@@ -521,7 +519,7 @@ class SubPluginReleaseViewSetTestCase(APITestCase):
             second=2,
         )
         content = response.json()
-        release = sub_plugin.releases.get(pk=content['id'])
+        release = sub_plugin.releases.get(version=content['version'])
         self.assertEqual(
             first=release.created_by.forum_id,
             second=self.contributor.forum_id,
@@ -553,7 +551,7 @@ class SubPluginReleaseViewSetTestCase(APITestCase):
             second=3,
         )
         content = response.json()
-        release = sub_plugin.releases.get(pk=content['id'])
+        release = sub_plugin.releases.get(version=content['version'])
         self.assertEqual(
             first=release.created_by.forum_id,
             second=self.owner.forum_id,
@@ -702,7 +700,9 @@ class SubPluginReleaseViewSetTestCase(APITestCase):
             first=response.status_code,
             second=status.HTTP_201_CREATED,
         )
-        release = SubPluginRelease.objects.get(pk=response.json()['id'])
+        release = sub_plugin.releases.get(
+            version=response.json()['version'],
+        )
         self.assertEqual(
             first=DownloadRequirement.objects.count(),
             second=2,

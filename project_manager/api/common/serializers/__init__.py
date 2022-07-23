@@ -282,7 +282,6 @@ class ProjectReleaseSerializer(
             'package_requirements',
             'pypi_requirements',
             'vcs_requirements',
-            'id',
         )
 
     def get_created(self, obj):

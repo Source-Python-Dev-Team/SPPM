@@ -228,7 +228,6 @@ class PackageReleaseViewSetTestCase(APITestCase):
             'package_requirements': [],
             'pypi_requirements': [],
             'vcs_requirements': [],
-            'id': str(self.package_release.id),
         }
         self.assertDictEqual(
             d1=content['results'][0],
@@ -320,7 +319,6 @@ class PackageReleaseViewSetTestCase(APITestCase):
             'package_requirements': [],
             'pypi_requirements': [],
             'vcs_requirements': [],
-            'id': str(self.package_release.id),
         }
         self.assertEqual(
             first=response.status_code,
@@ -467,7 +465,7 @@ class PackageReleaseViewSetTestCase(APITestCase):
             second=2,
         )
         content = response.json()
-        release = package.releases.get(id=content['id'])
+        release = package.releases.get(version=content['version'])
         self.assertEqual(
             first=release.created_by.forum_id,
             second=self.contributor.forum_id,
@@ -499,7 +497,7 @@ class PackageReleaseViewSetTestCase(APITestCase):
             second=3,
         )
         content = response.json()
-        release = package.releases.get(id=content['id'])
+        release = package.releases.get(version=content['version'])
         self.assertEqual(
             first=release.created_by.forum_id,
             second=self.owner.forum_id,
@@ -627,7 +625,9 @@ class PackageReleaseViewSetTestCase(APITestCase):
             first=response.status_code,
             second=status.HTTP_201_CREATED,
         )
-        release = PackageRelease.objects.get(pk=response.json()['id'])
+        release = package.releases.get(
+            version=response.json()['version'],
+        )
         self.assertEqual(
             first=DownloadRequirement.objects.count(),
             second=2,

@@ -494,7 +494,6 @@ class ProjectReleaseSerializerTestCase(TestCase):
                 'package_requirements',
                 'pypi_requirements',
                 'vcs_requirements',
-                'id',
             ),
         )
 
