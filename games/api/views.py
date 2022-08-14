@@ -66,7 +66,7 @@ class GameViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet):
         return GameListSerializer
 
     def get_queryset(self):
-        """Filter the queryset to not return black-listed tags."""
+        """Add prefetching or annotation based on the action."""
         queryset = super().get_queryset()
         if self.action == 'retrieve':
             return queryset.prefetch_related(
