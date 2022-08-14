@@ -4,7 +4,7 @@
 # IMPORTS
 # =============================================================================
 # Third Party Django
-from rest_framework.fields import SerializerMethodField
+from rest_framework.fields import IntegerField, SerializerMethodField
 from rest_framework.serializers import ModelSerializer
 
 # App
@@ -18,14 +18,15 @@ from users.models import ForumUser
 # ALL DECLARATION
 # =============================================================================
 __all__ = (
-    'ForumUserSerializer',
+    'ForumUserListSerializer',
+    'ForumUserRetrieveSerializer',
 )
 
 
 # =============================================================================
 # SERIALIZERS
 # =============================================================================
-class ForumUserSerializer(ModelSerializer):
+class ForumUserRetrieveSerializer(ModelSerializer):
     """Serializer for User Contributions."""
 
     username = SerializerMethodField()
@@ -67,6 +68,44 @@ class ForumUserSerializer(ModelSerializer):
             'plugin_contributions',
             'sub_plugins',
             'sub_plugin_contributions',
+        )
+
+    @staticmethod
+    def get_username(obj):
+        """Return the user's username."""
+        return obj.user.username
+
+
+class ForumUserListSerializer(ModelSerializer):
+    """Serializer for user contributions on list."""
+
+    package_count = IntegerField()
+    package_contributions_count = IntegerField()
+    plugin_count = IntegerField()
+    plugin_contributions_count = IntegerField()
+    sub_plugin_count = IntegerField()
+    sub_plugin_contributions_count = IntegerField()
+    project_count = IntegerField()
+    project_contributions_count = IntegerField()
+    total_count = IntegerField()
+    username = SerializerMethodField()
+
+    class Meta:
+        """Define metaclass attributes."""
+
+        model = ForumUser
+        fields = (
+            'forum_id',
+            'username',
+            'package_count',
+            'package_contributions_count',
+            'plugin_count',
+            'plugin_contributions_count',
+            'sub_plugin_count',
+            'sub_plugin_contributions_count',
+            'project_count',
+            'project_contributions_count',
+            'total_count',
         )
 
     @staticmethod

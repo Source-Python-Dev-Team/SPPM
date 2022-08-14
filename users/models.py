@@ -94,7 +94,6 @@ class ForumUser(models.Model):
 
     def get_absolute_url(self):
         """Return the URL for the user."""
-        # TODO: add tests once this view is created
         return reverse(
             viewname='users:detail',
             kwargs={

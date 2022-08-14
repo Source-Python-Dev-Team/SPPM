@@ -12,7 +12,7 @@ from rest_framework.serializers import ListSerializer, ModelSerializer
 from project_manager.packages.api.common.serializers import MinimalPackageSerializer
 from project_manager.plugins.api.common.serializers import MinimalPluginSerializer
 from project_manager.sub_plugins.api.common.serializers import MinimalSubPluginSerializer
-from users.api.serializers import ForumUserSerializer
+from users.api.serializers import ForumUserRetrieveSerializer
 from users.api.common.serializers import ForumUserContributorSerializer
 from users.models import ForumUser
 
@@ -20,14 +20,14 @@ from users.models import ForumUser
 # =============================================================================
 # TEST CASES
 # =============================================================================
-class ForumUserSerializerTestCase(TestCase):
+class ForumUserRetrieveSerializerTestCase(TestCase):
     def test_class_inheritance(self):
         self.assertTrue(
-            expr=issubclass(ForumUserSerializer, ModelSerializer),
+            expr=issubclass(ForumUserRetrieveSerializer, ModelSerializer),
         )
 
     def test_declared_fields(self):
-        declared_fields = getattr(ForumUserSerializer, '_declared_fields')
+        declared_fields = getattr(ForumUserRetrieveSerializer, '_declared_fields')
         self.assertEqual(
             first=len(declared_fields),
             second=7,
@@ -140,11 +140,11 @@ class ForumUserSerializerTestCase(TestCase):
 
     def test_meta_class(self):
         self.assertEqual(
-            first=ForumUserSerializer.Meta.model,
+            first=ForumUserRetrieveSerializer.Meta.model,
             second=ForumUser,
         )
         self.assertTupleEqual(
-            tuple1=ForumUserSerializer.Meta.fields,
+            tuple1=ForumUserRetrieveSerializer.Meta.fields,
             tuple2=(
                 'forum_id',
                 'username',

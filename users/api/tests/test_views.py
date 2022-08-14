@@ -11,7 +11,7 @@ from rest_framework.test import APITestCase
 from test_utils.factories.users import NonAdminUserFactory, ForumUserFactory
 from users.api.filtersets import ForumUserFilterSet
 from users.api.ordering import ForumUserOrderingFilter
-from users.api.serializers import ForumUserSerializer
+from users.api.serializers import ForumUserRetrieveSerializer
 from users.api.views import ForumUserViewSet
 
 
@@ -45,7 +45,7 @@ class ForumUserViewSetTestCase(APITestCase):
     def test_serializer_class(self):
         self.assertEqual(
             first=ForumUserViewSet.serializer_class,
-            second=ForumUserSerializer,
+            second=ForumUserRetrieveSerializer,
         )
 
     def test_ordering(self):

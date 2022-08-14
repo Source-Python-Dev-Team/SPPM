@@ -4,19 +4,17 @@
 # IMPORTS
 # =============================================================================
 #  Django
-from django.db.models import Prefetch
+from django.db.models import Count, F, Prefetch
 
 # Third Party Django
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.viewsets import ModelViewSet
 
 # App
-from project_manager.packages.models import Package
-from project_manager.plugins.models import Plugin
 from project_manager.sub_plugins.models import SubPlugin
 from users.api.filtersets import ForumUserFilterSet
 from users.api.ordering import ForumUserOrderingFilter
-from users.api.serializers import ForumUserSerializer
+from users.api.serializers import ForumUserListSerializer, ForumUserRetrieveSerializer
 from users.models import ForumUser
 
 
@@ -50,48 +48,52 @@ class ForumUserViewSet(ModelViewSet):
     http_method_names = ('get', 'options')
     ordering = ('username',)
     ordering_fields = ('forum_id', 'username')
-    queryset = ForumUser.objects.prefetch_related(
-        Prefetch(
-            lookup='packages',
-            queryset=Package.objects.order_by(
-                'name',
+    queryset = ForumUser.objects.select_related('user')
+    serializer_class = ForumUserRetrieveSerializer
+
+    def get_serializer_class(self):
+        """Return the correct serializer based on the action."""
+        if self.action == 'retrieve':
+            return ForumUserRetrieveSerializer
+
+        return ForumUserListSerializer
+
+    def get_queryset(self):
+        """Add prefetching or annotation based on the action."""
+        queryset = super().get_queryset()
+        if self.action == 'retrieve':
+            return queryset.prefetch_related(
+                Prefetch(
+                    lookup='sub_plugins',
+                    queryset=SubPlugin.objects.select_related(
+                        'plugin',
+                    ).order_by(
+                        'name',
+                    ),
+                ),
+                Prefetch(
+                    lookup='sub_plugin_contributions',
+                    queryset=SubPlugin.objects.select_related(
+                        'plugin',
+                    ).order_by(
+                        'name',
+                    ),
+                ),
             )
-        ),
-        Prefetch(
-            lookup='plugins',
-            queryset=Plugin.objects.order_by(
-                'name',
-            )
-        ),
-        Prefetch(
-            lookup='sub_plugins',
-            queryset=SubPlugin.objects.order_by(
-                'name',
-            ).select_related(
-                'plugin',
-            )
-        ),
-        Prefetch(
-            lookup='package_contributions',
-            queryset=Package.objects.order_by(
-                'name',
-            )
-        ),
-        Prefetch(
-            lookup='plugin_contributions',
-            queryset=Plugin.objects.order_by(
-                'name',
-            )
-        ),
-        Prefetch(
-            lookup='sub_plugin_contributions',
-            queryset=SubPlugin.objects.order_by(
-                'name',
-            ).select_related(
-                'plugin',
-            )
+
+        return queryset.annotate(
+            package_count=Count('packages', distinct=True),
+            package_contributions_count=Count('package_contributions', distinct=True),
+            plugin_count=Count('plugins', distinct=True),
+            plugin_contributions_count=Count('plugin_contributions', distinct=True),
+            sub_plugin_count=Count('sub_plugins', distinct=True),
+            sub_plugin_contributions_count=Count('sub_plugin_contributions', distinct=True),
+        ).annotate(
+            project_count=F('package_count') + F('plugin_count') + F('sub_plugin_count'),
+            project_contributions_count=(
+                F('package_contributions_count') +
+                F('plugin_contributions_count') +
+                F('sub_plugin_contributions_count')
+            ),
+            total_count=F('project_count') + F('project_contributions_count'),
         )
-    ).select_related(
-        'user',
-    )
-    serializer_class = ForumUserSerializer
