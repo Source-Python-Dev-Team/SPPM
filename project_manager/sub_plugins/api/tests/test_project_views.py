@@ -140,15 +140,34 @@ class SubPluginViewSetTestCase(APITestCase):
             second='Invalid plugin_slug.',
         )
 
-        # TODO: validate the query returns the correct data
         plugin = PluginFactory()
+        plugin2 = PluginFactory()
+        sub_plugin_1 = SubPluginFactory(
+            plugin=plugin,
+        )
+        sub_plugin_2 = SubPluginFactory(
+            plugin=plugin,
+        )
+        SubPluginFactory(
+            plugin=plugin2,
+        )
+        SubPluginFactory(
+            plugin=plugin2,
+        )
         obj.kwargs = {'plugin_slug': plugin.slug}
         obj.get_queryset()
+        self.assertSetEqual(
+            set1=set(obj.get_queryset()),
+            set2={sub_plugin_1, sub_plugin_2},
+        )
 
-        # TODO: validate the query returns the correct data
         obj.kwargs = {}
         obj.plugin = plugin
         obj.get_queryset()
+        self.assertSetEqual(
+            set1=set(obj.get_queryset()),
+            set2={sub_plugin_1, sub_plugin_2},
+        )
 
         obj = SubPluginViewSet()
         obj.kwargs = {'plugin_slug': plugin.slug}

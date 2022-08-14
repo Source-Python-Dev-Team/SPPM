@@ -48,7 +48,7 @@ class GameRetrieveSerializer(ModelSerializer):
 
 
 class GameListSerializer(ModelSerializer):
-    """Serializer for project Tags on list."""
+    """Serializer for supported Games on list."""
 
     package_count = IntegerField()
     plugin_count = IntegerField()
