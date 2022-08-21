@@ -2,7 +2,9 @@
 # IMPORTS
 # =============================================================================
 # Django
+from django.db import connection, reset_queries
 from django.db.models.expressions import CombinedExpression
+from django.test import override_settings
 
 # Third Party Django
 from django_filters.rest_framework import DjangoFilterBackend
@@ -234,8 +236,13 @@ class TagViewSetTestCase(APITestCase):
             second=plugin_count,
         )
 
+    @override_settings(DEBUG=True)
     def test_list(self):
         response = self.client.get(path=self.api_path)
+        self.assertEqual(
+            first=len(connection.queries),
+            second=2,
+        )
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -287,11 +294,16 @@ class TagViewSetTestCase(APITestCase):
             },
         )
 
+        reset_queries()
         response = self.client.get(
             path=self.api_path,
             data={'ordering': '-project_count'},
         )
         self.assertEqual(
+            first=len(connection.queries),
+            second=2,
+        )
+        self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
         )
@@ -342,6 +354,7 @@ class TagViewSetTestCase(APITestCase):
             },
         )
 
+    @override_settings(DEBUG=True)
     def test_retrieve(self):
         response = self.client.get(
             path=reverse(
@@ -350,6 +363,10 @@ class TagViewSetTestCase(APITestCase):
                     'pk': self.tag_1.name,
                 },
             ),
+        )
+        self.assertEqual(
+            first=len(connection.queries),
+            second=4,
         )
         self.assertEqual(
             first=response.status_code,
@@ -379,6 +396,7 @@ class TagViewSetTestCase(APITestCase):
             }
         )
 
+        reset_queries()
         response = self.client.get(
             path=reverse(
                 viewname='api:tags:tags-detail',
@@ -386,6 +404,10 @@ class TagViewSetTestCase(APITestCase):
                     'pk': self.tag_2.name,
                 },
             ),
+        )
+        self.assertEqual(
+            first=len(connection.queries),
+            second=4,
         )
         self.assertEqual(
             first=response.status_code,
@@ -432,6 +454,7 @@ class TagViewSetTestCase(APITestCase):
             }
         )
 
+        reset_queries()
         response = self.client.get(
             path=reverse(
                 viewname='api:tags:tags-detail',
@@ -439,6 +462,10 @@ class TagViewSetTestCase(APITestCase):
                     'pk': self.tag_3.name,
                 },
             ),
+        )
+        self.assertEqual(
+            first=len(connection.queries),
+            second=4,
         )
         self.assertEqual(
             first=response.status_code,
@@ -459,6 +486,7 @@ class TagViewSetTestCase(APITestCase):
             }
         )
 
+        reset_queries()
         response = self.client.get(
             path=reverse(
                 viewname='api:tags:tags-detail',
@@ -466,6 +494,10 @@ class TagViewSetTestCase(APITestCase):
                     'pk': self.tag_4.name,
                 },
             ),
+        )
+        self.assertEqual(
+            first=len(connection.queries),
+            second=4,
         )
         self.assertEqual(
             first=response.status_code,
@@ -481,6 +513,7 @@ class TagViewSetTestCase(APITestCase):
             }
         )
 
+        reset_queries()
         response = self.client.get(
             path=reverse(
                 viewname='api:tags:tags-detail',
@@ -488,6 +521,10 @@ class TagViewSetTestCase(APITestCase):
                     'pk': self.black_listed_tag.name,
                 },
             ),
+        )
+        self.assertEqual(
+            first=len(connection.queries),
+            second=1,
         )
         self.assertEqual(
             first=response.status_code,
