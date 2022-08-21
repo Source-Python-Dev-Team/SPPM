@@ -87,8 +87,8 @@ class ForumUserViewSetTestCase(APITestCase):
             first=content['count'],
             second=2,
         )
-        for n, forum_user in enumerate([forum_user_1, forum_user_2]):
-            content_user = content['results'][n]
+        for count, forum_user in enumerate([forum_user_1, forum_user_2]):
+            content_user = content['results'][count]
             self.assertEqual(
                 first=content_user['forum_id'],
                 second=forum_user.forum_id,
@@ -112,8 +112,8 @@ class ForumUserViewSetTestCase(APITestCase):
             first=content['count'],
             second=2,
         )
-        for n, forum_user in enumerate([forum_user_1, forum_user_2]):
-            content_user = content['results'][n]
+        for count, forum_user in enumerate([forum_user_1, forum_user_2]):
+            content_user = content['results'][count]
             self.assertEqual(
                 first=content_user['forum_id'],
                 second=forum_user.forum_id,
@@ -137,8 +137,8 @@ class ForumUserViewSetTestCase(APITestCase):
             first=content['count'],
             second=2,
         )
-        for n, forum_user in enumerate([forum_user_2, forum_user_1]):
-            content_user = content['results'][n]
+        for count, forum_user in enumerate([forum_user_2, forum_user_1]):
+            content_user = content['results'][count]
             self.assertEqual(
                 first=content_user['forum_id'],
                 second=forum_user.forum_id,
@@ -162,8 +162,8 @@ class ForumUserViewSetTestCase(APITestCase):
             first=content['count'],
             second=2,
         )
-        for n, forum_user in enumerate([forum_user_1, forum_user_2]):
-            content_user = content['results'][n]
+        for count, forum_user in enumerate([forum_user_1, forum_user_2]):
+            content_user = content['results'][count]
             self.assertEqual(
                 first=content_user['forum_id'],
                 second=forum_user.forum_id,
@@ -187,8 +187,8 @@ class ForumUserViewSetTestCase(APITestCase):
             first=content['count'],
             second=2,
         )
-        for n, forum_user in enumerate([forum_user_2, forum_user_1]):
-            content_user = content['results'][n]
+        for count, forum_user in enumerate([forum_user_2, forum_user_1]):
+            content_user = content['results'][count]
             self.assertEqual(
                 first=content_user['forum_id'],
                 second=forum_user.forum_id,

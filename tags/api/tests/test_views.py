@@ -128,7 +128,7 @@ class TagViewSetTestCase(APITestCase):
     def test_get_queryset(self):
         queryset = TagViewSet(action='retrieve').get_queryset().filter()
         self.assertFalse(expr=queryset.query.select_related)
-        prefetch_lookups = queryset._prefetch_related_lookups
+        prefetch_lookups = getattr(queryset, '_prefetch_related_lookups')
         self.assertEqual(
             first=len(prefetch_lookups),
             second=1,
@@ -150,7 +150,7 @@ class TagViewSetTestCase(APITestCase):
         queryset = TagViewSet(action='list').get_queryset().filter()
         self.assertFalse(expr=queryset.query.select_related)
         self.assertTupleEqual(
-            tuple1=queryset._prefetch_related_lookups,
+            tuple1=getattr(queryset, '_prefetch_related_lookups'),
             tuple2=(),
         )
         annotations = queryset.query.annotations
@@ -166,7 +166,7 @@ class TagViewSetTestCase(APITestCase):
         )
         self.assertIs(
             expr1=package_count.source_expressions[0].target,
-            expr2=PackageTag.package.field,
+            expr2=getattr(PackageTag.package, 'field'),
         )
 
         self.assertIn(
@@ -181,7 +181,7 @@ class TagViewSetTestCase(APITestCase):
         )
         self.assertIs(
             expr1=plugin_count.source_expressions[0].target,
-            expr2=PluginTag.plugin.field,
+            expr2=getattr(PluginTag.plugin, 'field'),
         )
 
         self.assertIn(

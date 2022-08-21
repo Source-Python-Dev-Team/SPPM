@@ -72,7 +72,10 @@ class SubPluginReleaseDownloadViewTestCase(TestCase):
 
     def test__allowed_methods(self):
         self.assertListEqual(
-            list1=SubPluginReleaseDownloadView()._allowed_methods(),
+            list1=getattr(
+                SubPluginReleaseDownloadView(),
+                '_allowed_methods'
+            )(),
             list2=['GET', 'OPTIONS'],
         )
 

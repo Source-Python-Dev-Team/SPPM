@@ -114,7 +114,10 @@ class SubPluginViewSetTestCase(APITestCase):
             second=SubPluginCreateSerializer,
         )
         self.assertIs(expr1=SubPluginViewSet.queryset.model, expr2=SubPlugin)
-        prefetch_lookups = SubPluginViewSet.queryset._prefetch_related_lookups
+        prefetch_lookups = getattr(
+            SubPluginViewSet.queryset,
+            '_prefetch_related_lookups'
+        )
         self.assertEqual(first=len(prefetch_lookups), second=1)
         lookup = prefetch_lookups[0]
         self.assertEqual(first=lookup.prefetch_to, second='releases')
@@ -172,11 +175,17 @@ class SubPluginViewSetTestCase(APITestCase):
         obj = SubPluginViewSet()
         obj.kwargs = {'plugin_slug': plugin.slug}
         setattr(obj, 'action', 'retrieve')
-        prefetch_lookups = obj.get_queryset()._prefetch_related_lookups
+        prefetch_lookups = getattr(
+            obj.get_queryset(),
+            '_prefetch_related_lookups'
+        )
         self.assertEqual(first=len(prefetch_lookups), second=1)
 
         setattr(obj, 'action', 'list')
-        prefetch_lookups = obj.get_queryset()._prefetch_related_lookups
+        prefetch_lookups = getattr(
+            obj.get_queryset(),
+            '_prefetch_related_lookups'
+        )
         self.assertEqual(first=len(prefetch_lookups), second=2)
         lookup = prefetch_lookups[1]
         self.assertEqual(first=lookup.prefetch_to, second='contributors')

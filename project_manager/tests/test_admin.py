@@ -30,29 +30,29 @@ class AdminTestCase(TestCase):
     def test_project_admins_are_registered(self):
         self.assertIn(
             member=Package,
-            container=admin.site._registry,
+            container=getattr(admin.site, '_registry'),
         )
         self.assertIn(
             member=Plugin,
-            container=admin.site._registry,
+            container=getattr(admin.site, '_registry'),
         )
         self.assertIn(
             member=SubPlugin,
-            container=admin.site._registry,
+            container=getattr(admin.site, '_registry'),
         )
 
     def test_third_party_models_not_registered(self):
         self.assertNotIn(
             member=Group,
-            container=admin.site._registry,
+            container=getattr(admin.site, '_registry'),
         )
         self.assertNotIn(
             member=BBCodeTag,
-            container=admin.site._registry,
+            container=getattr(admin.site, '_registry'),
         )
         self.assertNotIn(
             member=SmileyTag,
-            container=admin.site._registry,
+            container=getattr(admin.site, '_registry'),
         )
 
 

@@ -123,7 +123,10 @@ class SubPluginReleaseViewSetTestCase(APITestCase):
             d1=SubPluginReleaseViewSet.queryset.query.select_related,
             d2={'sub_plugin': {}, 'created_by': {'user': {}}},
         )
-        prefetch_lookups = SubPluginReleaseViewSet.queryset._prefetch_related_lookups
+        prefetch_lookups = getattr(
+            SubPluginReleaseViewSet.queryset,
+            '_prefetch_related_lookups'
+        )
         self.assertEqual(first=len(prefetch_lookups), second=4)
 
         lookup = prefetch_lookups[0]

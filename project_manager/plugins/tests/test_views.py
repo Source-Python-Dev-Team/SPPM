@@ -61,7 +61,10 @@ class PluginReleaseDownloadViewTestCase(TestCase):
 
     def test__allowed_methods(self):
         self.assertListEqual(
-            list1=PluginReleaseDownloadView()._allowed_methods(),
+            list1=getattr(
+                PluginReleaseDownloadView(),
+                '_allowed_methods'
+            )(),
             list2=['GET', 'OPTIONS'],
         )
 

@@ -91,7 +91,7 @@ class StatisticsViewTestCase(TestCase):
         sub_plugin_count = 0
         plugin_download_count = 0
         plugin_count = randint(4, 8)
-        for n in range(1, plugin_count + 1):
+        for current_count in range(1, plugin_count + 1):
             contributors = sample(user_list, randint(2, 4))
             contributing_users.update(contributors)
             owner = contributors.pop()
@@ -112,8 +112,8 @@ class StatisticsViewTestCase(TestCase):
                     download_count=download_count,
                 )
 
-            if n > 1 and any([
-                n == 2,
+            if current_count > 1 and any([
+                current_count == 2,
                 choice([True, False]),
             ]):
                 count = randint(1, 2)

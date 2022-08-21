@@ -46,6 +46,10 @@ class PackageZipFileTestCase(TestCase):
         self.mock_get_file_list = mock.patch(
             target='project_manager.helpers.ProjectZipFile.get_file_list',
         ).start()
+        self.mock_zipfile = mock.patch(
+            target='project_manager.helpers.ZipFile',
+        )
+        self.mock_zipfile.start()
 
     def tearDown(self) -> None:
         super().tearDown()
@@ -92,10 +96,7 @@ class PackageZipFileTestCase(TestCase):
             d2=PACKAGE_ALLOWED_FILE_TYPES,
         )
 
-    @mock.patch(
-        target='project_manager.helpers.ZipFile',
-    )
-    def test_find_base_info(self, _):
+    def test_find_base_info(self):
         package_basename = 'test_package_as_module'
         self.mock_get_file_list.return_value = self._get_module_file_list(
             package_basename=package_basename,
@@ -136,10 +137,7 @@ class PackageZipFileTestCase(TestCase):
             second='multiple',
         )
 
-    @mock.patch(
-        target='project_manager.helpers.ZipFile',
-    )
-    def test_get_base_paths(self, _):
+    def test_get_base_paths(self):
         package_basename = 'test_package_as_module'
         self.mock_get_file_list.return_value = self._get_module_file_list(
             package_basename=package_basename,
@@ -165,10 +163,7 @@ class PackageZipFileTestCase(TestCase):
             ],
         )
 
-    @mock.patch(
-        target='project_manager.helpers.ZipFile',
-    )
-    def test_validate_base_file_in_zip(self, _):
+    def test_validate_base_file_in_zip(self):
         package_basename = 'test_package_as_module'
         self.mock_get_file_list.return_value = self._get_module_file_list(
             package_basename=package_basename,
@@ -190,10 +185,7 @@ class PackageZipFileTestCase(TestCase):
             second='not-found',
         )
 
-    @mock.patch(
-        target='project_manager.helpers.ZipFile',
-    )
-    def test_get_requirement_path(self, _):
+    def test_get_requirement_path(self):
         package_basename = 'test_package_as_module'
         self.mock_get_file_list.return_value = self._get_module_file_list(
             package_basename=package_basename,
@@ -216,10 +208,7 @@ class PackageZipFileTestCase(TestCase):
             second=f'{PACKAGE_PATH}{package_basename}/requirements.json',
         )
 
-    @mock.patch(
-        target='project_manager.helpers.ZipFile',
-    )
-    def test_validate_file_paths(self, _):
+    def test_validate_file_paths(self):
         package_basename = 'test_package_as_module'
         self.mock_get_file_list.return_value = self._get_module_file_list(
             package_basename=package_basename,
@@ -287,6 +276,7 @@ class PackageZipFileTestCase(TestCase):
         target='project_manager.helpers.logger',
     )
     def test_validate_requirements_file_failures(self, mock_logger):
+        self.mock_zipfile.stop()
         base_path = settings.BASE_DIR / 'fixtures' / 'releases' / 'packages'
         file_path = base_path / 'test-package' / 'test-package-v1.0.0.zip'
         self.mock_get_file_list.return_value = []
@@ -312,10 +302,7 @@ class PackageZipFileTestCase(TestCase):
     @mock.patch(
         target='project_manager.helpers.json.loads',
     )
-    @mock.patch(
-        target='project_manager.helpers.ZipFile',
-    )
-    def test_validate_requirements_file_item_failures(self, _, mock_json_loads):
+    def test_validate_requirements_file_item_failures(self, mock_json_loads):
         custom_package_basename = 'test_custom_package'
         custom_package = PackageFactory(
             basename=custom_package_basename,

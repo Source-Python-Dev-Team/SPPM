@@ -65,6 +65,9 @@ class SubPluginZipFileTestCase(TestCase):
         self.mock_get_file_list = mock.patch(
             target='project_manager.helpers.ProjectZipFile.get_file_list',
         ).start()
+        mock.patch(
+            target='project_manager.helpers.ZipFile',
+        ).start()
 
     def tearDown(self) -> None:
         super().tearDown()
@@ -111,10 +114,7 @@ class SubPluginZipFileTestCase(TestCase):
             d2=SUB_PLUGIN_ALLOWED_FILE_TYPES,
         )
 
-    @mock.patch(
-        target='project_manager.helpers.ZipFile',
-    )
-    def test_find_base_info(self, _):
+    def test_find_base_info(self):
         sub_plugin_basename = 'test_sub_plugin'
         self.mock_get_file_list.return_value = self._get_file_list(
             sub_plugin_basename=sub_plugin_basename,
@@ -142,10 +142,7 @@ class SubPluginZipFileTestCase(TestCase):
             second='multiple',
         )
 
-    @mock.patch(
-        target='project_manager.helpers.ZipFile',
-    )
-    def test_validate_base_file_in_zip(self, _):
+    def test_validate_base_file_in_zip(self):
         sub_plugin_basename = 'test_plugin'
         self.mock_get_file_list.return_value = self._get_file_list(
             sub_plugin_basename=sub_plugin_basename,
@@ -212,10 +209,7 @@ class SubPluginZipFileTestCase(TestCase):
             second='not-found',
         )
 
-    @mock.patch(
-        target='project_manager.helpers.ZipFile',
-    )
-    def test_get_requirement_paths(self, _):
+    def test_get_requirement_paths(self):
         sub_plugin_basename = 'test_sub_plugin'
         self.mock_get_file_list.return_value = self._get_file_list(
             sub_plugin_basename=sub_plugin_basename,
@@ -248,10 +242,7 @@ class SubPluginZipFileTestCase(TestCase):
             ],
         )
 
-    @mock.patch(
-        target='project_manager.helpers.ZipFile',
-    )
-    def test_validate_file_paths(self, _):
+    def test_validate_file_paths(self):
         sub_plugin_basename = 'test_plugin'
         self.mock_get_file_list.return_value = self._get_file_list(
             sub_plugin_basename=sub_plugin_basename,
@@ -361,13 +352,7 @@ class SubPluginZipFileTestCase(TestCase):
     @mock.patch(
         target='project_manager.helpers.json.loads',
     )
-    @mock.patch(
-        target='project_manager.helpers.ZipFile',
-    )
-    @mock.patch(
-        target='project_manager.sub_plugins.helpers.ZipFile',
-    )
-    def test_validate_requirements_file_item_failures(self, _, __, mock_json_loads):
+    def test_validate_requirements_file_item_failures(self, mock_json_loads):
         plugin = PluginFactory()
         custom_package_basename = 'test_custom_package'
         custom_package = PackageFactory(
@@ -398,6 +383,9 @@ class SubPluginZipFileTestCase(TestCase):
             path='sub_plugins',
         )
         obj.paths = {sub_plugin_path}
+        mock.patch(
+            target='project_manager.sub_plugins.helpers.ZipFile',
+        ).start()
         with self.assertRaises(ValidationError) as context:
             obj.validate_requirements()
 

@@ -106,7 +106,10 @@ class PackageViewSetTestCase(APITestCase):
             second=PackageCreateSerializer,
         )
         self.assertIs(expr1=PackageViewSet.queryset.model, expr2=Package)
-        prefetch_lookups = PackageViewSet.queryset._prefetch_related_lookups
+        prefetch_lookups = getattr(
+            PackageViewSet.queryset,
+            '_prefetch_related_lookups'
+        )
         self.assertEqual(first=len(prefetch_lookups), second=1)
         lookup = prefetch_lookups[0]
         self.assertEqual(first=lookup.prefetch_to, second='releases')
@@ -129,11 +132,17 @@ class PackageViewSetTestCase(APITestCase):
     def test_get_queryset(self):
         obj = PackageViewSet()
         setattr(obj, 'action', 'retrieve')
-        prefetch_lookups = obj.get_queryset()._prefetch_related_lookups
+        prefetch_lookups = getattr(
+            obj.get_queryset(),
+            '_prefetch_related_lookups'
+        )
         self.assertEqual(first=len(prefetch_lookups), second=1)
 
         setattr(obj, 'action', 'list')
-        prefetch_lookups = obj.get_queryset()._prefetch_related_lookups
+        prefetch_lookups = getattr(
+            obj.get_queryset(),
+            '_prefetch_related_lookups'
+        )
         self.assertEqual(first=len(prefetch_lookups), second=2)
         lookup = prefetch_lookups[1]
         self.assertEqual(first=lookup.prefetch_to, second='contributors')

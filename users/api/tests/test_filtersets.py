@@ -24,7 +24,7 @@ class ForumUserFilterSetTestCase(TestCase):
         )
 
     def test_base_filters(self):
-        base_filters = ForumUserFilterSet.base_filters
+        base_filters = getattr(ForumUserFilterSet, 'base_filters')
         self.assertEqual(
             first=len(base_filters),
             second=1,

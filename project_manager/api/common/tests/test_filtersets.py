@@ -23,7 +23,7 @@ class ProjectFilterSetTestCase(TestCase):
         )
 
     def test_base_filters(self):
-        base_filters = ProjectFilterSet.base_filters
+        base_filters = getattr(ProjectFilterSet, 'base_filters')
         self.assertEqual(
             first=len(base_filters),
             second=3,

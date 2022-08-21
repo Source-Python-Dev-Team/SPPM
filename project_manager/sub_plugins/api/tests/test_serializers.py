@@ -123,11 +123,14 @@ class SubPluginCreateSerializerTestCase(TestCase):
             expr=issubclass(SubPluginCreateSerializer, SubPluginSerializer),
         )
 
-    @mock.patch(
-        target='project_manager.api.common.serializers.ProjectSerializer.get_extra_kwargs',
-        return_value={},
-    )
-    def test_releases(self, _):
+    def test_releases(self):
+        mock.patch(
+            target=(
+                'project_manager.api.common.serializers.ProjectSerializer.'
+                'get_extra_kwargs'
+            ),
+            return_value={},
+        ).start()
         obj = SubPluginCreateSerializer()
         obj.context['view'] = mock.Mock(
             action='list',

@@ -61,7 +61,10 @@ class PackageReleaseDownloadViewTestCase(TestCase):
 
     def test__allowed_methods(self):
         self.assertListEqual(
-            list1=PackageReleaseDownloadView()._allowed_methods(),
+            list1=getattr(
+                PackageReleaseDownloadView(),
+                '_allowed_methods'
+            )(),
             list2=['GET', 'OPTIONS'],
         )
 

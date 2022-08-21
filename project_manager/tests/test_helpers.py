@@ -219,8 +219,8 @@ class CommonHelperFunctionsTestCase(TestCase):
         existing_files = sample(range(11), 4)
         max_value = max(existing_files)
         path.files.return_value = (
-            mock.Mock(stem=n)
-            for n in existing_files
+            mock.Mock(stem=stem)
+            for stem in existing_files
         )
         self.assertEqual(
             first=find_image_number(
