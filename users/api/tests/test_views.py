@@ -1,6 +1,10 @@
 # =============================================================================
 # IMPORTS
 # =============================================================================
+# Django
+from django.db import connection, reset_queries
+from django.test import override_settings
+
 # Third Party Django
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import status
@@ -8,7 +12,19 @@ from rest_framework.reverse import reverse
 from rest_framework.test import APITestCase
 
 # App
-from test_utils.factories.users import NonAdminUserFactory, ForumUserFactory
+from test_utils.factories.packages import (
+    PackageContributorFactory,
+    PackageFactory,
+)
+from test_utils.factories.plugins import (
+    PluginContributorFactory,
+    PluginFactory,
+)
+from test_utils.factories.sub_plugins import (
+    SubPluginContributorFactory,
+    SubPluginFactory,
+)
+from test_utils.factories.users import ForumUserFactory
 from users.api.filtersets import ForumUserFilterSet
 from users.api.ordering import ForumUserOrderingFilter
 from users.api.serializers import ForumUserRetrieveSerializer
@@ -23,6 +39,115 @@ class ForumUserViewSetTestCase(APITestCase):
     api_path = reverse(
         viewname='api:users:users-list',
     )
+    user_1 = user_2 = user_3 = None
+
+    @classmethod
+    def setUpTestData(cls):
+        cls.user_1 = ForumUserFactory(
+            forum_id=2,
+        )
+        cls.user_2 = ForumUserFactory(
+            forum_id=4,
+        )
+        cls.user_3 = ForumUserFactory(
+            forum_id=1,
+        )
+        cls.user_4 = ForumUserFactory(
+            forum_id=3,
+        )
+
+        package_1 = PackageFactory(
+            owner=cls.user_1,
+        )
+        package_2 = PackageFactory(
+            owner=cls.user_1,
+        )
+        package_3 = PackageFactory(
+            owner=cls.user_2,
+        )
+        PackageContributorFactory(
+            package=package_1,
+            user=cls.user_2,
+        )
+        PackageContributorFactory(
+            package=package_1,
+            user=cls.user_3,
+        )
+        PackageContributorFactory(
+            package=package_2,
+            user=cls.user_2,
+        )
+        PackageContributorFactory(
+            package=package_3,
+            user=cls.user_1,
+        )
+        PackageContributorFactory(
+            package=package_3,
+            user=cls.user_3,
+        )
+
+        plugin_1 = PluginFactory(
+            owner=cls.user_2,
+        )
+        plugin_2 = PluginFactory(
+            owner=cls.user_2,
+        )
+        plugin_3 = PluginFactory(
+            owner=cls.user_3,
+        )
+        PluginContributorFactory(
+            plugin=plugin_1,
+            user=cls.user_3,
+        )
+        PluginContributorFactory(
+            plugin=plugin_1,
+            user=cls.user_1,
+        )
+        PluginContributorFactory(
+            plugin=plugin_2,
+            user=cls.user_3,
+        )
+        PluginContributorFactory(
+            plugin=plugin_3,
+            user=cls.user_2,
+        )
+        PluginContributorFactory(
+            plugin=plugin_3,
+            user=cls.user_1,
+        )
+
+        sub_plugin_1 = SubPluginFactory(
+            owner=cls.user_3,
+            plugin=plugin_1,
+        )
+        sub_plugin_2 = SubPluginFactory(
+            owner=cls.user_3,
+            plugin=plugin_1,
+        )
+        sub_plugin_3 = SubPluginFactory(
+            owner=cls.user_1,
+            plugin=plugin_1,
+        )
+        SubPluginContributorFactory(
+            sub_plugin=sub_plugin_1,
+            user=cls.user_1,
+        )
+        SubPluginContributorFactory(
+            sub_plugin=sub_plugin_1,
+            user=cls.user_2,
+        )
+        SubPluginContributorFactory(
+            sub_plugin=sub_plugin_2,
+            user=cls.user_1,
+        )
+        SubPluginContributorFactory(
+            sub_plugin=sub_plugin_3,
+            user=cls.user_3,
+        )
+        SubPluginContributorFactory(
+            sub_plugin=sub_plugin_3,
+            user=cls.user_2,
+        )
 
     def test_filter_backends(self):
         self.assertTupleEqual(
@@ -60,24 +185,14 @@ class ForumUserViewSetTestCase(APITestCase):
             tuple2=('forum_id', 'username'),
         )
 
+    @override_settings(DEBUG=True)
     def test_get_list(self):
-        user_1 = NonAdminUserFactory(
-            username='Alfred',
-        )
-        forum_user_1 = ForumUserFactory(
-            forum_id=1,
-            user=user_1,
-        )
-        user_2 = NonAdminUserFactory(
-            username='Zach',
-        )
-        forum_user_2 = ForumUserFactory(
-            forum_id=2,
-            user=user_2,
-        )
-
         # Test default ordering
         response = self.client.get(path=self.api_path)
+        self.assertEqual(
+            first=len(connection.queries),
+            second=2,
+        )
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -85,9 +200,14 @@ class ForumUserViewSetTestCase(APITestCase):
         content = response.json()
         self.assertEqual(
             first=content['count'],
-            second=2,
+            second=4,
         )
-        for count, forum_user in enumerate([forum_user_1, forum_user_2]):
+        for count, forum_user in enumerate([
+            self.user_1,
+            self.user_2,
+            self.user_3,
+            self.user_4,
+        ]):
             content_user = content['results'][count]
             self.assertEqual(
                 first=content_user['forum_id'],
@@ -99,9 +219,14 @@ class ForumUserViewSetTestCase(APITestCase):
             )
 
         # Test alphabetized custom ordering
+        reset_queries()
         response = self.client.get(
             path=self.api_path,
             data={'ordering': 'username'},
+        )
+        self.assertEqual(
+            first=len(connection.queries),
+            second=2,
         )
         self.assertEqual(
             first=response.status_code,
@@ -110,9 +235,14 @@ class ForumUserViewSetTestCase(APITestCase):
         content = response.json()
         self.assertEqual(
             first=content['count'],
-            second=2,
+            second=4,
         )
-        for count, forum_user in enumerate([forum_user_1, forum_user_2]):
+        for count, forum_user in enumerate([
+            self.user_1,
+            self.user_2,
+            self.user_3,
+            self.user_4,
+        ]):
             content_user = content['results'][count]
             self.assertEqual(
                 first=content_user['forum_id'],
@@ -124,9 +254,14 @@ class ForumUserViewSetTestCase(APITestCase):
             )
 
         # Test reverse alphabetized custom ordering
+        reset_queries()
         response = self.client.get(
             path=self.api_path,
             data={'ordering': '-username'},
+        )
+        self.assertEqual(
+            first=len(connection.queries),
+            second=2,
         )
         self.assertEqual(
             first=response.status_code,
@@ -135,9 +270,14 @@ class ForumUserViewSetTestCase(APITestCase):
         content = response.json()
         self.assertEqual(
             first=content['count'],
-            second=2,
+            second=4,
         )
-        for count, forum_user in enumerate([forum_user_2, forum_user_1]):
+        for count, forum_user in enumerate([
+            self.user_4,
+            self.user_3,
+            self.user_2,
+            self.user_1,
+        ]):
             content_user = content['results'][count]
             self.assertEqual(
                 first=content_user['forum_id'],
@@ -149,9 +289,14 @@ class ForumUserViewSetTestCase(APITestCase):
             )
 
         # Test forum_id ordering
+        reset_queries()
         response = self.client.get(
             path=self.api_path,
             data={'ordering': 'forum_id'},
+        )
+        self.assertEqual(
+            first=len(connection.queries),
+            second=2,
         )
         self.assertEqual(
             first=response.status_code,
@@ -160,9 +305,14 @@ class ForumUserViewSetTestCase(APITestCase):
         content = response.json()
         self.assertEqual(
             first=content['count'],
-            second=2,
+            second=4,
         )
-        for count, forum_user in enumerate([forum_user_1, forum_user_2]):
+        for count, forum_user in enumerate([
+            self.user_3,
+            self.user_1,
+            self.user_4,
+            self.user_2,
+        ]):
             content_user = content['results'][count]
             self.assertEqual(
                 first=content_user['forum_id'],
@@ -174,9 +324,14 @@ class ForumUserViewSetTestCase(APITestCase):
             )
 
         # Test reverse forum_id ordering
+        reset_queries()
         response = self.client.get(
             path=self.api_path,
             data={'ordering': '-forum_id'},
+        )
+        self.assertEqual(
+            first=len(connection.queries),
+            second=2,
         )
         self.assertEqual(
             first=response.status_code,
@@ -185,9 +340,14 @@ class ForumUserViewSetTestCase(APITestCase):
         content = response.json()
         self.assertEqual(
             first=content['count'],
-            second=2,
+            second=4,
         )
-        for count, forum_user in enumerate([forum_user_2, forum_user_1]):
+        for count, forum_user in enumerate([
+            self.user_2,
+            self.user_4,
+            self.user_1,
+            self.user_3,
+        ]):
             content_user = content['results'][count]
             self.assertEqual(
                 first=content_user['forum_id'],
@@ -198,15 +358,50 @@ class ForumUserViewSetTestCase(APITestCase):
                 second=forum_user.user.username,
             )
 
+    @override_settings(DEBUG=True)
     def test_get_details(self):
-        user = ForumUserFactory()
+        for user in (
+            self.user_1,
+            self.user_2,
+            self.user_3,
+            self.user_4,
+        ):
+            reset_queries()
+            response = self.client.get(
+                path=reverse(
+                    viewname='api:users:users-detail',
+                    kwargs={
+                        'pk': user.forum_id,
+                    }
+                ),
+            )
+            self.assertEqual(
+                first=len(connection.queries),
+                second=7,
+            )
+            self.assertEqual(
+                first=response.status_code,
+                second=status.HTTP_200_OK,
+            )
+            content = response.json()
+            self.assertEqual(
+                first=content['forum_id'],
+                second=user.forum_id,
+            )
+            self.assertEqual(
+                first=content['username'],
+                second=user.user.username,
+            )
+
+    @override_settings(DEBUG=True)
+    def test_get_filter(self):
         response = self.client.get(
-            path=reverse(
-                viewname='api:users:users-detail',
-                kwargs={
-                    'pk': user.forum_id,
-                }
-            ),
+            path=self.api_path,
+            data={'has_contributions': True},
+        )
+        self.assertEqual(
+            first=len(connection.queries),
+            second=2,
         )
         self.assertEqual(
             first=response.status_code,
@@ -214,32 +409,26 @@ class ForumUserViewSetTestCase(APITestCase):
         )
         content = response.json()
         self.assertEqual(
-            first=content['forum_id'],
-            second=user.forum_id,
+            first=content['count'],
+            second=3,
         )
-        self.assertEqual(
-            first=content['username'],
-            second=user.user.username,
-        )
-
-    def test_get_filter(self):
-        user = ForumUserFactory()
-        response = self.client.get(
-            path=self.api_path,
-            data={'has_contributions': True},
-        )
-        self.assertEqual(
-            first=response.status_code,
-            second=status.HTTP_200_OK,
-        )
-        self.assertEqual(
-            first=response.json()['count'],
-            second=0,
+        self.assertSetEqual(
+            set1={result['forum_id'] for result in content['results']},
+            set2={
+                self.user_1.forum_id,
+                self.user_2.forum_id,
+                self.user_3.forum_id,
+            }
         )
 
+        reset_queries()
         response = self.client.get(
             path=self.api_path,
             data={'has_contributions': False},
+        )
+        self.assertEqual(
+            first=len(connection.queries),
+            second=2,
         )
         self.assertEqual(
             first=response.status_code,
@@ -250,14 +439,9 @@ class ForumUserViewSetTestCase(APITestCase):
             first=content['count'],
             second=1,
         )
-        content_user = content['results'][0]
         self.assertEqual(
-            first=content_user['forum_id'],
-            second=user.forum_id,
-        )
-        self.assertEqual(
-            first=content_user['username'],
-            second=user.user.username,
+            first=content['results'][0]['forum_id'],
+            second=self.user_4.forum_id,
         )
 
     def test_options(self):

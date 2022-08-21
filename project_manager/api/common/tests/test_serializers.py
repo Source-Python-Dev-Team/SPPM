@@ -80,7 +80,6 @@ class ProjectThroughMixinTestCase(TestCase):
 
     @classmethod
     def setUpTestData(cls):
-        super().setUpTestData()
         cls.user = ForumUserFactory()
 
     def setUp(self) -> None:

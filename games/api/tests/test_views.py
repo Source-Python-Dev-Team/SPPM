@@ -233,7 +233,7 @@ class GameViewSetTestCase(APITestCase):
         )
 
     @override_settings(DEBUG=True)
-    def test_list(self):
+    def test_get_list(self):
         response = self.client.get(path=self.api_path)
         self.assertEqual(
             first=len(connection.queries),
@@ -369,7 +369,7 @@ class GameViewSetTestCase(APITestCase):
         )
 
     @override_settings(DEBUG=True)
-    def test_retrieve(self):
+    def test_get_detail(self):
         response = self.client.get(
             path=reverse(
                 viewname='api:games:games-detail',

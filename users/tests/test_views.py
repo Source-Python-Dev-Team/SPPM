@@ -36,7 +36,7 @@ class ForumUserViewTestCase(TestCase):
             second='main.html',
         )
 
-    def test_list(self):
+    def test_get_list(self):
         response = self.client.get(
             path=reverse(
                 viewname='users:list',
@@ -53,7 +53,7 @@ class ForumUserViewTestCase(TestCase):
             d2={'title': 'User Listing'},
         )
 
-    def test_detail(self):
+    def test_get_detail(self):
         user = ForumUserFactory()
         response = self.client.get(
             path=reverse(
