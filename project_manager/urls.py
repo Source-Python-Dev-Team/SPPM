@@ -100,17 +100,13 @@ urlpatterns = [
     settings.STATIC_URL, document_root=settings.STATIC_ROOT
 )
 
-if settings.DEBUG:  # pragma: no branch
+if settings.LOCAL:  # pragma: no branch
     import debug_toolbar
     urlpatterns += [
         path(
             route='__debug__/',
             view=include(debug_toolbar.urls),
         ),
-    ]
-
-if settings.LOCAL:  # pragma: no branch
-    urlpatterns += [
         path(
             route='accounts/',
             view=include('django.contrib.auth.urls'),
