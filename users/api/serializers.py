@@ -80,13 +80,13 @@ class ForumUserListSerializer(ModelSerializer):
     """Serializer for user contributions on list."""
 
     package_count = IntegerField()
-    package_contributions_count = IntegerField()
+    package_contribution_count = IntegerField()
     plugin_count = IntegerField()
-    plugin_contributions_count = IntegerField()
+    plugin_contribution_count = IntegerField()
     sub_plugin_count = IntegerField()
-    sub_plugin_contributions_count = IntegerField()
+    sub_plugin_contribution_count = IntegerField()
     project_count = IntegerField()
-    project_contributions_count = IntegerField()
+    project_contribution_count = IntegerField()
     total_count = IntegerField()
     username = SerializerMethodField()
 
@@ -98,13 +98,13 @@ class ForumUserListSerializer(ModelSerializer):
             'forum_id',
             'username',
             'package_count',
-            'package_contributions_count',
+            'package_contribution_count',
             'plugin_count',
-            'plugin_contributions_count',
+            'plugin_contribution_count',
             'sub_plugin_count',
-            'sub_plugin_contributions_count',
+            'sub_plugin_contribution_count',
             'project_count',
-            'project_contributions_count',
+            'project_contribution_count',
             'total_count',
         )
 

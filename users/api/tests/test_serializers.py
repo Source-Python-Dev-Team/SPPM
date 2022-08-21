@@ -5,14 +5,17 @@
 from django.test import TestCase
 
 # Third Party Django
-from rest_framework.fields import SerializerMethodField
+from rest_framework.fields import IntegerField, SerializerMethodField
 from rest_framework.serializers import ListSerializer, ModelSerializer
 
 # App
 from project_manager.packages.api.common.serializers import MinimalPackageSerializer
 from project_manager.plugins.api.common.serializers import MinimalPluginSerializer
 from project_manager.sub_plugins.api.common.serializers import MinimalSubPluginSerializer
-from users.api.serializers import ForumUserRetrieveSerializer
+from users.api.serializers import (
+    ForumUserListSerializer,
+    ForumUserRetrieveSerializer,
+)
 from users.api.common.serializers import ForumUserContributorSerializer
 from users.models import ForumUser
 
@@ -154,6 +157,132 @@ class ForumUserRetrieveSerializerTestCase(TestCase):
                 'plugin_contributions',
                 'sub_plugins',
                 'sub_plugin_contributions',
+            ),
+        )
+
+
+class ForumUserListSerializerTestCase(TestCase):
+    def test_class_inheritance(self):
+        self.assertTrue(
+            expr=issubclass(ForumUserListSerializer, ModelSerializer),
+        )
+
+    def test_declared_fields(self):
+        declared_fields = getattr(ForumUserListSerializer, '_declared_fields')
+        self.assertEqual(
+            first=len(declared_fields),
+            second=10,
+        )
+
+        self.assertIn(
+            member='username',
+            container=declared_fields,
+        )
+        self.assertIsInstance(
+            obj=declared_fields['username'],
+            cls=SerializerMethodField,
+        )
+
+        self.assertIn(
+            member='package_count',
+            container=declared_fields,
+        )
+        self.assertIsInstance(
+            obj=declared_fields['package_count'],
+            cls=IntegerField,
+        )
+
+        self.assertIn(
+            member='package_contribution_count',
+            container=declared_fields,
+        )
+        self.assertIsInstance(
+            obj=declared_fields['package_contribution_count'],
+            cls=IntegerField,
+        )
+
+        self.assertIn(
+            member='plugin_count',
+            container=declared_fields,
+        )
+        self.assertIsInstance(
+            obj=declared_fields['plugin_count'],
+            cls=IntegerField,
+        )
+
+        self.assertIn(
+            member='plugin_contribution_count',
+            container=declared_fields,
+        )
+        self.assertIsInstance(
+            obj=declared_fields['plugin_contribution_count'],
+            cls=IntegerField,
+        )
+
+        self.assertIn(
+            member='sub_plugin_count',
+            container=declared_fields,
+        )
+        self.assertIsInstance(
+            obj=declared_fields['sub_plugin_count'],
+            cls=IntegerField,
+        )
+
+        self.assertIn(
+            member='sub_plugin_contribution_count',
+            container=declared_fields,
+        )
+        self.assertIsInstance(
+            obj=declared_fields['sub_plugin_contribution_count'],
+            cls=IntegerField,
+        )
+
+        self.assertIn(
+            member='project_count',
+            container=declared_fields,
+        )
+        self.assertIsInstance(
+            obj=declared_fields['project_count'],
+            cls=IntegerField,
+        )
+
+        self.assertIn(
+            member='project_contribution_count',
+            container=declared_fields,
+        )
+        self.assertIsInstance(
+            obj=declared_fields['project_contribution_count'],
+            cls=IntegerField,
+        )
+
+        self.assertIn(
+            member='total_count',
+            container=declared_fields,
+        )
+        self.assertIsInstance(
+            obj=declared_fields['total_count'],
+            cls=IntegerField,
+        )
+
+    def test_meta_class(self):
+        self.assertEqual(
+            first=ForumUserListSerializer.Meta.model,
+            second=ForumUser,
+        )
+        self.assertTupleEqual(
+            tuple1=ForumUserListSerializer.Meta.fields,
+            tuple2=(
+                'forum_id',
+                'username',
+                'package_count',
+                'package_contribution_count',
+                'plugin_count',
+                'plugin_contribution_count',
+                'sub_plugin_count',
+                'sub_plugin_contribution_count',
+                'project_count',
+                'project_contribution_count',
+                'total_count',
             ),
         )
 

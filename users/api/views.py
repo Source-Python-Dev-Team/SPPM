@@ -83,17 +83,17 @@ class ForumUserViewSet(ModelViewSet):
 
         return queryset.annotate(
             package_count=Count('packages', distinct=True),
-            package_contributions_count=Count('package_contributions', distinct=True),
+            package_contribution_count=Count('package_contributions', distinct=True),
             plugin_count=Count('plugins', distinct=True),
-            plugin_contributions_count=Count('plugin_contributions', distinct=True),
+            plugin_contribution_count=Count('plugin_contributions', distinct=True),
             sub_plugin_count=Count('sub_plugins', distinct=True),
-            sub_plugin_contributions_count=Count('sub_plugin_contributions', distinct=True),
+            sub_plugin_contribution_count=Count('sub_plugin_contributions', distinct=True),
         ).annotate(
             project_count=F('package_count') + F('plugin_count') + F('sub_plugin_count'),
-            project_contributions_count=(
-                F('package_contributions_count') +
-                F('plugin_contributions_count') +
-                F('sub_plugin_contributions_count')
+            project_contribution_count=(
+                F('package_contribution_count') +
+                F('plugin_contribution_count') +
+                F('sub_plugin_contribution_count')
             ),
-            total_count=F('project_count') + F('project_contributions_count'),
+            total_count=F('project_count') + F('project_contribution_count'),
         )
