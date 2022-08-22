@@ -285,7 +285,7 @@ class ProjectContributorViewSet(ProjectRelatedInfoMixin):
 
         `?ordering=-user`
     """
-    ordering = ('-user',)
+    ordering = ('user',)
     ordering_fields = ('user',)
     related_model_type = 'Contributor'
 

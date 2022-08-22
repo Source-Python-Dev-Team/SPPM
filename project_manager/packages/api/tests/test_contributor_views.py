@@ -1,6 +1,10 @@
 # =============================================================================
 # IMPORTS
 # =============================================================================
+# Django
+from django.db import connection, reset_queries
+from django.test import override_settings
+
 # Third Party Django
 from rest_framework import status
 from rest_framework.reverse import reverse
@@ -26,19 +30,25 @@ from test_utils.factories.users import ForumUserFactory
 # =============================================================================
 class PackageContributorViewSetTestCase(APITestCase):
 
-    contributor = detail_api = list_api = owner = package = None
+    contributor = detail_api = list_api = owner = package_1 = None
     package_contributor = None
 
     @classmethod
     def setUpTestData(cls):
         cls.owner = ForumUserFactory()
-        cls.package = PackageFactory(
+        cls.package_1 = PackageFactory(
+            owner=cls.owner,
+        )
+        cls.package_2 = PackageFactory(
             owner=cls.owner,
         )
         cls.contributor = ForumUserFactory()
         cls.package_contributor = PackageContributorFactory(
-            package=cls.package,
+            package=cls.package_1,
             user=cls.contributor,
+        )
+        PackageContributorFactory(
+            package=cls.package_1,
         )
         cls.new_contributor = ForumUserFactory()
         cls.regular_user = ForumUserFactory()
@@ -47,14 +57,14 @@ class PackageContributorViewSetTestCase(APITestCase):
         cls.detail_path = reverse(
             viewname=cls.detail_api,
             kwargs={
-                'package_slug': cls.package.slug,
+                'package_slug': cls.package_1.slug,
                 'pk': cls.package_contributor.id,
             },
         )
         cls.list_path = reverse(
             viewname=cls.list_api,
             kwargs={
-                'package_slug': cls.package.slug,
+                'package_slug': cls.package_1.slug,
             },
         )
 
@@ -94,85 +104,153 @@ class PackageContributorViewSetTestCase(APITestCase):
             tuple2=('get', 'post', 'delete', 'options'),
         )
 
+    @override_settings(DEBUG=True)
     def test_get_list(self):
         # Verify that non-logged-in user can see results but not 'id'
         response = self.client.get(path=self.list_path)
+        self.assertEqual(
+            first=len(connection.queries),
+            second=4,
+        )
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
         )
         content = response.json()
-        self.assertEqual(first=content['count'], second=1)
-        user = self.contributor
+        self.assertEqual(first=content['count'], second=2)
         self.assertDictEqual(
             d1=content['results'][0],
             d2={
                 'user': {
-                    'forum_id': user.forum_id,
-                    'username': user.user.username,
+                    'forum_id': self.contributor.forum_id,
+                    'username': self.contributor.user.username,
                 },
             },
         )
 
         # Verify that regular user can see results but not 'id'
+        reset_queries()
         self.client.force_login(self.regular_user.user)
         response = self.client.get(path=self.list_path)
+        self.assertEqual(
+            first=len(connection.queries),
+            second=6,
+        )
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
         )
         content = response.json()
-        self.assertEqual(first=content['count'], second=1)
-        user = self.contributor
+        self.assertEqual(first=content['count'], second=2)
         self.assertDictEqual(
             d1=content['results'][0],
             d2={
                 'user': {
-                    'forum_id': user.forum_id,
-                    'username': user.user.username,
+                    'forum_id': self.contributor.forum_id,
+                    'username': self.contributor.user.username,
                 },
             },
         )
 
         # Verify that contributors can see results but not 'id'
+        reset_queries()
         self.client.force_login(self.contributor.user)
         response = self.client.get(path=self.list_path)
+        self.assertEqual(
+            first=len(connection.queries),
+            second=6,
+        )
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
         )
         content = response.json()
-        self.assertEqual(first=content['count'], second=1)
+        self.assertEqual(first=content['count'], second=2)
         self.assertDictEqual(
             d1=content['results'][0],
             d2={
                 'user': {
-                    'forum_id': user.forum_id,
-                    'username': user.user.username,
+                    'forum_id': self.contributor.forum_id,
+                    'username': self.contributor.user.username,
                 },
             },
         )
 
         # Verify that the owner can see results AND 'id'
+        reset_queries()
         self.client.force_login(self.owner.user)
         response = self.client.get(path=self.list_path)
+        self.assertEqual(
+            first=len(connection.queries),
+            second=5,
+        )
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
         )
         content = response.json()
-        self.assertEqual(first=content['count'], second=1)
+        self.assertEqual(first=content['count'], second=2)
         self.assertDictEqual(
             d1=content['results'][0],
             d2={
                 'user': {
-                    'forum_id': user.forum_id,
-                    'username': user.user.username,
+                    'forum_id': self.contributor.forum_id,
+                    'username': self.contributor.user.username,
                 },
                 'id': str(self.package_contributor.id),
             },
         )
 
+    @override_settings(DEBUG=True)
+    def test_get_list_empty(self):
+        list_path = reverse(
+            viewname=self.list_api,
+            kwargs={
+                'package_slug': self.package_2.slug,
+            },
+        )
+
+        # Verify that non-logged-in user can see results but not 'id'
+        response = self.client.get(path=list_path)
+        self.assertEqual(
+            first=len(connection.queries),
+            second=2,
+        )
+        self.assertEqual(
+            first=response.status_code,
+            second=status.HTTP_200_OK,
+        )
+        self.assertEqual(first=response.json()['count'], second=0)
+
+        # Verify that regular user can see results but not 'id'
+        reset_queries()
+        self.client.force_login(self.regular_user.user)
+        response = self.client.get(path=list_path)
+        self.assertEqual(
+            first=len(connection.queries),
+            second=4,
+        )
+        self.assertEqual(
+            first=response.status_code,
+            second=status.HTTP_200_OK,
+        )
+        self.assertEqual(first=response.json()['count'], second=0)
+
+        # Verify that the owner can see results AND 'id'
+        reset_queries()
+        self.client.force_login(self.owner.user)
+        response = self.client.get(path=list_path)
+        self.assertEqual(
+            first=len(connection.queries),
+            second=4,
+        )
+        self.assertEqual(
+            first=response.status_code,
+            second=status.HTTP_200_OK,
+        )
+        self.assertEqual(first=response.json()['count'], second=0)
+
+    @override_settings(DEBUG=True)
     def test_get_list_failure(self):
         response = self.client.get(
             path=reverse(
@@ -183,6 +261,10 @@ class PackageContributorViewSetTestCase(APITestCase):
             ),
         )
         self.assertEqual(
+            first=len(connection.queries),
+            second=1,
+        )
+        self.assertEqual(
             first=response.status_code,
             second=status.HTTP_404_NOT_FOUND,
         )
@@ -191,33 +273,53 @@ class PackageContributorViewSetTestCase(APITestCase):
             d2={'detail': 'Invalid package_slug.'},
         )
 
+    @override_settings(DEBUG=True)
     def test_get_details(self):
         # Verify that non-logged-in user cannot see details
         response = self.client.get(path=self.detail_path)
+        self.assertEqual(
+            first=len(connection.queries),
+            second=3,
+        )
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_403_FORBIDDEN,
         )
 
         # Verify that regular user cannot see details
+        reset_queries()
         self.client.force_login(self.regular_user.user)
         response = self.client.get(path=self.detail_path)
+        self.assertEqual(
+            first=len(connection.queries),
+            second=5,
+        )
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_403_FORBIDDEN,
         )
 
         # Verify that contributors cannot see details
+        reset_queries()
         self.client.force_login(self.contributor.user)
         response = self.client.get(path=self.detail_path)
+        self.assertEqual(
+            first=len(connection.queries),
+            second=5,
+        )
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_403_FORBIDDEN,
         )
 
         # Verify that the owner can see details
+        reset_queries()
         self.client.force_login(self.owner.user)
         response = self.client.get(path=self.detail_path)
+        self.assertEqual(
+            first=len(connection.queries),
+            second=5,
+        )
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -233,16 +335,21 @@ class PackageContributorViewSetTestCase(APITestCase):
             },
         )
 
+    @override_settings(DEBUG=True)
     def test_get_detail_failure(self):
         self.client.force_login(self.owner.user)
         response = self.client.get(
             path=reverse(
                 viewname=self.detail_api,
                 kwargs={
-                    'package_slug': self.package.slug,
+                    'package_slug': self.package_1.slug,
                     'pk': 'invalid',
                 },
             ),
+        )
+        self.assertEqual(
+            first=len(connection.queries),
+            second=3,
         )
         self.assertEqual(
             first=response.status_code,
@@ -386,7 +493,7 @@ class PackageContributorViewSetTestCase(APITestCase):
         content = response.json()
         self.assertEqual(
             first=content['name'],
-            second=f'{self.package} - Contributor',
+            second=f'{self.package_1} - Contributor',
         )
         self.assertNotIn(member='actions', container=content)
 
@@ -397,7 +504,7 @@ class PackageContributorViewSetTestCase(APITestCase):
         content = response.json()
         self.assertEqual(
             first=content['name'],
-            second=f'{self.package} - Contributor',
+            second=f'{self.package_1} - Contributor',
         )
         self.assertNotIn(member='actions', container=content)
 
@@ -408,7 +515,7 @@ class PackageContributorViewSetTestCase(APITestCase):
         content = response.json()
         self.assertEqual(
             first=content['name'],
-            second=f'{self.package} - Contributor',
+            second=f'{self.package_1} - Contributor',
         )
         self.assertNotIn(member='actions', container=content)
 
@@ -419,7 +526,7 @@ class PackageContributorViewSetTestCase(APITestCase):
         content = response.json()
         self.assertEqual(
             first=content['name'],
-            second=f'{self.package} - Contributor',
+            second=f'{self.package_1} - Contributor',
         )
         self.assertIn(member='actions', container=content)
         self.assertSetEqual(set1=set(content['actions']), set2={'POST'})
@@ -431,7 +538,7 @@ class PackageContributorViewSetTestCase(APITestCase):
         content = response.json()
         self.assertEqual(
             first=content['name'],
-            second=f'{self.package} - Contributor',
+            second=f'{self.package_1} - Contributor',
         )
         self.assertNotIn(member='actions', container=content)
 
@@ -442,7 +549,7 @@ class PackageContributorViewSetTestCase(APITestCase):
         content = response.json()
         self.assertEqual(
             first=content['name'],
-            second=f'{self.package} - Contributor',
+            second=f'{self.package_1} - Contributor',
         )
         self.assertNotIn(member='actions', container=content)
 
@@ -453,7 +560,7 @@ class PackageContributorViewSetTestCase(APITestCase):
         content = response.json()
         self.assertEqual(
             first=content['name'],
-            second=f'{self.package} - Contributor',
+            second=f'{self.package_1} - Contributor',
         )
         self.assertNotIn(member='actions', container=content)
 
@@ -464,7 +571,7 @@ class PackageContributorViewSetTestCase(APITestCase):
         content = response.json()
         self.assertEqual(
             first=content['name'],
-            second=f'{self.package} - Contributor',
+            second=f'{self.package_1} - Contributor',
         )
         self.assertIn(member='actions', container=content)
         self.assertSetEqual(set1=set(content['actions']), set2={'DELETE'})
