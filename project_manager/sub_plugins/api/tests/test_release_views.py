@@ -16,7 +16,6 @@ from path import Path
 
 # Third Party Django
 from rest_framework import status
-from rest_framework.parsers import ParseError
 from rest_framework.reverse import reverse
 from rest_framework.test import APITestCase
 
@@ -199,41 +198,6 @@ class SubPluginReleaseViewSetTestCase(APITestCase):
         self.assertEqual(
             first=lookup.queryset.query.select_related,
             second={'vcs_requirement': {}},
-        )
-
-    def test_parent_project(self):
-        obj = SubPluginReleaseViewSet()
-        invalid_slug = 'invalid'
-        obj.kwargs = {'plugin_slug': invalid_slug}
-        with self.assertRaises(ParseError) as context:
-            _ = obj.parent_project
-
-        self.assertEqual(
-            first=context.exception.detail,
-            second=f"Plugin '{invalid_slug}' not found.",
-        )
-
-        plugin = PluginFactory()
-        obj.kwargs = {'plugin_slug': plugin.slug}
-        self.assertEqual(
-            first=obj.parent_project,
-            second=plugin,
-        )
-
-    def test_get_project_kwargs(self):
-        obj = SubPluginReleaseViewSet()
-        plugin = PluginFactory()
-        sub_plugin_slug = 'test-sub-plugin'
-        obj.kwargs = {
-            'sub_plugin_slug': sub_plugin_slug,
-            'plugin_slug': plugin.slug,
-        }
-        self.assertDictEqual(
-            d1=obj.get_project_kwargs(),
-            d2={
-                'slug': sub_plugin_slug,
-                'plugin': plugin,
-            }
         )
 
     def test_http_method_names(self):
