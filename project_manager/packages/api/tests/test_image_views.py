@@ -6,6 +6,7 @@ import tempfile
 from datetime import timedelta
 
 # Django
+from django.db import connection, reset_queries
 from django.test import override_settings
 from django.utils.timezone import now
 
@@ -39,26 +40,33 @@ from test_utils.factories.users import ForumUserFactory
 # =============================================================================
 class PackageImageViewSetTestCase(APITestCase):
 
-    contributor = detail_api = list_api = owner = package = None
+    contributor = detail_api = list_api = owner = package_1 = package_2 = None
     package_image_1 = None
     MEDIA_ROOT = Path(tempfile.mkdtemp())
 
     @classmethod
     def setUpTestData(cls):
         cls.owner = ForumUserFactory()
-        cls.package = PackageFactory(
+        cls.package_1 = PackageFactory(
+            owner=cls.owner,
+        )
+        cls.package_2 = PackageFactory(
             owner=cls.owner,
         )
         cls.contributor = ForumUserFactory()
         PackageContributorFactory(
-            package=cls.package,
+            package=cls.package_1,
+            user=cls.contributor,
+        )
+        PackageContributorFactory(
+            package=cls.package_2,
             user=cls.contributor,
         )
         cls.package_image_1 = PackageImageFactory(
-            package=cls.package,
+            package=cls.package_1,
         )
         cls.package_image_2 = PackageImageFactory(
-            package=cls.package,
+            package=cls.package_1,
             created=now() + timedelta(seconds=1)
         )
         cls.regular_user = ForumUserFactory()
@@ -67,14 +75,14 @@ class PackageImageViewSetTestCase(APITestCase):
         cls.detail_path = reverse(
             viewname=cls.detail_api,
             kwargs={
-                'package_slug': cls.package.slug,
+                'package_slug': cls.package_1.slug,
                 'pk': cls.package_image_1.id,
             },
         )
         cls.list_path = reverse(
             viewname=cls.list_api,
             kwargs={
-                'package_slug': cls.package.slug,
+                'package_slug': cls.package_1.slug,
             },
         )
 
@@ -111,9 +119,14 @@ class PackageImageViewSetTestCase(APITestCase):
             tuple2=('get', 'post', 'delete', 'options'),
         )
 
+    @override_settings(DEBUG=True)
     def test_get_list(self):
         # Verify that a non-logged-in user can see results but not 'id'
         response = self.client.get(path=self.list_path)
+        self.assertEqual(
+            first=len(connection.queries),
+            second=4,
+        )
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -130,8 +143,13 @@ class PackageImageViewSetTestCase(APITestCase):
         )
 
         # Verify that regular user can see results but not 'id'
+        reset_queries()
         self.client.force_login(self.regular_user.user)
         response = self.client.get(path=self.list_path)
+        self.assertEqual(
+            first=len(connection.queries),
+            second=6,
+        )
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -146,8 +164,13 @@ class PackageImageViewSetTestCase(APITestCase):
         )
 
         # Verify that contributors can see results AND 'id'
+        reset_queries()
         self.client.force_login(self.contributor.user)
         response = self.client.get(path=self.list_path)
+        self.assertEqual(
+            first=len(connection.queries),
+            second=6,
+        )
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -163,8 +186,13 @@ class PackageImageViewSetTestCase(APITestCase):
         )
 
         # Verify that the owner can see results AND 'id'
+        reset_queries()
         self.client.force_login(self.owner.user)
         response = self.client.get(path=self.list_path)
+        self.assertEqual(
+            first=len(connection.queries),
+            second=5,
+        )
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -179,6 +207,70 @@ class PackageImageViewSetTestCase(APITestCase):
             },
         )
 
+    @override_settings(DEBUG=True)
+    def test_get_list_empty(self):
+        list_path = reverse(
+            viewname=self.list_api,
+            kwargs={
+                'package_slug': self.package_2.slug,
+            },
+        )
+
+        # Verify that a non-logged-in user can see results but not 'id'
+        response = self.client.get(path=list_path)
+        self.assertEqual(
+            first=len(connection.queries),
+            second=2,
+        )
+        self.assertEqual(
+            first=response.status_code,
+            second=status.HTTP_200_OK,
+        )
+        self.assertEqual(first=response.json()['count'], second=0)
+
+        # Verify that regular user can see results but not 'id'
+        reset_queries()
+        self.client.force_login(self.regular_user.user)
+        response = self.client.get(path=list_path)
+        self.assertEqual(
+            first=len(connection.queries),
+            second=4,
+        )
+        self.assertEqual(
+            first=response.status_code,
+            second=status.HTTP_200_OK,
+        )
+        self.assertEqual(first=response.json()['count'], second=0)
+
+        # Verify that contributors can see results AND 'id'
+        reset_queries()
+        self.client.force_login(self.contributor.user)
+        response = self.client.get(path=list_path)
+        self.assertEqual(
+            first=len(connection.queries),
+            second=4,
+        )
+        self.assertEqual(
+            first=response.status_code,
+            second=status.HTTP_200_OK,
+        )
+        self.assertEqual(first=response.json()['count'], second=0)
+
+        # Verify that the owner can see results AND 'id'
+        reset_queries()
+        self.client.force_login(self.owner.user)
+        response = self.client.get(path=list_path)
+        self.assertEqual(
+            first=len(connection.queries),
+            second=4,
+        )
+        self.assertEqual(
+            first=response.status_code,
+            second=status.HTTP_200_OK,
+        )
+        self.assertEqual(first=response.json()['count'], second=0)
+
+    @override_settings(DEBUG=True)
     def test_get_list_failure(self):
         response = self.client.get(
             path=reverse(
@@ -189,6 +281,10 @@ class PackageImageViewSetTestCase(APITestCase):
             ),
         )
         self.assertEqual(
+            first=len(connection.queries),
+            second=1,
+        )
+        self.assertEqual(
             first=response.status_code,
             second=status.HTTP_404_NOT_FOUND,
         )
@@ -197,25 +293,40 @@ class PackageImageViewSetTestCase(APITestCase):
             d2={'detail': 'Invalid package_slug.'},
         )
 
+    @override_settings(DEBUG=True)
     def test_get_details(self):
         # Verify that non-logged-in user cannot see details
         response = self.client.get(path=self.detail_path)
+        self.assertEqual(
+            first=len(connection.queries),
+            second=3,
+        )
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_403_FORBIDDEN,
         )
 
         # Verify that regular user cannot see details
+        reset_queries()
         self.client.force_login(self.regular_user.user)
         response = self.client.get(path=self.detail_path)
+        self.assertEqual(
+            first=len(connection.queries),
+            second=5,
+        )
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_403_FORBIDDEN,
         )
 
         # Verify that contributors can see details
+        reset_queries()
         self.client.force_login(self.contributor.user)
         response = self.client.get(path=self.detail_path)
+        self.assertEqual(
+            first=len(connection.queries),
+            second=5,
+        )
         request = response.wsgi_request
         image = f'{request.scheme}://{request.get_host()}{self.package_image_1.image.url}'
         self.assertEqual(
@@ -231,8 +342,13 @@ class PackageImageViewSetTestCase(APITestCase):
         )
 
         # Verify that the owner can see details
+        reset_queries()
         self.client.force_login(self.owner.user)
         response = self.client.get(path=self.detail_path)
+        self.assertEqual(
+            first=len(connection.queries),
+            second=5,
+        )
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -245,16 +361,21 @@ class PackageImageViewSetTestCase(APITestCase):
             },
         )
 
+    @override_settings(DEBUG=True)
     def test_get_detail_failure(self):
         self.client.force_login(self.owner.user)
         response = self.client.get(
             path=reverse(
                 viewname=self.detail_api,
                 kwargs={
-                    'package_slug': self.package.slug,
+                    'package_slug': self.package_1.slug,
                     'pk': 'invalid',
                 },
             ),
+        )
+        self.assertEqual(
+            first=len(connection.queries),
+            second=3,
         )
         self.assertEqual(
             first=response.status_code,
@@ -356,7 +477,7 @@ class PackageImageViewSetTestCase(APITestCase):
             path=reverse(
                 viewname=self.detail_api,
                 kwargs={
-                    'package_slug': self.package.slug,
+                    'package_slug': self.package_1.slug,
                     'pk': self.package_image_2.id,
                 },
             ),
@@ -373,7 +494,7 @@ class PackageImageViewSetTestCase(APITestCase):
         content = response.json()
         self.assertEqual(
             first=content['name'],
-            second=f'{self.package} - Image',
+            second=f'{self.package_1} - Image',
         )
         self.assertNotIn(member='actions', container=content)
 
@@ -384,7 +505,7 @@ class PackageImageViewSetTestCase(APITestCase):
         content = response.json()
         self.assertEqual(
             first=content['name'],
-            second=f'{self.package} - Image',
+            second=f'{self.package_1} - Image',
         )
         self.assertNotIn(member='actions', container=content)
 
@@ -395,7 +516,7 @@ class PackageImageViewSetTestCase(APITestCase):
         content = response.json()
         self.assertEqual(
             first=content['name'],
-            second=f'{self.package} - Image',
+            second=f'{self.package_1} - Image',
         )
         self.assertIn(member='actions', container=content)
         self.assertSetEqual(set1=set(content['actions']), set2={'POST'})
@@ -407,7 +528,7 @@ class PackageImageViewSetTestCase(APITestCase):
         content = response.json()
         self.assertEqual(
             first=content['name'],
-            second=f'{self.package} - Image',
+            second=f'{self.package_1} - Image',
         )
         self.assertIn(member='actions', container=content)
         self.assertSetEqual(set1=set(content['actions']), set2={'POST'})
@@ -419,7 +540,7 @@ class PackageImageViewSetTestCase(APITestCase):
         content = response.json()
         self.assertEqual(
             first=content['name'],
-            second=f'{self.package} - Image',
+            second=f'{self.package_1} - Image',
         )
         self.assertNotIn(member='actions', container=content)
 
@@ -430,7 +551,7 @@ class PackageImageViewSetTestCase(APITestCase):
         content = response.json()
         self.assertEqual(
             first=content['name'],
-            second=f'{self.package} - Image',
+            second=f'{self.package_1} - Image',
         )
         self.assertNotIn(member='actions', container=content)
 
@@ -441,7 +562,7 @@ class PackageImageViewSetTestCase(APITestCase):
         content = response.json()
         self.assertEqual(
             first=content['name'],
-            second=f'{self.package} - Image',
+            second=f'{self.package_1} - Image',
         )
         self.assertIn(member='actions', container=content)
         self.assertSetEqual(set1=set(content['actions']), set2={'DELETE'})
@@ -453,7 +574,7 @@ class PackageImageViewSetTestCase(APITestCase):
         content = response.json()
         self.assertEqual(
             first=content['name'],
-            second=f'{self.package} - Image',
+            second=f'{self.package_1} - Image',
         )
         self.assertIn(member='actions', container=content)
         self.assertSetEqual(set1=set(content['actions']), set2={'DELETE'})
