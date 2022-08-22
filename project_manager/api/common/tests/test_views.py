@@ -223,7 +223,7 @@ class ProjectContributorViewSetTestCase(TestCase):
     def test_base_attributes(self):
         self.assertTupleEqual(
             tuple1=ProjectContributorViewSet.ordering,
-            tuple2=('-user',),
+            tuple2=('user',),
         )
         self.assertTupleEqual(
             tuple1=ProjectContributorViewSet.ordering_fields,
