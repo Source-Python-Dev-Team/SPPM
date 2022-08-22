@@ -5,7 +5,6 @@
 # =============================================================================
 # Django
 from django.db.models import Prefetch
-from django.utils.functional import cached_property
 
 # Third Party Django
 from rest_framework.parsers import ParseError
@@ -118,26 +117,6 @@ class SubPluginImageViewSet(ProjectImageViewSet):
     project_type = 'sub-plugin'
     project_model = SubPlugin
 
-    @cached_property
-    def parent_project(self):
-        """Return the Plugin for the SubPlugin image view."""
-        plugin_slug = self.kwargs.get('plugin_slug')
-        try:
-            plugin = Plugin.objects.get(slug=plugin_slug)
-        except Plugin.DoesNotExist as exception:
-            raise ParseError(
-                f"Plugin '{plugin_slug}' not found."
-            ) from exception
-        return plugin
-
-    def get_project_kwargs(self):
-        """Add the Plugin to the kwargs for filtering for the project."""
-        kwargs = super().get_project_kwargs()
-        kwargs.update(
-            plugin=self.parent_project,
-        )
-        return kwargs
-
 
 class SubPluginReleaseViewSet(ProjectReleaseViewSet):
     """ViewSet for retrieving releases for SubPlugins."""
@@ -186,26 +165,6 @@ class SubPluginReleaseViewSet(ProjectReleaseViewSet):
 
     project_type = 'sub-plugin'
     project_model = SubPlugin
-
-    @cached_property
-    def parent_project(self):
-        """Return the Plugin for the SubPlugin image view."""
-        plugin_slug = self.kwargs.get('plugin_slug')
-        try:
-            plugin = Plugin.objects.get(slug=plugin_slug)
-        except Plugin.DoesNotExist as exception:
-            raise ParseError(
-                f"Plugin '{plugin_slug}' not found."
-            ) from exception
-        return plugin
-
-    def get_project_kwargs(self):
-        """Add the Plugin to the kwargs for filtering for the project."""
-        kwargs = super().get_project_kwargs()
-        kwargs.update(
-            plugin=self.parent_project,
-        )
-        return kwargs
 
 
 class SubPluginGameViewSet(ProjectGameViewSet):
