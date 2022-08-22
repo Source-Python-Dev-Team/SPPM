@@ -1,6 +1,10 @@
 # =============================================================================
 # IMPORTS
 # =============================================================================
+# Django
+from django.db import connection, reset_queries
+from django.test import override_settings
+
 # Third Party Django
 from rest_framework import status
 from rest_framework.reverse import reverse
@@ -30,20 +34,27 @@ from test_utils.factories.users import ForumUserFactory
 class SubPluginGameViewSetTestCase(APITestCase):
 
     contributor = detail_api = game_1 = game_2 = list_api = owner = None
-    plugin = sub_plugin = sub_plugin_game_1 = None
+    plugin = sub_plugin_1 = sub_plugin_2 = sub_plugin_game_1 = None
 
     @classmethod
     def setUpTestData(cls):
         cls.owner = ForumUserFactory()
         cls.plugin = PluginFactory()
-        cls.sub_plugin = SubPluginFactory(
+        cls.sub_plugin_1 = SubPluginFactory(
+            owner=cls.owner,
+            plugin=cls.plugin,
+        )
+        cls.sub_plugin_2 = SubPluginFactory(
             owner=cls.owner,
             plugin=cls.plugin,
         )
         cls.contributor = ForumUserFactory()
-        cls.package_contributor = SubPluginContributorFactory(
-            sub_plugin=cls.sub_plugin,
+        SubPluginContributorFactory(
+            sub_plugin=cls.sub_plugin_1,
             user=cls.contributor,
+        )
+        SubPluginContributorFactory(
+            sub_plugin=cls.sub_plugin_2,
         )
         cls.game_1 = GameFactory(
             name='Game1',
@@ -66,11 +77,11 @@ class SubPluginGameViewSetTestCase(APITestCase):
             icon='icon4.jpg',
         )
         cls.sub_plugin_game_1 = SubPluginGameFactory(
-            sub_plugin=cls.sub_plugin,
+            sub_plugin=cls.sub_plugin_1,
             game=cls.game_1,
         )
         cls.sub_plugin_game_2 = SubPluginGameFactory(
-            sub_plugin=cls.sub_plugin,
+            sub_plugin=cls.sub_plugin_1,
             game=cls.game_2,
         )
         cls.regular_user = ForumUserFactory()
@@ -80,7 +91,7 @@ class SubPluginGameViewSetTestCase(APITestCase):
             viewname=cls.detail_api,
             kwargs={
                 'plugin_slug': cls.plugin.slug,
-                'sub_plugin_slug': cls.sub_plugin.slug,
+                'sub_plugin_slug': cls.sub_plugin_1.slug,
                 'pk': cls.sub_plugin_game_1.id,
             },
         )
@@ -88,7 +99,7 @@ class SubPluginGameViewSetTestCase(APITestCase):
             viewname=cls.list_api,
             kwargs={
                 'plugin_slug': cls.plugin.slug,
-                'sub_plugin_slug': cls.sub_plugin.slug,
+                'sub_plugin_slug': cls.sub_plugin_1.slug,
             },
         )
 
@@ -125,9 +136,14 @@ class SubPluginGameViewSetTestCase(APITestCase):
             tuple2=('get', 'post', 'delete', 'options'),
         )
 
+    @override_settings(DEBUG=True)
     def test_get_list(self):
         # Verify that non-logged-in user can see results but not 'id'
         response = self.client.get(path=self.list_path)
+        self.assertEqual(
+            first=len(connection.queries),
+            second=4,
+        )
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -148,8 +164,13 @@ class SubPluginGameViewSetTestCase(APITestCase):
         )
 
         # Verify that regular user can see results but not 'id'
+        reset_queries()
         self.client.force_login(self.regular_user.user)
         response = self.client.get(path=self.list_path)
+        self.assertEqual(
+            first=len(connection.queries),
+            second=6,
+        )
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -168,8 +189,13 @@ class SubPluginGameViewSetTestCase(APITestCase):
         )
 
         # Verify that contributors can see results AND 'id'
+        reset_queries()
         self.client.force_login(self.contributor.user)
         response = self.client.get(path=self.list_path)
+        self.assertEqual(
+            first=len(connection.queries),
+            second=6,
+        )
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -189,8 +215,13 @@ class SubPluginGameViewSetTestCase(APITestCase):
         )
 
         # Verify that the owner can see results AND 'id'
+        reset_queries()
         self.client.force_login(self.owner.user)
         response = self.client.get(path=self.list_path)
+        self.assertEqual(
+            first=len(connection.queries),
+            second=5,
+        )
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -209,6 +240,71 @@ class SubPluginGameViewSetTestCase(APITestCase):
             },
         )
 
+    @override_settings(DEBUG=True)
+    def test_get_list_empty(self):
+        list_path = reverse(
+            viewname=self.list_api,
+            kwargs={
+                'plugin_slug': self.plugin.slug,
+                'sub_plugin_slug': self.sub_plugin_2.slug,
+            },
+        )
+
+        # Verify that non-logged-in user can see results but not 'id'
+        response = self.client.get(path=list_path)
+        self.assertEqual(
+            first=len(connection.queries),
+            second=2,
+        )
+        self.assertEqual(
+            first=response.status_code,
+            second=status.HTTP_200_OK,
+        )
+        self.assertEqual(first=response.json()['count'], second=0)
+
+        # Verify that regular user can see results but not 'id'
+        reset_queries()
+        self.client.force_login(self.regular_user.user)
+        response = self.client.get(path=list_path)
+        self.assertEqual(
+            first=len(connection.queries),
+            second=4,
+        )
+        self.assertEqual(
+            first=response.status_code,
+            second=status.HTTP_200_OK,
+        )
+        self.assertEqual(first=response.json()['count'], second=0)
+
+        # Verify that contributors can see results AND 'id'
+        reset_queries()
+        self.client.force_login(self.contributor.user)
+        response = self.client.get(path=list_path)
+        self.assertEqual(
+            first=len(connection.queries),
+            second=4,
+        )
+        self.assertEqual(
+            first=response.status_code,
+            second=status.HTTP_200_OK,
+        )
+        self.assertEqual(first=response.json()['count'], second=0)
+
+        # Verify that the owner can see results AND 'id'
+        reset_queries()
+        self.client.force_login(self.owner.user)
+        response = self.client.get(path=list_path)
+        self.assertEqual(
+            first=len(connection.queries),
+            second=4,
+        )
+        self.assertEqual(
+            first=response.status_code,
+            second=status.HTTP_200_OK,
+        )
+        self.assertEqual(first=response.json()['count'], second=0)
+
+    @override_settings(DEBUG=True)
     def test_get_list_failure(self):
         response = self.client.get(
             path=reverse(
@@ -220,6 +316,10 @@ class SubPluginGameViewSetTestCase(APITestCase):
             ),
         )
         self.assertEqual(
+            first=len(connection.queries),
+            second=1,
+        )
+        self.assertEqual(
             first=response.status_code,
             second=status.HTTP_404_NOT_FOUND,
         )
@@ -228,25 +328,40 @@ class SubPluginGameViewSetTestCase(APITestCase):
             d2={'detail': 'Invalid sub_plugin_slug.'},
         )
 
+    @override_settings(DEBUG=True)
     def test_get_details(self):
         # Verify that non-logged-in user cannot see details
         response = self.client.get(path=self.detail_path)
+        self.assertEqual(
+            first=len(connection.queries),
+            second=3,
+        )
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_403_FORBIDDEN,
         )
 
         # Verify that regular user cannot see details
+        reset_queries()
         self.client.force_login(self.regular_user.user)
         response = self.client.get(path=self.detail_path)
+        self.assertEqual(
+            first=len(connection.queries),
+            second=5,
+        )
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_403_FORBIDDEN,
         )
 
         # Verify that contributors can see details
+        reset_queries()
         self.client.force_login(self.contributor.user)
         response = self.client.get(path=self.detail_path)
+        self.assertEqual(
+            first=len(connection.queries),
+            second=5,
+        )
         request = response.wsgi_request
         icon = f'{request.scheme}://{request.get_host()}{self.game_1.icon.url}'
         self.assertEqual(
@@ -266,8 +381,13 @@ class SubPluginGameViewSetTestCase(APITestCase):
         )
 
         # Verify that the owner can see details
+        reset_queries()
         self.client.force_login(self.owner.user)
         response = self.client.get(path=self.detail_path)
+        self.assertEqual(
+            first=len(connection.queries),
+            second=5,
+        )
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -284,6 +404,7 @@ class SubPluginGameViewSetTestCase(APITestCase):
             },
         )
 
+    @override_settings(DEBUG=True)
     def test_get_detail_failure(self):
         self.client.force_login(self.owner.user)
         response = self.client.get(
@@ -291,10 +412,14 @@ class SubPluginGameViewSetTestCase(APITestCase):
                 viewname=self.detail_api,
                 kwargs={
                     'plugin_slug': self.plugin.slug,
-                    'sub_plugin_slug': self.sub_plugin.slug,
+                    'sub_plugin_slug': self.sub_plugin_1.slug,
                     'pk': 'invalid',
                 },
             ),
+        )
+        self.assertEqual(
+            first=len(connection.queries),
+            second=3,
         )
         self.assertEqual(
             first=response.status_code,
@@ -412,7 +537,7 @@ class SubPluginGameViewSetTestCase(APITestCase):
                 viewname=self.detail_api,
                 kwargs={
                     'plugin_slug': self.plugin.slug,
-                    'sub_plugin_slug': self.sub_plugin.slug,
+                    'sub_plugin_slug': self.sub_plugin_1.slug,
                     'pk': self.sub_plugin_game_2.id,
                 },
             ),
@@ -429,7 +554,7 @@ class SubPluginGameViewSetTestCase(APITestCase):
         content = response.json()
         self.assertEqual(
             first=content['name'],
-            second=f'{self.sub_plugin} - Game',
+            second=f'{self.sub_plugin_1} - Game',
         )
         self.assertNotIn(member='actions', container=content)
 
@@ -440,7 +565,7 @@ class SubPluginGameViewSetTestCase(APITestCase):
         content = response.json()
         self.assertEqual(
             first=content['name'],
-            second=f'{self.sub_plugin} - Game',
+            second=f'{self.sub_plugin_1} - Game',
         )
         self.assertNotIn(member='actions', container=content)
 
@@ -451,7 +576,7 @@ class SubPluginGameViewSetTestCase(APITestCase):
         content = response.json()
         self.assertEqual(
             first=content['name'],
-            second=f'{self.sub_plugin} - Game',
+            second=f'{self.sub_plugin_1} - Game',
         )
         self.assertIn(member='actions', container=content)
         self.assertSetEqual(set1=set(content['actions']), set2={'POST'})
@@ -463,7 +588,7 @@ class SubPluginGameViewSetTestCase(APITestCase):
         content = response.json()
         self.assertEqual(
             first=content['name'],
-            second=f'{self.sub_plugin} - Game',
+            second=f'{self.sub_plugin_1} - Game',
         )
         self.assertIn(member='actions', container=content)
         self.assertSetEqual(set1=set(content['actions']), set2={'POST'})
@@ -475,7 +600,7 @@ class SubPluginGameViewSetTestCase(APITestCase):
         content = response.json()
         self.assertEqual(
             first=content['name'],
-            second=f'{self.sub_plugin} - Game',
+            second=f'{self.sub_plugin_1} - Game',
         )
         self.assertNotIn(member='actions', container=content)
 
@@ -486,7 +611,7 @@ class SubPluginGameViewSetTestCase(APITestCase):
         content = response.json()
         self.assertEqual(
             first=content['name'],
-            second=f'{self.sub_plugin} - Game',
+            second=f'{self.sub_plugin_1} - Game',
         )
         self.assertNotIn(member='actions', container=content)
 
@@ -497,7 +622,7 @@ class SubPluginGameViewSetTestCase(APITestCase):
         content = response.json()
         self.assertEqual(
             first=content['name'],
-            second=f'{self.sub_plugin} - Game',
+            second=f'{self.sub_plugin_1} - Game',
         )
         self.assertIn(member='actions', container=content)
         self.assertSetEqual(set1=set(content['actions']), set2={'DELETE'})
@@ -509,7 +634,7 @@ class SubPluginGameViewSetTestCase(APITestCase):
         content = response.json()
         self.assertEqual(
             first=content['name'],
-            second=f'{self.sub_plugin} - Game',
+            second=f'{self.sub_plugin_1} - Game',
         )
         self.assertIn(member='actions', container=content)
         self.assertSetEqual(set1=set(content['actions']), set2={'DELETE'})
