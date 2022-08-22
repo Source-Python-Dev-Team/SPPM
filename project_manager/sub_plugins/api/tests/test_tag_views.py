@@ -1,6 +1,10 @@
 # =============================================================================
 # IMPORTS
 # =============================================================================
+# Django
+from django.db import connection, reset_queries
+from django.test import override_settings
+
 # Third Party Django
 from rest_framework import status
 from rest_framework.reverse import reverse
@@ -29,27 +33,34 @@ from test_utils.factories.users import ForumUserFactory
 # =============================================================================
 class SubPluginTagViewSetTestCase(APITestCase):
 
-    contributor = detail_api = list_api = owner = plugin = sub_plugin = None
-    sub_plugin_tag_1 = None
+    contributor = detail_api = list_api = owner = plugin = sub_plugin_1 = None
+    sub_plugin_2 = sub_plugin_tag_1 = None
 
     @classmethod
     def setUpTestData(cls):
         cls.owner = ForumUserFactory()
         cls.plugin = PluginFactory()
-        cls.sub_plugin = SubPluginFactory(
+        cls.sub_plugin_1 = SubPluginFactory(
+            owner=cls.owner,
+            plugin=cls.plugin,
+        )
+        cls.sub_plugin_2 = SubPluginFactory(
             owner=cls.owner,
             plugin=cls.plugin,
         )
         cls.contributor = ForumUserFactory()
         SubPluginContributorFactory(
-            sub_plugin=cls.sub_plugin,
+            sub_plugin=cls.sub_plugin_1,
             user=cls.contributor,
         )
+        SubPluginContributorFactory(
+            sub_plugin=cls.sub_plugin_2,
+        )
         cls.sub_plugin_tag_1 = SubPluginTagFactory(
-            sub_plugin=cls.sub_plugin,
+            sub_plugin=cls.sub_plugin_1,
         )
         cls.sub_plugin_tag_2 = SubPluginTagFactory(
-            sub_plugin=cls.sub_plugin,
+            sub_plugin=cls.sub_plugin_1,
         )
         cls.regular_user = ForumUserFactory()
         cls.detail_api = 'api:sub-plugins:tags-detail'
@@ -58,7 +69,7 @@ class SubPluginTagViewSetTestCase(APITestCase):
             viewname=cls.detail_api,
             kwargs={
                 'plugin_slug': cls.plugin.slug,
-                'sub_plugin_slug': cls.sub_plugin.slug,
+                'sub_plugin_slug': cls.sub_plugin_1.slug,
                 'pk': cls.sub_plugin_tag_1.id,
             },
         )
@@ -66,7 +77,7 @@ class SubPluginTagViewSetTestCase(APITestCase):
             viewname=cls.list_api,
             kwargs={
                 'plugin_slug': cls.plugin.slug,
-                'sub_plugin_slug': cls.sub_plugin.slug,
+                'sub_plugin_slug': cls.sub_plugin_1.slug,
             },
         )
 
@@ -101,9 +112,14 @@ class SubPluginTagViewSetTestCase(APITestCase):
             tuple2=('get', 'post', 'delete', 'options'),
         )
 
+    @override_settings(DEBUG=True)
     def test_get_list(self):
         # Verify that non-logged-in user can see results but not 'id'
         response = self.client.get(path=self.list_path)
+        self.assertEqual(
+            first=len(connection.queries),
+            second=4,
+        )
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -118,8 +134,13 @@ class SubPluginTagViewSetTestCase(APITestCase):
         )
 
         # Verify that regular user can see results but not 'id'
+        reset_queries()
         self.client.force_login(self.regular_user.user)
         response = self.client.get(path=self.list_path)
+        self.assertEqual(
+            first=len(connection.queries),
+            second=6,
+        )
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -134,8 +155,13 @@ class SubPluginTagViewSetTestCase(APITestCase):
         )
 
         # Verify that contributors can see results AND 'id'
+        reset_queries()
         self.client.force_login(self.contributor.user)
         response = self.client.get(path=self.list_path)
+        self.assertEqual(
+            first=len(connection.queries),
+            second=6,
+        )
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -151,8 +177,13 @@ class SubPluginTagViewSetTestCase(APITestCase):
         )
 
         # Verify that the owner can see results AND 'id'
+        reset_queries()
         self.client.force_login(self.owner.user)
         response = self.client.get(path=self.list_path)
+        self.assertEqual(
+            first=len(connection.queries),
+            second=5,
+        )
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -167,6 +198,71 @@ class SubPluginTagViewSetTestCase(APITestCase):
             },
         )
 
+    @override_settings(DEBUG=True)
+    def test_get_list_empty(self):
+        list_path = reverse(
+            viewname=self.list_api,
+            kwargs={
+                'plugin_slug': self.plugin.slug,
+                'sub_plugin_slug': self.sub_plugin_2.slug,
+            },
+        )
+
+        # Verify that non-logged-in user can see results but not 'id'
+        response = self.client.get(path=list_path)
+        self.assertEqual(
+            first=len(connection.queries),
+            second=2,
+        )
+        self.assertEqual(
+            first=response.status_code,
+            second=status.HTTP_200_OK,
+        )
+        self.assertEqual(first=response.json()['count'], second=0)
+
+        # Verify that regular user can see results but not 'id'
+        reset_queries()
+        self.client.force_login(self.regular_user.user)
+        response = self.client.get(path=list_path)
+        self.assertEqual(
+            first=len(connection.queries),
+            second=4,
+        )
+        self.assertEqual(
+            first=response.status_code,
+            second=status.HTTP_200_OK,
+        )
+        self.assertEqual(first=response.json()['count'], second=0)
+
+        # Verify that contributors can see results AND 'id'
+        reset_queries()
+        self.client.force_login(self.contributor.user)
+        response = self.client.get(path=list_path)
+        self.assertEqual(
+            first=len(connection.queries),
+            second=4,
+        )
+        self.assertEqual(
+            first=response.status_code,
+            second=status.HTTP_200_OK,
+        )
+        self.assertEqual(first=response.json()['count'], second=0)
+
+        # Verify that the owner can see results AND 'id'
+        reset_queries()
+        self.client.force_login(self.owner.user)
+        response = self.client.get(path=list_path)
+        self.assertEqual(
+            first=len(connection.queries),
+            second=4,
+        )
+        self.assertEqual(
+            first=response.status_code,
+            second=status.HTTP_200_OK,
+        )
+        self.assertEqual(first=response.json()['count'], second=0)
+
+    @override_settings(DEBUG=True)
     def test_get_list_failure(self):
         response = self.client.get(
             path=reverse(
@@ -178,6 +274,10 @@ class SubPluginTagViewSetTestCase(APITestCase):
             ),
         )
         self.assertEqual(
+            first=len(connection.queries),
+            second=1,
+        )
+        self.assertEqual(
             first=response.status_code,
             second=status.HTTP_404_NOT_FOUND,
         )
@@ -186,25 +286,40 @@ class SubPluginTagViewSetTestCase(APITestCase):
             d2={'detail': 'Invalid sub_plugin_slug.'},
         )
 
+    @override_settings(DEBUG=True)
     def test_get_details(self):
         # Verify that non-logged-in user cannot see details
         response = self.client.get(path=self.detail_path)
+        self.assertEqual(
+            first=len(connection.queries),
+            second=3,
+        )
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_403_FORBIDDEN,
         )
 
         # Verify that regular user cannot see details
+        reset_queries()
         self.client.force_login(self.regular_user.user)
         response = self.client.get(path=self.detail_path)
+        self.assertEqual(
+            first=len(connection.queries),
+            second=5,
+        )
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_403_FORBIDDEN,
         )
 
         # Verify that contributors can see details
+        reset_queries()
         self.client.force_login(self.contributor.user)
         response = self.client.get(path=self.detail_path)
+        self.assertEqual(
+            first=len(connection.queries),
+            second=5,
+        )
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -218,8 +333,13 @@ class SubPluginTagViewSetTestCase(APITestCase):
         )
 
         # Verify that the owner can see details
+        reset_queries()
         self.client.force_login(self.owner.user)
         response = self.client.get(path=self.detail_path)
+        self.assertEqual(
+            first=len(connection.queries),
+            second=5,
+        )
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -232,6 +352,7 @@ class SubPluginTagViewSetTestCase(APITestCase):
             },
         )
 
+    @override_settings(DEBUG=True)
     def test_get_detail_failure(self):
         self.client.force_login(self.owner.user)
         response = self.client.get(
@@ -239,10 +360,14 @@ class SubPluginTagViewSetTestCase(APITestCase):
                 viewname=self.detail_api,
                 kwargs={
                     'plugin_slug': self.plugin.slug,
-                    'sub_plugin_slug': self.sub_plugin.slug,
+                    'sub_plugin_slug': self.sub_plugin_1.slug,
                     'pk': 'invalid',
                 },
             ),
+        )
+        self.assertEqual(
+            first=len(connection.queries),
+            second=3,
         )
         self.assertEqual(
             first=response.status_code,
@@ -362,7 +487,7 @@ class SubPluginTagViewSetTestCase(APITestCase):
                 viewname=self.detail_api,
                 kwargs={
                     'plugin_slug': self.plugin.slug,
-                    'sub_plugin_slug': self.sub_plugin.slug,
+                    'sub_plugin_slug': self.sub_plugin_1.slug,
                     'pk': self.sub_plugin_tag_2.id,
                 },
             ),
@@ -379,7 +504,7 @@ class SubPluginTagViewSetTestCase(APITestCase):
         content = response.json()
         self.assertEqual(
             first=content['name'],
-            second=f'{self.sub_plugin} - Tag',
+            second=f'{self.sub_plugin_1} - Tag',
         )
         self.assertNotIn(member='actions', container=content)
 
@@ -390,7 +515,7 @@ class SubPluginTagViewSetTestCase(APITestCase):
         content = response.json()
         self.assertEqual(
             first=content['name'],
-            second=f'{self.sub_plugin} - Tag',
+            second=f'{self.sub_plugin_1} - Tag',
         )
         self.assertNotIn(member='actions', container=content)
 
@@ -401,7 +526,7 @@ class SubPluginTagViewSetTestCase(APITestCase):
         content = response.json()
         self.assertEqual(
             first=content['name'],
-            second=f'{self.sub_plugin} - Tag',
+            second=f'{self.sub_plugin_1} - Tag',
         )
         self.assertIn(member='actions', container=content)
         self.assertSetEqual(set1=set(content['actions']), set2={'POST'})
@@ -413,7 +538,7 @@ class SubPluginTagViewSetTestCase(APITestCase):
         content = response.json()
         self.assertEqual(
             first=content['name'],
-            second=f'{self.sub_plugin} - Tag',
+            second=f'{self.sub_plugin_1} - Tag',
         )
         self.assertIn(member='actions', container=content)
         self.assertSetEqual(set1=set(content['actions']), set2={'POST'})
@@ -425,7 +550,7 @@ class SubPluginTagViewSetTestCase(APITestCase):
         content = response.json()
         self.assertEqual(
             first=content['name'],
-            second=f'{self.sub_plugin} - Tag',
+            second=f'{self.sub_plugin_1} - Tag',
         )
         self.assertNotIn(member='actions', container=content)
 
@@ -436,7 +561,7 @@ class SubPluginTagViewSetTestCase(APITestCase):
         content = response.json()
         self.assertEqual(
             first=content['name'],
-            second=f'{self.sub_plugin} - Tag',
+            second=f'{self.sub_plugin_1} - Tag',
         )
         self.assertNotIn(member='actions', container=content)
 
@@ -447,7 +572,7 @@ class SubPluginTagViewSetTestCase(APITestCase):
         content = response.json()
         self.assertEqual(
             first=content['name'],
-            second=f'{self.sub_plugin} - Tag',
+            second=f'{self.sub_plugin_1} - Tag',
         )
         self.assertIn(member='actions', container=content)
         self.assertSetEqual(set1=set(content['actions']), set2={'DELETE'})
@@ -459,7 +584,7 @@ class SubPluginTagViewSetTestCase(APITestCase):
         content = response.json()
         self.assertEqual(
             first=content['name'],
-            second=f'{self.sub_plugin} - Tag',
+            second=f'{self.sub_plugin_1} - Tag',
         )
         self.assertIn(member='actions', container=content)
         self.assertSetEqual(set1=set(content['actions']), set2={'DELETE'})

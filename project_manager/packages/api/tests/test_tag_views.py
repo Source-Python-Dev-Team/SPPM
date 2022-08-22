@@ -1,6 +1,10 @@
 # =============================================================================
 # IMPORTS
 # =============================================================================
+# Django
+from django.db import connection, reset_queries
+from django.test import override_settings
+
 # Third Party Django
 from rest_framework import status
 from rest_framework.reverse import reverse
@@ -28,25 +32,32 @@ from test_utils.factories.users import ForumUserFactory
 # =============================================================================
 class PackageTagViewSetTestCase(APITestCase):
 
-    contributor = detail_api = list_api = owner = package = None
+    contributor = detail_api = list_api = owner = package_1 = package_2 = None
     package_tag_1 = None
 
     @classmethod
     def setUpTestData(cls):
         cls.owner = ForumUserFactory()
-        cls.package = PackageFactory(
+        cls.package_1 = PackageFactory(
+            owner=cls.owner,
+        )
+        cls.package_2 = PackageFactory(
             owner=cls.owner,
         )
         cls.contributor = ForumUserFactory()
         PackageContributorFactory(
-            package=cls.package,
+            package=cls.package_1,
+            user=cls.contributor,
+        )
+        PackageContributorFactory(
+            package=cls.package_2,
             user=cls.contributor,
         )
         cls.package_tag_1 = PackageTagFactory(
-            package=cls.package,
+            package=cls.package_1,
         )
         cls.package_tag_2 = PackageTagFactory(
-            package=cls.package,
+            package=cls.package_1,
         )
         cls.regular_user = ForumUserFactory()
         cls.detail_api = 'api:packages:tags-detail'
@@ -54,14 +65,14 @@ class PackageTagViewSetTestCase(APITestCase):
         cls.detail_path = reverse(
             viewname=cls.detail_api,
             kwargs={
-                'package_slug': cls.package.slug,
+                'package_slug': cls.package_1.slug,
                 'pk': cls.package_tag_1.id,
             },
         )
         cls.list_path = reverse(
             viewname=cls.list_api,
             kwargs={
-                'package_slug': cls.package.slug,
+                'package_slug': cls.package_1.slug,
             },
         )
 
@@ -96,9 +107,14 @@ class PackageTagViewSetTestCase(APITestCase):
             tuple2=('get', 'post', 'delete', 'options'),
         )
 
+    @override_settings(DEBUG=True)
     def test_get_list(self):
         # Verify that non-logged-in user can see results but not 'id'
         response = self.client.get(path=self.list_path)
+        self.assertEqual(
+            first=len(connection.queries),
+            second=4,
+        )
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -113,8 +129,13 @@ class PackageTagViewSetTestCase(APITestCase):
         )
 
         # Verify that regular user can see results but not 'id'
+        reset_queries()
         self.client.force_login(self.regular_user.user)
         response = self.client.get(path=self.list_path)
+        self.assertEqual(
+            first=len(connection.queries),
+            second=6,
+        )
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -129,8 +150,13 @@ class PackageTagViewSetTestCase(APITestCase):
         )
 
         # Verify that contributors can see results AND 'id'
+        reset_queries()
         self.client.force_login(self.contributor.user)
         response = self.client.get(path=self.list_path)
+        self.assertEqual(
+            first=len(connection.queries),
+            second=6,
+        )
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -146,8 +172,13 @@ class PackageTagViewSetTestCase(APITestCase):
         )
 
         # Verify that the owner can see results AND 'id'
+        reset_queries()
         self.client.force_login(self.owner.user)
         response = self.client.get(path=self.list_path)
+        self.assertEqual(
+            first=len(connection.queries),
+            second=5,
+        )
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -162,6 +193,70 @@ class PackageTagViewSetTestCase(APITestCase):
             },
         )
 
+    @override_settings(DEBUG=True)
+    def test_get_list_empty(self):
+        list_path = reverse(
+            viewname=self.list_api,
+            kwargs={
+                'package_slug': self.package_2.slug,
+            },
+        )
+
+        # Verify that non-logged-in user can see results but not 'id'
+        response = self.client.get(path=list_path)
+        self.assertEqual(
+            first=len(connection.queries),
+            second=2,
+        )
+        self.assertEqual(
+            first=response.status_code,
+            second=status.HTTP_200_OK,
+        )
+        self.assertEqual(first=response.json()['count'], second=0)
+
+        # Verify that regular user can see results but not 'id'
+        reset_queries()
+        self.client.force_login(self.regular_user.user)
+        response = self.client.get(path=list_path)
+        self.assertEqual(
+            first=len(connection.queries),
+            second=4,
+        )
+        self.assertEqual(
+            first=response.status_code,
+            second=status.HTTP_200_OK,
+        )
+        self.assertEqual(first=response.json()['count'], second=0)
+
+        # Verify that contributors can see results AND 'id'
+        reset_queries()
+        self.client.force_login(self.contributor.user)
+        response = self.client.get(path=list_path)
+        self.assertEqual(
+            first=len(connection.queries),
+            second=4,
+        )
+        self.assertEqual(
+            first=response.status_code,
+            second=status.HTTP_200_OK,
+        )
+        self.assertEqual(first=response.json()['count'], second=0)
+
+        # Verify that the owner can see results AND 'id'
+        reset_queries()
+        self.client.force_login(self.owner.user)
+        response = self.client.get(path=list_path)
+        self.assertEqual(
+            first=len(connection.queries),
+            second=4,
+        )
+        self.assertEqual(
+            first=response.status_code,
+            second=status.HTTP_200_OK,
+        )
+        self.assertEqual(first=response.json()['count'], second=0)
+
+    @override_settings(DEBUG=True)
     def test_get_list_failure(self):
         response = self.client.get(
             path=reverse(
@@ -172,6 +267,10 @@ class PackageTagViewSetTestCase(APITestCase):
             ),
         )
         self.assertEqual(
+            first=len(connection.queries),
+            second=1,
+        )
+        self.assertEqual(
             first=response.status_code,
             second=status.HTTP_404_NOT_FOUND,
         )
@@ -180,25 +279,40 @@ class PackageTagViewSetTestCase(APITestCase):
             d2={'detail': 'Invalid package_slug.'},
         )
 
+    @override_settings(DEBUG=True)
     def test_get_details(self):
         # Verify that non-logged-in user cannot see details
         response = self.client.get(path=self.detail_path)
+        self.assertEqual(
+            first=len(connection.queries),
+            second=3,
+        )
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_403_FORBIDDEN,
         )
 
         # Verify that regular user cannot see details
+        reset_queries()
         self.client.force_login(self.regular_user.user)
         response = self.client.get(path=self.detail_path)
+        self.assertEqual(
+            first=len(connection.queries),
+            second=5,
+        )
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_403_FORBIDDEN,
         )
 
         # Verify that contributors can see details
+        reset_queries()
         self.client.force_login(self.contributor.user)
         response = self.client.get(path=self.detail_path)
+        self.assertEqual(
+            first=len(connection.queries),
+            second=5,
+        )
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -212,8 +326,13 @@ class PackageTagViewSetTestCase(APITestCase):
         )
 
         # Verify that the owner can see details
+        reset_queries()
         self.client.force_login(self.owner.user)
         response = self.client.get(path=self.detail_path)
+        self.assertEqual(
+            first=len(connection.queries),
+            second=5,
+        )
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -226,16 +345,21 @@ class PackageTagViewSetTestCase(APITestCase):
             },
         )
 
+    @override_settings(DEBUG=True)
     def test_get_detail_failure(self):
         self.client.force_login(self.owner.user)
         response = self.client.get(
             path=reverse(
                 viewname=self.detail_api,
                 kwargs={
-                    'package_slug': self.package.slug,
+                    'package_slug': self.package_1.slug,
                     'pk': 'invalid',
                 },
             ),
+        )
+        self.assertEqual(
+            first=len(connection.queries),
+            second=3,
         )
         self.assertEqual(
             first=response.status_code,
@@ -354,7 +478,7 @@ class PackageTagViewSetTestCase(APITestCase):
             path=reverse(
                 viewname=self.detail_api,
                 kwargs={
-                    'package_slug': self.package.slug,
+                    'package_slug': self.package_1.slug,
                     'pk': self.package_tag_2.id,
                 },
             ),
@@ -371,7 +495,7 @@ class PackageTagViewSetTestCase(APITestCase):
         content = response.json()
         self.assertEqual(
             first=content['name'],
-            second=f'{self.package} - Tag',
+            second=f'{self.package_1} - Tag',
         )
         self.assertNotIn(member='actions', container=content)
 
@@ -382,7 +506,7 @@ class PackageTagViewSetTestCase(APITestCase):
         content = response.json()
         self.assertEqual(
             first=content['name'],
-            second=f'{self.package} - Tag',
+            second=f'{self.package_1} - Tag',
         )
         self.assertNotIn(member='actions', container=content)
 
@@ -393,7 +517,7 @@ class PackageTagViewSetTestCase(APITestCase):
         content = response.json()
         self.assertEqual(
             first=content['name'],
-            second=f'{self.package} - Tag',
+            second=f'{self.package_1} - Tag',
         )
         self.assertIn(member='actions', container=content)
         self.assertSetEqual(set1=set(content['actions']), set2={'POST'})
@@ -405,7 +529,7 @@ class PackageTagViewSetTestCase(APITestCase):
         content = response.json()
         self.assertEqual(
             first=content['name'],
-            second=f'{self.package} - Tag',
+            second=f'{self.package_1} - Tag',
         )
         self.assertIn(member='actions', container=content)
         self.assertSetEqual(set1=set(content['actions']), set2={'POST'})
@@ -417,7 +541,7 @@ class PackageTagViewSetTestCase(APITestCase):
         content = response.json()
         self.assertEqual(
             first=content['name'],
-            second=f'{self.package} - Tag',
+            second=f'{self.package_1} - Tag',
         )
         self.assertNotIn(member='actions', container=content)
 
@@ -428,7 +552,7 @@ class PackageTagViewSetTestCase(APITestCase):
         content = response.json()
         self.assertEqual(
             first=content['name'],
-            second=f'{self.package} - Tag',
+            second=f'{self.package_1} - Tag',
         )
         self.assertNotIn(member='actions', container=content)
 
@@ -439,7 +563,7 @@ class PackageTagViewSetTestCase(APITestCase):
         content = response.json()
         self.assertEqual(
             first=content['name'],
-            second=f'{self.package} - Tag',
+            second=f'{self.package_1} - Tag',
         )
         self.assertIn(member='actions', container=content)
         self.assertSetEqual(set1=set(content['actions']), set2={'DELETE'})
@@ -451,7 +575,7 @@ class PackageTagViewSetTestCase(APITestCase):
         content = response.json()
         self.assertEqual(
             first=content['name'],
-            second=f'{self.package} - Tag',
+            second=f'{self.package_1} - Tag',
         )
         self.assertIn(member='actions', container=content)
         self.assertSetEqual(set1=set(content['actions']), set2={'DELETE'})
