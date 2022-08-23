@@ -1,6 +1,10 @@
 # =============================================================================
 # IMPORTS
 # =============================================================================
+# Django
+from django.db import connection
+from django.test import override_settings
+
 # Third Party Django
 from rest_framework import status
 from rest_framework.reverse import reverse
@@ -27,26 +31,33 @@ from test_utils.factories.users import ForumUserFactory
 # =============================================================================
 class SubPluginPathViewSetTestCase(APITestCase):
 
-    contributor = detail_api = list_api = owner = plugin = None
+    contributor = detail_api = list_api = owner = plugin_1 = plugin_2 = None
     sub_plugin_path_1 = None
 
     @classmethod
     def setUpTestData(cls):
         cls.owner = ForumUserFactory()
-        cls.plugin = PluginFactory(
+        cls.plugin_1 = PluginFactory(
+            owner=cls.owner,
+        )
+        cls.plugin_2 = PluginFactory(
             owner=cls.owner,
         )
         cls.contributor = ForumUserFactory()
         PluginContributorFactory(
-            plugin=cls.plugin,
+            plugin=cls.plugin_1,
+            user=cls.contributor,
+        )
+        PluginContributorFactory(
+            plugin=cls.plugin_2,
             user=cls.contributor,
         )
         cls.sub_plugin_path_1 = SubPluginPathFactory(
-            plugin=cls.plugin,
+            plugin=cls.plugin_1,
             allow_module=True,
         )
         cls.sub_plugin_path_2 = SubPluginPathFactory(
-            plugin=cls.plugin,
+            plugin=cls.plugin_1,
             allow_package_using_basename=True,
         )
         cls.regular_user = ForumUserFactory()
@@ -55,14 +66,14 @@ class SubPluginPathViewSetTestCase(APITestCase):
         cls.detail_path = reverse(
             viewname=cls.detail_api,
             kwargs={
-                'plugin_slug': cls.plugin.slug,
+                'plugin_slug': cls.plugin_1.slug,
                 'pk': cls.sub_plugin_path_1.id,
             },
         )
         cls.list_path = reverse(
             viewname=cls.list_api,
             kwargs={
-                'plugin_slug': cls.plugin.slug,
+                'plugin_slug': cls.plugin_1.slug,
             },
         )
 
@@ -107,9 +118,11 @@ class SubPluginPathViewSetTestCase(APITestCase):
             tuple2=('get', 'post', 'patch', 'delete', 'options'),
         )
 
+    @override_settings(DEBUG=True)
     def test_get_list(self):
         # Verify that non-logged-in user can see results but not 'id'
         response = self.client.get(path=self.list_path)
+        self.assertEqual(first=len(connection.queries), second=4)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -129,6 +142,7 @@ class SubPluginPathViewSetTestCase(APITestCase):
         # Verify that regular user can see results but not 'id'
         self.client.force_login(self.regular_user.user)
         response = self.client.get(path=self.list_path)
+        self.assertEqual(first=len(connection.queries), second=6)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -148,6 +162,7 @@ class SubPluginPathViewSetTestCase(APITestCase):
         # Verify that contributors can see results AND 'id'
         self.client.force_login(self.contributor.user)
         response = self.client.get(path=self.list_path)
+        self.assertEqual(first=len(connection.queries), second=6)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -168,6 +183,7 @@ class SubPluginPathViewSetTestCase(APITestCase):
         # Verify that the owner can see results AND 'id'
         self.client.force_login(self.owner.user)
         response = self.client.get(path=self.list_path)
+        self.assertEqual(first=len(connection.queries), second=5)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -185,6 +201,55 @@ class SubPluginPathViewSetTestCase(APITestCase):
             },
         )
 
+    @override_settings(DEBUG=True)
+    def test_get_list_empty(self):
+        list_path = reverse(
+            viewname=self.list_api,
+            kwargs={
+                'plugin_slug': self.plugin_2.slug,
+            },
+        )
+
+        # Verify that non-logged-in user can see results but not 'id'
+        response = self.client.get(path=list_path)
+        self.assertEqual(first=len(connection.queries), second=2)
+        self.assertEqual(
+            first=response.status_code,
+            second=status.HTTP_200_OK,
+        )
+        self.assertEqual(first=response.json()['count'], second=0)
+
+        # Verify that regular user can see results but not 'id'
+        self.client.force_login(self.regular_user.user)
+        response = self.client.get(path=list_path)
+        self.assertEqual(first=len(connection.queries), second=4)
+        self.assertEqual(
+            first=response.status_code,
+            second=status.HTTP_200_OK,
+        )
+        self.assertEqual(first=response.json()['count'], second=0)
+
+        # Verify that contributors can see results AND 'id'
+        self.client.force_login(self.contributor.user)
+        response = self.client.get(path=list_path)
+        self.assertEqual(first=len(connection.queries), second=4)
+        self.assertEqual(
+            first=response.status_code,
+            second=status.HTTP_200_OK,
+        )
+        self.assertEqual(first=response.json()['count'], second=0)
+
+        # Verify that the owner can see results AND 'id'
+        self.client.force_login(self.owner.user)
+        response = self.client.get(path=list_path)
+        self.assertEqual(first=len(connection.queries), second=4)
+        self.assertEqual(
+            first=response.status_code,
+            second=status.HTTP_200_OK,
+        )
+        self.assertEqual(first=response.json()['count'], second=0)
+
+    @override_settings(DEBUG=True)
     def test_get_list_failure(self):
         response = self.client.get(
             path=reverse(
@@ -194,6 +259,7 @@ class SubPluginPathViewSetTestCase(APITestCase):
                 }
             ),
         )
+        self.assertEqual(first=len(connection.queries), second=1)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_404_NOT_FOUND,
@@ -203,9 +269,11 @@ class SubPluginPathViewSetTestCase(APITestCase):
             d2={'detail': 'Invalid plugin_slug.'},
         )
 
+    @override_settings(DEBUG=True)
     def test_get_details(self):
         # Verify that non-logged-in user cannot see details
         response = self.client.get(path=self.detail_path)
+        self.assertEqual(first=len(connection.queries), second=3)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_403_FORBIDDEN,
@@ -214,6 +282,7 @@ class SubPluginPathViewSetTestCase(APITestCase):
         # Verify that regular user cannot see details
         self.client.force_login(self.regular_user.user)
         response = self.client.get(path=self.detail_path)
+        self.assertEqual(first=len(connection.queries), second=5)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_403_FORBIDDEN,
@@ -222,6 +291,7 @@ class SubPluginPathViewSetTestCase(APITestCase):
         # Verify that contributors can see details
         self.client.force_login(self.contributor.user)
         response = self.client.get(path=self.detail_path)
+        self.assertEqual(first=len(connection.queries), second=5)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -240,6 +310,7 @@ class SubPluginPathViewSetTestCase(APITestCase):
         # Verify that the owner can see details
         self.client.force_login(self.owner.user)
         response = self.client.get(path=self.detail_path)
+        self.assertEqual(first=len(connection.queries), second=5)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -255,17 +326,19 @@ class SubPluginPathViewSetTestCase(APITestCase):
             },
         )
 
+    @override_settings(DEBUG=True)
     def test_get_detail_failure(self):
         self.client.force_login(self.owner.user)
         response = self.client.get(
             path=reverse(
                 viewname=self.detail_api,
                 kwargs={
-                    'plugin_slug': self.plugin.slug,
+                    'plugin_slug': self.plugin_1.slug,
                     'pk': 'invalid',
                 },
             ),
         )
+        self.assertEqual(first=len(connection.queries), second=3)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_404_NOT_FOUND,
@@ -425,7 +498,7 @@ class SubPluginPathViewSetTestCase(APITestCase):
             path=reverse(
                 viewname=self.detail_api,
                 kwargs={
-                    'plugin_slug': self.plugin.slug,
+                    'plugin_slug': self.plugin_1.slug,
                     'pk': self.sub_plugin_path_2.id,
                 },
             ),
@@ -442,7 +515,7 @@ class SubPluginPathViewSetTestCase(APITestCase):
         content = response.json()
         self.assertEqual(
             first=content['name'],
-            second=f'{self.plugin} - Sub-Plugin Path',
+            second=f'{self.plugin_1} - Sub-Plugin Path',
         )
         self.assertNotIn(member='actions', container=content)
 
@@ -453,7 +526,7 @@ class SubPluginPathViewSetTestCase(APITestCase):
         content = response.json()
         self.assertEqual(
             first=content['name'],
-            second=f'{self.plugin} - Sub-Plugin Path',
+            second=f'{self.plugin_1} - Sub-Plugin Path',
         )
         self.assertNotIn(member='actions', container=content)
 
@@ -464,7 +537,7 @@ class SubPluginPathViewSetTestCase(APITestCase):
         content = response.json()
         self.assertEqual(
             first=content['name'],
-            second=f'{self.plugin} - Sub-Plugin Path',
+            second=f'{self.plugin_1} - Sub-Plugin Path',
         )
         self.assertIn(member='actions', container=content)
         self.assertSetEqual(set1=set(content['actions']), set2={'POST'})
@@ -476,7 +549,7 @@ class SubPluginPathViewSetTestCase(APITestCase):
         content = response.json()
         self.assertEqual(
             first=content['name'],
-            second=f'{self.plugin} - Sub-Plugin Path',
+            second=f'{self.plugin_1} - Sub-Plugin Path',
         )
         self.assertIn(member='actions', container=content)
         self.assertSetEqual(set1=set(content['actions']), set2={'POST'})
@@ -488,7 +561,7 @@ class SubPluginPathViewSetTestCase(APITestCase):
         content = response.json()
         self.assertEqual(
             first=content['name'],
-            second=f'{self.plugin} - Sub-Plugin Path',
+            second=f'{self.plugin_1} - Sub-Plugin Path',
         )
         self.assertNotIn(member='actions', container=content)
 
@@ -499,7 +572,7 @@ class SubPluginPathViewSetTestCase(APITestCase):
         content = response.json()
         self.assertEqual(
             first=content['name'],
-            second=f'{self.plugin} - Sub-Plugin Path',
+            second=f'{self.plugin_1} - Sub-Plugin Path',
         )
         self.assertNotIn(member='actions', container=content)
 
@@ -510,7 +583,7 @@ class SubPluginPathViewSetTestCase(APITestCase):
         content = response.json()
         self.assertEqual(
             first=content['name'],
-            second=f'{self.plugin} - Sub-Plugin Path',
+            second=f'{self.plugin_1} - Sub-Plugin Path',
         )
         self.assertIn(member='actions', container=content)
         self.assertSetEqual(
@@ -525,7 +598,7 @@ class SubPluginPathViewSetTestCase(APITestCase):
         content = response.json()
         self.assertEqual(
             first=content['name'],
-            second=f'{self.plugin} - Sub-Plugin Path',
+            second=f'{self.plugin_1} - Sub-Plugin Path',
         )
         self.assertIn(member='actions', container=content)
         self.assertSetEqual(
