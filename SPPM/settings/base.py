@@ -73,6 +73,7 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'project_manager.urls'
+FORM_RENDERER = 'django.forms.renderers.DjangoDivFormRenderer'
 
 TEMPLATES = [
     {
