@@ -152,7 +152,7 @@ class SubPluginReleaseDownloadRequirementFactory(
         factory='test_utils.factories.sub_plugins.SubPluginReleaseFactory',
     )
     download_requirement = factory.SubFactory(
-        factory='test_utils.factories.requirements.DownloadRequirement',
+        factory='test_utils.factories.requirements.DownloadRequirementFactory',
     )
 
     class Meta:
@@ -188,7 +188,7 @@ class SubPluginReleasePyPiRequirementFactory(
         factory='test_utils.factories.sub_plugins.SubPluginReleaseFactory',
     )
     pypi_requirement = factory.SubFactory(
-        factory='test_utils.factories.requirements.PyPiRequirement',
+        factory='test_utils.factories.requirements.PyPiRequirementFactory',
     )
 
     class Meta:
