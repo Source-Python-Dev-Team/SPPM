@@ -2,7 +2,7 @@
 # IMPORTS
 # =============================================================================
 # Django
-from django.db import connection, reset_queries
+from django.db import connection
 from django.test import override_settings
 
 # Third Party Django
@@ -189,10 +189,7 @@ class ForumUserViewSetTestCase(APITestCase):
     def test_get_list(self):
         # Test default ordering
         response = self.client.get(path=self.api_path)
-        self.assertEqual(
-            first=len(connection.queries),
-            second=2,
-        )
+        self.assertEqual(first=len(connection.queries), second=2)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -219,15 +216,11 @@ class ForumUserViewSetTestCase(APITestCase):
             )
 
         # Test alphabetized custom ordering
-        reset_queries()
         response = self.client.get(
             path=self.api_path,
             data={'ordering': 'username'},
         )
-        self.assertEqual(
-            first=len(connection.queries),
-            second=2,
-        )
+        self.assertEqual(first=len(connection.queries), second=2)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -254,15 +247,11 @@ class ForumUserViewSetTestCase(APITestCase):
             )
 
         # Test reverse alphabetized custom ordering
-        reset_queries()
         response = self.client.get(
             path=self.api_path,
             data={'ordering': '-username'},
         )
-        self.assertEqual(
-            first=len(connection.queries),
-            second=2,
-        )
+        self.assertEqual(first=len(connection.queries), second=2)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -289,15 +278,11 @@ class ForumUserViewSetTestCase(APITestCase):
             )
 
         # Test forum_id ordering
-        reset_queries()
         response = self.client.get(
             path=self.api_path,
             data={'ordering': 'forum_id'},
         )
-        self.assertEqual(
-            first=len(connection.queries),
-            second=2,
-        )
+        self.assertEqual(first=len(connection.queries), second=2)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -324,15 +309,11 @@ class ForumUserViewSetTestCase(APITestCase):
             )
 
         # Test reverse forum_id ordering
-        reset_queries()
         response = self.client.get(
             path=self.api_path,
             data={'ordering': '-forum_id'},
         )
-        self.assertEqual(
-            first=len(connection.queries),
-            second=2,
-        )
+        self.assertEqual(first=len(connection.queries), second=2)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -366,7 +347,6 @@ class ForumUserViewSetTestCase(APITestCase):
             self.user_3,
             self.user_4,
         ):
-            reset_queries()
             response = self.client.get(
                 path=reverse(
                     viewname='api:users:users-detail',
@@ -375,10 +355,7 @@ class ForumUserViewSetTestCase(APITestCase):
                     }
                 ),
             )
-            self.assertEqual(
-                first=len(connection.queries),
-                second=7,
-            )
+            self.assertEqual(first=len(connection.queries), second=7)
             self.assertEqual(
                 first=response.status_code,
                 second=status.HTTP_200_OK,
@@ -399,10 +376,7 @@ class ForumUserViewSetTestCase(APITestCase):
             path=self.api_path,
             data={'has_contributions': True},
         )
-        self.assertEqual(
-            first=len(connection.queries),
-            second=2,
-        )
+        self.assertEqual(first=len(connection.queries), second=2)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -421,15 +395,11 @@ class ForumUserViewSetTestCase(APITestCase):
             }
         )
 
-        reset_queries()
         response = self.client.get(
             path=self.api_path,
             data={'has_contributions': False},
         )
-        self.assertEqual(
-            first=len(connection.queries),
-            second=2,
-        )
+        self.assertEqual(first=len(connection.queries), second=2)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,

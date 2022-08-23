@@ -2,7 +2,7 @@
 # IMPORTS
 # =============================================================================
 # Django
-from django.db import connection, reset_queries
+from django.db import connection
 from django.db.models.expressions import CombinedExpression
 from django.test import override_settings
 
@@ -235,10 +235,7 @@ class GameViewSetTestCase(APITestCase):
     @override_settings(DEBUG=True)
     def test_get_list(self):
         response = self.client.get(path=self.api_path)
-        self.assertEqual(
-            first=len(connection.queries),
-            second=2,
-        )
+        self.assertEqual(first=len(connection.queries), second=2)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -300,15 +297,11 @@ class GameViewSetTestCase(APITestCase):
             },
         )
 
-        reset_queries()
         response = self.client.get(
             path=self.api_path,
             data={'ordering': '-project_count'},
         )
-        self.assertEqual(
-            first=len(connection.queries),
-            second=2,
-        )
+        self.assertEqual(first=len(connection.queries), second=2)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -376,10 +369,7 @@ class GameViewSetTestCase(APITestCase):
                 kwargs={'pk': self.game_1.slug},
             ),
         )
-        self.assertEqual(
-            first=len(connection.queries),
-            second=4,
-        )
+        self.assertEqual(first=len(connection.queries), second=4)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -412,17 +402,13 @@ class GameViewSetTestCase(APITestCase):
             }
         )
 
-        reset_queries()
         response = self.client.get(
             path=reverse(
                 viewname='api:games:games-detail',
                 kwargs={'pk': self.game_2.slug},
             ),
         )
-        self.assertEqual(
-            first=len(connection.queries),
-            second=4,
-        )
+        self.assertEqual(first=len(connection.queries), second=4)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -470,17 +456,13 @@ class GameViewSetTestCase(APITestCase):
             }
         )
 
-        reset_queries()
         response = self.client.get(
             path=reverse(
                 viewname='api:games:games-detail',
                 kwargs={'pk': self.game_3.slug},
             ),
         )
-        self.assertEqual(
-            first=len(connection.queries),
-            second=4,
-        )
+        self.assertEqual(first=len(connection.queries), second=4)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -502,17 +484,13 @@ class GameViewSetTestCase(APITestCase):
             }
         )
 
-        reset_queries()
         response = self.client.get(
             path=reverse(
                 viewname='api:games:games-detail',
                 kwargs={'pk': self.game_4.slug},
             ),
         )
-        self.assertEqual(
-            first=len(connection.queries),
-            second=4,
-        )
+        self.assertEqual(first=len(connection.queries), second=4)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
