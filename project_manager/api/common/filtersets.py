@@ -53,4 +53,4 @@ class ProjectFilterSet(FilterSet):
         return queryset.filter(
             Q(owner__user__username=value) |
             Q(contributors__user__username=value)
-        )
+        ).distinct()
