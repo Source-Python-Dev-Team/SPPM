@@ -2,7 +2,7 @@
 # IMPORTS
 # =============================================================================
 # Django
-from django.db import connection, reset_queries
+from django.db import connection
 from django.test import override_settings
 
 # Third Party Django
@@ -114,10 +114,7 @@ class SubPluginContributorViewSetTestCase(APITestCase):
     def test_get_list(self):
         # Verify that non-logged-in user can see results but not 'id'
         response = self.client.get(path=self.list_path)
-        self.assertEqual(
-            first=len(connection.queries),
-            second=4,
-        )
+        self.assertEqual(first=len(connection.queries), second=4)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -135,13 +132,9 @@ class SubPluginContributorViewSetTestCase(APITestCase):
         )
 
         # Verify that regular user can see results but not 'id'
-        reset_queries()
         self.client.force_login(self.regular_user.user)
         response = self.client.get(path=self.list_path)
-        self.assertEqual(
-            first=len(connection.queries),
-            second=6,
-        )
+        self.assertEqual(first=len(connection.queries), second=6)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -159,13 +152,9 @@ class SubPluginContributorViewSetTestCase(APITestCase):
         )
 
         # Verify that contributors can see results but not 'id'
-        reset_queries()
         self.client.force_login(self.contributor.user)
         response = self.client.get(path=self.list_path)
-        self.assertEqual(
-            first=len(connection.queries),
-            second=6,
-        )
+        self.assertEqual(first=len(connection.queries), second=6)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -183,13 +172,9 @@ class SubPluginContributorViewSetTestCase(APITestCase):
         )
 
         # Verify that the owner can see results AND 'id'
-        reset_queries()
         self.client.force_login(self.owner.user)
         response = self.client.get(path=self.list_path)
-        self.assertEqual(
-            first=len(connection.queries),
-            second=5,
-        )
+        self.assertEqual(first=len(connection.queries), second=5)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -219,10 +204,7 @@ class SubPluginContributorViewSetTestCase(APITestCase):
 
         # Verify that non-logged-in user can see results but not 'id'
         response = self.client.get(path=list_path)
-        self.assertEqual(
-            first=len(connection.queries),
-            second=2,
-        )
+        self.assertEqual(first=len(connection.queries), second=2)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -230,13 +212,9 @@ class SubPluginContributorViewSetTestCase(APITestCase):
         self.assertEqual(first=response.json()['count'], second=0)
 
         # Verify that regular user can see results but not 'id'
-        reset_queries()
         self.client.force_login(self.regular_user.user)
         response = self.client.get(path=list_path)
-        self.assertEqual(
-            first=len(connection.queries),
-            second=4,
-        )
+        self.assertEqual(first=len(connection.queries), second=4)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -244,13 +222,9 @@ class SubPluginContributorViewSetTestCase(APITestCase):
         self.assertEqual(first=response.json()['count'], second=0)
 
         # Verify that the owner can see results AND 'id'
-        reset_queries()
         self.client.force_login(self.owner.user)
         response = self.client.get(path=list_path)
-        self.assertEqual(
-            first=len(connection.queries),
-            second=4,
-        )
+        self.assertEqual(first=len(connection.queries), second=4)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -268,10 +242,7 @@ class SubPluginContributorViewSetTestCase(APITestCase):
                 },
             ),
         )
-        self.assertEqual(
-            first=len(connection.queries),
-            second=1,
-        )
+        self.assertEqual(first=len(connection.queries), second=1)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_404_NOT_FOUND,
@@ -285,49 +256,34 @@ class SubPluginContributorViewSetTestCase(APITestCase):
     def test_get_details(self):
         # Verify that non-logged-in user cannot see details
         response = self.client.get(path=self.detail_path)
-        self.assertEqual(
-            first=len(connection.queries),
-            second=3,
-        )
+        self.assertEqual(first=len(connection.queries), second=3)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_403_FORBIDDEN,
         )
 
         # Verify that regular user cannot see details
-        reset_queries()
         self.client.force_login(self.regular_user.user)
         response = self.client.get(path=self.detail_path)
-        self.assertEqual(
-            first=len(connection.queries),
-            second=5,
-        )
+        self.assertEqual(first=len(connection.queries), second=5)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_403_FORBIDDEN,
         )
 
         # Verify that contributors cannot see details
-        reset_queries()
         self.client.force_login(self.contributor.user)
         response = self.client.get(path=self.detail_path)
-        self.assertEqual(
-            first=len(connection.queries),
-            second=5,
-        )
+        self.assertEqual(first=len(connection.queries), second=5)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_403_FORBIDDEN,
         )
 
         # Verify that the owner can see details
-        reset_queries()
         self.client.force_login(self.owner.user)
         response = self.client.get(path=self.detail_path)
-        self.assertEqual(
-            first=len(connection.queries),
-            second=5,
-        )
+        self.assertEqual(first=len(connection.queries), second=5)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -356,10 +312,7 @@ class SubPluginContributorViewSetTestCase(APITestCase):
                 },
             ),
         )
-        self.assertEqual(
-            first=len(connection.queries),
-            second=3,
-        )
+        self.assertEqual(first=len(connection.queries), second=3)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_404_NOT_FOUND,
