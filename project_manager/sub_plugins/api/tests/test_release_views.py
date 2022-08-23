@@ -552,7 +552,7 @@ class SubPluginReleaseViewSetTestCase(APITestCase):
 
     @override_settings(DEBUG=True)
     def test_get_details(self):
-        environ = self.client._base_environ()
+        environ = getattr(self.client, '_base_environ')()
         zip_file_base = f'{environ["wsgi.url_scheme"]}://{environ["SERVER_NAME"]}'
         url_1 = self.sub_plugin_release_1.zip_file.url
         payload_1 = deepcopy(self.payload_1)

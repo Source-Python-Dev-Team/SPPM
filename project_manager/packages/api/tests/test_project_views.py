@@ -492,7 +492,7 @@ class PackageViewSetTestCase(APITestCase):
 
     @override_settings(DEBUG=True)
     def test_get_details(self):
-        environ = self.client._base_environ()
+        environ = getattr(self.client, '_base_environ')()
         domain = f'{environ["wsgi.url_scheme"]}://{environ["SERVER_NAME"]}'
         zip_file_1 = f'{domain}{self.current_release_1.get_absolute_url()}'
         payload_1 = deepcopy(self.payload_1)
