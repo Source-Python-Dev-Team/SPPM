@@ -4,12 +4,16 @@
 # Python
 import shutil
 import tempfile
+from copy import deepcopy
+from datetime import timedelta
 
 # Django
 from django.conf import settings
 from django.core.files.uploadedfile import UploadedFile
+from django.db import connection
 from django.test import override_settings
 from django.utils import formats
+from django.utils.timezone import now
 
 # Third Party Python
 from path import Path
@@ -54,35 +58,156 @@ from users.models import ForumUser
 # =============================================================================
 class PackageViewSetTestCase(APITestCase):
 
-    contributor = owner = package = None
+    contributor_1 = contributor_2 = current_release_1 = None
+    current_release_2 = detail_api = owner = package_1 = package_2 = None
     MEDIA_ROOT = Path(tempfile.mkdtemp())
 
     @classmethod
     def setUpTestData(cls):
         cls.owner = ForumUserFactory()
-        cls.package = PackageFactory(
+        cls.package_1 = PackageFactory(
             owner=cls.owner,
             logo='logo.jpg',
+            created=now() - timedelta(minutes=2),
+            updated=now() - timedelta(minutes=2),
         )
-        cls.package_release = PackageReleaseFactory(
-            package=cls.package,
+        cls.package_2 = PackageFactory(
+            owner=cls.owner,
+            created=now() - timedelta(minutes=1),
+            updated=now() - timedelta(minutes=1),
+        )
+        PackageReleaseFactory(
+            package=cls.package_1,
+            zip_file='/media/release_v1.0.0.zip',
+        )
+        cls.current_release_1 = PackageReleaseFactory(
+            package=cls.package_1,
+            zip_file='/media/release_v1.0.1.zip',
+        )
+        cls.current_release_2 = PackageReleaseFactory(
+            package=cls.package_2,
             zip_file='/media/release_v1.0.0.zip',
         )
         cls.list_path = reverse(
             viewname='api:packages:projects-list',
         )
+        cls.detail_api = 'api:packages:projects-detail'
         cls.detail_path = reverse(
-            viewname='api:packages:projects-detail',
+            viewname=cls.detail_api,
             kwargs={
-                'pk': cls.package.slug,
+                'pk': cls.package_1.slug,
             }
         )
-        cls.contributor = ForumUserFactory()
+        cls.contributor_1 = ForumUserFactory()
+        cls.contributor_2 = ForumUserFactory()
         PackageContributorFactory(
-            package=cls.package,
-            user=cls.contributor,
+            package=cls.package_1,
+            user=cls.contributor_1,
+        )
+        PackageContributorFactory(
+            package=cls.package_1,
+            user=cls.contributor_2,
         )
         cls.regular_user = ForumUserFactory()
+
+        cls.payload_1 = {
+            'name': cls.package_1.name,
+            'slug': cls.package_1.slug,
+            'total_downloads': cls.package_1.total_downloads,
+            'current_release': {
+                'version': cls.current_release_1.version,
+                'notes': cls.current_release_1.notes,
+            },
+            'created': {
+                'actual': cls.package_1.created.strftime(
+                    '%Y-%m-%dT%H:%M:%S.%fZ',
+                ),
+                'locale': formats.date_format(
+                    cls.package_1.created,
+                    'DATETIME_FORMAT',
+                ),
+                'locale_short': formats.date_format(
+                    cls.package_1.created,
+                    'SHORT_DATETIME_FORMAT',
+                ),
+            },
+            'updated': {
+                'actual': cls.package_1.updated.strftime(
+                    '%Y-%m-%dT%H:%M:%S.%fZ',
+                ),
+                'locale': formats.date_format(
+                    cls.package_1.updated,
+                    'DATETIME_FORMAT',
+                ),
+                'locale_short': formats.date_format(
+                    cls.package_1.updated,
+                    'SHORT_DATETIME_FORMAT',
+                ),
+            },
+            'synopsis': cls.package_1.synopsis,
+            'description': cls.package_1.description,
+            'configuration': cls.package_1.configuration,
+            'video': cls.package_1.video,
+            'owner': {
+                'forum_id': cls.package_1.owner.forum_id,
+                'username': cls.package_1.owner.user.username,
+            },
+            'contributors': [
+                {
+                    'forum_id': cls.contributor_1.forum_id,
+                    'username': cls.contributor_1.user.username,
+                },
+                {
+                    'forum_id': cls.contributor_2.forum_id,
+                    'username': cls.contributor_2.user.username,
+                },
+            ],
+        }
+        cls.payload_2 = {
+            'name': cls.package_2.name,
+            'slug': cls.package_2.slug,
+            'total_downloads': cls.package_2.total_downloads,
+            'current_release': {
+                'version': cls.current_release_2.version,
+                'notes': cls.current_release_2.notes,
+            },
+            'created': {
+                'actual': cls.package_2.created.strftime(
+                    '%Y-%m-%dT%H:%M:%S.%fZ',
+                ),
+                'locale': formats.date_format(
+                    cls.package_2.created,
+                    'DATETIME_FORMAT',
+                ),
+                'locale_short': formats.date_format(
+                    cls.package_2.created,
+                    'SHORT_DATETIME_FORMAT',
+                ),
+            },
+            'updated': {
+                'actual': cls.package_2.updated.strftime(
+                    '%Y-%m-%dT%H:%M:%S.%fZ',
+                ),
+                'locale': formats.date_format(
+                    cls.package_2.updated,
+                    'DATETIME_FORMAT',
+                ),
+                'locale_short': formats.date_format(
+                    cls.package_2.updated,
+                    'SHORT_DATETIME_FORMAT',
+                ),
+            },
+            'synopsis': cls.package_2.synopsis,
+            'description': cls.package_2.description,
+            'configuration': cls.package_2.configuration,
+            'logo': None,
+            'video': cls.package_2.video,
+            'owner': {
+                'forum_id': cls.package_2.owner.forum_id,
+                'username': cls.package_2.owner.user.username,
+            },
+            'contributors': [],
+        }
 
     @classmethod
     def tearDownClass(cls):
@@ -155,112 +280,103 @@ class PackageViewSetTestCase(APITestCase):
             second={'user': {}}
         )
 
+    @override_settings(DEBUG=True)
     def test_get_list(self):
         # Verify that non-logged-in user can see results but not 'id'
         response = self.client.get(path=self.list_path)
+        self.assertEqual(first=len(connection.queries), second=4)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
         )
         content = response.json()
-        self.assertEqual(first=content['count'], second=1)
+        self.assertEqual(first=content['count'], second=2)
         request = response.wsgi_request
         domain = f'{request.scheme}://{request.get_host()}'
-        zip_file = f'{domain}{self.package_release.get_absolute_url()}'
-        logo = f'{domain}{self.package.logo.url}'
-        created_timestamp = self.package.created
-        updated_timestamp = self.package.updated
-        payload = {
-            'name': self.package.name,
-            'slug': self.package.slug,
-            'total_downloads': self.package.total_downloads,
-            'current_release': {
-                'version': self.package_release.version,
-                'notes': self.package_release.notes,
-                'zip_file': zip_file,
-            },
-            'created': {
-                'actual': created_timestamp.strftime('%Y-%m-%dT%H:%M:%SZ'),
-                'locale': formats.date_format(created_timestamp, 'DATETIME_FORMAT'),
-                'locale_short': formats.date_format(created_timestamp, 'SHORT_DATETIME_FORMAT'),
-            },
-            'updated': {
-                'actual': updated_timestamp.strftime('%Y-%m-%dT%H:%M:%SZ'),
-                'locale': formats.date_format(updated_timestamp, 'DATETIME_FORMAT'),
-                'locale_short': formats.date_format(updated_timestamp, 'SHORT_DATETIME_FORMAT'),
-            },
-            'synopsis': self.package.synopsis,
-            'description': self.package.description,
-            'configuration': self.package.configuration,
-            'logo': logo,
-            'video': self.package.video,
-            'owner': {
-                'forum_id': self.package.owner.forum_id,
-                'username': self.package.owner.user.username,
-            },
-            'contributors': [
-                {
-                    'forum_id': self.contributor.forum_id,
-                    'username': self.contributor.user.username,
-                }
-            ],
-        }
+        zip_file_1 = f'{domain}{self.current_release_1.get_absolute_url()}'
+        payload_1 = deepcopy(self.payload_1)
+        payload_1['current_release']['zip_file'] = zip_file_1
+        payload_1['logo'] = f'{domain}{self.package_1.logo.url}'
+        zip_file_2 = f'{domain}{self.current_release_2.get_absolute_url()}'
+        payload_2 = deepcopy(self.payload_2)
+        payload_2['current_release']['zip_file'] = zip_file_2
         self.assertDictEqual(
             d1=content['results'][0],
-            d2=payload,
+            d2=payload_2,
+        )
+        self.assertDictEqual(
+            d1=content['results'][1],
+            d2=payload_1,
         )
 
         # Verify that regular user can see results but not 'id'
         self.client.force_login(self.regular_user.user)
         response = self.client.get(path=self.list_path)
+        self.assertEqual(first=len(connection.queries), second=6)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
         )
         content = response.json()
-        self.assertEqual(first=content['count'], second=1)
+        self.assertEqual(first=content['count'], second=2)
         self.assertDictEqual(
             d1=content['results'][0],
-            d2=payload,
+            d2=payload_2,
+        )
+        self.assertDictEqual(
+            d1=content['results'][1],
+            d2=payload_1,
         )
 
         # Verify that contributors can see results AND 'id'
-        self.client.force_login(self.contributor.user)
+        self.client.force_login(self.contributor_1.user)
         response = self.client.get(path=self.list_path)
+        self.assertEqual(first=len(connection.queries), second=6)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
         )
         content = response.json()
-        self.assertEqual(first=content['count'], second=1)
+        self.assertEqual(first=content['count'], second=2)
         self.assertDictEqual(
             d1=content['results'][0],
-            d2=payload,
+            d2=payload_2,
+        )
+        self.assertDictEqual(
+            d1=content['results'][1],
+            d2=payload_1,
         )
 
         # Verify that the owner can see results AND 'id'
         self.client.force_login(self.owner.user)
         response = self.client.get(path=self.list_path)
+        self.assertEqual(first=len(connection.queries), second=6)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
         )
         content = response.json()
-        self.assertEqual(first=content['count'], second=1)
+        self.assertEqual(first=content['count'], second=2)
         self.assertDictEqual(
             d1=content['results'][0],
-            d2=payload,
+            d2=payload_2,
+        )
+        self.assertDictEqual(
+            d1=content['results'][1],
+            d2=payload_1,
         )
 
+    @override_settings(DEBUG=True)
     def test_get_list_filters(self):
         response = self.client.get(path=self.list_path)
+        self.assertEqual(first=len(connection.queries), second=4)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
         )
         self.assertEqual(
             first=response.json()['count'],
-            second=1,
+            second=2,
         )
 
         # Validate tag filtering
@@ -268,6 +384,7 @@ class PackageViewSetTestCase(APITestCase):
             path=self.list_path,
             data={'tag': 'test_tag'},
         )
+        self.assertEqual(first=len(connection.queries), second=1)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -278,13 +395,14 @@ class PackageViewSetTestCase(APITestCase):
         )
         tag = TagFactory(name='test_tag')
         PackageTagFactory(
-            package=self.package,
+            package=self.package_1,
             tag=tag,
         )
         response = self.client.get(
             path=self.list_path,
             data={'tag': 'test_tag'},
         )
+        self.assertEqual(first=len(connection.queries), second=4)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -299,6 +417,7 @@ class PackageViewSetTestCase(APITestCase):
             path=self.list_path,
             data={'game': 'game1'},
         )
+        self.assertEqual(first=len(connection.queries), second=1)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -313,13 +432,14 @@ class PackageViewSetTestCase(APITestCase):
             icon='icon1.jpg',
         )
         PackageGameFactory(
-            package=self.package,
+            package=self.package_1,
             game=game,
         )
         response = self.client.get(
             path=self.list_path,
             data={'game': 'game1'},
         )
+        self.assertEqual(first=len(connection.queries), second=4)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -329,11 +449,12 @@ class PackageViewSetTestCase(APITestCase):
             second=1,
         )
 
-        # Validate game filtering
+        # Validate user filtering
         response = self.client.get(
             path=self.list_path,
             data={'user': self.regular_user.user.username},
         )
+        self.assertEqual(first=len(connection.queries), second=1)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -344,8 +465,9 @@ class PackageViewSetTestCase(APITestCase):
         )
         response = self.client.get(
             path=self.list_path,
-            data={'user': self.contributor.user.username},
+            data={'user': self.contributor_1.user.username},
         )
+        self.assertEqual(first=len(connection.queries), second=4)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -358,101 +480,98 @@ class PackageViewSetTestCase(APITestCase):
             path=self.list_path,
             data={'user': self.owner.user.username},
         )
+        self.assertEqual(first=len(connection.queries), second=4)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
         )
         self.assertEqual(
             first=response.json()['count'],
-            second=1,
+            second=2,
         )
 
+    @override_settings(DEBUG=True)
     def test_get_details(self):
-        # Verify that non-logged-in user can see details
-        response = self.client.get(path=self.detail_path)
-        request = response.wsgi_request
-        domain = f'{request.scheme}://{request.get_host()}'
-        zip_file = f'{domain}{self.package_release.get_absolute_url()}'
-        logo = f'{domain}{self.package.logo.url}'
-        created_timestamp = self.package.created
-        updated_timestamp = self.package.updated
-        payload = {
-            'name': self.package.name,
-            'slug': self.package.slug,
-            'total_downloads': self.package.total_downloads,
-            'current_release': {
-                'version': self.package_release.version,
-                'notes': self.package_release.notes,
-                'zip_file': zip_file,
-                'package_requirements': [],
-                'pypi_requirements': [],
-                'version_control_requirements': [],
-                'download_requirements': [],
-            },
-            'created': {
-                'actual': created_timestamp.strftime('%Y-%m-%dT%H:%M:%SZ'),
-                'locale': formats.date_format(created_timestamp, 'DATETIME_FORMAT'),
-                'locale_short': formats.date_format(created_timestamp, 'SHORT_DATETIME_FORMAT'),
-            },
-            'updated': {
-                'actual': updated_timestamp.strftime('%Y-%m-%dT%H:%M:%SZ'),
-                'locale': formats.date_format(updated_timestamp, 'DATETIME_FORMAT'),
-                'locale_short': formats.date_format(updated_timestamp, 'SHORT_DATETIME_FORMAT'),
-            },
-            'synopsis': self.package.synopsis,
-            'description': self.package.description,
-            'configuration': self.package.configuration,
-            'logo': logo,
-            'video': self.package.video,
-            'owner': {
-                'forum_id': self.package.owner.forum_id,
-                'username': self.package.owner.user.username,
-            },
-        }
-        self.assertEqual(
-            first=response.status_code,
-            second=status.HTTP_200_OK,
+        environ = self.client._base_environ()
+        domain = f'{environ["wsgi.url_scheme"]}://{environ["SERVER_NAME"]}'
+        zip_file_1 = f'{domain}{self.current_release_1.get_absolute_url()}'
+        payload_1 = deepcopy(self.payload_1)
+        payload_1['current_release']['zip_file'] = zip_file_1
+        payload_1['current_release']['download_requirements'] = []
+        payload_1['current_release']['package_requirements'] = []
+        payload_1['current_release']['pypi_requirements'] = []
+        payload_1['current_release']['version_control_requirements'] = []
+        payload_1['logo'] = f'{domain}{self.package_1.logo.url}'
+        del payload_1['contributors']
+        zip_file_2 = f'{domain}{self.current_release_2.get_absolute_url()}'
+        payload_2 = deepcopy(self.payload_2)
+        payload_2['current_release']['zip_file'] = zip_file_2
+        payload_2['current_release']['download_requirements'] = []
+        payload_2['current_release']['package_requirements'] = []
+        payload_2['current_release']['pypi_requirements'] = []
+        payload_2['current_release']['version_control_requirements'] = []
+        del payload_2['contributors']
+        detail_path_2 = reverse(
+            viewname=self.detail_api,
+            kwargs={
+                'pk': self.package_2.slug,
+            }
         )
-        self.assertDictEqual(
-            d1=response.json(),
-            d2=payload,
-        )
+        for path, payload in (
+            (self.detail_path, payload_1),
+            (detail_path_2, payload_2),
+        ):
+            # Verify that non-logged-in user can see details
+            self.client.logout()
+            response = self.client.get(path=path)
+            self.assertEqual(first=len(connection.queries), second=6)
+            self.assertEqual(
+                first=response.status_code,
+                second=status.HTTP_200_OK,
+            )
+            self.assertDictEqual(
+                d1=response.json(),
+                d2=payload,
+            )
 
-        # Verify that regular user can see details
-        self.client.force_login(self.regular_user.user)
-        response = self.client.get(path=self.detail_path)
-        self.assertEqual(
-            first=response.status_code,
-            second=status.HTTP_200_OK,
-        )
-        self.assertDictEqual(
-            d1=response.json(),
-            d2=payload,
-        )
+            # Verify that regular user can see details
+            self.client.force_login(self.regular_user.user)
+            response = self.client.get(path=path)
+            self.assertEqual(first=len(connection.queries), second=8)
+            self.assertEqual(
+                first=response.status_code,
+                second=status.HTTP_200_OK,
+            )
+            self.assertDictEqual(
+                d1=response.json(),
+                d2=payload,
+            )
 
-        # Verify that contributors can see details
-        self.client.force_login(self.contributor.user)
-        response = self.client.get(path=self.detail_path)
-        self.assertEqual(
-            first=response.status_code,
-            second=status.HTTP_200_OK,
-        )
-        self.assertDictEqual(
-            d1=response.json(),
-            d2=payload,
-        )
+            # Verify that contributors can see details
+            self.client.force_login(self.contributor_1.user)
+            response = self.client.get(path=path)
+            self.assertEqual(first=len(connection.queries), second=8)
+            self.assertEqual(
+                first=response.status_code,
+                second=status.HTTP_200_OK,
+            )
+            self.assertDictEqual(
+                d1=response.json(),
+                d2=payload,
+            )
 
-        # Verify that the owner can see details
-        self.client.force_login(self.owner.user)
-        response = self.client.get(path=self.detail_path)
-        self.assertEqual(
-            first=response.status_code,
-            second=status.HTTP_200_OK,
-        )
-        self.assertDictEqual(
-            d1=response.json(),
-            d2=payload,
-        )
+            # Verify that the owner can see details
+            self.client.force_login(self.owner.user)
+            response = self.client.get(path=path)
+            self.assertEqual(first=len(connection.queries), second=8)
+            self.assertEqual(
+                first=response.status_code,
+                second=status.HTTP_200_OK,
+            )
+            self.assertDictEqual(
+                d1=response.json(),
+                d2=payload,
+            )
 
     @override_settings(MEDIA_ROOT=MEDIA_ROOT)
     def test_post(self):
@@ -480,7 +599,7 @@ class PackageViewSetTestCase(APITestCase):
         # Verify that a logged-in user can create a package
         self.assertEqual(
             first=Package.objects.count(),
-            second=1,
+            second=2,
         )
         with file_path.open('rb') as open_file:
             zip_file = UploadedFile(open_file, content_type='application/zip')
@@ -501,7 +620,7 @@ class PackageViewSetTestCase(APITestCase):
         )
         self.assertEqual(
             first=Package.objects.count(),
-            second=2,
+            second=3,
         )
         content = response.json()
         package = Package.objects.get(slug=content['slug'])
@@ -644,7 +763,7 @@ class PackageViewSetTestCase(APITestCase):
         )
 
         # Verify that contributor can update the package
-        self.client.force_login(self.contributor.user)
+        self.client.force_login(self.contributor_1.user)
         response = self.client.patch(
             path=self.detail_path,
             data={
@@ -715,7 +834,7 @@ class PackageViewSetTestCase(APITestCase):
         self.assertNotIn(member='actions', container=content)
 
         # Verify that contributors can PATCH
-        self.client.force_login(user=self.contributor.user)
+        self.client.force_login(user=self.contributor_1.user)
         response = self.client.options(path=self.detail_path)
         self.assertEqual(first=response.status_code, second=status.HTTP_200_OK)
         content = response.json()
