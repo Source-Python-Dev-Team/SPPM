@@ -46,6 +46,18 @@ class Command(BaseCommand):
             type=int,
             help='The forum id number to associate.',
         )
+        parser.add_argument(
+            '--is_superuser',
+            action='store_true',
+            default=False,
+            help='Whether the User is a superuser.',
+        )
+        parser.add_argument(
+            '--is_staff',
+            action='store_true',
+            default=False,
+            help='Whether the User is a superuser.',
+        )
 
     def handle(self, *args, **options):
         """Verify the arguments and create the User."""
@@ -71,6 +83,8 @@ class Command(BaseCommand):
             user = User.objects.create_user(
                 username=username,
                 password=options['password'],
+                is_staff=options['is_staff'],
+                is_superuser=options['is_superuser'],
             )
         except Exception as exception:
             raise CommandError(

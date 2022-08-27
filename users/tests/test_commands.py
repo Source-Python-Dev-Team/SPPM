@@ -11,7 +11,7 @@ from django.core.management.base import CommandError
 from django.test import TestCase, override_settings
 
 # App
-from test_utils.factories.users import AdminUserFactory, ForumUserFactory
+from test_utils.factories.users import ForumUserFactory
 from users.models import ForumUser
 
 
@@ -20,83 +20,6 @@ from users.models import ForumUser
 # =============================================================================
 @override_settings(LOCAL=True)
 class CommandsTestCase(TestCase):
-
-    @mock.patch(
-        'users.management.commands.associate_super_user.logger',
-    )
-    def test_associate_super_user(self, mock_logger):
-        user = AdminUserFactory()
-        self.assertEqual(
-            first=ForumUser.objects.count(),
-            second=0,
-        )
-        forum_id = randint(1, 10)
-        call_command('associate_super_user', user.username, forum_id)
-        self.assertEqual(
-            first=ForumUser.objects.count(),
-            second=1,
-        )
-        forum_user = ForumUser.objects.get()
-        self.assertEqual(
-            first=forum_user.user.id,
-            second=user.id,
-        )
-        self.assertEqual(
-            first=forum_user.forum_id,
-            second=forum_id,
-        )
-        mock_logger.info.assert_called_once_with(
-            'User "%s" successfully associated with forum id "%s".',
-            user.username,
-            forum_id
-        )
-
-    @override_settings(LOCAL=False)
-    def test_associate_super_user_local_only(self):
-        user = AdminUserFactory()
-        self.assertEqual(
-            first=ForumUser.objects.count(),
-            second=0,
-        )
-        forum_id = randint(1, 10)
-        with self.assertRaises(CommandError) as context:
-            call_command('associate_super_user', user.username, forum_id)
-
-        self.assertEqual(
-            first=str(context.exception),
-            second='Command can only be run for local development.',
-        )
-
-    def test_associate_super_user_invalid_username(self):
-        user = AdminUserFactory()
-        self.assertEqual(
-            first=ForumUser.objects.count(),
-            second=0,
-        )
-        forum_id = randint(1, 10)
-        username = user.username + '1'
-        with self.assertRaises(CommandError) as context:
-            call_command('associate_super_user', username, forum_id)
-
-        self.assertEqual(
-            first=str(context.exception),
-            second=f'User with the username "{username}" was not found.',
-        )
-
-    def test_associate_super_user_forum_user_exists(self):
-        forum_id = randint(1, 10)
-        user = ForumUserFactory(
-            forum_id=forum_id,
-        )
-        with self.assertRaises(CommandError) as context:
-            call_command('associate_super_user', user.user.username, forum_id)
-
-        self.assertEqual(
-            first=str(context.exception),
-            second=(
-                f'A user is already associated with the forum id "{forum_id}".'
-            ),
-        )
 
     @mock.patch(
         'users.management.commands.create_random_users.logger',
@@ -138,13 +61,7 @@ class CommandsTestCase(TestCase):
             second='Command can only be run for local development.',
         )
 
-    @mock.patch(
-        'users.management.commands.create_test_user.logger',
-    )
-    def test_create_test_user(self, mock_logger):
-        username = 'test-user'
-        forum_id = randint(1, 10)
-        call_command('create_test_user', username, 'password', forum_id)
+    def _validate_user_created(self, username, forum_id, mock_logger):
         self.assertEqual(
             first=ForumUser.objects.count(),
             second=1,
@@ -163,6 +80,86 @@ class CommandsTestCase(TestCase):
             username,
             forum_id,
         )
+        return user
+
+    @mock.patch(
+        'users.management.commands.create_test_user.logger',
+    )
+    def test_create_test_user(self, mock_logger):
+        username = 'test-user'
+        forum_id = randint(1, 10)
+        call_command('create_test_user', username, 'password', forum_id)
+        user = self._validate_user_created(
+            username=username,
+            forum_id=forum_id,
+            mock_logger=mock_logger,
+        )
+        self.assertFalse(expr=user.user.is_staff)
+        self.assertFalse(expr=user.user.is_superuser)
+
+    @mock.patch(
+        'users.management.commands.create_test_user.logger',
+    )
+    def test_create_test_user_is_staff(self, mock_logger):
+        username = 'test-user'
+        forum_id = randint(1, 10)
+        call_command(
+            'create_test_user',
+            username,
+            'password',
+            forum_id,
+            '--is_staff',
+        )
+        user = self._validate_user_created(
+            username=username,
+            forum_id=forum_id,
+            mock_logger=mock_logger,
+        )
+        self.assertTrue(expr=user.user.is_staff)
+        self.assertFalse(expr=user.user.is_superuser)
+
+    @mock.patch(
+        'users.management.commands.create_test_user.logger',
+    )
+    def test_create_test_user_is_superuser(self, mock_logger):
+        username = 'test-user'
+        forum_id = randint(1, 10)
+        call_command(
+            'create_test_user',
+            username,
+            'password',
+            forum_id,
+            '--is_superuser',
+        )
+        user = self._validate_user_created(
+            username=username,
+            forum_id=forum_id,
+            mock_logger=mock_logger,
+        )
+        self.assertFalse(expr=user.user.is_staff)
+        self.assertTrue(expr=user.user.is_superuser)
+
+    @mock.patch(
+        'users.management.commands.create_test_user.logger',
+    )
+    def test_create_test_user_is_staff_and_superuser(self, mock_logger):
+        username = 'test-user'
+        forum_id = randint(1, 10)
+        call_command(
+            'create_test_user',
+            username,
+            'password',
+            forum_id,
+            '--is_staff',
+            '--is_superuser',
+        )
+        user = self._validate_user_created(
+            username=username,
+            forum_id=forum_id,
+            mock_logger=mock_logger,
+        )
+        self.assertTrue(expr=user.user.is_staff)
+        self.assertTrue(expr=user.user.is_superuser)
 
     @override_settings(LOCAL=False)
     def test_create_test_user_local_only(self):

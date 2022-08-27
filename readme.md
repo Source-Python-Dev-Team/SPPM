@@ -20,20 +20,19 @@ If you wish to contribute to this application, follow the instructions below on 
    1. Any time the requirements are updated, you should attempt to run this command again, and `migrate` if there were any new migrations found.
 7. Run the [migrate](https://docs.djangoproject.com/en/dev/ref/django-admin/#migrate) management command to create the tables/columns in your database.
 8. Run the `create_game_instances` management command to create the Game objects.
-9. Run the [createsuperuser](https://docs.djangoproject.com/en/dev/ref/django-admin/#createsuperuser) management command to create your main user.
-10. Run the `associate_super_user` management command to associate the Super User you just created with a ForumUser object.
+9. Run the `create_test_user` management command to a few base Users.
     1. Arguments for the command are:
        1. **username** - The username of the Super User.
-       2. **forum_id** - The user id from the Source.Python forums.
-11. If you want to create a test (non-Super User) User, run the `create_test_user` management command.
-    1. Arguments for the command are:
-       1. **username** - The username of the User.
        2. **password** - The password to use for the User.
        3. **forum_id** - The user id from the Source.Python forums.
-12. If you want additional users to test with, run the `create_random_users` management command.
+    2. You will want to create at least 1 superuser
+       1. For this you will want to use the `--is_superuser` and `--is_staff` flags.
+       2. `create_test_user <username> <password> <forum_id> --is_superuser --is_staff`
+    3. You will want to create a couple non-superusers, as well, that are not randomly named.
+10. If you want additional users to test with, run the `create_random_users` management command.
     1. Arguments for the command are:
        1. **count** - The number of random Users to create.
-13. Run the server using the [runserver](https://docs.djangoproject.com/en/dev/ref/django-admin/#runserver) management command.
+11. Run the server using the [runserver](https://docs.djangoproject.com/en/dev/ref/django-admin/#runserver) management command.
     1. Some IDEs, like Pycharm, have tools to run the server instead of manually running the command in a console window.
 
 ## Authentication (logging in)
