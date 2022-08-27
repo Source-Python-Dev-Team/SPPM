@@ -86,6 +86,5 @@ class TagViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet):
             package_count=Count('packages', distinct=True),
             plugin_count=Count('plugins', distinct=True),
             sub_plugin_count=Count('sub_plugins', distinct=True),
-        ).annotate(
             project_count=F('package_count') + F('plugin_count') + F('sub_plugin_count'),
         )

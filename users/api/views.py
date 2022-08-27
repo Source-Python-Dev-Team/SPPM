@@ -88,7 +88,6 @@ class ForumUserViewSet(ModelViewSet):
             plugin_contribution_count=Count('plugin_contributions', distinct=True),
             sub_plugin_count=Count('sub_plugins', distinct=True),
             sub_plugin_contribution_count=Count('sub_plugin_contributions', distinct=True),
-        ).annotate(
             project_count=F('package_count') + F('plugin_count') + F('sub_plugin_count'),
             project_contribution_count=(
                 F('package_contribution_count') +
