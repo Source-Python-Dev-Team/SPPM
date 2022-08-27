@@ -24,7 +24,6 @@ __all__ = (
     'PROJECT_NAME_MAX_LENGTH',
     'PROJECT_SLUG_MAX_LENGTH',
     'PROJECT_SYNOPSIS_MAX_LENGTH',
-    'PYPI_URL',
     'READABLE_DATA_FILE_TYPES',
     'RELEASE_NOTES_MAX_LENGTH',
     'RELEASE_URL',
@@ -157,7 +156,6 @@ ALLOWED_FILE_TYPES = {
 DOWNLOAD_URL = 'http://downloads.sourcepython.com/'
 FORUM_URL = 'https://forums.sourcepython.com/'
 GITHUB_URL = 'https://github.com/Source-Python-Dev-Team/Source.Python'
-PYPI_URL = 'https://pypi.python.org/pypi'
 WIKI_URL = 'http://wiki.sourcepython.com'
 
 # Base URL for project thread

@@ -8,7 +8,7 @@ from django.db import models
 from django.utils.text import slugify
 
 # App
-from project_manager.constants import PYPI_URL
+from requirements.constants import PYPI_URL
 from requirements.constants import (
     REQUIREMENT_NAME_MAX_LENGTH,
     REQUIREMENT_SLUG_MAX_LENGTH,
