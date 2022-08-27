@@ -133,6 +133,7 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 AUTH_USER_MODEL = 'users.User'
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 
 # Rest Framework
 REST_FRAMEWORK = {
@@ -190,21 +191,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.9/howto/static-files/
 STATIC_URL = '/static/'
-
 STATIC_ROOT = BASE_DIR / 'static'
 
 MEDIA_URL = '/media/'
-
 MEDIA_ROOT = BASE_DIR / 'media'
-
-FORUM_URL = 'https://forums.sourcepython.com/'
-
-WIKI_URL = 'http://wiki.sourcepython.com'
-
-GITHUB_URL = 'https://github.com/Source-Python-Dev-Team/Source.Python'
-
-PYPI_URL = 'https://pypi.python.org/pypi'
-
-DOWNLOAD_URL = 'http://downloads.sourcepython.com/'
-
-DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'

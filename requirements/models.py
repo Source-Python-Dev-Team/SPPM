@@ -4,11 +4,11 @@
 # IMPORTS
 # =============================================================================
 # Django
-from django.conf import settings
 from django.db import models
 from django.utils.text import slugify
 
 # App
+from project_manager.constants import PYPI_URL
 from requirements.constants import (
     REQUIREMENT_NAME_MAX_LENGTH,
     REQUIREMENT_SLUG_MAX_LENGTH,
@@ -76,7 +76,7 @@ class PyPiRequirement(models.Model):
 
     def get_pypi_url(self):
         """Return the PyPi URL for the requirement."""
-        return settings.PYPI_URL + f'/{self.name}'
+        return PYPI_URL + f'/{self.name}'
 
 
 class VersionControlRequirement(models.Model):

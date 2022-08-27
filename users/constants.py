@@ -3,8 +3,8 @@
 # =============================================================================
 # IMPORTS
 # =============================================================================
-# Django
-from django.conf import settings
+# App
+from project_manager.constants import FORUM_URL
 
 
 # =============================================================================
@@ -20,8 +20,6 @@ __all__ = (
 # =============================================================================
 # GLOBAL VARIABLES
 # =============================================================================
-FORUM_MEMBER_URL = (
-    settings.FORUM_URL + 'memberlist.php?mode=viewprofile&u={user_id}'
-)
+FORUM_MEMBER_URL = FORUM_URL + 'memberlist.php?mode=viewprofile&u={user_id}'
 USER_USERNAME_MAX_LENGTH = 30
 USER_EMAIL_MAX_LENGTH = 256

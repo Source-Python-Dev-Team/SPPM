@@ -1,20 +1,16 @@
 """Base constants."""
 
 # =============================================================================
-# IMPORTS
-# =============================================================================
-# Django
-from django.conf import settings
-
-
-# =============================================================================
 # ALL DECLARATION
 # =============================================================================
 __all__ = (
     'ALLOWED_FILE_TYPES',
     'CANNOT_BE_NAMED',
     'CANNOT_START_WITH',
+    'DOWNLOAD_URL',
     'FORUM_THREAD_URL',
+    'FORUM_URL',
+    'GITHUB_URL',
     'IMAGE_MAX_HEIGHT',
     'IMAGE_MAX_WIDTH',
     'IMAGE_URL',
@@ -28,12 +24,14 @@ __all__ = (
     'PROJECT_NAME_MAX_LENGTH',
     'PROJECT_SLUG_MAX_LENGTH',
     'PROJECT_SYNOPSIS_MAX_LENGTH',
+    'PYPI_URL',
     'READABLE_DATA_FILE_TYPES',
     'RELEASE_NOTES_MAX_LENGTH',
     'RELEASE_URL',
     'RELEASE_VERSION_MAX_LENGTH',
     'RELEASE_VERSION_REGEX',
     'VCS_REQUIREMENT_TYPES',
+    'WIKI_URL',
 )
 
 
@@ -50,9 +48,6 @@ PROJECT_SYNOPSIS_MAX_LENGTH = 128
 RELEASE_NOTES_MAX_LENGTH = 512
 RELEASE_VERSION_MAX_LENGTH = 8
 RELEASE_VERSION_REGEX = r'[0-9][0-9a-z.]*[0-9a-z]'
-
-# Base URL for project thread
-FORUM_THREAD_URL = settings.FORUM_URL + 'viewtopic.php?t={topic}'
 
 # Maximum allowed width and height for all logo files
 LOGO_MAX_WIDTH = 200
@@ -157,3 +152,13 @@ ALLOWED_FILE_TYPES = {
         'wav',
     ],
 }
+
+# External URLs
+DOWNLOAD_URL = 'http://downloads.sourcepython.com/'
+FORUM_URL = 'https://forums.sourcepython.com/'
+GITHUB_URL = 'https://github.com/Source-Python-Dev-Team/Source.Python'
+PYPI_URL = 'https://pypi.python.org/pypi'
+WIKI_URL = 'http://wiki.sourcepython.com'
+
+# Base URL for project thread
+FORUM_THREAD_URL = FORUM_URL + 'viewtopic.php?t={topic}'
