@@ -41,11 +41,6 @@ class User(AbstractBaseUser, PermissionsMixin):
         max_length=USER_USERNAME_MAX_LENGTH,
         unique=True,
     )
-    # TODO: should we be storing the email?
-    email = models.EmailField(
-        max_length=USER_EMAIL_MAX_LENGTH,
-        blank=True,
-    )
     is_staff = models.BooleanField(
         default=False,
     )
