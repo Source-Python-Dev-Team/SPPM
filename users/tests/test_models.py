@@ -170,3 +170,12 @@ class UserTestCase(TestCase):
             first=user.get_full_name(),
             second=user.username,
         )
+
+    def test_model_manager_no_username(self):
+        with self.assertRaises(ValueError) as context:
+            User.objects.create_user(username=None)
+
+        self.assertEqual(
+            first=str(context.exception),
+            second='The given username must be set',
+        )
