@@ -18,7 +18,6 @@ from rest_framework.reverse import reverse
 from test_utils.factories.users import ForumUserFactory, NonAdminUserFactory
 from users.constants import (
     FORUM_MEMBER_URL,
-    USER_EMAIL_MAX_LENGTH,
     USER_USERNAME_MAX_LENGTH,
 )
 from users.models import ForumUser, User
@@ -130,19 +129,6 @@ class UserTestCase(TestCase):
         self.assertTrue(expr=field.unique)
         self.assertFalse(expr=field.editable)
         self.assertFalse(expr=field.blank)
-        self.assertFalse(expr=field.null)
-
-    def test_email_field(self):
-        field = User._meta.get_field('email')
-        self.assertIsInstance(
-            obj=field,
-            cls=models.EmailField,
-        )
-        self.assertEqual(
-            first=field.max_length,
-            second=USER_EMAIL_MAX_LENGTH,
-        )
-        self.assertTrue(expr=field.blank)
         self.assertFalse(expr=field.null)
 
     def test_is_staff_field(self):

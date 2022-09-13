@@ -4,7 +4,7 @@
 # IMPORTS
 # =============================================================================
 # Django
-from django.db.models import Count, Q
+from django.db.models import Q
 
 # Third Party Django
 from django_filters.filters import BooleanFilter

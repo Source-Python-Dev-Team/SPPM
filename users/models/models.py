@@ -7,7 +7,6 @@
 from django.contrib.auth.models import (
     AbstractBaseUser,
     PermissionsMixin,
-    UserManager,
 )
 from django.conf import settings
 from django.urls import reverse
@@ -16,9 +15,9 @@ from django.db import models
 # App
 from users.constants import (
     FORUM_MEMBER_URL,
-    USER_EMAIL_MAX_LENGTH,
     USER_USERNAME_MAX_LENGTH,
 )
+from users.models.managers import UserManager
 
 
 # =============================================================================
