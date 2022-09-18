@@ -231,7 +231,7 @@ class SubPluginReleaseTestCase(TestCase):
             created=original_updated,
             updated=original_updated,
         )
-        release_created = original_updated + timedelta(seconds=1)
+        release_created = original_updated + timedelta(minutes=1)
         SubPluginReleaseFactory(
             pk=None,
             sub_plugin=sub_plugin,

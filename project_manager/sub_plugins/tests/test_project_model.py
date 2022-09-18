@@ -209,7 +209,7 @@ class SubPluginTestCase(TestCase):
             release = SubPluginReleaseFactory(
                 sub_plugin=sub_plugin,
                 version=version,
-                created=created + timedelta(seconds=offset),
+                created=created + timedelta(minutes=offset),
             )
             self.assertEqual(
                 first=sub_plugin.current_version,

@@ -189,7 +189,7 @@ class PluginTestCase(TestCase):
             release = PluginReleaseFactory(
                 plugin=plugin,
                 version=version,
-                created=created + timedelta(seconds=offset),
+                created=created + timedelta(minutes=offset),
             )
             self.assertEqual(
                 first=plugin.current_version,

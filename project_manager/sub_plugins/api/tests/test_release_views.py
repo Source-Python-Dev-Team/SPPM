@@ -5,6 +5,7 @@
 import shutil
 import tempfile
 from copy import deepcopy
+from datetime import timedelta
 
 # Django
 from django.conf import settings
@@ -12,6 +13,7 @@ from django.core.files.uploadedfile import UploadedFile
 from django.db import connection
 from django.test import override_settings
 from django.utils import formats
+from django.utils.timezone import now
 
 # Third Party Python
 from path import Path
@@ -92,6 +94,7 @@ class SubPluginReleaseViewSetTestCase(APITestCase):
             user=cls.contributor,
         )
         cls.sub_plugin_release_1 = SubPluginReleaseFactory(
+            created=now() - timedelta(minutes=1),
             sub_plugin=cls.sub_plugin_1,
             version='1.0.0',
             zip_file='release_v1.0.0.zip',

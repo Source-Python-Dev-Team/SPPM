@@ -68,7 +68,7 @@ class PackageViewSetTestCase(APITestCase):
         cls.package_1 = PackageFactory(
             owner=cls.owner,
             logo='logo.jpg',
-            created=now() - timedelta(minutes=2),
+            created=now() - timedelta(minutes=3),
             updated=now() - timedelta(minutes=2),
         )
         cls.package_2 = PackageFactory(
@@ -77,10 +77,12 @@ class PackageViewSetTestCase(APITestCase):
             updated=now() - timedelta(minutes=1),
         )
         PackageReleaseFactory(
+            created=now() - timedelta(minutes=3),
             package=cls.package_1,
             zip_file='/media/release_v1.0.0.zip',
         )
         cls.current_release_1 = PackageReleaseFactory(
+            created=now() - timedelta(minutes=2),
             package=cls.package_1,
             zip_file='/media/release_v1.0.1.zip',
         )

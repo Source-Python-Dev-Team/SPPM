@@ -189,7 +189,7 @@ class PackageTestCase(TestCase):
             release = PackageReleaseFactory(
                 package=package,
                 version=version,
-                created=created + timedelta(seconds=offset),
+                created=created + timedelta(minutes=offset),
             )
             self.assertEqual(
                 first=package.current_version,

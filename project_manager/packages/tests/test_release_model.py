@@ -230,7 +230,7 @@ class PackageReleaseTestCase(TestCase):
             created=original_updated,
             updated=original_updated,
         )
-        release_created = original_updated + timedelta(seconds=1)
+        release_created = original_updated + timedelta(minutes=1)
         PackageReleaseFactory(
             pk=None,
             package=package,

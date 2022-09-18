@@ -74,7 +74,7 @@ class SubPluginViewSetTestCase(APITestCase):
             owner=cls.owner,
             plugin=cls.plugin,
             logo='logo.jpg',
-            created=now() - timedelta(minutes=2),
+            created=now() - timedelta(minutes=3),
             updated=now() - timedelta(minutes=2),
         )
         cls.sub_plugin_2 = SubPluginFactory(
@@ -84,10 +84,12 @@ class SubPluginViewSetTestCase(APITestCase):
             updated=now() - timedelta(minutes=1),
         )
         SubPluginReleaseFactory(
+            created=now() - timedelta(minutes=3),
             sub_plugin=cls.sub_plugin_1,
             zip_file='/media/release_v1.0.0.zip',
         )
         cls.current_release_1 = SubPluginReleaseFactory(
+            created=now() - timedelta(minutes=2),
             sub_plugin=cls.sub_plugin_1,
             zip_file='/media/release_v1.0.1.zip',
         )

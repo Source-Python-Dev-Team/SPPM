@@ -70,7 +70,7 @@ class SubPluginImageViewSetTestCase(APITestCase):
         )
         cls.sub_plugin_image_2 = SubPluginImageFactory(
             sub_plugin=cls.sub_plugin_1,
-            created=now() + timedelta(seconds=1)
+            created=now() + timedelta(minutes=1)
         )
         cls.regular_user = ForumUserFactory()
         cls.detail_api = 'api:sub-plugins:images-detail'

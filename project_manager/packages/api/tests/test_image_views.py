@@ -67,7 +67,7 @@ class PackageImageViewSetTestCase(APITestCase):
         )
         cls.package_image_2 = PackageImageFactory(
             package=cls.package_1,
-            created=now() + timedelta(seconds=1)
+            created=now() + timedelta(minutes=1)
         )
         cls.regular_user = ForumUserFactory()
         cls.detail_api = 'api:packages:images-detail'

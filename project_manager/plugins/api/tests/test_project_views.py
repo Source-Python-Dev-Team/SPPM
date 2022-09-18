@@ -69,7 +69,7 @@ class PluginViewSetTestCase(APITestCase):
         cls.plugin_1 = PluginFactory(
             owner=cls.owner,
             logo='logo.jpg',
-            created=now() - timedelta(minutes=2),
+            created=now() - timedelta(minutes=3),
             updated=now() - timedelta(minutes=2),
         )
         cls.plugin_2 = PluginFactory(
@@ -78,10 +78,12 @@ class PluginViewSetTestCase(APITestCase):
             updated=now() - timedelta(minutes=1),
         )
         PluginReleaseFactory(
+            created=now() - timedelta(minutes=3),
             plugin=cls.plugin_1,
             zip_file='/media/release_v1.0.0.zip',
         )
         cls.current_release_1 = PluginReleaseFactory(
+            created=now() - timedelta(minutes=2),
             plugin=cls.plugin_1,
             zip_file='/media/release_v1.0.1.zip',
         )

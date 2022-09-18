@@ -67,7 +67,7 @@ class PluginImageViewSetTestCase(APITestCase):
         )
         cls.plugin_image_2 = PluginImageFactory(
             plugin=cls.plugin_1,
-            created=now() + timedelta(seconds=1)
+            created=now() + timedelta(minutes=1)
         )
         cls.regular_user = ForumUserFactory()
         cls.detail_api = 'api:plugins:images-detail'
