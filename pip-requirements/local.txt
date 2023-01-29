@@ -1,12 +1,12 @@
 -r base.txt
-django-debug-toolbar==3.6.0
+django-debug-toolbar==3.8.1
 factory-boy==3.2.1
-flake8==4.0.1
-prospector==1.7.7
-pycodestyle==2.8.0
-pydocstyle==6.1.1
-pyflakes==2.4.0
-pylint==2.15.2
-pytest-cov==3.0.0
+flake8==5.0.4
+prospector==1.8.4
+pycodestyle==2.9.1
+pydocstyle==6.3.0
+pyflakes==2.5.0
+pylint==2.15.10
+pytest-cov==4.0.0
 pytest-django==4.5.2
 random-username==1.0.2
