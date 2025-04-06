@@ -11,11 +11,11 @@ from django.test import TestCase
 # App
 from project_manager.constants import RELEASE_VERSION_MAX_LENGTH
 from project_manager.models.abstract import AbstractUUIDPrimaryKeyModel
-from project_manager.validators import version_validator
 from project_manager.plugins.models import (
     PluginRelease,
     PluginReleaseVersionControlRequirement,
 )
+from project_manager.validators import version_validator
 from requirements.models import VersionControlRequirement
 from test_utils.factories.plugins import PluginReleaseVersionControlRequirementFactory
 from test_utils.factories.requirements import VersionControlRequirementFactory
@@ -30,11 +30,11 @@ class PluginReleaseVersionControlRequirementTestCase(TestCase):
             expr=issubclass(
                 PluginReleaseVersionControlRequirement,
                 AbstractUUIDPrimaryKeyModel,
-            )
+            ),
         )
 
     def test_plugin_release_field(self):
-        field = PluginReleaseVersionControlRequirement._meta.get_field('plugin_release')
+        field = PluginReleaseVersionControlRequirement._meta.get_field("plugin_release")
         self.assertIsInstance(
             obj=field,
             cls=models.ForeignKey,
@@ -52,7 +52,7 @@ class PluginReleaseVersionControlRequirementTestCase(TestCase):
 
     def test_vcs_requirement_field(self):
         field = PluginReleaseVersionControlRequirement._meta.get_field(
-            'vcs_requirement',
+            "vcs_requirement",
         )
         self.assertIsInstance(
             obj=field,
@@ -71,7 +71,7 @@ class PluginReleaseVersionControlRequirementTestCase(TestCase):
 
     def test_version_field(self):
         field = PluginReleaseVersionControlRequirement._meta.get_field(
-            'version',
+            "version",
         )
         self.assertIsInstance(
             obj=field,
@@ -88,16 +88,16 @@ class PluginReleaseVersionControlRequirementTestCase(TestCase):
         self.assertEqual(
             first=field.help_text,
             second=(
-                'The version of the VCS package for this release of the '
-                'plugin.'
-            )
+                "The version of the VCS package for this release of the "
+                "plugin."
+            ),
         )
         self.assertTrue(expr=field.blank)
         self.assertTrue(expr=field.null)
 
     def test_optional_field(self):
         field = PluginReleaseVersionControlRequirement._meta.get_field(
-            'optional',
+            "optional",
         )
         self.assertIsInstance(
             obj=field,
@@ -109,27 +109,27 @@ class PluginReleaseVersionControlRequirementTestCase(TestCase):
 
     def test__str__(self):
         requirement = VersionControlRequirementFactory()
-        version = '.'.join(map(str, sample(range(100), 3)))
+        version = ".".join(map(str, sample(range(100), 3)))
         self.assertEqual(
             first=str(
                 PluginReleaseVersionControlRequirementFactory(
                     vcs_requirement=requirement,
                     version=version,
-                )
+                ),
             ),
-            second=f'{requirement.url} - {version}',
+            second=f"{requirement.url} - {version}",
         )
 
     def test_meta_class(self):
         self.assertTupleEqual(
             tuple1=PluginReleaseVersionControlRequirement._meta.unique_together,
-            tuple2=(('plugin_release', 'vcs_requirement'),),
+            tuple2=(("plugin_release", "vcs_requirement"),),
         )
         self.assertEqual(
             first=PluginReleaseVersionControlRequirement._meta.verbose_name,
-            second='Plugin Release Version Control Requirement',
+            second="Plugin Release Version Control Requirement",
         )
         self.assertEqual(
             first=PluginReleaseVersionControlRequirement._meta.verbose_name_plural,
-            second='Plugin Release Version Control Requirements',
+            second="Plugin Release Version Control Requirements",
         )

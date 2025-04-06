@@ -67,22 +67,22 @@ class PluginImageViewSetTestCase(APITestCase):
         )
         cls.plugin_image_2 = PluginImageFactory(
             plugin=cls.plugin_1,
-            created=now() + timedelta(minutes=1)
+            created=now() + timedelta(minutes=1),
         )
         cls.regular_user = ForumUserFactory()
-        cls.detail_api = 'api:plugins:images-detail'
-        cls.list_api = 'api:plugins:images-list'
+        cls.detail_api = "api:plugins:images-detail"
+        cls.list_api = "api:plugins:images-list"
         cls.detail_path = reverse(
             viewname=cls.detail_api,
             kwargs={
-                'plugin_slug': cls.plugin_1.slug,
-                'pk': cls.plugin_image_1.id,
+                "plugin_slug": cls.plugin_1.slug,
+                "pk": cls.plugin_image_1.id,
             },
         )
         cls.list_path = reverse(
             viewname=cls.list_api,
             kwargs={
-                'plugin_slug': cls.plugin_1.slug,
+                "plugin_slug": cls.plugin_1.slug,
             },
         )
 
@@ -98,7 +98,7 @@ class PluginImageViewSetTestCase(APITestCase):
         )
         self.assertEqual(
             first=PluginImageViewSet.project_type,
-            second='plugin',
+            second="plugin",
         )
         self.assertEqual(
             first=PluginImageViewSet.project_model,
@@ -110,13 +110,13 @@ class PluginImageViewSetTestCase(APITestCase):
         )
         self.assertDictEqual(
             d1=PluginImageViewSet.queryset.query.select_related,
-            d2={'plugin': {}},
+            d2={"plugin": {}},
         )
 
     def test_http_method_names(self):
         self.assertTupleEqual(
             tuple1=PluginImageViewSet.http_method_names,
-            tuple2=('get', 'post', 'delete', 'options'),
+            tuple2=("get", "post", "delete", "options"),
         )
 
     @override_settings(DEBUG=True)
@@ -129,13 +129,13 @@ class PluginImageViewSetTestCase(APITestCase):
             second=status.HTTP_200_OK,
         )
         content = response.json()
-        self.assertEqual(first=content['count'], second=2)
+        self.assertEqual(first=content["count"], second=2)
         request = response.wsgi_request
-        image = f'{request.scheme}://{request.get_host()}{self.plugin_image_2.image.url}'
+        image = f"{request.scheme}://{request.get_host()}{self.plugin_image_2.image.url}"
         self.assertDictEqual(
-            d1=content['results'][0],
+            d1=content["results"][0],
             d2={
-                'image': image,
+                "image": image,
             },
         )
 
@@ -148,11 +148,11 @@ class PluginImageViewSetTestCase(APITestCase):
             second=status.HTTP_200_OK,
         )
         content = response.json()
-        self.assertEqual(first=content['count'], second=2)
+        self.assertEqual(first=content["count"], second=2)
         self.assertDictEqual(
-            d1=content['results'][0],
+            d1=content["results"][0],
             d2={
-                'image': image,
+                "image": image,
             },
         )
 
@@ -165,12 +165,12 @@ class PluginImageViewSetTestCase(APITestCase):
             second=status.HTTP_200_OK,
         )
         content = response.json()
-        self.assertEqual(first=content['count'], second=2)
+        self.assertEqual(first=content["count"], second=2)
         self.assertDictEqual(
-            d1=content['results'][0],
+            d1=content["results"][0],
             d2={
-                'image': image,
-                'id': str(self.plugin_image_2.id),
+                "image": image,
+                "id": str(self.plugin_image_2.id),
             },
         )
 
@@ -183,12 +183,12 @@ class PluginImageViewSetTestCase(APITestCase):
             second=status.HTTP_200_OK,
         )
         content = response.json()
-        self.assertEqual(first=content['count'], second=2)
+        self.assertEqual(first=content["count"], second=2)
         self.assertDictEqual(
-            d1=content['results'][0],
+            d1=content["results"][0],
             d2={
-                'image': image,
-                'id': str(self.plugin_image_2.id),
+                "image": image,
+                "id": str(self.plugin_image_2.id),
             },
         )
 
@@ -197,7 +197,7 @@ class PluginImageViewSetTestCase(APITestCase):
         list_path = reverse(
             viewname=self.list_api,
             kwargs={
-                'plugin_slug': self.plugin_2.slug,
+                "plugin_slug": self.plugin_2.slug,
             },
         )
 
@@ -208,7 +208,7 @@ class PluginImageViewSetTestCase(APITestCase):
             first=response.status_code,
             second=status.HTTP_200_OK,
         )
-        self.assertEqual(first=response.json()['count'], second=0)
+        self.assertEqual(first=response.json()["count"], second=0)
 
         # Verify that regular user can see results but not 'id'
         self.client.force_login(self.regular_user.user)
@@ -218,7 +218,7 @@ class PluginImageViewSetTestCase(APITestCase):
             first=response.status_code,
             second=status.HTTP_200_OK,
         )
-        self.assertEqual(first=response.json()['count'], second=0)
+        self.assertEqual(first=response.json()["count"], second=0)
 
         # Verify that contributors can see results AND 'id'
         self.client.force_login(self.contributor.user)
@@ -228,7 +228,7 @@ class PluginImageViewSetTestCase(APITestCase):
             first=response.status_code,
             second=status.HTTP_200_OK,
         )
-        self.assertEqual(first=response.json()['count'], second=0)
+        self.assertEqual(first=response.json()["count"], second=0)
 
         # Verify that the owner can see results AND 'id'
         self.client.force_login(self.owner.user)
@@ -238,7 +238,7 @@ class PluginImageViewSetTestCase(APITestCase):
             first=response.status_code,
             second=status.HTTP_200_OK,
         )
-        self.assertEqual(first=response.json()['count'], second=0)
+        self.assertEqual(first=response.json()["count"], second=0)
 
     @override_settings(DEBUG=True)
     def test_get_list_failure(self):
@@ -246,8 +246,8 @@ class PluginImageViewSetTestCase(APITestCase):
             path=reverse(
                 viewname=self.list_api,
                 kwargs={
-                    'plugin_slug': 'invalid',
-                }
+                    "plugin_slug": "invalid",
+                },
             ),
         )
         self.assertEqual(first=len(connection.queries), second=1)
@@ -257,7 +257,7 @@ class PluginImageViewSetTestCase(APITestCase):
         )
         self.assertDictEqual(
             d1=response.json(),
-            d2={'detail': 'Invalid plugin_slug.'},
+            d2={"detail": "Invalid plugin_slug."},
         )
 
     @override_settings(DEBUG=True)
@@ -284,7 +284,7 @@ class PluginImageViewSetTestCase(APITestCase):
         response = self.client.get(path=self.detail_path)
         self.assertEqual(first=len(connection.queries), second=5)
         request = response.wsgi_request
-        image = f'{request.scheme}://{request.get_host()}{self.plugin_image_1.image.url}'
+        image = f"{request.scheme}://{request.get_host()}{self.plugin_image_1.image.url}"
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -292,8 +292,8 @@ class PluginImageViewSetTestCase(APITestCase):
         self.assertDictEqual(
             d1=response.json(),
             d2={
-                'image': image,
-                'id': str(self.plugin_image_1.id),
+                "image": image,
+                "id": str(self.plugin_image_1.id),
             },
         )
 
@@ -308,8 +308,8 @@ class PluginImageViewSetTestCase(APITestCase):
         self.assertDictEqual(
             d1=response.json(),
             d2={
-                'image': image,
-                'id': str(self.plugin_image_1.id),
+                "image": image,
+                "id": str(self.plugin_image_1.id),
             },
         )
 
@@ -320,8 +320,8 @@ class PluginImageViewSetTestCase(APITestCase):
             path=reverse(
                 viewname=self.detail_api,
                 kwargs={
-                    'plugin_slug': self.plugin_1.slug,
-                    'pk': 'invalid',
+                    "plugin_slug": self.plugin_1.slug,
+                    "pk": "invalid",
                 },
             ),
         )
@@ -332,19 +332,19 @@ class PluginImageViewSetTestCase(APITestCase):
         )
         self.assertDictEqual(
             d1=response.json(),
-            d2={'detail': 'Not found.'},
+            d2={"detail": "Not found."},
         )
 
     @override_settings(MEDIA_ROOT=MEDIA_ROOT)
     def test_post(self):
         # Verify that non-logged-in user cannot add an image
-        image = Image.new('RGB', (100, 100))
-        with tempfile.NamedTemporaryFile(suffix='.jpg') as tmp_file:
+        image = Image.new("RGB", (100, 100))
+        with tempfile.NamedTemporaryFile(suffix=".jpg") as tmp_file:
             image.save(tmp_file)
             tmp_file.seek(0)
             response = self.client.post(
                 path=self.list_path,
-                data={'image': tmp_file},
+                data={"image": tmp_file},
             )
             self.assertEqual(
                 first=response.status_code,
@@ -353,13 +353,13 @@ class PluginImageViewSetTestCase(APITestCase):
 
         # Verify that regular user cannot add an image
         self.client.force_login(self.regular_user.user)
-        image = Image.new('RGB', (100, 100))
-        with tempfile.NamedTemporaryFile(suffix='.jpg') as tmp_file:
+        image = Image.new("RGB", (100, 100))
+        with tempfile.NamedTemporaryFile(suffix=".jpg") as tmp_file:
             image.save(tmp_file)
             tmp_file.seek(0)
             response = self.client.post(
                 path=self.list_path,
-                data={'image': tmp_file},
+                data={"image": tmp_file},
             )
             self.assertEqual(
                 first=response.status_code,
@@ -368,13 +368,13 @@ class PluginImageViewSetTestCase(APITestCase):
 
         # Verify that contributor can add an image
         self.client.force_login(self.contributor.user)
-        image = Image.new('RGB', (100, 100))
-        with tempfile.NamedTemporaryFile(suffix='.jpg') as tmp_file:
+        image = Image.new("RGB", (100, 100))
+        with tempfile.NamedTemporaryFile(suffix=".jpg") as tmp_file:
             image.save(tmp_file)
             tmp_file.seek(0)
             response = self.client.post(
                 path=self.list_path,
-                data={'image': tmp_file},
+                data={"image": tmp_file},
             )
             self.assertEqual(
                 first=response.status_code,
@@ -383,13 +383,13 @@ class PluginImageViewSetTestCase(APITestCase):
 
         # Verify that owner can add an image
         self.client.force_login(self.owner.user)
-        image = Image.new('RGB', (100, 100))
-        with tempfile.NamedTemporaryFile(suffix='.jpg') as tmp_file:
+        image = Image.new("RGB", (100, 100))
+        with tempfile.NamedTemporaryFile(suffix=".jpg") as tmp_file:
             image.save(tmp_file)
             tmp_file.seek(0)
             response = self.client.post(
                 path=self.list_path,
-                data={'image': tmp_file},
+                data={"image": tmp_file},
             )
             self.assertEqual(
                 first=response.status_code,
@@ -426,8 +426,8 @@ class PluginImageViewSetTestCase(APITestCase):
             path=reverse(
                 viewname=self.detail_api,
                 kwargs={
-                    'plugin_slug': self.plugin_1.slug,
-                    'pk': self.plugin_image_2.id,
+                    "plugin_slug": self.plugin_1.slug,
+                    "pk": self.plugin_image_2.id,
                 },
             ),
         )
@@ -442,10 +442,10 @@ class PluginImageViewSetTestCase(APITestCase):
         self.assertEqual(first=response.status_code, second=status.HTTP_200_OK)
         content = response.json()
         self.assertEqual(
-            first=content['name'],
-            second=f'{self.plugin_1} - Image',
+            first=content["name"],
+            second=f"{self.plugin_1} - Image",
         )
-        self.assertNotIn(member='actions', container=content)
+        self.assertNotIn(member="actions", container=content)
 
         # Verify that normal user cannot POST
         self.client.force_login(user=self.regular_user.user)
@@ -453,10 +453,10 @@ class PluginImageViewSetTestCase(APITestCase):
         self.assertEqual(first=response.status_code, second=status.HTTP_200_OK)
         content = response.json()
         self.assertEqual(
-            first=content['name'],
-            second=f'{self.plugin_1} - Image',
+            first=content["name"],
+            second=f"{self.plugin_1} - Image",
         )
-        self.assertNotIn(member='actions', container=content)
+        self.assertNotIn(member="actions", container=content)
 
         # Verify that contributors can POST
         self.client.force_login(user=self.contributor.user)
@@ -464,11 +464,11 @@ class PluginImageViewSetTestCase(APITestCase):
         self.assertEqual(first=response.status_code, second=status.HTTP_200_OK)
         content = response.json()
         self.assertEqual(
-            first=content['name'],
-            second=f'{self.plugin_1} - Image',
+            first=content["name"],
+            second=f"{self.plugin_1} - Image",
         )
-        self.assertIn(member='actions', container=content)
-        self.assertSetEqual(set1=set(content['actions']), set2={'POST'})
+        self.assertIn(member="actions", container=content)
+        self.assertSetEqual(set1=set(content["actions"]), set2={"POST"})
 
         # Verify that the owner can POST
         self.client.force_login(user=self.owner.user)
@@ -476,11 +476,11 @@ class PluginImageViewSetTestCase(APITestCase):
         self.assertEqual(first=response.status_code, second=status.HTTP_200_OK)
         content = response.json()
         self.assertEqual(
-            first=content['name'],
-            second=f'{self.plugin_1} - Image',
+            first=content["name"],
+            second=f"{self.plugin_1} - Image",
         )
-        self.assertIn(member='actions', container=content)
-        self.assertSetEqual(set1=set(content['actions']), set2={'POST'})
+        self.assertIn(member="actions", container=content)
+        self.assertSetEqual(set1=set(content["actions"]), set2={"POST"})
 
     def test_options_object(self):
         # Verify that non-logged-in user cannot DELETE
@@ -488,10 +488,10 @@ class PluginImageViewSetTestCase(APITestCase):
         self.assertEqual(first=response.status_code, second=status.HTTP_200_OK)
         content = response.json()
         self.assertEqual(
-            first=content['name'],
-            second=f'{self.plugin_1} - Image',
+            first=content["name"],
+            second=f"{self.plugin_1} - Image",
         )
-        self.assertNotIn(member='actions', container=content)
+        self.assertNotIn(member="actions", container=content)
 
         # Verify that normal user cannot DELETE
         self.client.force_login(user=self.regular_user.user)
@@ -499,10 +499,10 @@ class PluginImageViewSetTestCase(APITestCase):
         self.assertEqual(first=response.status_code, second=status.HTTP_200_OK)
         content = response.json()
         self.assertEqual(
-            first=content['name'],
-            second=f'{self.plugin_1} - Image',
+            first=content["name"],
+            second=f"{self.plugin_1} - Image",
         )
-        self.assertNotIn(member='actions', container=content)
+        self.assertNotIn(member="actions", container=content)
 
         # Verify that contributors can DELETE
         self.client.force_login(user=self.contributor.user)
@@ -510,11 +510,11 @@ class PluginImageViewSetTestCase(APITestCase):
         self.assertEqual(first=response.status_code, second=status.HTTP_200_OK)
         content = response.json()
         self.assertEqual(
-            first=content['name'],
-            second=f'{self.plugin_1} - Image',
+            first=content["name"],
+            second=f"{self.plugin_1} - Image",
         )
-        self.assertIn(member='actions', container=content)
-        self.assertSetEqual(set1=set(content['actions']), set2={'DELETE'})
+        self.assertIn(member="actions", container=content)
+        self.assertSetEqual(set1=set(content["actions"]), set2={"DELETE"})
 
         # Verify that the owner can DELETE
         self.client.force_login(user=self.owner.user)
@@ -522,8 +522,8 @@ class PluginImageViewSetTestCase(APITestCase):
         self.assertEqual(first=response.status_code, second=status.HTTP_200_OK)
         content = response.json()
         self.assertEqual(
-            first=content['name'],
-            second=f'{self.plugin_1} - Image',
+            first=content["name"],
+            second=f"{self.plugin_1} - Image",
         )
-        self.assertIn(member='actions', container=content)
-        self.assertSetEqual(set1=set(content['actions']), set2={'DELETE'})
+        self.assertIn(member="actions", container=content)
+        self.assertSetEqual(set1=set(content["actions"]), set2={"DELETE"})

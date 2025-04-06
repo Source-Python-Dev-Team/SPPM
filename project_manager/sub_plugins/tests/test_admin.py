@@ -66,7 +66,7 @@ class SubPluginAdminTestCase(TestCase):
         ).query
         self.assertDictEqual(
             d1=query.select_related,
-            d2={'owner': {'user': {}}, 'plugin': {}},
+            d2={"owner": {"user": {}}, "plugin": {}},
         )
 
 
@@ -81,69 +81,69 @@ class TestSubPluginReleaseAdminTestCase(TestCase):
             tuple1=SubPluginReleaseAdmin.fieldsets,
             tuple2=(
                 (
-                    'Release Info',
+                    "Release Info",
                     {
-                        'classes': ('wide',),
-                        'fields': (
-                            'version',
-                            'notes',
-                            'zip_file',
-                            'sub_plugin',
-                        ),
-                    }
-                ),
-                (
-                    'Metadata',
-                    {
-                        'classes': ('collapse',),
-                        'fields': (
-                            'created',
-                            'created_by',
-                            'download_count',
+                        "classes": ("wide",),
+                        "fields": (
+                            "version",
+                            "notes",
+                            "zip_file",
+                            "sub_plugin",
                         ),
                     },
-                )
-            )
+                ),
+                (
+                    "Metadata",
+                    {
+                        "classes": ("collapse",),
+                        "fields": (
+                            "created",
+                            "created_by",
+                            "download_count",
+                        ),
+                    },
+                ),
+            ),
         )
 
     def test_list_display(self):
         self.assertTupleEqual(
             tuple1=SubPluginReleaseAdmin.list_display,
             tuple2=(
-                'version',
-                'created',
-                'sub_plugin',
-            )
+                "version",
+                "created",
+                "sub_plugin",
+            ),
         )
 
     def test_ordering(self):
         self.assertTupleEqual(
             tuple1=SubPluginReleaseAdmin.ordering,
             tuple2=(
-                'sub_plugin',
-                '-created',
-            )
+                "sub_plugin",
+                "-created",
+            ),
         )
 
     def test_readonly_fields(self):
         self.assertTupleEqual(
             tuple1=SubPluginReleaseAdmin.readonly_fields,
             tuple2=(
-                'zip_file',
-                'download_count',
-                'created',
-                'created_by',
-                'sub_plugin',
-            )
+                "zip_file",
+                "download_count",
+                "created",
+                "created_by",
+                "sub_plugin",
+            ),
         )
 
     def test_search_fields(self):
         self.assertTupleEqual(
             tuple1=SubPluginReleaseAdmin.search_fields,
             tuple2=(
-                'version',
-                'sub_plugin__name',
-            )
+                "version",
+                "sub_plugin__name",
+            ),
         )
 
     def test_get_queryset(self):
@@ -156,19 +156,19 @@ class TestSubPluginReleaseAdminTestCase(TestCase):
         ).query
         self.assertDictEqual(
             d1=query.select_related,
-            d2={'created_by': {'user': {}}, 'sub_plugin': {'plugin': {}}},
+            d2={"created_by": {"user": {}}, "sub_plugin": {"plugin": {}}},
         )
 
     def test_has_add_permission(self):
         obj = SubPluginReleaseAdmin(SubPluginRelease, admin.AdminSite())
         self.assertFalse(
-            expr=obj.has_add_permission(''),
+            expr=obj.has_add_permission(""),
         )
 
     def test_has_delete_permission(self):
         obj = SubPluginReleaseAdmin(SubPluginRelease, admin.AdminSite())
         self.assertFalse(
-            expr=obj.has_delete_permission(''),
+            expr=obj.has_delete_permission(""),
         )
 
 
@@ -213,17 +213,17 @@ class SubPluginGameInlineTestCase(TestCase):
         ).query
         self.assertDictEqual(
             d1=query.select_related,
-            d2={'game': {}}
+            d2={"game": {}},
         )
         self.assertTupleEqual(
             tuple1=query.order_by,
-            tuple2=('game__name',),
+            tuple2=("game__name",),
         )
 
     def test_has_add_permission(self):
         obj = SubPluginGameInline(SubPluginGame, admin.AdminSite())
         self.assertFalse(
-            expr=obj.has_add_permission(''),
+            expr=obj.has_add_permission(""),
         )
 
 
@@ -245,7 +245,7 @@ class SubPluginImageInlineTestCase(TestCase):
     def test_has_add_permission(self):
         obj = SubPluginImageInline(SubPluginImage, admin.AdminSite())
         self.assertFalse(
-            expr=obj.has_add_permission(''),
+            expr=obj.has_add_permission(""),
         )
 
 
@@ -274,15 +274,15 @@ class SubPluginTagInlineTestCase(TestCase):
         ).query
         self.assertDictEqual(
             d1=query.select_related,
-            d2={'tag': {}}
+            d2={"tag": {}},
         )
         self.assertTupleEqual(
             tuple1=query.order_by,
-            tuple2=('tag__name',),
+            tuple2=("tag__name",),
         )
 
     def test_has_add_permission(self):
         obj = SubPluginTagInline(SubPluginTag, admin.AdminSite())
         self.assertFalse(
-            expr=obj.has_add_permission(''),
+            expr=obj.has_add_permission(""),
         )

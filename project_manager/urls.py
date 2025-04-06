@@ -5,17 +5,17 @@
 # =============================================================================
 # Django
 from django.conf import settings
-from django.urls import include, path
 from django.conf.urls.static import static
 from django.contrib import admin
+from django.urls import include, path
 from django.views.generic.base import RedirectView
 
-# App
-from project_manager.views import StatisticsView
 from project_manager.packages.views import PackageReleaseDownloadView
 from project_manager.plugins.views import PluginReleaseDownloadView
 from project_manager.sub_plugins.views import SubPluginReleaseDownloadView
 
+# App
+from project_manager.views import StatisticsView
 
 # =============================================================================
 # GLOBAL VARIABLES
@@ -23,92 +23,92 @@ from project_manager.sub_plugins.views import SubPluginReleaseDownloadView
 urlpatterns = [
     path(
         # /
-        route='',
+        route="",
         view=RedirectView.as_view(
-            url='plugins',
+            url="plugins",
             permanent=False,
         ),
-        name='index',
+        name="index",
     ),
     path(
         # /statistics/
-        route='statistics/',
+        route="statistics/",
         view=StatisticsView.as_view(),
-        name='statistics',
+        name="statistics",
     ),
     path(
         # /admin/
-        route='admin/',
+        route="admin/",
         view=admin.site.urls,
     ),
     path(
-        route='api/',
+        route="api/",
         view=include(
-            'project_manager.api.urls',
-            namespace='api',
+            "project_manager.api.urls",
+            namespace="api",
         ),
-        name='api',
+        name="api",
     ),
     path(
-        route='packages/',
+        route="packages/",
         view=include(
-            'project_manager.packages.urls',
-            namespace='packages',
+            "project_manager.packages.urls",
+            namespace="packages",
         ),
-        name='packages',
+        name="packages",
     ),
     path(
-        route='plugins/',
+        route="plugins/",
         view=include(
-            'project_manager.plugins.urls',
-            namespace='plugins',
+            "project_manager.plugins.urls",
+            namespace="plugins",
         ),
-        name='plugins',
+        name="plugins",
     ),
     path(
         # /media/releases/packages/<slug>/<zip_file>
-        route='media/releases/packages/<slug:slug>/<str:zip_file>',
+        route="media/releases/packages/<slug:slug>/<str:zip_file>",
         view=PackageReleaseDownloadView.as_view(),
-        name='package-download',
+        name="package-download",
     ),
     path(
         # /media/releases/plugins/<slug>/<zip_file>
-        route='media/releases/plugins/<slug:slug>/<str:zip_file>',
+        route="media/releases/plugins/<slug:slug>/<str:zip_file>",
         view=PluginReleaseDownloadView.as_view(),
-        name='plugin-download',
+        name="plugin-download",
     ),
     path(
         # /media/releases/sub-plugins/<slug>/<sub_plugin_slug>/<zip_file>
         route=(
-            'media/releases/sub-plugins/<slug:slug>/<slug:sub_plugin_slug>/'
-            '<str:zip_file>'
+            "media/releases/sub-plugins/<slug:slug>/<slug:sub_plugin_slug>/"
+            "<str:zip_file>"
         ),
         view=SubPluginReleaseDownloadView.as_view(),
-        name='sub-plugin-download',
+        name="sub-plugin-download",
     ),
     path(
-        route='users/',
+        route="users/",
         view=include(
-            'users.urls',
-            namespace='users',
+            "users.urls",
+            namespace="users",
         ),
-        name='users',
+        name="users",
     ),
 ] + static(
-    settings.MEDIA_URL, document_root=settings.MEDIA_ROOT
+    settings.MEDIA_URL, document_root=settings.MEDIA_ROOT,
 ) + static(
-    settings.STATIC_URL, document_root=settings.STATIC_ROOT
+    settings.STATIC_URL, document_root=settings.STATIC_ROOT,
 )
 
 if settings.LOCAL:  # pragma: no branch
     import debug_toolbar
     urlpatterns += [
         path(
-            route='__debug__/',
+            route="__debug__/",
             view=include(debug_toolbar.urls),
         ),
         path(
-            route='accounts/',
-            view=include('django.contrib.auth.urls'),
-        )
+            route="accounts/",
+            view=include("django.contrib.auth.urls"),
+        ),
     ]

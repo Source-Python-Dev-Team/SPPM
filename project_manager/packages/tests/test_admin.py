@@ -63,7 +63,7 @@ class PackageAdminTestCase(TestCase):
         ).query
         self.assertDictEqual(
             d1=query.select_related,
-            d2={'owner': {'user': {}}}
+            d2={"owner": {"user": {}}},
         )
 
 
@@ -78,69 +78,69 @@ class TestPackageReleaseAdminTestCase(TestCase):
             tuple1=PackageReleaseAdmin.fieldsets,
             tuple2=(
                 (
-                    'Release Info',
+                    "Release Info",
                     {
-                        'classes': ('wide',),
-                        'fields': (
-                            'version',
-                            'notes',
-                            'zip_file',
-                            'package',
-                        ),
-                    }
-                ),
-                (
-                    'Metadata',
-                    {
-                        'classes': ('collapse',),
-                        'fields': (
-                            'created',
-                            'created_by',
-                            'download_count',
+                        "classes": ("wide",),
+                        "fields": (
+                            "version",
+                            "notes",
+                            "zip_file",
+                            "package",
                         ),
                     },
-                )
-            )
+                ),
+                (
+                    "Metadata",
+                    {
+                        "classes": ("collapse",),
+                        "fields": (
+                            "created",
+                            "created_by",
+                            "download_count",
+                        ),
+                    },
+                ),
+            ),
         )
 
     def test_list_display(self):
         self.assertTupleEqual(
             tuple1=PackageReleaseAdmin.list_display,
             tuple2=(
-                'version',
-                'created',
-                'package',
-            )
+                "version",
+                "created",
+                "package",
+            ),
         )
 
     def test_ordering(self):
         self.assertTupleEqual(
             tuple1=PackageReleaseAdmin.ordering,
             tuple2=(
-                'package',
-                '-created',
-            )
+                "package",
+                "-created",
+            ),
         )
 
     def test_readonly_fields(self):
         self.assertTupleEqual(
             tuple1=PackageReleaseAdmin.readonly_fields,
             tuple2=(
-                'zip_file',
-                'download_count',
-                'created',
-                'created_by',
-                'package',
-            )
+                "zip_file",
+                "download_count",
+                "created",
+                "created_by",
+                "package",
+            ),
         )
 
     def test_search_fields(self):
         self.assertTupleEqual(
             tuple1=PackageReleaseAdmin.search_fields,
             tuple2=(
-                'version',
-                'package__name',
-            )
+                "version",
+                "package__name",
+            ),
         )
 
     def test_get_queryset(self):
@@ -153,19 +153,19 @@ class TestPackageReleaseAdminTestCase(TestCase):
         ).query
         self.assertDictEqual(
             d1=query.select_related,
-            d2={'created_by': {'user': {}}, 'package': {}},
+            d2={"created_by": {"user": {}}, "package": {}},
         )
 
     def test_has_add_permission(self):
         obj = PackageReleaseAdmin(PackageRelease, admin.AdminSite())
         self.assertFalse(
-            expr=obj.has_add_permission(''),
+            expr=obj.has_add_permission(""),
         )
 
     def test_has_delete_permission(self):
         obj = PackageReleaseAdmin(PackageRelease, admin.AdminSite())
         self.assertFalse(
-            expr=obj.has_delete_permission(''),
+            expr=obj.has_delete_permission(""),
         )
 
 
@@ -210,17 +210,17 @@ class PackageGameInlineTestCase(TestCase):
         ).query
         self.assertDictEqual(
             d1=query.select_related,
-            d2={'game': {}}
+            d2={"game": {}},
         )
         self.assertTupleEqual(
             tuple1=query.order_by,
-            tuple2=('game__name',),
+            tuple2=("game__name",),
         )
 
     def test_has_add_permission(self):
         obj = PackageGameInline(PackageGame, admin.AdminSite())
         self.assertFalse(
-            expr=obj.has_add_permission(''),
+            expr=obj.has_add_permission(""),
         )
 
 
@@ -242,7 +242,7 @@ class PackageImageInlineTestCase(TestCase):
     def test_has_add_permission(self):
         obj = PackageImageInline(PackageImage, admin.AdminSite())
         self.assertFalse(
-            expr=obj.has_add_permission(''),
+            expr=obj.has_add_permission(""),
         )
 
 
@@ -271,15 +271,15 @@ class PackageTagInlineTestCase(TestCase):
         ).query
         self.assertDictEqual(
             d1=query.select_related,
-            d2={'tag': {}}
+            d2={"tag": {}},
         )
         self.assertTupleEqual(
             tuple1=query.order_by,
-            tuple2=('tag__name',),
+            tuple2=("tag__name",),
         )
 
     def test_has_add_permission(self):
         obj = PackageTagInline(PackageTag, admin.AdminSite())
         self.assertFalse(
-            expr=obj.has_add_permission(''),
+            expr=obj.has_add_permission(""),
         )

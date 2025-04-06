@@ -28,8 +28,8 @@ class ForumUserAdminTestCase(TestCase):
         self.assertTupleEqual(
             tuple1=ForumUserAdmin.list_display,
             tuple2=(
-                'get_username',
-                'forum_id',
+                "get_username",
+                "forum_id",
             ),
         )
 
@@ -37,47 +37,47 @@ class ForumUserAdminTestCase(TestCase):
         self.assertTupleEqual(
             tuple1=ForumUserAdmin.readonly_fields,
             tuple2=(
-                'user',
-                'forum_id',
+                "user",
+                "forum_id",
             ),
         )
 
     def test_search_fields(self):
         self.assertTupleEqual(
             tuple1=ForumUserAdmin.search_fields,
-            tuple2=('user__username',),
+            tuple2=("user__username",),
         )
 
     def test_get_username(self):
         user = ForumUserFactory()
-        method = ForumUserAdmin(ForumUser, '').get_username
+        method = ForumUserAdmin(ForumUser, "").get_username
         self.assertEqual(
             first=method(user),
             second=user.user.username,
         )
         self.assertEqual(
-            first=getattr(method, 'short_description'),
-            second='Username',
+            first=method.short_description,
+            second="Username",
         )
         self.assertEqual(
-            first=getattr(method, 'admin_order_field'),
-            second='user__username',
+            first=method.admin_order_field,
+            second="user__username",
         )
 
     def test_has_add_permission(self):
         self.assertFalse(
-            expr=ForumUserAdmin(ForumUser, '').has_add_permission(''),
+            expr=ForumUserAdmin(ForumUser, "").has_add_permission(""),
         )
 
     def test_has_delete_permission(self):
         self.assertFalse(
-            expr=ForumUserAdmin(ForumUser, '').has_delete_permission(''),
+            expr=ForumUserAdmin(ForumUser, "").has_delete_permission(""),
         )
 
     def test_get_queryset(self):
-        query = ForumUserAdmin(ForumUser, '').get_queryset('').query
+        query = ForumUserAdmin(ForumUser, "").get_queryset("").query
         self.assertIn(
-            member='user',
+            member="user",
             container=query.select_related,
         )
 
@@ -96,24 +96,24 @@ class UserAdminTestCase(TestCase):
         self.assertTupleEqual(
             tuple1=UserAdmin.fields,
             tuple2=(
-                'username',
-                'is_superuser',
-                'is_staff',
+                "username",
+                "is_superuser",
+                "is_staff",
             ),
         )
 
     def test_readonly_fields(self):
         self.assertTupleEqual(
             tuple1=UserAdmin.readonly_fields,
-            tuple2=('username',),
+            tuple2=("username",),
         )
 
     def test_has_add_permission(self):
         self.assertFalse(
-            expr=UserAdmin(User, '').has_add_permission(''),
+            expr=UserAdmin(User, "").has_add_permission(""),
         )
 
     def test_has_delete_permission(self):
         self.assertFalse(
-            expr=UserAdmin(User, '').has_delete_permission(''),
+            expr=UserAdmin(User, "").has_delete_permission(""),
         )

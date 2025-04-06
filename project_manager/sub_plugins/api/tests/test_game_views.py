@@ -146,11 +146,11 @@ class SubPluginGameViewSetTestCase(APITestCase):
             second=status.HTTP_200_OK,
         )
         content = response.json()
-        self.assertEqual(first=content['count'], second=2)
+        self.assertEqual(first=content["count"], second=2)
         request = response.wsgi_request
         icon = f'{request.scheme}://{request.get_host()}{self.game_2.icon.url}'
         self.assertDictEqual(
-            d1=content['results'][0],
+            d1=content["results"][0],
             d2={
                 'game': {
                     'name': self.game_2.name,
@@ -169,9 +169,9 @@ class SubPluginGameViewSetTestCase(APITestCase):
             second=status.HTTP_200_OK,
         )
         content = response.json()
-        self.assertEqual(first=content['count'], second=2)
+        self.assertEqual(first=content["count"], second=2)
         self.assertDictEqual(
-            d1=content['results'][0],
+            d1=content["results"][0],
             d2={
                 'game': {
                     'name': self.game_2.name,
@@ -190,9 +190,9 @@ class SubPluginGameViewSetTestCase(APITestCase):
             second=status.HTTP_200_OK,
         )
         content = response.json()
-        self.assertEqual(first=content['count'], second=2)
+        self.assertEqual(first=content["count"], second=2)
         self.assertDictEqual(
-            d1=content['results'][0],
+            d1=content["results"][0],
             d2={
                 'game': {
                     'name': self.game_2.name,
@@ -212,9 +212,9 @@ class SubPluginGameViewSetTestCase(APITestCase):
             second=status.HTTP_200_OK,
         )
         content = response.json()
-        self.assertEqual(first=content['count'], second=2)
+        self.assertEqual(first=content["count"], second=2)
         self.assertDictEqual(
-            d1=content['results'][0],
+            d1=content["results"][0],
             d2={
                 'game': {
                     'name': self.game_2.name,
@@ -242,7 +242,7 @@ class SubPluginGameViewSetTestCase(APITestCase):
             first=response.status_code,
             second=status.HTTP_200_OK,
         )
-        self.assertEqual(first=response.json()['count'], second=0)
+        self.assertEqual(first=response.json()["count"], second=0)
 
         # Verify that regular user can see results but not 'id'
         self.client.force_login(self.regular_user.user)
@@ -252,7 +252,7 @@ class SubPluginGameViewSetTestCase(APITestCase):
             first=response.status_code,
             second=status.HTTP_200_OK,
         )
-        self.assertEqual(first=response.json()['count'], second=0)
+        self.assertEqual(first=response.json()["count"], second=0)
 
         # Verify that contributors can see results AND 'id'
         self.client.force_login(self.contributor.user)
@@ -262,7 +262,7 @@ class SubPluginGameViewSetTestCase(APITestCase):
             first=response.status_code,
             second=status.HTTP_200_OK,
         )
-        self.assertEqual(first=response.json()['count'], second=0)
+        self.assertEqual(first=response.json()["count"], second=0)
 
         # Verify that the owner can see results AND 'id'
         self.client.force_login(self.owner.user)
@@ -272,7 +272,7 @@ class SubPluginGameViewSetTestCase(APITestCase):
             first=response.status_code,
             second=status.HTTP_200_OK,
         )
-        self.assertEqual(first=response.json()['count'], second=0)
+        self.assertEqual(first=response.json()["count"], second=0)
 
     @override_settings(DEBUG=True)
     def test_get_list_failure(self):
@@ -437,7 +437,7 @@ class SubPluginGameViewSetTestCase(APITestCase):
         )
         self.assertDictEqual(
             d1=response.json(),
-            d2={'game': [f'Game already linked to {SubPluginGameViewSet.project_type}.']}
+            d2={'game': [f"Game already linked to {SubPluginGameViewSet.project_type}."]}
         )
 
         # Verify non-existing game cannot be added
@@ -502,7 +502,7 @@ class SubPluginGameViewSetTestCase(APITestCase):
         self.assertEqual(first=response.status_code, second=status.HTTP_200_OK)
         content = response.json()
         self.assertEqual(
-            first=content['name'],
+            first=content["name"],
             second=f'{self.sub_plugin_1} - Game',
         )
         self.assertNotIn(member='actions', container=content)
@@ -513,7 +513,7 @@ class SubPluginGameViewSetTestCase(APITestCase):
         self.assertEqual(first=response.status_code, second=status.HTTP_200_OK)
         content = response.json()
         self.assertEqual(
-            first=content['name'],
+            first=content["name"],
             second=f'{self.sub_plugin_1} - Game',
         )
         self.assertNotIn(member='actions', container=content)
@@ -524,11 +524,11 @@ class SubPluginGameViewSetTestCase(APITestCase):
         self.assertEqual(first=response.status_code, second=status.HTTP_200_OK)
         content = response.json()
         self.assertEqual(
-            first=content['name'],
+            first=content["name"],
             second=f'{self.sub_plugin_1} - Game',
         )
         self.assertIn(member='actions', container=content)
-        self.assertSetEqual(set1=set(content['actions']), set2={'POST'})
+        self.assertSetEqual(set1=set(content["actions"]), set2={'POST'})
 
         # Verify that the owner can POST
         self.client.force_login(user=self.owner.user)
@@ -536,11 +536,11 @@ class SubPluginGameViewSetTestCase(APITestCase):
         self.assertEqual(first=response.status_code, second=status.HTTP_200_OK)
         content = response.json()
         self.assertEqual(
-            first=content['name'],
+            first=content["name"],
             second=f'{self.sub_plugin_1} - Game',
         )
         self.assertIn(member='actions', container=content)
-        self.assertSetEqual(set1=set(content['actions']), set2={'POST'})
+        self.assertSetEqual(set1=set(content["actions"]), set2={'POST'})
 
     def test_options_object(self):
         # Verify that non-logged-in user cannot DELETE
@@ -548,7 +548,7 @@ class SubPluginGameViewSetTestCase(APITestCase):
         self.assertEqual(first=response.status_code, second=status.HTTP_200_OK)
         content = response.json()
         self.assertEqual(
-            first=content['name'],
+            first=content["name"],
             second=f'{self.sub_plugin_1} - Game',
         )
         self.assertNotIn(member='actions', container=content)
@@ -559,7 +559,7 @@ class SubPluginGameViewSetTestCase(APITestCase):
         self.assertEqual(first=response.status_code, second=status.HTTP_200_OK)
         content = response.json()
         self.assertEqual(
-            first=content['name'],
+            first=content["name"],
             second=f'{self.sub_plugin_1} - Game',
         )
         self.assertNotIn(member='actions', container=content)
@@ -570,11 +570,11 @@ class SubPluginGameViewSetTestCase(APITestCase):
         self.assertEqual(first=response.status_code, second=status.HTTP_200_OK)
         content = response.json()
         self.assertEqual(
-            first=content['name'],
+            first=content["name"],
             second=f'{self.sub_plugin_1} - Game',
         )
         self.assertIn(member='actions', container=content)
-        self.assertSetEqual(set1=set(content['actions']), set2={'DELETE'})
+        self.assertSetEqual(set1=set(content["actions"]), set2={'DELETE'})
 
         # Verify that the owner can DELETE
         self.client.force_login(user=self.owner.user)
@@ -582,8 +582,8 @@ class SubPluginGameViewSetTestCase(APITestCase):
         self.assertEqual(first=response.status_code, second=status.HTTP_200_OK)
         content = response.json()
         self.assertEqual(
-            first=content['name'],
+            first=content["name"],
             second=f'{self.sub_plugin_1} - Game',
         )
         self.assertIn(member='actions', container=content)
-        self.assertSetEqual(set1=set(content['actions']), set2={'DELETE'})
+        self.assertSetEqual(set1=set(content["actions"]), set2={'DELETE'})

@@ -6,12 +6,11 @@
 # Django
 from django.core.validators import RegexValidator
 
-
 # =============================================================================
 # ALL DECLARATION
 # =============================================================================
 __all__ = (
-    'tag_name_validator',
+    "tag_name_validator",
 )
 
 
@@ -20,4 +19,4 @@ __all__ = (
 # =============================================================================
 # Tags should:
 #   Contain only lower-case characters.
-tag_name_validator = RegexValidator(r'^[a-z]*')
+tag_name_validator = RegexValidator(r"^[a-z]*")

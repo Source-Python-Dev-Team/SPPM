@@ -30,7 +30,7 @@ BASE_DIR = Path(__file__).parent.parent.parent
 # See https://docs.djangoproject.com/en/1.9/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-if (BASE_DIR / '.secret_key').isfile():
+if (BASE_DIR / '.secret_key').is_file():
     with (BASE_DIR / '.secret_key').open() as _:
         SECRET_KEY = _.read()
 else:
@@ -73,12 +73,12 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'project_manager.urls'
-FORM_RENDERER = 'django.forms.renderers.DjangoDivFormRenderer'
+FORM_RENDERER = 'django.forms.renderers.DjangoTemplates'
 
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates'],
+        'DIRS': [BASE_DIR / "templates"],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -145,8 +145,8 @@ REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': (
         'project_manager.api.pagination.BasePagination'
     ),
-    'DEFAULT_PERMISSION_CLASSES': ['rest_framework.permissions.IsAuthenticatedOrReadOnly'],
-    'DEFAULT_AUTHENTICATION_CLASSES': ['rest_framework.authentication.SessionAuthentication'],
+    'DEFAULT_PERMISSION_CLASSES': ["rest_framework.permissions.IsAuthenticatedOrReadOnly"],
+    'DEFAULT_AUTHENTICATION_CLASSES': ["rest_framework.authentication.SessionAuthentication"],
 }
 
 LOGGING = {
@@ -167,7 +167,7 @@ LOGGING = {
     },
     'loggers': {
         '': {
-            'handlers': ['console'],
+            'handlers': ["console"],
             'level': 'INFO',
             'propagate': True,
         }

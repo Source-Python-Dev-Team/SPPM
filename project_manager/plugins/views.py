@@ -11,14 +11,13 @@ from project_manager.mixins import DownloadMixin
 from project_manager.plugins.constants import PLUGIN_RELEASE_URL
 from project_manager.plugins.models import Plugin, PluginRelease
 
-
 # =============================================================================
 # ALL DECLARATION
 # =============================================================================
 __all__ = (
-    'PluginReleaseDownloadView',
-    'PluginCreateView',
-    'PluginView',
+    "PluginCreateView",
+    "PluginReleaseDownloadView",
+    "PluginView",
 )
 
 
@@ -30,39 +29,39 @@ class PluginReleaseDownloadView(DownloadMixin):
 
     model = PluginRelease
     project_model = Plugin
-    model_kwarg = 'plugin'
+    model_kwarg = "plugin"
     base_url = PLUGIN_RELEASE_URL
 
 
 class PluginView(TemplateView):
     """Frontend view for viewing Plugins."""
 
-    template_name = 'main.html'
-    http_method_names = ('get', 'options')
+    template_name = "main.html"
+    http_method_names = ("get", "options")
 
     def get_context_data(self, **kwargs):
         """Add the page title to the context."""
         context = super().get_context_data(**kwargs)
-        slug = context.get('slug')
+        slug = context.get("slug")
         if slug is None:
-            context['title'] = 'Plugin Listing'
+            context["title"] = "Plugin Listing"
         else:
             try:
                 plugin = Plugin.objects.get(slug=slug)
-                context['title'] = plugin.name
+                context["title"] = plugin.name
             except Plugin.DoesNotExist:
-                context['title'] = f'Plugin "{slug}" not found.'
+                context["title"] = f'Plugin "{slug}" not found.'
         return context
 
 
 class PluginCreateView(TemplateView):
     """Frontend view for creating Plugins."""
 
-    template_name = 'main.html'
-    http_method_names = ('get', 'options')
+    template_name = "main.html"
+    http_method_names = ("get", "options")
 
     def get_context_data(self, **kwargs):
         """Add the page title to the context."""
         context = super().get_context_data(**kwargs)
-        context['title'] = 'Create a Plugin'
+        context["title"] = "Create a Plugin"
         return context

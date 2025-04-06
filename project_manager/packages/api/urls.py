@@ -20,54 +20,53 @@ from project_manager.packages.api.views import (
     PackageViewSet,
 )
 
-
 # =============================================================================
 # ROUTERS
 # =============================================================================
 router = routers.SimpleRouter()
 router.register(
-    prefix='projects',
+    prefix="projects",
     viewset=PackageViewSet,
-    basename='projects',
+    basename="projects",
 )
 router.register(
-    prefix='images/(?P<package_slug>[^/.]+)',
+    prefix="images/(?P<package_slug>[^/.]+)",
     viewset=PackageImageViewSet,
-    basename='images',
+    basename="images",
 )
 router.register(
-    prefix='releases/(?P<package_slug>[^/.]+)',
+    prefix="releases/(?P<package_slug>[^/.]+)",
     viewset=PackageReleaseViewSet,
-    basename='releases',
+    basename="releases",
 )
 router.register(
-    prefix='games/(?P<package_slug>[^/.]+)',
+    prefix="games/(?P<package_slug>[^/.]+)",
     viewset=PackageGameViewSet,
-    basename='games',
+    basename="games",
 )
 router.register(
-    prefix='tags/(?P<package_slug>[^/.]+)',
+    prefix="tags/(?P<package_slug>[^/.]+)",
     viewset=PackageTagViewSet,
-    basename='tags',
+    basename="tags",
 )
 router.register(
-    prefix='contributors/(?P<package_slug>[^/.]+)',
+    prefix="contributors/(?P<package_slug>[^/.]+)",
     viewset=PackageContributorViewSet,
-    basename='contributors',
+    basename="contributors",
 )
 
 
 # =============================================================================
 # GLOBAL VARIABLES
 # =============================================================================
-app_name = 'packages'
+app_name = "packages"
 
 urlpatterns = [
     path(
-        route='',
+        route="",
         view=PackageAPIView.as_view(),
-        name='endpoints',
-    )
+        name="endpoints",
+    ),
 ]
 
 urlpatterns += router.urls

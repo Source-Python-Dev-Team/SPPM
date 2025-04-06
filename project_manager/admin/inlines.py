@@ -6,15 +6,14 @@
 # Django
 from django.contrib import admin
 
-
 # =============================================================================
 # ALL DECLARATION
 # =============================================================================
 __all__ = (
-    'ProjectContributorInline',
-    'ProjectGameInline',
-    'ProjectImageInline',
-    'ProjectTagInline',
+    "ProjectContributorInline",
+    "ProjectGameInline",
+    "ProjectImageInline",
+    "ProjectTagInline",
 )
 
 
@@ -26,10 +25,10 @@ class ProjectContributorInline(admin.TabularInline):
 
     extra = 0
     fields = (
-        'user',
+        "user",
     )
     raw_id_fields = (
-        'user',
+        "user",
     )
 
 
@@ -37,10 +36,10 @@ class ProjectGameInline(admin.TabularInline):
     """Base Project Game Inline."""
 
     fields = (
-        'game',
+        "game",
     )
     readonly_fields = (
-        'game',
+        "game",
     )
 
     def get_queryset(self, request):
@@ -48,12 +47,12 @@ class ProjectGameInline(admin.TabularInline):
         return super().get_queryset(
             request=request,
         ).select_related(
-            'game',
+            "game",
         ).order_by(
-            'game__name',
+            "game__name",
         )
 
-    def has_add_permission(self, request, obj=None):
+    def has_add_permission(self, _, __=None):
         """Disallow adding new games in the Admin."""
         return False
 
@@ -62,10 +61,10 @@ class ProjectTagInline(admin.TabularInline):
     """Base Project Tag Inline."""
 
     fields = (
-        'tag',
+        "tag",
     )
     readonly_fields = (
-        'tag',
+        "tag",
     )
 
     def get_queryset(self, request):
@@ -73,12 +72,12 @@ class ProjectTagInline(admin.TabularInline):
         return super().get_queryset(
             request=request,
         ).select_related(
-            'tag',
+            "tag",
         ).order_by(
-            'tag__name',
+            "tag__name",
         )
 
-    def has_add_permission(self, request, obj=None):
+    def has_add_permission(self, _, __=None):
         """Disallow adding new tags in the Admin."""
         return False
 
@@ -87,14 +86,14 @@ class ProjectImageInline(admin.TabularInline):
     """Base Project Image Inline."""
 
     fields = (
-        'image',
-        'created',
+        "image",
+        "created",
     )
     readonly_fields = (
-        'image',
-        'created',
+        "image",
+        "created",
     )
 
-    def has_add_permission(self, request, obj=None):
+    def has_add_permission(self, _, __=None):
         """Disallow adding new images in the Admin."""
         return False

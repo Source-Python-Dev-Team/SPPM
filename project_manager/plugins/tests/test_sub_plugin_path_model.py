@@ -28,7 +28,7 @@ class SubPluginPathTestCase(TestCase):
         self.assertTrue(expr=issubclass(SubPluginPath, AbstractUUIDPrimaryKeyModel))
 
     def test_plugin_field(self):
-        field = SubPluginPath._meta.get_field('plugin')
+        field = SubPluginPath._meta.get_field("plugin")
         self.assertIsInstance(
             obj=field,
             cls=models.ForeignKey,
@@ -39,7 +39,7 @@ class SubPluginPathTestCase(TestCase):
         )
         self.assertEqual(
             first=field.remote_field.related_name,
-            second='paths',
+            second="paths",
         )
         self.assertEqual(
             first=field.remote_field.on_delete,
@@ -47,7 +47,7 @@ class SubPluginPathTestCase(TestCase):
         )
 
     def test_path_field(self):
-        field = SubPluginPath._meta.get_field('path')
+        field = SubPluginPath._meta.get_field("path")
         self.assertIsInstance(obj=field, cls=models.CharField)
         self.assertEqual(
             first=field.max_length,
@@ -59,17 +59,17 @@ class SubPluginPathTestCase(TestCase):
         )
 
     def test_allow_module_field(self):
-        field = SubPluginPath._meta.get_field('allow_module')
+        field = SubPluginPath._meta.get_field("allow_module")
         self.assertIsInstance(obj=field, cls=models.BooleanField)
         self.assertFalse(expr=field.default)
 
     def test_allow_package_using_basename_field(self):
-        field = SubPluginPath._meta.get_field('allow_package_using_basename')
+        field = SubPluginPath._meta.get_field("allow_package_using_basename")
         self.assertIsInstance(obj=field, cls=models.BooleanField)
         self.assertFalse(expr=field.default)
 
     def test_allow_package_using_init_field(self):
-        field = SubPluginPath._meta.get_field('allow_package_using_init')
+        field = SubPluginPath._meta.get_field("allow_package_using_init")
         self.assertIsInstance(obj=field, cls=models.BooleanField)
         self.assertFalse(expr=field.default)
 
@@ -108,9 +108,9 @@ class SubPluginPathTestCase(TestCase):
             second=3,
         )
         for attribute in (
-            'allow_module',
-            'allow_package_using_basename',
-            'allow_package_using_init',
+            "allow_module",
+            "allow_package_using_basename",
+            "allow_package_using_init",
         ):
             self.assertIn(
                 member=attribute,
@@ -127,37 +127,37 @@ class SubPluginPathTestCase(TestCase):
 
         plugin = PluginFactory()
         path_1 = SubPluginPathFactory(
-            path='path_1',
+            path="path_1",
             plugin=plugin,
             allow_module=True,
         )
         SubPluginPathFactory(
-            path='path_2',
+            path="path_2",
             plugin=plugin,
         )
 
-        path_1.path = 'path_3'
+        path_1.path = "path_3"
         path_1.clean()
 
-        path_1.path = 'path_2'
+        path_1.path = "path_2"
         with self.assertRaises(ValidationError) as context:
             path_1.clean()
 
         self.assertDictEqual(
             d1=context.exception.message_dict,
-            d2={'path': ['Path already exists for plugin.']}
+            d2={"path": ["Path already exists for plugin."]},
         )
 
     def test_meta_class(self):
         self.assertTupleEqual(
             tuple1=SubPluginPath._meta.unique_together,
-            tuple2=(('path', 'plugin'),),
+            tuple2=(("path", "plugin"),),
         )
         self.assertEqual(
             first=SubPluginPath._meta.verbose_name,
-            second='SubPlugin Path',
+            second="SubPlugin Path",
         )
         self.assertEqual(
             first=SubPluginPath._meta.verbose_name_plural,
-            second='SubPlugin Paths',
+            second="SubPlugin Paths",
         )

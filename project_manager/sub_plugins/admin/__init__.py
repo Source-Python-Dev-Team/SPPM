@@ -19,13 +19,12 @@ from project_manager.sub_plugins.admin.inlines import (
 )
 from project_manager.sub_plugins.models import SubPlugin, SubPluginRelease
 
-
 # =============================================================================
 # ALL DECLARATION
 # =============================================================================
 __all__ = (
-    'SubPluginAdmin',
-    'SubPluginReleaseAdmin',
+    "SubPluginAdmin",
+    "SubPluginReleaseAdmin",
 )
 
 
@@ -33,8 +32,8 @@ __all__ = (
 # GLOBAL VARIABLES
 # =============================================================================
 _project_fieldsets = deepcopy(ProjectAdmin.fieldsets)
-_fields = _project_fieldsets[0][1]['fields']
-_project_fieldsets[0][1]['fields'] = ('plugin',) + _fields
+_fields = _project_fieldsets[0][1]["fields"]
+_project_fieldsets[0][1]["fields"] = ("plugin",) + _fields
 
 
 # =============================================================================
@@ -52,14 +51,14 @@ class SubPluginAdmin(ProjectAdmin):
         SubPluginTagInline,
     )
     list_display = ProjectAdmin.list_display + (
-        'plugin',
+        "plugin",
     )
     readonly_fields = ProjectAdmin.readonly_fields + (
-        'plugin',
+        "plugin",
     )
     search_fields = ProjectAdmin.search_fields + (
-        'plugin__name',
-        'plugin__basename',
+        "plugin__name",
+        "plugin__basename",
     )
 
     def get_queryset(self, request):
@@ -67,7 +66,7 @@ class SubPluginAdmin(ProjectAdmin):
         return super().get_queryset(
             request=request,
         ).select_related(
-            'plugin',
+            "plugin",
         )
 
 
@@ -76,16 +75,16 @@ class SubPluginReleaseAdmin(ProjectReleaseAdmin):
     """SubPluginRelease admin."""
 
     fieldsets = deepcopy(ProjectReleaseAdmin.fieldsets)
-    fieldsets[0][1]['fields'] += ('sub_plugin',)
-    list_display = ProjectReleaseAdmin.list_display + ('sub_plugin',)
-    ordering = ('sub_plugin', '-created',)
-    readonly_fields = ProjectReleaseAdmin.readonly_fields + ('sub_plugin',)
-    search_fields = ProjectReleaseAdmin.search_fields + ('sub_plugin__name',)
+    fieldsets[0][1]["fields"] += ("sub_plugin",)
+    list_display = ProjectReleaseAdmin.list_display + ("sub_plugin",)
+    ordering = ("sub_plugin", "-created")
+    readonly_fields = ProjectReleaseAdmin.readonly_fields + ("sub_plugin",)
+    search_fields = ProjectReleaseAdmin.search_fields + ("sub_plugin__name",)
 
     def get_queryset(self, request):
         """Cache 'plugin' for the queryset."""
         return super().get_queryset(
             request=request,
         ).select_related(
-            'sub_plugin__plugin',
+            "sub_plugin__plugin",
         )

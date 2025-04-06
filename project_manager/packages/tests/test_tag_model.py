@@ -21,11 +21,11 @@ from test_utils.factories.packages import PackageTagFactory
 class PackageTagTestCase(TestCase):
     def test_model_inheritance(self):
         self.assertTrue(
-            expr=issubclass(PackageTag, AbstractUUIDPrimaryKeyModel)
+            expr=issubclass(PackageTag, AbstractUUIDPrimaryKeyModel),
         )
 
     def test_package_field(self):
-        field = PackageTag._meta.get_field('package')
+        field = PackageTag._meta.get_field("package")
         self.assertIsInstance(
             obj=field,
             cls=models.ForeignKey,
@@ -42,7 +42,7 @@ class PackageTagTestCase(TestCase):
         self.assertFalse(expr=field.null)
 
     def test_tag_field(self):
-        field = PackageTag._meta.get_field('tag')
+        field = PackageTag._meta.get_field("tag")
         self.assertIsInstance(
             obj=field,
             cls=models.ForeignKey,
@@ -62,19 +62,19 @@ class PackageTagTestCase(TestCase):
         obj = PackageTagFactory()
         self.assertEqual(
             first=str(obj),
-            second=f'{obj.package} Tag: {obj.tag}',
+            second=f"{obj.package} Tag: {obj.tag}",
         )
 
     def test_meta_class(self):
         self.assertTupleEqual(
             tuple1=PackageTag._meta.unique_together,
-            tuple2=(('package', 'tag'),),
+            tuple2=(("package", "tag"),),
         )
         self.assertEqual(
             first=PackageTag._meta.verbose_name,
-            second='Package Tag',
+            second="Package Tag",
         )
         self.assertEqual(
             first=PackageTag._meta.verbose_name_plural,
-            second='Package Tags',
+            second="Package Tags",
         )

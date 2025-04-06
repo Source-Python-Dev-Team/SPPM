@@ -9,38 +9,37 @@ from django.urls import include, path
 # App
 from project_manager.plugins.views import PluginCreateView, PluginView
 
-
 # =============================================================================
 # GLOBAL VARIABLES
 # =============================================================================
-app_name = 'plugins'
+app_name = "plugins"
 
 urlpatterns = [
     path(
         # /plugins
-        route='',
+        route="",
         view=PluginView.as_view(),
-        name='list',
+        name="list",
     ),
     path(
         # /plugins/create
-        route='create',
+        route="create",
         view=PluginCreateView.as_view(),
-        name='create',
+        name="create",
     ),
     path(
         # /plugins/<slug>
-        route='<slug:slug>/',
+        route="<slug:slug>/",
         view=PluginView.as_view(),
-        name='detail',
+        name="detail",
     ),
     path(
         # /plugins/<slug>/sub-plugins
-        route='<slug:slug>/sub-plugins/',
+        route="<slug:slug>/sub-plugins/",
         view=include(
-            'project_manager.sub_plugins.urls',
-            namespace='sub-plugins',
+            "project_manager.sub_plugins.urls",
+            namespace="sub-plugins",
         ),
-        name='sub-plugins',
+        name="sub-plugins",
     ),
 ]

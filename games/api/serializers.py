@@ -9,17 +9,22 @@ from rest_framework.serializers import ModelSerializer
 
 # App
 from games.models import Game
-from project_manager.packages.api.common.serializers import MinimalPackageSerializer
-from project_manager.plugins.api.common.serializers import MinimalPluginSerializer
-from project_manager.sub_plugins.api.common.serializers import MinimalSubPluginSerializer
-
+from project_manager.packages.api.common.serializers import (
+    MinimalPackageSerializer,
+)
+from project_manager.plugins.api.common.serializers import (
+    MinimalPluginSerializer,
+)
+from project_manager.sub_plugins.api.common.serializers import (
+    MinimalSubPluginSerializer,
+)
 
 # =============================================================================
 # ALL DECLARATION
 # =============================================================================
 __all__ = (
-    'GameListSerializer',
-    'GameRetrieveSerializer',
+    "GameListSerializer",
+    "GameRetrieveSerializer",
 )
 
 
@@ -38,12 +43,12 @@ class GameRetrieveSerializer(ModelSerializer):
 
         model = Game
         fields = (
-            'name',
-            'slug',
-            'icon',
-            'packages',
-            'plugins',
-            'sub_plugins',
+            "name",
+            "slug",
+            "icon",
+            "packages",
+            "plugins",
+            "sub_plugins",
         )
 
 
@@ -60,11 +65,11 @@ class GameListSerializer(ModelSerializer):
 
         model = Game
         fields = (
-            'name',
-            'slug',
-            'icon',
-            'package_count',
-            'plugin_count',
-            'sub_plugin_count',
-            'project_count',
+            "name",
+            "slug",
+            "icon",
+            "package_count",
+            "plugin_count",
+            "sub_plugin_count",
+            "project_count",
         )

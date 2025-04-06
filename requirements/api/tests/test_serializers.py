@@ -27,31 +27,31 @@ class ReleaseDownloadRequirementSerializerTestCase(TestCase):
         )
 
     def test_declared_fields(self):
-        declared_fields = getattr(ReleaseDownloadRequirementSerializer, '_declared_fields')
+        declared_fields = ReleaseDownloadRequirementSerializer._declared_fields
         self.assertEqual(
             first=len(declared_fields),
             second=1,
         )
 
         self.assertIn(
-            member='url',
+            member="url",
             container=declared_fields,
         )
         self.assertIsInstance(
-            obj=declared_fields['url'],
+            obj=declared_fields["url"],
             cls=ReadOnlyField,
         )
         self.assertEqual(
-            first=declared_fields['url'].source,
-            second='download_requirement.url',
+            first=declared_fields["url"].source,
+            second="download_requirement.url",
         )
 
     def test_meta_class(self):
         self.assertTupleEqual(
             tuple1=ReleaseDownloadRequirementSerializer.Meta.fields,
             tuple2=(
-                'url',
-                'optional',
+                "url",
+                "optional",
             ),
         )
 
@@ -64,56 +64,56 @@ class ReleasePyPiRequirementSerializerTestCase(TestCase):
         )
 
     def test_declared_fields(self):
-        declared_fields = getattr(ReleasePyPiRequirementSerializer, '_declared_fields')
+        declared_fields = ReleasePyPiRequirementSerializer._declared_fields
         self.assertEqual(
             first=len(declared_fields),
             second=3,
         )
 
         self.assertIn(
-            member='name',
+            member="name",
             container=declared_fields,
         )
         self.assertIsInstance(
-            obj=declared_fields['name'],
+            obj=declared_fields["name"],
             cls=ReadOnlyField,
         )
         self.assertEqual(
-            first=declared_fields['name'].source,
-            second='pypi_requirement.name',
+            first=declared_fields["name"].source,
+            second="pypi_requirement.name",
         )
 
         self.assertIn(
-            member='slug',
+            member="slug",
             container=declared_fields,
         )
         self.assertIsInstance(
-            obj=declared_fields['slug'],
+            obj=declared_fields["slug"],
             cls=ReadOnlyField,
         )
         self.assertEqual(
-            first=declared_fields['slug'].source,
-            second='pypi_requirement.slug',
+            first=declared_fields["slug"].source,
+            second="pypi_requirement.slug",
         )
 
         self.assertIn(
-            member='version',
+            member="version",
             container=declared_fields,
         )
         self.assertIsInstance(
-            obj=declared_fields['version'],
+            obj=declared_fields["version"],
             cls=ReadOnlyField,
         )
-        self.assertIsNone(obj=declared_fields['version'].source)
+        self.assertIsNone(obj=declared_fields["version"].source)
 
     def test_meta_class(self):
         self.assertTupleEqual(
             tuple1=ReleasePyPiRequirementSerializer.Meta.fields,
             tuple2=(
-                'name',
-                'slug',
-                'version',
-                'optional',
+                "name",
+                "slug",
+                "version",
+                "optional",
             ),
         )
 
@@ -126,41 +126,41 @@ class ReleaseVersionControlRequirementSerializerTestCase(TestCase):
         )
 
     def test_declared_fields(self):
-        declared_fields = getattr(ReleaseVersionControlRequirementSerializer, '_declared_fields')
+        declared_fields = ReleaseVersionControlRequirementSerializer._declared_fields
         self.assertEqual(
             first=len(declared_fields),
             second=2,
         )
 
         self.assertIn(
-            member='url',
+            member="url",
             container=declared_fields,
         )
         self.assertIsInstance(
-            obj=declared_fields['url'],
+            obj=declared_fields["url"],
             cls=ReadOnlyField,
         )
         self.assertEqual(
-            first=declared_fields['url'].source,
-            second='vcs_requirement.url',
+            first=declared_fields["url"].source,
+            second="vcs_requirement.url",
         )
 
         self.assertIn(
-            member='version',
+            member="version",
             container=declared_fields,
         )
         self.assertIsInstance(
-            obj=declared_fields['version'],
+            obj=declared_fields["version"],
             cls=ReadOnlyField,
         )
-        self.assertIsNone(obj=declared_fields['version'].source)
+        self.assertIsNone(obj=declared_fields["version"].source)
 
     def test_meta_class(self):
         self.assertTupleEqual(
             tuple1=ReleaseVersionControlRequirementSerializer.Meta.fields,
             tuple2=(
-                'url',
-                'version',
-                'optional',
+                "url",
+                "version",
+                "optional",
             ),
         )

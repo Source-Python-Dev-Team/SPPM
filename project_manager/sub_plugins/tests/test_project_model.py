@@ -23,7 +23,6 @@ from project_manager.constants import (
     PROJECT_SLUG_MAX_LENGTH,
 )
 from project_manager.models.abstract import Project
-from project_manager.validators import basename_validator
 from project_manager.plugins.models import Plugin
 from project_manager.sub_plugins.constants import SUB_PLUGIN_LOGO_URL
 from project_manager.sub_plugins.helpers import handle_sub_plugin_logo_upload
@@ -33,6 +32,7 @@ from project_manager.sub_plugins.models import (
     SubPluginGame,
     SubPluginTag,
 )
+from project_manager.validators import basename_validator
 from tags.models import Tag
 from test_utils.factories.sub_plugins import (
     SubPluginFactory,
@@ -47,11 +47,11 @@ from users.models import ForumUser
 class SubPluginTestCase(TestCase):
     def test_model_inheritance(self):
         self.assertTrue(
-            expr=issubclass(SubPlugin, Project)
+            expr=issubclass(SubPlugin, Project),
         )
 
     def test_basename_field(self):
-        field = SubPlugin._meta.get_field('basename')
+        field = SubPlugin._meta.get_field("basename")
         self.assertIsInstance(
             obj=field,
             cls=models.CharField,
@@ -69,7 +69,7 @@ class SubPluginTestCase(TestCase):
         self.assertFalse(expr=field.null)
 
     def test_owner_field(self):
-        field = SubPlugin._meta.get_field('owner')
+        field = SubPlugin._meta.get_field("owner")
         self.assertIsInstance(
             obj=field,
             cls=models.ForeignKey,
@@ -84,13 +84,13 @@ class SubPluginTestCase(TestCase):
         )
         self.assertEqual(
             first=field.remote_field.related_name,
-            second='sub_plugins',
+            second="sub_plugins",
         )
         self.assertFalse(expr=field.blank)
         self.assertTrue(expr=field.null)
 
     def test_contributors_field(self):
-        field = SubPlugin._meta.get_field('contributors')
+        field = SubPlugin._meta.get_field("contributors")
         self.assertIsInstance(
             obj=field,
             cls=models.ManyToManyField,
@@ -101,7 +101,7 @@ class SubPluginTestCase(TestCase):
         )
         self.assertEqual(
             first=field.remote_field.related_name,
-            second='sub_plugin_contributions',
+            second="sub_plugin_contributions",
         )
         self.assertEqual(
             first=field.remote_field.through,
@@ -109,7 +109,7 @@ class SubPluginTestCase(TestCase):
         )
 
     def test_slug_field(self):
-        field = SubPlugin._meta.get_field('slug')
+        field = SubPlugin._meta.get_field("slug")
         self.assertIsInstance(
             obj=field,
             cls=models.SlugField,
@@ -124,7 +124,7 @@ class SubPluginTestCase(TestCase):
         self.assertFalse(expr=field.null)
 
     def test_plugin_field(self):
-        field = SubPlugin._meta.get_field('plugin')
+        field = SubPlugin._meta.get_field("plugin")
         self.assertIsInstance(
             obj=field,
             cls=models.ForeignKey,
@@ -135,7 +135,7 @@ class SubPluginTestCase(TestCase):
         )
         self.assertEqual(
             first=field.remote_field.related_name,
-            second='sub_plugins',
+            second="sub_plugins",
         )
         self.assertEqual(
             first=field.remote_field.on_delete,
@@ -143,7 +143,7 @@ class SubPluginTestCase(TestCase):
         )
 
     def test_supported_games_field(self):
-        field = SubPlugin._meta.get_field('supported_games')
+        field = SubPlugin._meta.get_field("supported_games")
         self.assertIsInstance(
             obj=field,
             cls=models.ManyToManyField,
@@ -154,7 +154,7 @@ class SubPluginTestCase(TestCase):
         )
         self.assertEqual(
             first=field.remote_field.related_name,
-            second='sub_plugins',
+            second="sub_plugins",
         )
         self.assertEqual(
             first=field.remote_field.through,
@@ -162,7 +162,7 @@ class SubPluginTestCase(TestCase):
         )
 
     def test_tags_field(self):
-        field = SubPlugin._meta.get_field('tags')
+        field = SubPlugin._meta.get_field("tags")
         self.assertIsInstance(
             obj=field,
             cls=models.ManyToManyField,
@@ -173,7 +173,7 @@ class SubPluginTestCase(TestCase):
         )
         self.assertEqual(
             first=field.remote_field.related_name,
-            second='sub_plugins',
+            second="sub_plugins",
         )
         self.assertEqual(
             first=field.remote_field.through,
@@ -183,7 +183,7 @@ class SubPluginTestCase(TestCase):
     def test_primary_attributes(self):
         self.assertEqual(
             first=SubPlugin.handle_logo_upload,
-            second=handle_sub_plugin_logo_upload
+            second=handle_sub_plugin_logo_upload,
         )
         self.assertEqual(
             first=SubPlugin.logo_path,
@@ -194,17 +194,17 @@ class SubPluginTestCase(TestCase):
         sub_plugin = SubPluginFactory()
         self.assertEqual(
             first=str(sub_plugin),
-            second=f'{sub_plugin.plugin.name}: {sub_plugin.name}',
+            second=f"{sub_plugin.plugin.name}: {sub_plugin.name}",
         )
 
     def test_current_version(self):
         sub_plugin = SubPluginFactory()
         created = now()
         for offset, version in enumerate([
-            '1.0.0',
-            '1.0.1',
-            '1.1.0',
-            '1.0.9',
+            "1.0.0",
+            "1.0.1",
+            "1.1.0",
+            "1.0.9",
         ]):
             release = SubPluginReleaseFactory(
                 sub_plugin=sub_plugin,
@@ -233,7 +233,7 @@ class SubPluginTestCase(TestCase):
         )
 
     @mock.patch(
-        target='project_manager.models.abstract.Image.open',
+        target="project_manager.models.abstract.Image.open",
     )
     def test_clean_logo(self, mock_image_open):
         SubPlugin().clean()
@@ -241,40 +241,40 @@ class SubPluginTestCase(TestCase):
             LOGO_MAX_WIDTH,
             LOGO_MAX_HEIGHT,
         )
-        SubPlugin(logo='test.jpg').clean()
+        SubPlugin(logo="test.jpg").clean()
 
         mock_image_open.return_value.size = (
             LOGO_MAX_WIDTH + 1,
             LOGO_MAX_HEIGHT + 1,
         )
         with self.assertRaises(ValidationError) as context:
-            SubPlugin(logo='test.jpg').clean()
+            SubPlugin(logo="test.jpg").clean()
 
         self.assertEqual(
             first=len(context.exception.messages),
             second=2,
         )
         self.assertIn(
-            member=f'Logo width must be no more than {LOGO_MAX_WIDTH}.',
+            member=f"Logo width must be no more than {LOGO_MAX_WIDTH}.",
             container=context.exception.messages,
         )
         self.assertIn(
-            member=f'Logo height must be no more than {LOGO_MAX_HEIGHT}.',
+            member=f"Logo height must be no more than {LOGO_MAX_HEIGHT}.",
             container=context.exception.messages,
         )
 
     @mock.patch(
-        target='project_manager.models.abstract.settings.MEDIA_ROOT',
+        target="project_manager.models.abstract.settings.MEDIA_ROOT",
     )
     def test_save(self, mock_media_root):
-        basename = 'test'
+        basename = "test"
         mock_obj = mock.Mock(
             stem=basename,
         )
         mock_media_root.__truediv__.return_value.files.return_value = [mock_obj]
         SubPluginFactory(
             basename=basename,
-            logo='test.jpg',
+            logo="test.jpg",
         )
         mock_obj.remove.assert_called_once_with()
 
@@ -296,12 +296,12 @@ class SubPluginTestCase(TestCase):
         self.assertEqual(
             first=sub_plugin.get_absolute_url(),
             second=reverse(
-                viewname='plugins:sub-plugins:detail',
+                viewname="plugins:sub-plugins:detail",
                 kwargs={
-                    'slug': sub_plugin.plugin_id,
-                    'sub_plugin_slug': sub_plugin.slug,
-                }
-            )
+                    "slug": sub_plugin.plugin_id,
+                    "sub_plugin_slug": sub_plugin.slug,
+                },
+            ),
         )
 
     def test_meta_class(self):
@@ -309,16 +309,16 @@ class SubPluginTestCase(TestCase):
         self.assertTupleEqual(
             tuple1=SubPlugin._meta.unique_together,
             tuple2=(
-                ('plugin', 'basename'),
-                ('plugin', 'name'),
-                ('plugin', 'slug'),
-            )
+                ("plugin", "basename"),
+                ("plugin", "name"),
+                ("plugin", "slug"),
+            ),
         )
         self.assertEqual(
             first=SubPlugin._meta.verbose_name,
-            second='SubPlugin',
+            second="SubPlugin",
         )
         self.assertEqual(
             first=SubPlugin._meta.verbose_name_plural,
-            second='SubPlugins',
+            second="SubPlugins",
         )

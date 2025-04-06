@@ -6,12 +6,11 @@
 # Django
 from django.apps import AppConfig
 
-
 # =============================================================================
 # ALL DECLARATION
 # =============================================================================
 __all__ = (
-    'GameConfig',
+    "GameConfig",
 )
 
 
@@ -21,5 +20,5 @@ __all__ = (
 class GameConfig(AppConfig):
     """Game app config."""
 
-    name = 'games'
-    verbose_name = 'Games'
+    name = "games"
+    verbose_name = "Games"

@@ -6,12 +6,11 @@
 # Django
 from django.apps import AppConfig
 
-
 # =============================================================================
 # ALL DECLARATION
 # =============================================================================
 __all__ = (
-    'ProjectManagerConfig',
+    "ProjectManagerConfig",
 )
 
 
@@ -21,5 +20,5 @@ __all__ = (
 class ProjectManagerConfig(AppConfig):
     """Project Manager app config."""
 
-    name = 'project_manager'
-    verbose_name = 'Project Manager'
+    name = "project_manager"
+    verbose_name = "Project Manager"

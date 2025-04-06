@@ -43,11 +43,11 @@ from users.models import ForumUser
 class PackageReleaseTestCase(TestCase):
     def test_model_inheritance(self):
         self.assertTrue(
-            expr=issubclass(PackageRelease, ProjectRelease)
+            expr=issubclass(PackageRelease, ProjectRelease),
         )
 
     def test_package_field(self):
-        field = PackageRelease._meta.get_field('package')
+        field = PackageRelease._meta.get_field("package")
         self.assertIsInstance(
             obj=field,
             cls=models.ForeignKey,
@@ -62,13 +62,13 @@ class PackageReleaseTestCase(TestCase):
         )
         self.assertEqual(
             first=field.remote_field.related_name,
-            second='releases',
+            second="releases",
         )
         self.assertFalse(expr=field.blank)
         self.assertFalse(expr=field.null)
 
     def test_created_by_field(self):
-        field = PackageRelease._meta.get_field('created_by')
+        field = PackageRelease._meta.get_field("created_by")
         self.assertIsInstance(
             obj=field,
             cls=models.ForeignKey,
@@ -83,13 +83,13 @@ class PackageReleaseTestCase(TestCase):
         )
         self.assertEqual(
             first=field.remote_field.related_name,
-            second='package_releases',
+            second="package_releases",
         )
         self.assertFalse(expr=field.blank)
         self.assertTrue(expr=field.null)
 
     def test_download_requirements_field(self):
-        field = PackageRelease._meta.get_field('download_requirements')
+        field = PackageRelease._meta.get_field("download_requirements")
         self.assertIsInstance(
             obj=field,
             cls=models.ManyToManyField,
@@ -100,7 +100,7 @@ class PackageReleaseTestCase(TestCase):
         )
         self.assertEqual(
             first=field.remote_field.related_name,
-            second='required_in_package_releases',
+            second="required_in_package_releases",
         )
         self.assertEqual(
             first=field.remote_field.through,
@@ -108,7 +108,7 @@ class PackageReleaseTestCase(TestCase):
         )
 
     def test_package_requirements_field(self):
-        field = PackageRelease._meta.get_field('package_requirements')
+        field = PackageRelease._meta.get_field("package_requirements")
         self.assertIsInstance(
             obj=field,
             cls=models.ManyToManyField,
@@ -119,7 +119,7 @@ class PackageReleaseTestCase(TestCase):
         )
         self.assertEqual(
             first=field.remote_field.related_name,
-            second='required_in_package_releases',
+            second="required_in_package_releases",
         )
         self.assertEqual(
             first=field.remote_field.through,
@@ -127,7 +127,7 @@ class PackageReleaseTestCase(TestCase):
         )
 
     def test_pypi_requirements_field(self):
-        field = PackageRelease._meta.get_field('pypi_requirements')
+        field = PackageRelease._meta.get_field("pypi_requirements")
         self.assertIsInstance(
             obj=field,
             cls=models.ManyToManyField,
@@ -138,7 +138,7 @@ class PackageReleaseTestCase(TestCase):
         )
         self.assertEqual(
             first=field.remote_field.related_name,
-            second='required_in_package_releases',
+            second="required_in_package_releases",
         )
         self.assertEqual(
             first=field.remote_field.through,
@@ -146,7 +146,7 @@ class PackageReleaseTestCase(TestCase):
         )
 
     def test_vcs_requirements_field(self):
-        field = PackageRelease._meta.get_field('vcs_requirements')
+        field = PackageRelease._meta.get_field("vcs_requirements")
         self.assertIsInstance(
             obj=field,
             cls=models.ManyToManyField,
@@ -157,7 +157,7 @@ class PackageReleaseTestCase(TestCase):
         )
         self.assertEqual(
             first=field.remote_field.related_name,
-            second='required_in_package_releases',
+            second="required_in_package_releases",
         )
         self.assertEqual(
             first=field.remote_field.through,
@@ -165,14 +165,14 @@ class PackageReleaseTestCase(TestCase):
         )
 
     def test_field_tracker(self):
-        self.assertTrue(expr=hasattr(PackageRelease, 'field_tracker'))
+        self.assertTrue(expr=hasattr(PackageRelease, "field_tracker"))
         self.assertIsInstance(
             obj=PackageRelease.field_tracker,
             cls=FieldTracker,
         )
         self.assertSetEqual(
             set1=PackageRelease.field_tracker.fields,
-            set2={'version'},
+            set2={"version"},
         )
 
     def test_primary_attributes(self):
@@ -186,9 +186,9 @@ class PackageReleaseTestCase(TestCase):
         )
 
     def test_file_name(self):
-        file_name = 'test.zip'
+        file_name = "test.zip"
         release = PackageReleaseFactory(
-            zip_file=f'directory/path/{file_name}',
+            zip_file=f"directory/path/{file_name}",
         )
         self.assertEqual(
             first=release.file_name,
@@ -199,29 +199,29 @@ class PackageReleaseTestCase(TestCase):
         release = PackageReleaseFactory()
         self.assertEqual(
             first=str(release),
-            second=f'{release.package} - {release.version}',
+            second=f"{release.package} - {release.version}",
         )
 
     def test_clean(self):
         release = PackageReleaseFactory(
-            version='1.0.0',
+            version="1.0.0",
         )
         PackageReleaseFactory(
             package=release.package,
-            version='1.0.1',
+            version="1.0.1",
         )
 
         release.clean()
-        release.version = '1.0.2'
+        release.version = "1.0.2"
         release.clean()
 
-        release.version = '1.0.1'
+        release.version = "1.0.1"
         with self.assertRaises(ValidationError) as context:
             release.clean()
 
         self.assertDictEqual(
             d1=context.exception.message_dict,
-            d2={'version': ['Version already exists.']}
+            d2={"version": ["Version already exists."]},
         )
 
     def test_save(self):
@@ -235,7 +235,7 @@ class PackageReleaseTestCase(TestCase):
             pk=None,
             package=package,
             created=release_created,
-            version='1.0.0',
+            version="1.0.0",
         )
         self.assertEqual(
             first=Package.objects.get(pk=package.pk).updated,
@@ -243,14 +243,14 @@ class PackageReleaseTestCase(TestCase):
         )
 
     def test_get_absolute_url(self):
-        release = PackageReleaseFactory(zip_file='/test/this.py')
+        release = PackageReleaseFactory(zip_file="/test/this.py")
         self.assertEqual(
             first=release.get_absolute_url(),
             second=reverse(
-                viewname='package-download',
+                viewname="package-download",
                 kwargs={
-                    'slug': release.package.slug,
-                    'zip_file': release.file_name,
+                    "slug": release.package.slug,
+                    "zip_file": release.file_name,
                 },
             ),
         )
@@ -259,13 +259,13 @@ class PackageReleaseTestCase(TestCase):
         self.assertTrue(issubclass(PackageRelease.Meta, ProjectRelease.Meta))
         self.assertTupleEqual(
             tuple1=PackageRelease._meta.unique_together,
-            tuple2=(('package', 'version'),),
+            tuple2=(("package", "version"),),
         )
         self.assertEqual(
             first=PackageRelease._meta.verbose_name,
-            second='Package Release',
+            second="Package Release",
         )
         self.assertEqual(
             first=PackageRelease._meta.verbose_name_plural,
-            second='Package Releases',
+            second="Package Releases",
         )

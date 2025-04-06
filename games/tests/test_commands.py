@@ -23,13 +23,13 @@ class CommandsTestCase(TestCase):
         GameFactory(
             name=GAMES[game],
             basename=game,
-            icon=f'games/{game}.png',
+            icon=f"games/{game}.png",
         )
         self.assertEqual(
             first=Game.objects.count(),
             second=1,
         )
-        call_command('create_game_instances')
+        call_command("create_game_instances")
         self.assertEqual(
             first=Game.objects.count(),
             second=len(GAMES),

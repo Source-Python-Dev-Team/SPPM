@@ -21,59 +21,58 @@ from project_manager.plugins.api.views import (
     SubPluginPathViewSet,
 )
 
-
 # =============================================================================
 # ROUTERS
 # =============================================================================
 router = routers.SimpleRouter()
 router.register(
-    prefix='projects',
+    prefix="projects",
     viewset=PluginViewSet,
-    basename='projects',
+    basename="projects",
 )
 router.register(
-    prefix='images/(?P<plugin_slug>[^/.]+)',
+    prefix="images/(?P<plugin_slug>[^/.]+)",
     viewset=PluginImageViewSet,
-    basename='images',
+    basename="images",
 )
 router.register(
-    prefix='releases/(?P<plugin_slug>[^/.]+)',
+    prefix="releases/(?P<plugin_slug>[^/.]+)",
     viewset=PluginReleaseViewSet,
-    basename='releases',
+    basename="releases",
 )
 router.register(
-    prefix='games/(?P<plugin_slug>[^/.]+)',
+    prefix="games/(?P<plugin_slug>[^/.]+)",
     viewset=PluginGameViewSet,
-    basename='games',
+    basename="games",
 )
 router.register(
-    prefix='tags/(?P<plugin_slug>[^/.]+)',
+    prefix="tags/(?P<plugin_slug>[^/.]+)",
     viewset=PluginTagViewSet,
-    basename='tags',
+    basename="tags",
 )
 router.register(
-    prefix='contributors/(?P<plugin_slug>[^/.]+)',
+    prefix="contributors/(?P<plugin_slug>[^/.]+)",
     viewset=PluginContributorViewSet,
-    basename='contributors',
+    basename="contributors",
 )
 router.register(
-    prefix='paths/(?P<plugin_slug>[^/.]+)',
+    prefix="paths/(?P<plugin_slug>[^/.]+)",
     viewset=SubPluginPathViewSet,
-    basename='paths',
+    basename="paths",
 )
 
 
 # =============================================================================
 # GLOBAL VARIABLES
 # =============================================================================
-app_name = 'plugins'
+app_name = "plugins"
 
 urlpatterns = [
     path(
-        route='',
+        route="",
         view=PluginAPIView.as_view(),
-        name='endpoints',
-    )
+        name="endpoints",
+    ),
 ]
 
 urlpatterns += router.urls

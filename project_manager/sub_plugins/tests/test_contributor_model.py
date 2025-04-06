@@ -26,11 +26,11 @@ from users.models import ForumUser
 class SubPluginContributorTestCase(TestCase):
     def test_model_inheritance(self):
         self.assertTrue(
-            expr=issubclass(SubPluginContributor, AbstractUUIDPrimaryKeyModel)
+            expr=issubclass(SubPluginContributor, AbstractUUIDPrimaryKeyModel),
         )
 
     def test_sub_plugin_field(self):
-        field = SubPluginContributor._meta.get_field('sub_plugin')
+        field = SubPluginContributor._meta.get_field("sub_plugin")
         self.assertIsInstance(
             obj=field,
             cls=models.ForeignKey,
@@ -47,7 +47,7 @@ class SubPluginContributorTestCase(TestCase):
         self.assertFalse(expr=field.null)
 
     def test_user_field(self):
-        field = SubPluginContributor._meta.get_field('user')
+        field = SubPluginContributor._meta.get_field("user")
         self.assertIsInstance(
             obj=field,
             cls=models.ForeignKey,
@@ -67,7 +67,7 @@ class SubPluginContributorTestCase(TestCase):
         obj = SubPluginContributorFactory()
         self.assertEqual(
             first=str(obj),
-            second=f'{obj.sub_plugin} Contributor: {obj.user}',
+            second=f"{obj.sub_plugin} Contributor: {obj.user}",
         )
 
     def test_clean(self):
@@ -90,30 +90,30 @@ class SubPluginContributorTestCase(TestCase):
             second=1,
         )
         self.assertIn(
-            member='user',
+            member="user",
             container=context.exception.message_dict,
         )
         self.assertEqual(
-            first=len(context.exception.message_dict['user']),
+            first=len(context.exception.message_dict["user"]),
             second=1,
         )
         self.assertEqual(
-            first=context.exception.message_dict['user'][0],
+            first=context.exception.message_dict["user"][0],
             second=(
-                f'{owner} is the owner and cannot be added as a contributor.'
+                f"{owner} is the owner and cannot be added as a contributor."
             ),
         )
 
     def test_meta_class(self):
         self.assertTupleEqual(
             tuple1=SubPluginContributor._meta.unique_together,
-            tuple2=(('sub_plugin', 'user'),),
+            tuple2=(("sub_plugin", "user"),),
         )
         self.assertEqual(
             first=SubPluginContributor._meta.verbose_name,
-            second='SubPlugin Contributor',
+            second="SubPlugin Contributor",
         )
         self.assertEqual(
             first=SubPluginContributor._meta.verbose_name_plural,
-            second='SubPlugin Contributors',
+            second="SubPlugin Contributors",
         )

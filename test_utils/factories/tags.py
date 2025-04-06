@@ -9,12 +9,11 @@ import factory
 # App
 from tags.models import Tag
 
-
 # =============================================================================
 # ALL DECLARATION
 # =============================================================================
 __all__ = (
-    'TagFactory',
+    "TagFactory",
 )
 
 
@@ -22,11 +21,11 @@ __all__ = (
 # FACTORIES
 # =============================================================================
 class TagFactory(factory.django.DjangoModelFactory):
-    """Model factory to use when testing with Tag objects."""
+    """Model factory for Tag objects."""
 
-    name = factory.Sequence(function=lambda n: f'tag_{n}')
+    name = factory.Sequence(function=lambda n: f"tag_{n}")
     creator = factory.SubFactory(
-        factory='test_utils.factories.users.ForumUserFactory',
+        factory="test_utils.factories.users.ForumUserFactory",
     )
 
     class Meta:

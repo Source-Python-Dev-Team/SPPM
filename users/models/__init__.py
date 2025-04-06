@@ -4,13 +4,13 @@
 # IMPORTS
 # =============================================================================
 # Django
+from django.conf import settings
 from django.contrib.auth.models import (
     AbstractBaseUser,
     PermissionsMixin,
 )
-from django.conf import settings
-from django.urls import reverse
 from django.db import models
+from django.urls import reverse
 
 # App
 from users.constants import (
@@ -19,13 +19,12 @@ from users.constants import (
 )
 from users.models.managers import UserManager
 
-
 # =============================================================================
 # ALL DECLARATION
 # =============================================================================
 __all__ = (
-    'ForumUser',
-    'User',
+    "ForumUser",
+    "User",
 )
 
 
@@ -46,13 +45,13 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     objects = UserManager()
 
-    USERNAME_FIELD = 'username'
+    USERNAME_FIELD = "username"
 
     class Meta:
         """Define metaclass attributes."""
 
-        verbose_name = 'User'
-        verbose_name_plural = 'Users'
+        verbose_name = "User"
+        verbose_name_plural = "Users"
 
     def get_short_name(self):
         """Return the short name for the user."""
@@ -68,7 +67,7 @@ class ForumUser(models.Model):
 
     user = models.OneToOneField(
         to=settings.AUTH_USER_MODEL,
-        related_name='forum_user',
+        related_name="forum_user",
         on_delete=models.CASCADE,
     )
     forum_id = models.IntegerField(
@@ -79,8 +78,8 @@ class ForumUser(models.Model):
     class Meta:
         """Define metaclass attributes."""
 
-        verbose_name = 'Forum User'
-        verbose_name_plural = 'Forum Users'
+        verbose_name = "Forum User"
+        verbose_name_plural = "Forum Users"
 
     def __str__(self):
         """Return the ForumUser's username."""
@@ -89,10 +88,10 @@ class ForumUser(models.Model):
     def get_absolute_url(self):
         """Return the URL for the user."""
         return reverse(
-            viewname='users:detail',
+            viewname="users:detail",
             kwargs={
-                'pk': self.forum_id,
-            }
+                "pk": self.forum_id,
+            },
         )
 
     def get_forum_url(self):

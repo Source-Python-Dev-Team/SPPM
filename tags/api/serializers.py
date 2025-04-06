@@ -8,18 +8,23 @@ from rest_framework.fields import IntegerField
 from rest_framework.serializers import ModelSerializer
 
 # App
-from project_manager.packages.api.common.serializers import MinimalPackageSerializer
-from project_manager.plugins.api.common.serializers import MinimalPluginSerializer
-from project_manager.sub_plugins.api.common.serializers import MinimalSubPluginSerializer
+from project_manager.packages.api.common.serializers import (
+    MinimalPackageSerializer,
+)
+from project_manager.plugins.api.common.serializers import (
+    MinimalPluginSerializer,
+)
+from project_manager.sub_plugins.api.common.serializers import (
+    MinimalSubPluginSerializer,
+)
 from tags.models import Tag
-
 
 # =============================================================================
 # ALL DECLARATION
 # =============================================================================
 __all__ = (
-    'TagListSerializer',
-    'TagRetrieveSerializer',
+    "TagListSerializer",
+    "TagRetrieveSerializer",
 )
 
 
@@ -38,10 +43,10 @@ class TagRetrieveSerializer(ModelSerializer):
 
         model = Tag
         fields = (
-            'name',
-            'packages',
-            'plugins',
-            'sub_plugins',
+            "name",
+            "packages",
+            "plugins",
+            "sub_plugins",
         )
 
 
@@ -58,9 +63,9 @@ class TagListSerializer(ModelSerializer):
 
         model = Tag
         fields = (
-            'name',
-            'package_count',
-            'plugin_count',
-            'sub_plugin_count',
-            'project_count',
+            "name",
+            "package_count",
+            "plugin_count",
+            "sub_plugin_count",
+            "project_count",
         )

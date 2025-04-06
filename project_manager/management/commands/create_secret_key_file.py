@@ -11,21 +11,20 @@ from django.conf import settings
 from django.core.management.base import BaseCommand, CommandError
 from django.utils.crypto import get_random_string
 
-
 # =============================================================================
 # GLOBAL VARIABLES
 # =============================================================================
-SECRET_FILE = settings.BASE_DIR / '.secret_key'
+SECRET_FILE = settings.BASE_DIR / ".secret_key"
 ALLOWED_CHARS = string.printable
 
 # Remove quotes
-ALLOWED_CHARS = ALLOWED_CHARS.replace("'", '').replace('"', '')
+ALLOWED_CHARS = ALLOWED_CHARS.replace("'", "").replace('"', "")
 
 # Remove slashes
-ALLOWED_CHARS = ALLOWED_CHARS.replace('\\', '').replace('/', '')
+ALLOWED_CHARS = ALLOWED_CHARS.replace("\\", "").replace("/", "")
 
 # Remove extra characters
-ALLOWED_CHARS = ALLOWED_CHARS.replace('`', '').split(' ', maxsplit=1)[0]
+ALLOWED_CHARS = ALLOWED_CHARS.replace("`", "").split(" ", maxsplit=1)[0]
 
 
 # =============================================================================
@@ -37,20 +36,21 @@ class Command(BaseCommand):
     def add_arguments(self, parser):
         """Add the required arguments for the command."""
         parser.add_argument(
-            'length',
+            "length",
             type=int,
-            help='The number of characters to have in the secret key.',
+            help="The number of characters to have in the secret key.",
         )
 
-    def handle(self, *args, **options):
+    def handle(self, *_, **options):
         """Create the file to store the secret key."""
-        if SECRET_FILE.isfile():
-            raise CommandError('Secret key file already exists.')
+        if SECRET_FILE.is_file():
+            msg = "Secret key file already exists."
+            raise CommandError(msg)
 
         secret_key = get_random_string(
-            length=options['length'],
+            length=options["length"],
             allowed_chars=ALLOWED_CHARS,
         )
 
-        with SECRET_FILE.open('w') as open_file:
+        with SECRET_FILE.open("w") as open_file:
             open_file.write(secret_key)

@@ -18,8 +18,8 @@ from project_manager.mixins import DownloadMixin
 from project_manager.packages.constants import PACKAGE_RELEASE_URL
 from project_manager.packages.models import Package, PackageRelease
 from project_manager.packages.views import (
-    PackageReleaseDownloadView,
     PackageCreateView,
+    PackageReleaseDownloadView,
     PackageView,
 )
 from test_utils.factories.packages import PackageFactory, PackageReleaseFactory
@@ -28,30 +28,30 @@ from test_utils.factories.packages import PackageFactory, PackageReleaseFactory
 # =============================================================================
 # TEST CASES
 # =============================================================================
-@override_settings(MEDIA_ROOT=settings.BASE_DIR / 'fixtures')
+@override_settings(MEDIA_ROOT=settings.BASE_DIR / "fixtures")
 class PackageReleaseDownloadViewTestCase(TestCase):
 
     basename = package = zip_file = None
 
     @classmethod
     def setUpTestData(cls):
-        cls.basename = 'test_package'
+        cls.basename = "test_package"
         cls.package = PackageFactory(
             basename=cls.basename,
         )
-        version = '1.0.0'
-        cls.zip_file = f'{cls.package.slug}-v{version}.zip'
+        version = "1.0.0"
+        cls.zip_file = f"{cls.package.slug}-v{version}.zip"
         cls.release = PackageReleaseFactory(
             package=cls.package,
             version=version,
             zip_file=cls.zip_file,
         )
         cls.api_path = reverse(
-            viewname='package-download',
+            viewname="package-download",
             kwargs={
-                'slug': cls.package.slug,
-                'zip_file': cls.zip_file,
-            }
+                "slug": cls.package.slug,
+                "zip_file": cls.zip_file,
+            },
         )
 
     def test_model_inheritance(self):
@@ -61,11 +61,8 @@ class PackageReleaseDownloadViewTestCase(TestCase):
 
     def test__allowed_methods(self):
         self.assertListEqual(
-            list1=getattr(
-                PackageReleaseDownloadView(),
-                '_allowed_methods'
-            )(),
-            list2=['GET', 'OPTIONS'],
+            list1=PackageReleaseDownloadView()._allowed_methods(),
+            list2=["GET", "OPTIONS"],
         )
 
     def test_base_attributes(self):
@@ -79,7 +76,7 @@ class PackageReleaseDownloadViewTestCase(TestCase):
         )
         self.assertEqual(
             first=PackageReleaseDownloadView.model_kwarg,
-            second='package',
+            second="package",
         )
         self.assertEqual(
             first=PackageReleaseDownloadView.base_url,
@@ -87,16 +84,16 @@ class PackageReleaseDownloadViewTestCase(TestCase):
         )
 
     @mock.patch(
-        target='project_manager.mixins.DownloadMixin.full_path',
+        target="project_manager.mixins.DownloadMixin.full_path",
     )
     def test_get_failure(self, mock_full_path):
-        mock_full_path.isfile.return_value = False
+        mock_full_path.is_file.return_value = False
         response = self.client.get(path=self.api_path)
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_404_NOT_FOUND,
         )
-        mock_full_path.isfile.assert_called_once_with()
+        mock_full_path.is_file.assert_called_once_with()
 
     def test_get_success(self):
         self.assertEqual(
@@ -110,7 +107,7 @@ class PackageReleaseDownloadViewTestCase(TestCase):
         )
         self.assertIn(
             member=(
-                f'addons/source-python/packages/custom/{self.basename}/__init__.py'
+                f"addons/source-python/packages/custom/{self.basename}/__init__.py"
             ),
             container=str(response.content),
         )
@@ -130,7 +127,7 @@ class PackageReleaseDownloadViewTestCase(TestCase):
 class PackageCreateViewTestCase(TestCase):
 
     api_path = reverse(
-        viewname='packages:create',
+        viewname="packages:create",
     )
 
     def test_model_inheritance(self):
@@ -141,13 +138,13 @@ class PackageCreateViewTestCase(TestCase):
     def test_http_method_names(self):
         self.assertTupleEqual(
             tuple1=PackageCreateView.http_method_names,
-            tuple2=('get', 'options'),
+            tuple2=("get", "options"),
         )
 
     def test_template_name(self):
         self.assertEqual(
             first=PackageCreateView.template_name,
-            second='main.html',
+            second="main.html",
         )
 
     def test_get(self):
@@ -157,10 +154,10 @@ class PackageCreateViewTestCase(TestCase):
             second=status.HTTP_200_OK,
         )
         data = dict(response.context_data)
-        del data['view']
+        del data["view"]
         self.assertDictEqual(
             d1=data,
-            d2={'title': 'Create a Package'},
+            d2={"title": "Create a Package"},
         )
 
     def test_options(self):
@@ -181,19 +178,19 @@ class PackageViewTestCase(TestCase):
     def test_http_method_names(self):
         self.assertTupleEqual(
             tuple1=PackageView.http_method_names,
-            tuple2=('get', 'options'),
+            tuple2=("get", "options"),
         )
 
     def test_template_name(self):
         self.assertEqual(
             first=PackageView.template_name,
-            second='main.html',
+            second="main.html",
         )
 
     def test_list(self):
         response = self.client.get(
             path=reverse(
-                viewname='packages:list',
+                viewname="packages:list",
             ),
         )
         self.assertEqual(
@@ -201,20 +198,20 @@ class PackageViewTestCase(TestCase):
             second=status.HTTP_200_OK,
         )
         data = dict(response.context_data)
-        del data['view']
+        del data["view"]
         self.assertDictEqual(
             d1=data,
-            d2={'title': 'Package Listing'},
+            d2={"title": "Package Listing"},
         )
 
     def test_detail(self):
         package = PackageFactory()
         response = self.client.get(
             path=reverse(
-                viewname='packages:detail',
+                viewname="packages:detail",
                 kwargs={
-                    'slug': package.slug,
-                }
+                    "slug": package.slug,
+                },
             ),
         )
         self.assertEqual(
@@ -222,22 +219,22 @@ class PackageViewTestCase(TestCase):
             second=status.HTTP_200_OK,
         )
         data = dict(response.context_data)
-        del data['view']
+        del data["view"]
         self.assertDictEqual(
             d1=data,
             d2={
-                'slug': package.slug,
-                'title': package.name,
+                "slug": package.slug,
+                "title": package.name,
             },
         )
 
     def test_detail_invalid_slug(self):
         response = self.client.get(
             path=reverse(
-                viewname='packages:detail',
+                viewname="packages:detail",
                 kwargs={
-                    'slug': 'invalid',
-                }
+                    "slug": "invalid",
+                },
             ),
         )
         self.assertEqual(
@@ -245,11 +242,11 @@ class PackageViewTestCase(TestCase):
             second=status.HTTP_200_OK,
         )
         data = dict(response.context_data)
-        del data['view']
+        del data["view"]
         self.assertDictEqual(
             d1=data,
             d2={
-                'slug': 'invalid',
-                'title': 'Package "invalid" not found.',
+                "slug": "invalid",
+                "title": 'Package "invalid" not found.',
             },
         )

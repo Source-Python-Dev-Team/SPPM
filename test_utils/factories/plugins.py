@@ -4,10 +4,9 @@
 # IMPORTS
 # =============================================================================
 # Django
-from django.utils.timezone import get_current_timezone
-
 # Third Party Django
 import factory
+from django.utils.timezone import get_current_timezone
 
 # App
 from project_manager.plugins.models import (
@@ -24,22 +23,21 @@ from project_manager.plugins.models import (
     SubPluginPath,
 )
 
-
 # =============================================================================
 # ALL DECLARATION
 # =============================================================================
 __all__ = (
-    'PluginContributorFactory',
-    'PluginFactory',
-    'PluginGameFactory',
-    'PluginImageFactory',
-    'PluginReleaseFactory',
-    'PluginReleaseDownloadRequirementFactory',
-    'PluginReleasePackageRequirementFactory',
-    'PluginReleasePyPiRequirementFactory',
-    'PluginReleaseVersionControlRequirementFactory',
-    'PluginTagFactory',
-    'SubPluginPathFactory',
+    "PluginContributorFactory",
+    "PluginFactory",
+    "PluginGameFactory",
+    "PluginImageFactory",
+    "PluginReleaseDownloadRequirementFactory",
+    "PluginReleaseFactory",
+    "PluginReleasePackageRequirementFactory",
+    "PluginReleasePyPiRequirementFactory",
+    "PluginReleaseVersionControlRequirementFactory",
+    "PluginTagFactory",
+    "SubPluginPathFactory",
 )
 
 
@@ -47,15 +45,15 @@ __all__ = (
 # FACTORIES
 # =============================================================================
 class PluginFactory(factory.django.DjangoModelFactory):
-    """Model factory to use when testing with Plugin objects."""
+    """Model factory for Plugin objects."""
 
-    name = factory.Sequence(function=lambda n: f'Plugin {n}')
-    basename = factory.Sequence(function=lambda n: f'plugin_{n}')
+    name = factory.Sequence(function=lambda n: f"Plugin {n}")
+    basename = factory.Sequence(function=lambda n: f"plugin_{n}")
     owner = factory.SubFactory(
-        factory='test_utils.factories.users.ForumUserFactory',
+        factory="test_utils.factories.users.ForumUserFactory",
     )
-    created = factory.Faker('date_time', tzinfo=get_current_timezone())
-    updated = factory.Faker('date_time', tzinfo=get_current_timezone())
+    created = factory.Faker("date_time", tzinfo=get_current_timezone())
+    updated = factory.Faker("date_time", tzinfo=get_current_timezone())
 
     class Meta:
         """Define metaclass attributes."""
@@ -64,14 +62,14 @@ class PluginFactory(factory.django.DjangoModelFactory):
 
 
 class PluginReleaseFactory(factory.django.DjangoModelFactory):
-    """Model factory to use when testing with PluginRelease objects."""
+    """Model factory for PluginRelease objects."""
 
     plugin = factory.SubFactory(
-        factory='test_utils.factories.plugins.PluginFactory',
+        factory="test_utils.factories.plugins.PluginFactory",
     )
-    version = factory.Sequence(function=lambda n: f'1.0.{n}')
+    version = factory.Sequence(function=lambda n: f"1.0.{n}")
     created_by = factory.SubFactory(
-        factory='test_utils.factories.users.ForumUserFactory',
+        factory="test_utils.factories.users.ForumUserFactory",
     )
 
     class Meta:
@@ -81,13 +79,13 @@ class PluginReleaseFactory(factory.django.DjangoModelFactory):
 
 
 class PluginContributorFactory(factory.django.DjangoModelFactory):
-    """Model factory to use when testing with PluginContributor objects."""
+    """Model factory for PluginContributor objects."""
 
     plugin = factory.SubFactory(
-        factory='test_utils.factories.plugins.PluginFactory',
+        factory="test_utils.factories.plugins.PluginFactory",
     )
     user = factory.SubFactory(
-        factory='test_utils.factories.users.ForumUserFactory',
+        factory="test_utils.factories.users.ForumUserFactory",
     )
 
     class Meta:
@@ -97,13 +95,13 @@ class PluginContributorFactory(factory.django.DjangoModelFactory):
 
 
 class PluginGameFactory(factory.django.DjangoModelFactory):
-    """Model factory to use when testing with PluginGame objects."""
+    """Model factory for PluginGame objects."""
 
     plugin = factory.SubFactory(
-        factory='test_utils.factories.plugins.PluginFactory',
+        factory="test_utils.factories.plugins.PluginFactory",
     )
     game = factory.SubFactory(
-        factory='test_utils.factories.games.GameFactory',
+        factory="test_utils.factories.games.GameFactory",
     )
 
     class Meta:
@@ -113,12 +111,12 @@ class PluginGameFactory(factory.django.DjangoModelFactory):
 
 
 class PluginImageFactory(factory.django.DjangoModelFactory):
-    """Model factory to use when testing with PluginImage objects."""
+    """Model factory for PluginImage objects."""
 
     plugin = factory.SubFactory(
-        factory='test_utils.factories.plugins.PluginFactory',
+        factory="test_utils.factories.plugins.PluginFactory",
     )
-    image = factory.Sequence(function=lambda n: f'image_{n}.jpg')
+    image = factory.Sequence(function=lambda n: f"image_{n}.jpg")
 
     class Meta:
         """Define the metaclass attributes."""
@@ -127,13 +125,13 @@ class PluginImageFactory(factory.django.DjangoModelFactory):
 
 
 class PluginTagFactory(factory.django.DjangoModelFactory):
-    """Model factory to use when testing with PluginTag objects."""
+    """Model factory for PluginTag objects."""
 
     plugin = factory.SubFactory(
-        factory='test_utils.factories.plugins.PluginFactory',
+        factory="test_utils.factories.plugins.PluginFactory",
     )
     tag = factory.SubFactory(
-        factory='test_utils.factories.tags.TagFactory',
+        factory="test_utils.factories.tags.TagFactory",
     )
 
     class Meta:
@@ -143,15 +141,15 @@ class PluginTagFactory(factory.django.DjangoModelFactory):
 
 
 class PluginReleaseDownloadRequirementFactory(
-    factory.django.DjangoModelFactory
+    factory.django.DjangoModelFactory,
 ):
-    """Model factory to use when testing with PluginReleaseDownloadRequirement objects."""
+    """Model factory for PluginReleaseDownloadRequirement objects."""
 
     plugin_release = factory.SubFactory(
-        factory='test_utils.factories.plugins.PluginReleaseFactory',
+        factory="test_utils.factories.plugins.PluginReleaseFactory",
     )
     download_requirement = factory.SubFactory(
-        factory='test_utils.factories.requirements.DownloadRequirementFactory',
+        factory="test_utils.factories.requirements.DownloadRequirementFactory",
     )
 
     class Meta:
@@ -161,15 +159,15 @@ class PluginReleaseDownloadRequirementFactory(
 
 
 class PluginReleasePackageRequirementFactory(
-    factory.django.DjangoModelFactory
+    factory.django.DjangoModelFactory,
 ):
-    """Model factory to use when testing with PluginReleasePackageRequirement objects."""
+    """Model factory for PluginReleasePackageRequirement objects."""
 
     plugin_release = factory.SubFactory(
-        factory='test_utils.factories.plugins.PluginReleaseFactory',
+        factory="test_utils.factories.plugins.PluginReleaseFactory",
     )
     package_requirement = factory.SubFactory(
-        factory='test_utils.factories.packages.PackageFactory',
+        factory="test_utils.factories.packages.PackageFactory",
     )
 
     class Meta:
@@ -179,15 +177,15 @@ class PluginReleasePackageRequirementFactory(
 
 
 class PluginReleasePyPiRequirementFactory(
-    factory.django.DjangoModelFactory
+    factory.django.DjangoModelFactory,
 ):
-    """Model factory to use when testing with PluginReleasePyPiRequirement objects."""
+    """Model factory for PluginReleasePyPiRequirement objects."""
 
     plugin_release = factory.SubFactory(
-        factory='test_utils.factories.plugins.PluginReleaseFactory',
+        factory="test_utils.factories.plugins.PluginReleaseFactory",
     )
     pypi_requirement = factory.SubFactory(
-        factory='test_utils.factories.requirements.PyPiRequirementFactory',
+        factory="test_utils.factories.requirements.PyPiRequirementFactory",
     )
 
     class Meta:
@@ -197,15 +195,15 @@ class PluginReleasePyPiRequirementFactory(
 
 
 class PluginReleaseVersionControlRequirementFactory(
-    factory.django.DjangoModelFactory
+    factory.django.DjangoModelFactory,
 ):
-    """Model factory to use when testing with PluginReleaseVersionControlRequirement objects."""
+    """Model factory for PluginReleaseVersionControlRequirement objects."""
 
     plugin_release = factory.SubFactory(
-        factory='test_utils.factories.plugins.PluginReleaseFactory',
+        factory="test_utils.factories.plugins.PluginReleaseFactory",
     )
     vcs_requirement = factory.SubFactory(
-        factory='test_utils.factories.requirements.VersionControlRequirementFactory',
+        factory="test_utils.factories.requirements.VersionControlRequirementFactory",
     )
 
     class Meta:
@@ -215,12 +213,12 @@ class PluginReleaseVersionControlRequirementFactory(
 
 
 class SubPluginPathFactory(factory.django.DjangoModelFactory):
-    """Model factory to use when testing with SubPluginPath objects."""
+    """Model factory for SubPluginPath objects."""
 
     plugin = factory.SubFactory(
-        factory='test_utils.factories.plugins.PluginFactory',
+        factory="test_utils.factories.plugins.PluginFactory",
     )
-    path = factory.Sequence(function=lambda n: f'some/path/{n}')
+    path = factory.Sequence(function=lambda n: f"some/path/{n}")
 
     class Meta:
         """Define the metaclass attributes."""

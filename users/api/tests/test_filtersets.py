@@ -24,27 +24,27 @@ class ForumUserFilterSetTestCase(TestCase):
         )
 
     def test_base_filters(self):
-        base_filters = getattr(ForumUserFilterSet, 'base_filters')
+        base_filters = ForumUserFilterSet.base_filters
         self.assertEqual(
             first=len(base_filters),
             second=1,
         )
 
         self.assertIn(
-            member='has_contributions',
+            member="has_contributions",
             container=base_filters,
         )
         self.assertIsInstance(
-            obj=base_filters['has_contributions'],
+            obj=base_filters["has_contributions"],
             cls=BooleanFilter,
         )
         self.assertEqual(
-            first=base_filters['has_contributions'].method,
-            second='filter_has_contributions',
+            first=base_filters["has_contributions"].method,
+            second="filter_has_contributions",
         )
         self.assertEqual(
-            first=base_filters['has_contributions'].label,
-            second='Has Contributions',
+            first=base_filters["has_contributions"].label,
+            second="Has Contributions",
         )
 
     def test_meta_class(self):
@@ -54,5 +54,5 @@ class ForumUserFilterSetTestCase(TestCase):
         )
         self.assertTupleEqual(
             tuple1=ForumUserFilterSet.Meta.fields,
-            tuple2=('has_contributions',),
+            tuple2=("has_contributions",),
         )

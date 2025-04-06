@@ -9,12 +9,11 @@ from django.contrib import admin
 # App
 from games.models import Game
 
-
 # =============================================================================
 # ALL DECLARATION
 # =============================================================================
 __all__ = (
-    'GameAdmin',
+    "GameAdmin",
 )
 
 
@@ -26,25 +25,25 @@ class GameAdmin(admin.ModelAdmin):
     """Game admin."""
 
     exclude = (
-        'slug',
+        "slug",
     )
     list_display = (
-        'basename',
-        'name',
-        'icon',
+        "basename",
+        "name",
+        "icon",
     )
     list_editable = (
-        'name',
-        'icon',
+        "name",
+        "icon",
     )
     search_fields = (
-        'name',
-        'basename',
+        "name",
+        "basename",
     )
 
-    def get_readonly_fields(self, request, obj=None):
+    def get_readonly_fields(self, _, obj=None):
         """Allow basename to be created but not edited."""
         if obj:
-            return self.readonly_fields + ('basename',)
+            return self.readonly_fields + ("basename",)
 
         return self.readonly_fields

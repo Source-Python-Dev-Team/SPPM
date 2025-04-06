@@ -13,7 +13,6 @@ from django.contrib.auth import models
 # Third Party Django
 from precise_bbcode.models import BBCodeTag, SmileyTag
 
-
 # =============================================================================
 # UNREGISTER
 # =============================================================================
@@ -25,6 +24,6 @@ admin.site.unregister(SmileyTag)
 # =============================================================================
 # ADMINS
 # =============================================================================
-import_module('project_manager.packages.admin')
-import_module('project_manager.plugins.admin')
-import_module('project_manager.sub_plugins.admin')
+import_module("project_manager.packages.admin")
+import_module("project_manager.plugins.admin")
+import_module("project_manager.sub_plugins.admin")

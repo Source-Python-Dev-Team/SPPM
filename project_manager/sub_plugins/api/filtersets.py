@@ -7,12 +7,11 @@
 from project_manager.api.common.filtersets import ProjectFilterSet
 from project_manager.sub_plugins.models import SubPlugin
 
-
 # =============================================================================
 # ALL DECLARATION
 # =============================================================================
 __all__ = (
-    'SubPluginFilterSet',
+    "SubPluginFilterSet",
 )
 
 

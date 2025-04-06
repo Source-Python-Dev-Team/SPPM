@@ -12,12 +12,11 @@ from django_filters.filterset import FilterSet
 
 from users.models import ForumUser
 
-
 # =============================================================================
 # ALL DECLARATION
 # =============================================================================
 __all__ = (
-    'ForumUserFilterSet',
+    "ForumUserFilterSet",
 )
 
 
@@ -28,8 +27,8 @@ class ForumUserFilterSet(FilterSet):
     """Filters for ForumUsers."""
 
     has_contributions = BooleanFilter(
-        method='filter_has_contributions',
-        label='Has Contributions',
+        method="filter_has_contributions",
+        label="Has Contributions",
     )
 
     class Meta:
@@ -37,11 +36,11 @@ class ForumUserFilterSet(FilterSet):
 
         model = ForumUser
         fields = (
-            'has_contributions',
+            "has_contributions",
         )
 
     @staticmethod
-    def filter_has_contributions(queryset, name, value):
+    def filter_has_contributions(queryset, _, value):
         """Filter down to users that do/don't have any contributions."""
         method = queryset.filter if value else queryset.exclude
         return method(
@@ -50,5 +49,5 @@ class ForumUserFilterSet(FilterSet):
             Q(package_count__gt=0) |
             Q(package_contribution_count__gt=0) |
             Q(sub_plugin_count__gt=0) |
-            Q(sub_plugin_contribution_count__gt=0)
+            Q(sub_plugin_contribution_count__gt=0),
         ).distinct()

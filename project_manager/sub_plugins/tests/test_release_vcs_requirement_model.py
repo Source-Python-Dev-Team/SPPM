@@ -11,14 +11,16 @@ from django.test import TestCase
 # App
 from project_manager.constants import RELEASE_VERSION_MAX_LENGTH
 from project_manager.models.abstract import AbstractUUIDPrimaryKeyModel
-from project_manager.validators import version_validator
 from project_manager.sub_plugins.models import (
     SubPluginRelease,
     SubPluginReleaseVersionControlRequirement,
 )
+from project_manager.validators import version_validator
 from requirements.models import VersionControlRequirement
 from test_utils.factories.requirements import VersionControlRequirementFactory
-from test_utils.factories.sub_plugins import SubPluginReleaseVersionControlRequirementFactory
+from test_utils.factories.sub_plugins import (
+    SubPluginReleaseVersionControlRequirementFactory,
+)
 
 
 # =============================================================================
@@ -30,11 +32,11 @@ class SubPluginReleaseVersionControlRequirementTestCase(TestCase):
             expr=issubclass(
                 SubPluginReleaseVersionControlRequirement,
                 AbstractUUIDPrimaryKeyModel,
-            )
+            ),
         )
 
     def test_sub_plugin_release_field(self):
-        field = SubPluginReleaseVersionControlRequirement._meta.get_field('sub_plugin_release')
+        field = SubPluginReleaseVersionControlRequirement._meta.get_field("sub_plugin_release")
         self.assertIsInstance(
             obj=field,
             cls=models.ForeignKey,
@@ -52,7 +54,7 @@ class SubPluginReleaseVersionControlRequirementTestCase(TestCase):
 
     def test_vcs_requirement_field(self):
         field = SubPluginReleaseVersionControlRequirement._meta.get_field(
-            'vcs_requirement',
+            "vcs_requirement",
         )
         self.assertIsInstance(
             obj=field,
@@ -71,7 +73,7 @@ class SubPluginReleaseVersionControlRequirementTestCase(TestCase):
 
     def test_version_field(self):
         field = SubPluginReleaseVersionControlRequirement._meta.get_field(
-            'version',
+            "version",
         )
         self.assertIsInstance(
             obj=field,
@@ -88,16 +90,16 @@ class SubPluginReleaseVersionControlRequirementTestCase(TestCase):
         self.assertEqual(
             first=field.help_text,
             second=(
-                'The version of the VCS package for this release of the '
-                'sub_plugin.'
-            )
+                "The version of the VCS package for this release of the "
+                "sub_plugin."
+            ),
         )
         self.assertTrue(expr=field.blank)
         self.assertTrue(expr=field.null)
 
     def test_optional_field(self):
         field = SubPluginReleaseVersionControlRequirement._meta.get_field(
-            'optional',
+            "optional",
         )
         self.assertIsInstance(
             obj=field,
@@ -109,27 +111,27 @@ class SubPluginReleaseVersionControlRequirementTestCase(TestCase):
 
     def test__str__(self):
         requirement = VersionControlRequirementFactory()
-        version = '.'.join(map(str, sample(range(100), 3)))
+        version = ".".join(map(str, sample(range(100), 3)))
         self.assertEqual(
             first=str(
                 SubPluginReleaseVersionControlRequirementFactory(
                     vcs_requirement=requirement,
                     version=version,
-                )
+                ),
             ),
-            second=f'{requirement.url} - {version}',
+            second=f"{requirement.url} - {version}",
         )
 
     def test_meta_class(self):
         self.assertTupleEqual(
             tuple1=SubPluginReleaseVersionControlRequirement._meta.unique_together,
-            tuple2=(('sub_plugin_release', 'vcs_requirement'),),
+            tuple2=(("sub_plugin_release", "vcs_requirement"),),
         )
         self.assertEqual(
             first=SubPluginReleaseVersionControlRequirement._meta.verbose_name,
-            second='SubPlugin Release Version Control Requirement',
+            second="SubPlugin Release Version Control Requirement",
         )
         self.assertEqual(
             first=SubPluginReleaseVersionControlRequirement._meta.verbose_name_plural,
-            second='SubPlugin Release Version Control Requirements',
+            second="SubPlugin Release Version Control Requirements",
         )

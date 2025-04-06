@@ -23,7 +23,6 @@ from project_manager.constants import (
     PROJECT_SLUG_MAX_LENGTH,
 )
 from project_manager.models.abstract import Project
-from project_manager.validators import basename_validator
 from project_manager.plugins.constants import PLUGIN_LOGO_URL
 from project_manager.plugins.helpers import handle_plugin_logo_upload
 from project_manager.plugins.models import (
@@ -32,6 +31,7 @@ from project_manager.plugins.models import (
     PluginGame,
     PluginTag,
 )
+from project_manager.validators import basename_validator
 from tags.models import Tag
 from test_utils.factories.plugins import (
     PluginFactory,
@@ -46,11 +46,11 @@ from users.models import ForumUser
 class PluginTestCase(TestCase):
     def test_model_inheritance(self):
         self.assertTrue(
-            expr=issubclass(Plugin, Project)
+            expr=issubclass(Plugin, Project),
         )
 
     def test_basename_field(self):
-        field = Plugin._meta.get_field('basename')
+        field = Plugin._meta.get_field("basename")
         self.assertIsInstance(
             obj=field,
             cls=models.CharField,
@@ -68,7 +68,7 @@ class PluginTestCase(TestCase):
         self.assertFalse(expr=field.null)
 
     def test_owner_field(self):
-        field = Plugin._meta.get_field('owner')
+        field = Plugin._meta.get_field("owner")
         self.assertIsInstance(
             obj=field,
             cls=models.ForeignKey,
@@ -83,13 +83,13 @@ class PluginTestCase(TestCase):
         )
         self.assertEqual(
             first=field.remote_field.related_name,
-            second='plugins',
+            second="plugins",
         )
         self.assertFalse(expr=field.blank)
         self.assertTrue(expr=field.null)
 
     def test_contributors_field(self):
-        field = Plugin._meta.get_field('contributors')
+        field = Plugin._meta.get_field("contributors")
         self.assertIsInstance(
             obj=field,
             cls=models.ManyToManyField,
@@ -100,7 +100,7 @@ class PluginTestCase(TestCase):
         )
         self.assertEqual(
             first=field.remote_field.related_name,
-            second='plugin_contributions',
+            second="plugin_contributions",
         )
         self.assertEqual(
             first=field.remote_field.through,
@@ -108,7 +108,7 @@ class PluginTestCase(TestCase):
         )
 
     def test_slug_field(self):
-        field = Plugin._meta.get_field('slug')
+        field = Plugin._meta.get_field("slug")
         self.assertIsInstance(
             obj=field,
             cls=models.SlugField,
@@ -123,7 +123,7 @@ class PluginTestCase(TestCase):
         self.assertFalse(expr=field.null)
 
     def test_supported_games_field(self):
-        field = Plugin._meta.get_field('supported_games')
+        field = Plugin._meta.get_field("supported_games")
         self.assertIsInstance(
             obj=field,
             cls=models.ManyToManyField,
@@ -134,7 +134,7 @@ class PluginTestCase(TestCase):
         )
         self.assertEqual(
             first=field.remote_field.related_name,
-            second='plugins',
+            second="plugins",
         )
         self.assertEqual(
             first=field.remote_field.through,
@@ -142,7 +142,7 @@ class PluginTestCase(TestCase):
         )
 
     def test_tags_field(self):
-        field = Plugin._meta.get_field('tags')
+        field = Plugin._meta.get_field("tags")
         self.assertIsInstance(
             obj=field,
             cls=models.ManyToManyField,
@@ -153,7 +153,7 @@ class PluginTestCase(TestCase):
         )
         self.assertEqual(
             first=field.remote_field.related_name,
-            second='plugins',
+            second="plugins",
         )
         self.assertEqual(
             first=field.remote_field.through,
@@ -163,7 +163,7 @@ class PluginTestCase(TestCase):
     def test_primary_attributes(self):
         self.assertEqual(
             first=Plugin.handle_logo_upload,
-            second=handle_plugin_logo_upload
+            second=handle_plugin_logo_upload,
         )
         self.assertEqual(
             first=Plugin.logo_path,
@@ -181,10 +181,10 @@ class PluginTestCase(TestCase):
         plugin = PluginFactory()
         created = now()
         for offset, version in enumerate([
-            '1.0.0',
-            '1.0.1',
-            '1.1.0',
-            '1.0.9',
+            "1.0.0",
+            "1.0.1",
+            "1.1.0",
+            "1.0.9",
         ]):
             release = PluginReleaseFactory(
                 plugin=plugin,
@@ -213,7 +213,7 @@ class PluginTestCase(TestCase):
         )
 
     @mock.patch(
-        target='project_manager.models.abstract.Image.open',
+        target="project_manager.models.abstract.Image.open",
     )
     def test_clean_logo(self, mock_image_open):
         Plugin().clean()
@@ -221,40 +221,40 @@ class PluginTestCase(TestCase):
             LOGO_MAX_WIDTH,
             LOGO_MAX_HEIGHT,
         )
-        Plugin(logo='test.jpg').clean()
+        Plugin(logo="test.jpg").clean()
 
         mock_image_open.return_value.size = (
             LOGO_MAX_WIDTH + 1,
             LOGO_MAX_HEIGHT + 1,
         )
         with self.assertRaises(ValidationError) as context:
-            Plugin(logo='test.jpg').clean()
+            Plugin(logo="test.jpg").clean()
 
         self.assertEqual(
             first=len(context.exception.messages),
             second=2,
         )
         self.assertIn(
-            member=f'Logo width must be no more than {LOGO_MAX_WIDTH}.',
+            member=f"Logo width must be no more than {LOGO_MAX_WIDTH}.",
             container=context.exception.messages,
         )
         self.assertIn(
-            member=f'Logo height must be no more than {LOGO_MAX_HEIGHT}.',
+            member=f"Logo height must be no more than {LOGO_MAX_HEIGHT}.",
             container=context.exception.messages,
         )
 
     @mock.patch(
-        target='project_manager.models.abstract.settings.MEDIA_ROOT',
+        target="project_manager.models.abstract.settings.MEDIA_ROOT",
     )
     def test_save(self, mock_media_root):
-        basename = 'test'
+        basename = "test"
         mock_obj = mock.Mock(
             stem=basename,
         )
         mock_media_root.__truediv__.return_value.files.return_value = [mock_obj]
         PluginFactory(
             basename=basename,
-            logo='test.jpg',
+            logo="test.jpg",
         )
         mock_obj.remove.assert_called_once_with()
 
@@ -276,20 +276,20 @@ class PluginTestCase(TestCase):
         self.assertEqual(
             first=plugin.get_absolute_url(),
             second=reverse(
-                viewname='plugins:detail',
+                viewname="plugins:detail",
                 kwargs={
-                    'slug': plugin.slug,
-                }
-            )
+                    "slug": plugin.slug,
+                },
+            ),
         )
 
     def test_meta_class(self):
         self.assertTrue(issubclass(Plugin.Meta, Project.Meta))
         self.assertEqual(
             first=Plugin._meta.verbose_name,
-            second='Plugin',
+            second="Plugin",
         )
         self.assertEqual(
             first=Plugin._meta.verbose_name_plural,
-            second='Plugins',
+            second="Plugins",
         )

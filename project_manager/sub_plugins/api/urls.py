@@ -20,56 +20,55 @@ from project_manager.sub_plugins.api.views import (
     SubPluginViewSet,
 )
 
-
 # =============================================================================
 # ROUTERS
 # =============================================================================
 router = routers.SimpleRouter()
 router.register(
-    prefix='projects/(?P<plugin_slug>[^/.]+)',
+    prefix="projects/(?P<plugin_slug>[^/.]+)",
     viewset=SubPluginViewSet,
-    basename='projects',
+    basename="projects",
 )
 router.register(
-    prefix='images/(?P<plugin_slug>[^/.]+)/(?P<sub_plugin_slug>[^/.]+)',
+    prefix="images/(?P<plugin_slug>[^/.]+)/(?P<sub_plugin_slug>[^/.]+)",
     viewset=SubPluginImageViewSet,
-    basename='images',
+    basename="images",
 )
 router.register(
-    prefix='releases/(?P<plugin_slug>[^/.]+)/(?P<sub_plugin_slug>[^/.]+)',
+    prefix="releases/(?P<plugin_slug>[^/.]+)/(?P<sub_plugin_slug>[^/.]+)",
     viewset=SubPluginReleaseViewSet,
-    basename='releases',
+    basename="releases",
 )
 router.register(
-    prefix='games/(?P<plugin_slug>[^/.]+)/(?P<sub_plugin_slug>[^/.]+)',
+    prefix="games/(?P<plugin_slug>[^/.]+)/(?P<sub_plugin_slug>[^/.]+)",
     viewset=SubPluginGameViewSet,
-    basename='games',
+    basename="games",
 )
 router.register(
-    prefix='tags/(?P<plugin_slug>[^/.]+)/(?P<sub_plugin_slug>[^/.]+)',
+    prefix="tags/(?P<plugin_slug>[^/.]+)/(?P<sub_plugin_slug>[^/.]+)",
     viewset=SubPluginTagViewSet,
-    basename='tags',
+    basename="tags",
 )
 router.register(
     prefix=(
-        'contributors/(?P<plugin_slug>[^/.]+)/(?P<sub_plugin_slug>[^/.]+)'
+        "contributors/(?P<plugin_slug>[^/.]+)/(?P<sub_plugin_slug>[^/.]+)"
     ),
     viewset=SubPluginContributorViewSet,
-    basename='contributors',
+    basename="contributors",
 )
 
 
 # =============================================================================
 # GLOBAL VARIABLES
 # =============================================================================
-app_name = 'sub-plugins'
+app_name = "sub-plugins"
 
 urlpatterns = [
     path(
-        route='',
+        route="",
         view=SubPluginAPIView.as_view(),
-        name='endpoints',
-    )
+        name="endpoints",
+    ),
 ]
 
 urlpatterns += router.urls

@@ -24,11 +24,11 @@ from test_utils.factories.sub_plugins import SubPluginImageFactory
 class SubPluginImageTestCase(TestCase):
     def test_model_inheritance(self):
         self.assertTrue(
-            expr=issubclass(SubPluginImage, AbstractUUIDPrimaryKeyModel)
+            expr=issubclass(SubPluginImage, AbstractUUIDPrimaryKeyModel),
         )
 
     def test_sub_plugin_field(self):
-        field = SubPluginImage._meta.get_field('sub_plugin')
+        field = SubPluginImage._meta.get_field("sub_plugin")
         self.assertIsInstance(
             obj=field,
             cls=models.ForeignKey,
@@ -43,13 +43,13 @@ class SubPluginImageTestCase(TestCase):
         )
         self.assertEqual(
             first=field.remote_field.related_name,
-            second='images',
+            second="images",
         )
         self.assertFalse(expr=field.blank)
         self.assertFalse(expr=field.null)
 
     def test_image_field(self):
-        field = SubPluginImage._meta.get_field('image')
+        field = SubPluginImage._meta.get_field("image")
         self.assertIsInstance(
             obj=field,
             cls=models.ImageField,
@@ -62,29 +62,29 @@ class SubPluginImageTestCase(TestCase):
         self.assertFalse(expr=field.null)
 
     def test_created_field(self):
-        field = SubPluginImage._meta.get_field('created')
+        field = SubPluginImage._meta.get_field("created")
         self.assertIsInstance(
             obj=field,
             cls=AutoCreatedField,
         )
         self.assertEqual(
             first=field.verbose_name,
-            second='created',
+            second="created",
         )
 
     def test__str__(self):
         obj = SubPluginImageFactory()
         self.assertEqual(
             first=str(obj),
-            second=f'{obj.sub_plugin} - {obj.image}',
+            second=f"{obj.sub_plugin} - {obj.image}",
         )
 
     def test_meta_class(self):
         self.assertEqual(
             first=SubPluginImage._meta.verbose_name,
-            second='SubPlugin Image',
+            second="SubPlugin Image",
         )
         self.assertEqual(
             first=SubPluginImage._meta.verbose_name_plural,
-            second='SubPlugin Images',
+            second="SubPlugin Images",
         )

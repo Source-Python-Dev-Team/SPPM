@@ -17,15 +17,14 @@ from project_manager.packages.models import (
     PackageTag,
 )
 
-
 # =============================================================================
 # ALL DECLARATION
 # =============================================================================
 __all__ = (
-    'PackageContributorInline',
-    'PackageGameInline',
-    'PackageImageInline',
-    'PackageTagInline',
+    "PackageContributorInline",
+    "PackageGameInline",
+    "PackageImageInline",
+    "PackageTagInline",
 )
 
 

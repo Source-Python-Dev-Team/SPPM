@@ -9,23 +9,22 @@ from django.urls import path
 # App
 from users.views import ForumUserView
 
-
 # =============================================================================
 # GLOBAL VARIABLES
 # =============================================================================
-app_name = 'users'
+app_name = "users"
 
 urlpatterns = [
     path(
         # /users
-        route='',
+        route="",
         view=ForumUserView.as_view(),
-        name='list',
+        name="list",
     ),
     path(
         # /users/<pk>
-        route='<pk>/',
+        route="<pk>/",
         view=ForumUserView.as_view(),
-        name='detail',
+        name="detail",
     ),
 ]

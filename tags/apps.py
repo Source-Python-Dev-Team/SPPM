@@ -6,12 +6,11 @@
 # Django
 from django.apps import AppConfig
 
-
 # =============================================================================
 # ALL DECLARATION
 # =============================================================================
 __all__ = (
-    'TagConfig',
+    "TagConfig",
 )
 
 
@@ -21,5 +20,5 @@ __all__ = (
 class TagConfig(AppConfig):
     """Tag app config."""
 
-    name = 'tags'
-    verbose_name = 'Tags'
+    name = "tags"
+    verbose_name = "Tags"

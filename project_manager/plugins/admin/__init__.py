@@ -20,13 +20,12 @@ from project_manager.plugins.admin.inlines import (
 )
 from project_manager.plugins.models import Plugin, PluginRelease
 
-
 # =============================================================================
 # ALL DECLARATION
 # =============================================================================
 __all__ = (
-    'PluginAdmin',
-    'PluginReleaseAdmin',
+    "PluginAdmin",
+    "PluginReleaseAdmin",
 )
 
 
@@ -51,16 +50,16 @@ class PluginReleaseAdmin(ProjectReleaseAdmin):
     """PluginRelease admin."""
 
     fieldsets = deepcopy(ProjectReleaseAdmin.fieldsets)
-    fieldsets[0][1]['fields'] += ('plugin',)
-    list_display = ProjectReleaseAdmin.list_display + ('plugin',)
-    ordering = ('plugin', '-created',)
-    readonly_fields = ProjectReleaseAdmin.readonly_fields + ('plugin',)
-    search_fields = ProjectReleaseAdmin.search_fields + ('plugin__name',)
+    fieldsets[0][1]["fields"] += ("plugin",)
+    list_display = ProjectReleaseAdmin.list_display + ("plugin",)
+    ordering = ("plugin", "-created")
+    readonly_fields = ProjectReleaseAdmin.readonly_fields + ("plugin",)
+    search_fields = ProjectReleaseAdmin.search_fields + ("plugin__name",)
 
     def get_queryset(self, request):
         """Cache 'plugin' for the queryset."""
         return super().get_queryset(
             request=request,
         ).select_related(
-            'plugin',
+            "plugin",
         )

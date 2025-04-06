@@ -21,11 +21,11 @@ from test_utils.factories.plugins import PluginTagFactory
 class PluginTagTestCase(TestCase):
     def test_model_inheritance(self):
         self.assertTrue(
-            expr=issubclass(PluginTag, AbstractUUIDPrimaryKeyModel)
+            expr=issubclass(PluginTag, AbstractUUIDPrimaryKeyModel),
         )
 
     def test_plugin_field(self):
-        field = PluginTag._meta.get_field('plugin')
+        field = PluginTag._meta.get_field("plugin")
         self.assertIsInstance(
             obj=field,
             cls=models.ForeignKey,
@@ -42,7 +42,7 @@ class PluginTagTestCase(TestCase):
         self.assertFalse(expr=field.null)
 
     def test_tag_field(self):
-        field = PluginTag._meta.get_field('tag')
+        field = PluginTag._meta.get_field("tag")
         self.assertIsInstance(
             obj=field,
             cls=models.ForeignKey,
@@ -62,19 +62,19 @@ class PluginTagTestCase(TestCase):
         obj = PluginTagFactory()
         self.assertEqual(
             first=str(obj),
-            second=f'{obj.plugin} Tag: {obj.tag}',
+            second=f"{obj.plugin} Tag: {obj.tag}",
         )
 
     def test_meta_class(self):
         self.assertTupleEqual(
             tuple1=PluginTag._meta.unique_together,
-            tuple2=(('plugin', 'tag'),),
+            tuple2=(("plugin", "tag"),),
         )
         self.assertEqual(
             first=PluginTag._meta.verbose_name,
-            second='Plugin Tag',
+            second="Plugin Tag",
         )
         self.assertEqual(
             first=PluginTag._meta.verbose_name_plural,
-            second='Plugin Tags',
+            second="Plugin Tags",
         )

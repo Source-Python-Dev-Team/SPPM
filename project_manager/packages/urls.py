@@ -9,29 +9,28 @@ from django.urls import path
 # App
 from project_manager.packages.views import PackageCreateView, PackageView
 
-
 # =============================================================================
 # GLOBAL VARIABLES
 # =============================================================================
-app_name = 'packages'
+app_name = "packages"
 
 urlpatterns = [
     path(
         # /packages
-        route='',
+        route="",
         view=PackageView.as_view(),
-        name='list',
+        name="list",
     ),
     path(
         # /packages/create
-        route='create',
+        route="create",
         view=PackageCreateView.as_view(),
-        name='create',
+        name="create",
     ),
     path(
         # /packages/<slug>
-        route='<slug:slug>/',
+        route="<slug:slug>/",
         view=PackageView.as_view(),
-        name='detail',
+        name="detail",
     ),
 ]

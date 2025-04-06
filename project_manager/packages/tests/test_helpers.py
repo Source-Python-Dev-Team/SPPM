@@ -146,7 +146,7 @@ class PackageZipFileTestCase(TestCase):
         obj.find_base_info()
         self.assertListEqual(
             list1=obj.get_base_paths(),
-            list2=[f'{PACKAGE_PATH}{package_basename}.py'],
+            list2=[f"{PACKAGE_PATH}{package_basename}.py"],
         )
 
         package_basename = 'test_package_as_package'
@@ -237,11 +237,11 @@ class PackageZipFileTestCase(TestCase):
             container=context.exception.message_dict,
         )
         self.assertEqual(
-            first=len(context.exception.message_dict['zip_file']),
+            first=len(context.exception.message_dict["zip_file"]),
             second=1,
         )
         self.assertEqual(
-            first=context.exception.message_dict['zip_file'][0],
+            first=context.exception.message_dict["zip_file"][0],
             second=f'Invalid paths found in zip: {invalid_file}',
         )
 
@@ -264,11 +264,11 @@ class PackageZipFileTestCase(TestCase):
             container=context.exception.message_dict,
         )
         self.assertEqual(
-            first=len(context.exception.message_dict['zip_file']),
+            first=len(context.exception.message_dict["zip_file"]),
             second=1,
         )
         self.assertEqual(
-            first=context.exception.message_dict['zip_file'][0],
+            first=context.exception.message_dict["zip_file"][0],
             second=f'Invalid paths found in zip: {invalid_file}',
         )
 
@@ -296,7 +296,7 @@ class PackageZipFileTestCase(TestCase):
 
         self.assertDictEqual(
             d1=context.exception.message_dict,
-            d2={'zip_file': ['Requirements json file cannot be decoded.']},
+            d2={'zip_file': ["Requirements json file cannot be decoded."]},
         )
 
     @mock.patch(
@@ -331,7 +331,7 @@ class PackageZipFileTestCase(TestCase):
 
         self.assertDictEqual(
             d1=context.exception.message_dict,
-            d2={'zip_file': ['Invalid requirements json file.']},
+            d2={'zip_file': ["Invalid requirements json file."]},
         )
 
         group_type = 'invalid'

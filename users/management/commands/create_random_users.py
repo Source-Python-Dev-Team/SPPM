@@ -18,7 +18,6 @@ from random_username.generate import generate_username
 # App
 from users.models import ForumUser
 
-
 # =============================================================================
 # GLOBAL VARIABLES
 # =============================================================================
@@ -36,22 +35,21 @@ class Command(BaseCommand):
     def add_arguments(self, parser):
         """Add the required arguments for the command."""
         parser.add_argument(
-            'count',
+            "count",
             type=int,
-            help='The number of users to create.',
+            help="The number of users to create.",
         )
 
-    def handle(self, *args, **options):
+    def handle(self, *_, **options):
         """Verify the arguments and create the Users."""
         # Only allow this command in local development
         if not settings.LOCAL:
-            raise CommandError(
-                'Command can only be run for local development.'
-            )
+            msg = "Command can only be run for local development."
+            raise CommandError(msg)
 
-        count = options['count']
+        count = options["count"]
         current_usernames = User.objects.values_list(
-            'username',
+            "username",
             flat=True,
         )
 
@@ -67,9 +65,9 @@ class Command(BaseCommand):
 
         current_forum_ids = list(
             ForumUser.objects.values_list(
-                'forum_id',
+                "forum_id",
                 flat=True,
-            )
+            ),
         )
         max_id = count + len(current_forum_ids)
         id_list = list(set(range(1, max_id + 1)).difference(current_forum_ids))
@@ -83,7 +81,7 @@ class Command(BaseCommand):
                 ForumUser(
                     user=user,
                     forum_id=id_list[index],
-                )
+                ),
             )
 
         if obj_list:  # pragma: no branch

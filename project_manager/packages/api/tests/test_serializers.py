@@ -21,6 +21,10 @@ from project_manager.api.common.serializers import (
     ProjectSerializer,
     ProjectTagSerializer,
 )
+from project_manager.packages.api.common.serializers import (
+    MinimalPackageSerializer,
+    ReleasePackageRequirementSerializer,
+)
 from project_manager.packages.api.serializers import (
     PackageContributorSerializer,
     PackageCreateReleaseSerializer,
@@ -34,10 +38,6 @@ from project_manager.packages.api.serializers import (
     PackageReleaseVersionControlRequirementSerializer,
     PackageSerializer,
     PackageTagSerializer,
-)
-from project_manager.packages.api.common.serializers import (
-    MinimalPackageSerializer,
-    ReleasePackageRequirementSerializer,
 )
 from project_manager.packages.api.serializers.mixins import PackageReleaseBase
 from project_manager.packages.helpers import PackageZipFile
@@ -122,17 +122,17 @@ class PackageCreateSerializerTestCase(TestCase):
     def test_releases(self):
         mock.patch(
             target=(
-                'project_manager.api.common.serializers.ProjectSerializer.'
-                'get_extra_kwargs'
+                "project_manager.api.common.serializers.ProjectSerializer."
+                "get_extra_kwargs"
             ),
             return_value={},
         ).start()
         obj = PackageCreateSerializer()
-        obj.context['view'] = mock.Mock(
-            action='list',
+        obj.context["view"] = mock.Mock(
+            action="list",
         )
-        self.assertIn(member='releases', container=obj.fields)
-        field = obj.fields['releases']
+        self.assertIn(member="releases", container=obj.fields)
+        field = obj.fields["releases"]
         self.assertIsInstance(obj=field, cls=PackageCreateReleaseSerializer)
         self.assertTrue(expr=field.write_only)
 
@@ -145,7 +145,7 @@ class PackageCreateSerializerTestCase(TestCase):
         )
         self.assertEqual(
             first=PackageCreateSerializer.Meta.fields,
-            second=PackageSerializer.Meta.fields + ('releases',),
+            second=PackageSerializer.Meta.fields + ("releases",),
         )
 
 
@@ -220,32 +220,32 @@ class PackageReleasePackageRequirementSerializerTestCase(TestCase):
 
     def test_name_field(self):
         obj = PackageReleasePackageRequirementSerializer()
-        self.assertIn(member='name', container=obj.fields)
-        field = obj.fields['name']
+        self.assertIn(member="name", container=obj.fields)
+        field = obj.fields["name"]
         self.assertIsInstance(obj=field, cls=ReadOnlyField)
         self.assertEqual(
             first=field.source,
-            second='package_requirement.name',
+            second="package_requirement.name",
         )
 
     def test_slug_field(self):
         obj = PackageReleasePackageRequirementSerializer()
-        self.assertIn(member='slug', container=obj.fields)
-        field = obj.fields['slug']
+        self.assertIn(member="slug", container=obj.fields)
+        field = obj.fields["slug"]
         self.assertIsInstance(obj=field, cls=ReadOnlyField)
         self.assertEqual(
             first=field.source,
-            second='package_requirement.slug',
+            second="package_requirement.slug",
         )
 
     def test_version_field(self):
         obj = PackageReleasePackageRequirementSerializer()
-        self.assertIn(member='version', container=obj.fields)
-        field = obj.fields['version']
+        self.assertIn(member="version", container=obj.fields)
+        field = obj.fields["version"]
         self.assertIsInstance(obj=field, cls=ReadOnlyField)
         self.assertEqual(
             first=field.source,
-            second='version',
+            second="version",
         )
 
     def test_meta_class(self):
@@ -297,8 +297,8 @@ class PackageReleaseSerializerTestCase(TestCase):
 
     def test_download_requirements(self):
         obj = PackageReleaseSerializer()
-        self.assertIn(member='download_requirements', container=obj.fields)
-        field = obj.fields['download_requirements']
+        self.assertIn(member="download_requirements", container=obj.fields)
+        field = obj.fields["download_requirements"]
         self.assertIsInstance(obj=field, cls=ListSerializer)
         self.assertTrue(expr=field.many)
         self.assertTrue(expr=field.read_only)
@@ -308,14 +308,14 @@ class PackageReleaseSerializerTestCase(TestCase):
         )
         self.assertEqual(
             first=field.source,
-            second='packagereleasedownloadrequirement_set',
+            second="packagereleasedownloadrequirement_set",
         )
         self.assertTrue(expr=field.child.read_only)
 
     def test_package_requirements(self):
         obj = PackageReleaseSerializer()
-        self.assertIn(member='package_requirements', container=obj.fields)
-        field = obj.fields['package_requirements']
+        self.assertIn(member="package_requirements", container=obj.fields)
+        field = obj.fields["package_requirements"]
         self.assertIsInstance(obj=field, cls=ListSerializer)
         self.assertTrue(expr=field.many)
         self.assertTrue(expr=field.read_only)
@@ -325,14 +325,14 @@ class PackageReleaseSerializerTestCase(TestCase):
         )
         self.assertEqual(
             first=field.source,
-            second='packagereleasepackagerequirement_set',
+            second="packagereleasepackagerequirement_set",
         )
         self.assertTrue(expr=field.child.read_only)
 
     def test_pypi_requirements(self):
         obj = PackageReleaseSerializer()
-        self.assertIn(member='pypi_requirements', container=obj.fields)
-        field = obj.fields['pypi_requirements']
+        self.assertIn(member="pypi_requirements", container=obj.fields)
+        field = obj.fields["pypi_requirements"]
         self.assertIsInstance(obj=field, cls=ListSerializer)
         self.assertTrue(expr=field.many)
         self.assertTrue(expr=field.read_only)
@@ -342,14 +342,14 @@ class PackageReleaseSerializerTestCase(TestCase):
         )
         self.assertEqual(
             first=field.source,
-            second='packagereleasepypirequirement_set',
+            second="packagereleasepypirequirement_set",
         )
         self.assertTrue(expr=field.child.read_only)
 
     def test_vcs_requirements(self):
         obj = PackageReleaseSerializer()
-        self.assertIn(member='vcs_requirements', container=obj.fields)
-        field = obj.fields['vcs_requirements']
+        self.assertIn(member="vcs_requirements", container=obj.fields)
+        field = obj.fields["vcs_requirements"]
         self.assertIsInstance(obj=field, cls=ListSerializer)
         self.assertTrue(expr=field.many)
         self.assertTrue(expr=field.read_only)
@@ -359,7 +359,7 @@ class PackageReleaseSerializerTestCase(TestCase):
         )
         self.assertEqual(
             first=field.source,
-            second='packagereleaseversioncontrolrequirement_set',
+            second="packagereleaseversioncontrolrequirement_set",
         )
         self.assertTrue(expr=field.child.read_only)
 
@@ -405,7 +405,7 @@ class PackageSerializerTestCase(TestCase):
     def test_primary_attributes(self):
         self.assertEqual(
             first=PackageSerializer.project_type,
-            second='package',
+            second="package",
         )
         self.assertEqual(
             first=PackageSerializer.release_model,
@@ -414,49 +414,49 @@ class PackageSerializerTestCase(TestCase):
 
     def test_get_fields(self):
         obj = PackageSerializer()
-        obj.context['view'] = mock.Mock(
-            action='list',
+        obj.context["view"] = mock.Mock(
+            action="list",
         )
         fields = obj.get_fields()
         self.assertSetEqual(
             set1=set(fields.keys()),
             set2={
-                'name',
-                'slug',
-                'total_downloads',
-                'current_release',
-                'created',
-                'updated',
-                'synopsis',
-                'description',
-                'configuration',
-                'logo',
-                'video',
-                'owner',
-                'contributors',
+                "name",
+                "slug",
+                "total_downloads",
+                "current_release",
+                "created",
+                "updated",
+                "synopsis",
+                "description",
+                "configuration",
+                "logo",
+                "video",
+                "owner",
+                "contributors",
             },
         )
 
         obj = PackageSerializer()
-        obj.context['view'] = mock.Mock(
-            action='retrieve',
+        obj.context["view"] = mock.Mock(
+            action="retrieve",
         )
         fields = obj.get_fields()
         self.assertSetEqual(
             set1=set(fields.keys()),
             set2={
-                'name',
-                'slug',
-                'total_downloads',
-                'current_release',
-                'created',
-                'updated',
-                'synopsis',
-                'description',
-                'configuration',
-                'logo',
-                'video',
-                'owner',
+                "name",
+                "slug",
+                "total_downloads",
+                "current_release",
+                "created",
+                "updated",
+                "synopsis",
+                "description",
+                "configuration",
+                "logo",
+                "video",
+                "owner",
             },
         )
 
@@ -505,10 +505,10 @@ class ReleasePackageRequirementSerializerTestCase(TestCase):
         self.assertTupleEqual(
             tuple1=ReleasePackageRequirementSerializer.Meta.fields,
             tuple2=(
-                'name',
-                'slug',
-                'version',
-                'optional',
+                "name",
+                "slug",
+                "version",
+                "optional",
             ),
         )
 
@@ -520,7 +520,7 @@ class MinimalPackageSerializerTestCase(TestCase):
         )
 
     def test_declared_fields(self):
-        declared_fields = getattr(MinimalPackageSerializer, '_declared_fields')
+        declared_fields = MinimalPackageSerializer._declared_fields
         self.assertEqual(
             first=len(declared_fields),
             second=0,
@@ -534,8 +534,8 @@ class MinimalPackageSerializerTestCase(TestCase):
         self.assertTupleEqual(
             tuple1=MinimalPackageSerializer.Meta.fields,
             tuple2=(
-                'name',
-                'slug',
+                "name",
+                "slug",
             ),
         )
 
@@ -548,7 +548,7 @@ class PackageReleaseBaseTestCase(TestCase):
         )
         self.assertEqual(
             first=PackageReleaseBase.project_type,
-            second='package',
+            second="package",
         )
 
     def test_zip_parser(self):
@@ -559,13 +559,13 @@ class PackageReleaseBaseTestCase(TestCase):
 
     def test_get_project_kwargs(self):
         obj = PackageReleaseBase()
-        slug = 'test-package'
+        slug = "test-package"
         obj.context = {
-            'view': mock.Mock(
-                kwargs={'package_slug': slug},
+            "view": mock.Mock(
+                kwargs={"package_slug": slug},
             ),
         }
         self.assertDictEqual(
             d1=obj.get_project_kwargs(),
-            d2={'pk': slug},
+            d2={"pk": slug},
         )

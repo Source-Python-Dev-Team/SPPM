@@ -12,12 +12,11 @@ from rest_framework import exceptions
 from rest_framework.metadata import SimpleMetadata
 from rest_framework.request import clone_request
 
-
 # =============================================================================
 # ALL DECLARATION
 # =============================================================================
 __all__ = (
-    'Metadata',
+    "Metadata",
 )
 
 
@@ -30,16 +29,19 @@ class Metadata(SimpleMetadata):
     def determine_actions(self, request, view):
         """Override to allow returning OPTIONS for DELETE/PATCH."""
         actions = {}
-        for method in {'POST', 'DELETE', 'PATCH'} & set(view.allowed_methods):
+        for method in {"POST", "DELETE", "PATCH"} & set(view.allowed_methods):
             view.request = clone_request(request, method)
             try:
                 # Test object permissions
-                if method != 'POST' and hasattr(view, 'check_object_permissions'):
+                if (
+                    method != "POST"
+                    and hasattr(view, "check_object_permissions")
+                ):
                     obj = view.get_object()
                     view.check_object_permissions(view.request, obj)
 
                 # Test global permissions
-                elif hasattr(view, 'check_permissions'):  # pragma: no branch
+                elif hasattr(view, "check_permissions"):  # pragma: no branch
                     view.check_permissions(view.request)
             except (exceptions.APIException, PermissionDenied, Http404):
                 pass

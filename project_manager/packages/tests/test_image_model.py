@@ -24,11 +24,11 @@ from test_utils.factories.packages import PackageImageFactory
 class PackageImageTestCase(TestCase):
     def test_model_inheritance(self):
         self.assertTrue(
-            expr=issubclass(PackageImage, AbstractUUIDPrimaryKeyModel)
+            expr=issubclass(PackageImage, AbstractUUIDPrimaryKeyModel),
         )
 
     def test_package_field(self):
-        field = PackageImage._meta.get_field('package')
+        field = PackageImage._meta.get_field("package")
         self.assertIsInstance(
             obj=field,
             cls=models.ForeignKey,
@@ -43,13 +43,13 @@ class PackageImageTestCase(TestCase):
         )
         self.assertEqual(
             first=field.remote_field.related_name,
-            second='images',
+            second="images",
         )
         self.assertFalse(expr=field.blank)
         self.assertFalse(expr=field.null)
 
     def test_image_field(self):
-        field = PackageImage._meta.get_field('image')
+        field = PackageImage._meta.get_field("image")
         self.assertIsInstance(
             obj=field,
             cls=models.ImageField,
@@ -62,29 +62,29 @@ class PackageImageTestCase(TestCase):
         self.assertFalse(expr=field.null)
 
     def test_created_field(self):
-        field = PackageImage._meta.get_field('created')
+        field = PackageImage._meta.get_field("created")
         self.assertIsInstance(
             obj=field,
             cls=AutoCreatedField,
         )
         self.assertEqual(
             first=field.verbose_name,
-            second='created',
+            second="created",
         )
 
     def test__str__(self):
         obj = PackageImageFactory()
         self.assertEqual(
             first=str(obj),
-            second=f'{obj.package} - {obj.image}',
+            second=f"{obj.package} - {obj.image}",
         )
 
     def test_meta_class(self):
         self.assertEqual(
             first=PackageImage._meta.verbose_name,
-            second='Package Image',
+            second="Package Image",
         )
         self.assertEqual(
             first=PackageImage._meta.verbose_name_plural,
-            second='Package Images',
+            second="Package Images",
         )

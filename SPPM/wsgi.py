@@ -1,5 +1,4 @@
-"""
-WSGI config for SPPM project.
+"""WSGI config for SPPM project.
 
 It exposes the WSGI callable as a module-level variable named ``application``.
 
@@ -15,7 +14,6 @@ import os
 
 # Django
 from django.core.wsgi import get_wsgi_application
-
 
 # =============================================================================
 # GLOBAL VARIABLES

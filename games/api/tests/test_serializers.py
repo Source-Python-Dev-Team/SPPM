@@ -14,7 +14,9 @@ from games.api.serializers import GameListSerializer, GameRetrieveSerializer
 from games.models import Game
 from project_manager.packages.api.common.serializers import MinimalPackageSerializer
 from project_manager.plugins.api.common.serializers import MinimalPluginSerializer
-from project_manager.sub_plugins.api.common.serializers import MinimalSubPluginSerializer
+from project_manager.sub_plugins.api.common.serializers import (
+    MinimalSubPluginSerializer,
+)
 
 
 # =============================================================================
@@ -35,9 +37,9 @@ class MinimalGameSerializerTestCase(TestCase):
         self.assertTupleEqual(
             tuple1=MinimalGameSerializer.Meta.fields,
             tuple2=(
-                'name',
-                'slug',
-                'icon',
+                "name",
+                "slug",
+                "icon",
             ),
         )
 
@@ -49,16 +51,16 @@ class GameRetrieveSerializerTestCase(TestCase):
         )
 
     def test_declared_fields(self):
-        declared_fields = getattr(GameRetrieveSerializer, '_declared_fields')
+        declared_fields = GameRetrieveSerializer._declared_fields
         self.assertEqual(
             first=len(declared_fields),
             second=3,
         )
 
         for field, cls in (
-            ('packages', MinimalPackageSerializer),
-            ('plugins', MinimalPluginSerializer),
-            ('sub_plugins', MinimalSubPluginSerializer),
+            ("packages", MinimalPackageSerializer),
+            ("plugins", MinimalPluginSerializer),
+            ("sub_plugins", MinimalSubPluginSerializer),
         ):
             self.assertIn(
                 member=field,
@@ -83,12 +85,12 @@ class GameRetrieveSerializerTestCase(TestCase):
         self.assertTupleEqual(
             tuple1=GameRetrieveSerializer.Meta.fields,
             tuple2=(
-                'name',
-                'slug',
-                'icon',
-                'packages',
-                'plugins',
-                'sub_plugins',
+                "name",
+                "slug",
+                "icon",
+                "packages",
+                "plugins",
+                "sub_plugins",
             ),
         )
 
@@ -100,17 +102,17 @@ class GameListSerializerTestCase(TestCase):
         )
 
     def test_declared_fields(self):
-        declared_fields = getattr(GameListSerializer, '_declared_fields')
+        declared_fields = GameListSerializer._declared_fields
         self.assertEqual(
             first=len(declared_fields),
             second=4,
         )
 
         for field in (
-            'package_count',
-            'plugin_count',
-            'sub_plugin_count',
-            'project_count',
+            "package_count",
+            "plugin_count",
+            "sub_plugin_count",
+            "project_count",
         ):
             self.assertIn(
                 member=field,
@@ -130,12 +132,12 @@ class GameListSerializerTestCase(TestCase):
         self.assertTupleEqual(
             tuple1=GameListSerializer.Meta.fields,
             tuple2=(
-                'name',
-                'slug',
-                'icon',
-                'package_count',
-                'plugin_count',
-                'sub_plugin_count',
-                'project_count',
+                "name",
+                "slug",
+                "icon",
+                "package_count",
+                "plugin_count",
+                "sub_plugin_count",
+                "project_count",
             ),
         )

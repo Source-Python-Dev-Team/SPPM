@@ -117,9 +117,9 @@ class PackageTagViewSetTestCase(APITestCase):
             second=status.HTTP_200_OK,
         )
         content = response.json()
-        self.assertEqual(first=content['count'], second=2)
+        self.assertEqual(first=content["count"], second=2)
         self.assertDictEqual(
-            d1=content['results'][0],
+            d1=content["results"][0],
             d2={
                 'tag': self.package_tag_2.tag.name,
             },
@@ -134,9 +134,9 @@ class PackageTagViewSetTestCase(APITestCase):
             second=status.HTTP_200_OK,
         )
         content = response.json()
-        self.assertEqual(first=content['count'], second=2)
+        self.assertEqual(first=content["count"], second=2)
         self.assertDictEqual(
-            d1=content['results'][0],
+            d1=content["results"][0],
             d2={
                 'tag': self.package_tag_2.tag.name,
             },
@@ -151,9 +151,9 @@ class PackageTagViewSetTestCase(APITestCase):
             second=status.HTTP_200_OK,
         )
         content = response.json()
-        self.assertEqual(first=content['count'], second=2)
+        self.assertEqual(first=content["count"], second=2)
         self.assertDictEqual(
-            d1=content['results'][0],
+            d1=content["results"][0],
             d2={
                 'tag': self.package_tag_2.tag.name,
                 'id': str(self.package_tag_2.id),
@@ -169,9 +169,9 @@ class PackageTagViewSetTestCase(APITestCase):
             second=status.HTTP_200_OK,
         )
         content = response.json()
-        self.assertEqual(first=content['count'], second=2)
+        self.assertEqual(first=content["count"], second=2)
         self.assertDictEqual(
-            d1=content['results'][0],
+            d1=content["results"][0],
             d2={
                 'tag': self.package_tag_2.tag.name,
                 'id': str(self.package_tag_2.id),
@@ -194,7 +194,7 @@ class PackageTagViewSetTestCase(APITestCase):
             first=response.status_code,
             second=status.HTTP_200_OK,
         )
-        self.assertEqual(first=response.json()['count'], second=0)
+        self.assertEqual(first=response.json()["count"], second=0)
 
         # Verify that regular user can see results but not 'id'
         self.client.force_login(self.regular_user.user)
@@ -204,7 +204,7 @@ class PackageTagViewSetTestCase(APITestCase):
             first=response.status_code,
             second=status.HTTP_200_OK,
         )
-        self.assertEqual(first=response.json()['count'], second=0)
+        self.assertEqual(first=response.json()["count"], second=0)
 
         # Verify that contributors can see results AND 'id'
         self.client.force_login(self.contributor.user)
@@ -214,7 +214,7 @@ class PackageTagViewSetTestCase(APITestCase):
             first=response.status_code,
             second=status.HTTP_200_OK,
         )
-        self.assertEqual(first=response.json()['count'], second=0)
+        self.assertEqual(first=response.json()["count"], second=0)
 
         # Verify that the owner can see results AND 'id'
         self.client.force_login(self.owner.user)
@@ -224,7 +224,7 @@ class PackageTagViewSetTestCase(APITestCase):
             first=response.status_code,
             second=status.HTTP_200_OK,
         )
-        self.assertEqual(first=response.json()['count'], second=0)
+        self.assertEqual(first=response.json()["count"], second=0)
 
     @override_settings(DEBUG=True)
     def test_get_list_failure(self):
@@ -377,7 +377,7 @@ class PackageTagViewSetTestCase(APITestCase):
         )
         self.assertDictEqual(
             d1=response.json(),
-            d2={'tag': [f'Tag already linked to {PackageTagViewSet.project_type}.']}
+            d2={'tag': [f"Tag already linked to {PackageTagViewSet.project_type}."]}
         )
 
         # Verify black-listed tag cannot be added
@@ -443,7 +443,7 @@ class PackageTagViewSetTestCase(APITestCase):
         self.assertEqual(first=response.status_code, second=status.HTTP_200_OK)
         content = response.json()
         self.assertEqual(
-            first=content['name'],
+            first=content["name"],
             second=f'{self.package_1} - Tag',
         )
         self.assertNotIn(member='actions', container=content)
@@ -454,7 +454,7 @@ class PackageTagViewSetTestCase(APITestCase):
         self.assertEqual(first=response.status_code, second=status.HTTP_200_OK)
         content = response.json()
         self.assertEqual(
-            first=content['name'],
+            first=content["name"],
             second=f'{self.package_1} - Tag',
         )
         self.assertNotIn(member='actions', container=content)
@@ -465,11 +465,11 @@ class PackageTagViewSetTestCase(APITestCase):
         self.assertEqual(first=response.status_code, second=status.HTTP_200_OK)
         content = response.json()
         self.assertEqual(
-            first=content['name'],
+            first=content["name"],
             second=f'{self.package_1} - Tag',
         )
         self.assertIn(member='actions', container=content)
-        self.assertSetEqual(set1=set(content['actions']), set2={'POST'})
+        self.assertSetEqual(set1=set(content["actions"]), set2={'POST'})
 
         # Verify that the owner can POST
         self.client.force_login(user=self.owner.user)
@@ -477,11 +477,11 @@ class PackageTagViewSetTestCase(APITestCase):
         self.assertEqual(first=response.status_code, second=status.HTTP_200_OK)
         content = response.json()
         self.assertEqual(
-            first=content['name'],
+            first=content["name"],
             second=f'{self.package_1} - Tag',
         )
         self.assertIn(member='actions', container=content)
-        self.assertSetEqual(set1=set(content['actions']), set2={'POST'})
+        self.assertSetEqual(set1=set(content["actions"]), set2={'POST'})
 
     def test_options_object(self):
         # Verify that non-logged-in user cannot DELETE
@@ -489,7 +489,7 @@ class PackageTagViewSetTestCase(APITestCase):
         self.assertEqual(first=response.status_code, second=status.HTTP_200_OK)
         content = response.json()
         self.assertEqual(
-            first=content['name'],
+            first=content["name"],
             second=f'{self.package_1} - Tag',
         )
         self.assertNotIn(member='actions', container=content)
@@ -500,7 +500,7 @@ class PackageTagViewSetTestCase(APITestCase):
         self.assertEqual(first=response.status_code, second=status.HTTP_200_OK)
         content = response.json()
         self.assertEqual(
-            first=content['name'],
+            first=content["name"],
             second=f'{self.package_1} - Tag',
         )
         self.assertNotIn(member='actions', container=content)
@@ -511,11 +511,11 @@ class PackageTagViewSetTestCase(APITestCase):
         self.assertEqual(first=response.status_code, second=status.HTTP_200_OK)
         content = response.json()
         self.assertEqual(
-            first=content['name'],
+            first=content["name"],
             second=f'{self.package_1} - Tag',
         )
         self.assertIn(member='actions', container=content)
-        self.assertSetEqual(set1=set(content['actions']), set2={'DELETE'})
+        self.assertSetEqual(set1=set(content["actions"]), set2={'DELETE'})
 
         # Verify that the owner can DELETE
         self.client.force_login(user=self.owner.user)
@@ -523,8 +523,8 @@ class PackageTagViewSetTestCase(APITestCase):
         self.assertEqual(first=response.status_code, second=status.HTTP_200_OK)
         content = response.json()
         self.assertEqual(
-            first=content['name'],
+            first=content["name"],
             second=f'{self.package_1} - Tag',
         )
         self.assertIn(member='actions', container=content)
-        self.assertSetEqual(set1=set(content['actions']), set2={'DELETE'})
+        self.assertSetEqual(set1=set(content["actions"]), set2={'DELETE'})

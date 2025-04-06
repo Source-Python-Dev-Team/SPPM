@@ -13,7 +13,9 @@ from project_manager.api.common.serializers import (
     ProjectSerializer,
     ProjectTagSerializer,
 )
-from project_manager.packages.api.common.serializers import ReleasePackageRequirementSerializer
+from project_manager.packages.api.common.serializers import (
+    ReleasePackageRequirementSerializer,
+)
 from project_manager.packages.api.serializers.mixins import PackageReleaseBase
 from project_manager.packages.models import (
     Package,
@@ -33,23 +35,22 @@ from requirements.api.serializers.common import (
     ReleaseVersionControlRequirementSerializer,
 )
 
-
 # =============================================================================
 # ALL DECLARATION
 # =============================================================================
 __all__ = (
-    'PackageContributorSerializer',
-    'PackageCreateReleaseSerializer',
-    'PackageCreateSerializer',
-    'PackageGameSerializer',
-    'PackageImageSerializer',
-    'PackageReleaseDownloadRequirementSerializer',
-    'PackageReleasePackageRequirementSerializer',
-    'PackageReleasePyPiRequirementSerializer',
-    'PackageReleaseSerializer',
-    'PackageReleaseVersionControlRequirementSerializer',
-    'PackageSerializer',
-    'PackageTagSerializer',
+    "PackageContributorSerializer",
+    "PackageCreateReleaseSerializer",
+    "PackageCreateSerializer",
+    "PackageGameSerializer",
+    "PackageImageSerializer",
+    "PackageReleaseDownloadRequirementSerializer",
+    "PackageReleasePackageRequirementSerializer",
+    "PackageReleasePyPiRequirementSerializer",
+    "PackageReleaseSerializer",
+    "PackageReleaseVersionControlRequirementSerializer",
+    "PackageSerializer",
+    "PackageTagSerializer",
 )
 
 
@@ -66,7 +67,7 @@ class PackageImageSerializer(ProjectImageSerializer):
 
 
 class PackageReleasePackageRequirementSerializer(
-    ReleasePackageRequirementSerializer
+    ReleasePackageRequirementSerializer,
 ):
     """Serializer for Package Release Package requirements."""
 
@@ -77,7 +78,7 @@ class PackageReleasePackageRequirementSerializer(
 
 
 class PackageReleaseDownloadRequirementSerializer(
-    ReleaseDownloadRequirementSerializer
+    ReleaseDownloadRequirementSerializer,
 ):
     """Serializer for Package Release Download requirements."""
 
@@ -88,7 +89,7 @@ class PackageReleaseDownloadRequirementSerializer(
 
 
 class PackageReleasePyPiRequirementSerializer(
-    ReleasePyPiRequirementSerializer
+    ReleasePyPiRequirementSerializer,
 ):
     """Serializer for Package Release PyPi requirements."""
 
@@ -99,7 +100,7 @@ class PackageReleasePyPiRequirementSerializer(
 
 
 class PackageReleaseVersionControlRequirementSerializer(
-    ReleaseVersionControlRequirementSerializer
+    ReleaseVersionControlRequirementSerializer,
 ):
     """Serializer for Package Release VCS requirements."""
 
@@ -113,22 +114,22 @@ class PackageReleaseSerializer(PackageReleaseBase, ProjectReleaseSerializer):
     """Serializer for listing Package releases."""
 
     download_requirements = PackageReleaseDownloadRequirementSerializer(
-        source='packagereleasedownloadrequirement_set',
+        source="packagereleasedownloadrequirement_set",
         read_only=True,
         many=True,
     )
     package_requirements = PackageReleasePackageRequirementSerializer(
-        source='packagereleasepackagerequirement_set',
+        source="packagereleasepackagerequirement_set",
         read_only=True,
         many=True,
     )
     pypi_requirements = PackageReleasePyPiRequirementSerializer(
-        source='packagereleasepypirequirement_set',
+        source="packagereleasepypirequirement_set",
         read_only=True,
         many=True,
     )
     vcs_requirements = PackageReleaseVersionControlRequirementSerializer(
-        source='packagereleaseversioncontrolrequirement_set',
+        source="packagereleaseversioncontrolrequirement_set",
         read_only=True,
         many=True,
     )
@@ -140,7 +141,7 @@ class PackageReleaseSerializer(PackageReleaseBase, ProjectReleaseSerializer):
 
 
 class PackageCreateReleaseSerializer(
-    PackageReleaseBase, ProjectCreateReleaseSerializer
+    PackageReleaseBase, ProjectCreateReleaseSerializer,
 ):
     """Serializer for creating and listing Package releases."""
 
@@ -153,7 +154,7 @@ class PackageCreateReleaseSerializer(
 class PackageSerializer(ProjectSerializer):
     """Serializer for updating and listing Packages."""
 
-    project_type = 'package'
+    project_type = "package"
     release_model = PackageRelease
 
     class Meta(ProjectSerializer.Meta):
@@ -173,7 +174,7 @@ class PackageCreateSerializer(PackageSerializer):
         """Define metaclass attributes."""
 
         fields = PackageSerializer.Meta.fields + (
-            'releases',
+            "releases",
         )
 
 

@@ -10,12 +10,11 @@ from django.db import models
 from tags.constants import TAG_NAME_MAX_LENGTH
 from tags.validators import tag_name_validator
 
-
 # =============================================================================
 # ALL DECLARATION
 # =============================================================================
 __all__ = (
-    'Tag',
+    "Tag",
 )
 
 
@@ -35,8 +34,8 @@ class Tag(models.Model):
         default=False,
     )
     creator = models.ForeignKey(
-        to='users.ForumUser',
-        related_name='created_tags',
+        to="users.ForumUser",
+        related_name="created_tags",
         blank=True,
         on_delete=models.SET_NULL,
         null=True,
@@ -45,8 +44,8 @@ class Tag(models.Model):
     class Meta:
         """Define metaclass attributes."""
 
-        verbose_name = 'Tag'
-        verbose_name_plural = 'Tags'
+        verbose_name = "Tag"
+        verbose_name_plural = "Tags"
 
     def __str__(self):
         """Return the tag's name."""

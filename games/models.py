@@ -15,12 +15,11 @@ from games.constants import (
     GAME_SLUG_MAX_LENGTH,
 )
 
-
 # =============================================================================
 # ALL DECLARATION
 # =============================================================================
 __all__ = (
-    'Game',
+    "Game",
 )
 
 
@@ -49,8 +48,8 @@ class Game(models.Model):
     class Meta:
         """Define metaclass attributes."""
 
-        verbose_name = 'Game'
-        verbose_name_plural = 'Games'
+        verbose_name = "Game"
+        verbose_name_plural = "Games"
 
     def __str__(self):
         """Return the object's name when str cast."""
@@ -58,15 +57,15 @@ class Game(models.Model):
 
     def save(self, *args, **kwargs):
         """Store the slug."""
-        self.slug = slugify(self.basename).replace('_', '-')
+        self.slug = slugify(self.basename).replace("_", "-")
         super().save(*args, **kwargs)
 
     def get_absolute_url(self):
         """Return the URL for the Game."""
         # TODO: add tests once this view is created
         return reverse(
-            viewname='games:detail',
+            viewname="games:detail",
             kwargs={
-                'slug': self.slug,
-            }
+                "slug": self.slug,
+            },
         )

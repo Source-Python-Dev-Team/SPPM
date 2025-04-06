@@ -42,19 +42,18 @@ from project_manager.plugins.models import (
     SubPluginPath,
 )
 
-
 # =============================================================================
 # ALL DECLARATION
 # =============================================================================
 __all__ = (
-    'PluginAPIView',
-    'PluginContributorViewSet',
-    'PluginGameViewSet',
-    'PluginImageViewSet',
-    'PluginReleaseViewSet',
-    'PluginTagViewSet',
-    'PluginViewSet',
-    'SubPluginPathViewSet',
+    "PluginAPIView",
+    "PluginContributorViewSet",
+    "PluginGameViewSet",
+    "PluginImageViewSet",
+    "PluginReleaseViewSet",
+    "PluginTagViewSet",
+    "PluginViewSet",
+    "SubPluginPathViewSet",
 )
 
 
@@ -64,8 +63,8 @@ __all__ = (
 class PluginAPIView(ProjectAPIView):
     """Plugin API routes."""
 
-    project_type = 'plugin'
-    views = ProjectAPIView.views + ('paths',)
+    project_type = "plugin"
+    views = ProjectAPIView.views + ("paths",)
 
 
 class PluginViewSet(ProjectViewSet):
@@ -74,12 +73,12 @@ class PluginViewSet(ProjectViewSet):
     __doc__ += ProjectViewSet.doc_string
     filterset_class = PluginFilterSet
     queryset = Plugin.objects.select_related(
-        'owner__user',
+        "owner__user",
     ).prefetch_related(
         Prefetch(
-            lookup='releases',
+            lookup="releases",
             queryset=PluginRelease.objects.order_by(
-                '-created',
+                "-created",
             ),
         ),
     )
@@ -93,11 +92,11 @@ class PluginImageViewSet(ProjectImageViewSet):
 
     __doc__ += ProjectImageViewSet.doc_string
     queryset = PluginImage.objects.select_related(
-        'plugin',
+        "plugin",
     )
     serializer_class = PluginImageSerializer
 
-    project_type = 'plugin'
+    project_type = "plugin"
     project_model = Plugin
 
 
@@ -106,45 +105,45 @@ class PluginReleaseViewSet(ProjectReleaseViewSet):
 
     __doc__ += ProjectReleaseViewSet.doc_string
     queryset = PluginRelease.objects.select_related(
-        'plugin',
-        'created_by__user',
+        "plugin",
+        "created_by__user",
     ).prefetch_related(
         Prefetch(
-            lookup='pluginreleasepackagerequirement_set',
+            lookup="pluginreleasepackagerequirement_set",
             queryset=PluginReleasePackageRequirement.objects.order_by(
-                'package_requirement__name',
+                "package_requirement__name",
             ).select_related(
-                'package_requirement',
-            )
+                "package_requirement",
+            ),
         ),
         Prefetch(
-            lookup='pluginreleasedownloadrequirement_set',
+            lookup="pluginreleasedownloadrequirement_set",
             queryset=PluginReleaseDownloadRequirement.objects.order_by(
-                'download_requirement__url',
+                "download_requirement__url",
             ).select_related(
-                'download_requirement',
-            )
+                "download_requirement",
+            ),
         ),
         Prefetch(
-            lookup='pluginreleasepypirequirement_set',
+            lookup="pluginreleasepypirequirement_set",
             queryset=PluginReleasePyPiRequirement.objects.order_by(
-                'pypi_requirement__name',
+                "pypi_requirement__name",
             ).select_related(
-                'pypi_requirement',
-            )
+                "pypi_requirement",
+            ),
         ),
         Prefetch(
-            lookup='pluginreleaseversioncontrolrequirement_set',
+            lookup="pluginreleaseversioncontrolrequirement_set",
             queryset=PluginReleaseVersionControlRequirement.objects.order_by(
-                'vcs_requirement__url',
+                "vcs_requirement__url",
             ).select_related(
-                'vcs_requirement',
-            )
+                "vcs_requirement",
+            ),
         ),
     )
     serializer_class = PluginReleaseSerializer
 
-    project_type = 'plugin'
+    project_type = "plugin"
     project_model = Plugin
 
 
@@ -153,12 +152,12 @@ class PluginGameViewSet(ProjectGameViewSet):
 
     __doc__ += ProjectGameViewSet.doc_string
     queryset = PluginGame.objects.select_related(
-        'game',
-        'plugin',
+        "game",
+        "plugin",
     )
     serializer_class = PluginGameSerializer
 
-    project_type = 'plugin'
+    project_type = "plugin"
     project_model = Plugin
 
 
@@ -167,12 +166,12 @@ class PluginTagViewSet(ProjectTagViewSet):
 
     __doc__ += ProjectTagViewSet.doc_string
     queryset = PluginTag.objects.select_related(
-        'tag',
-        'plugin',
+        "tag",
+        "plugin",
     )
     serializer_class = PluginTagSerializer
 
-    project_type = 'plugin'
+    project_type = "plugin"
     project_model = Plugin
 
 
@@ -181,12 +180,12 @@ class PluginContributorViewSet(ProjectContributorViewSet):
 
     __doc__ += ProjectContributorViewSet.doc_string
     queryset = PluginContributor.objects.select_related(
-        'user__user',
-        'plugin',
+        "user__user",
+        "plugin",
     )
     serializer_class = PluginContributorSerializer
 
-    project_type = 'plugin'
+    project_type = "plugin"
     project_model = Plugin
 
 
@@ -203,13 +202,13 @@ class SubPluginPathViewSet(ProjectRelatedInfoMixin):
         `?ordering=-path`
     """
 
-    http_method_names = ('get', 'post', 'patch', 'delete', 'options')
-    ordering = ('path',)
+    http_method_names = ("get", "post", "patch", "delete", "options")
+    ordering = ("path",)
     queryset = SubPluginPath.objects.select_related(
-        'plugin',
+        "plugin",
     )
     serializer_class = SubPluginPathSerializer
 
-    project_type = 'plugin'
+    project_type = "plugin"
     project_model = Plugin
-    related_model_type = 'Sub-Plugin Path'
+    related_model_type = "Sub-Plugin Path"

@@ -14,7 +14,6 @@ from django.core.management.base import BaseCommand, CommandError
 # App
 from users.models import ForumUser
 
-
 # =============================================================================
 # GLOBAL VARIABLES
 # =============================================================================
@@ -32,71 +31,70 @@ class Command(BaseCommand):
     def add_arguments(self, parser):
         """Add the required arguments for the command."""
         parser.add_argument(
-            'username',
+            "username",
             type=str,
-            help='The username of the User.',
+            help="The username of the User.",
         )
         parser.add_argument(
-            'password',
+            "password",
             type=str,
-            help='The password for the User.',
+            help="The password for the User.",
         )
         parser.add_argument(
-            'forum_id',
+            "forum_id",
             type=int,
-            help='The forum id number to associate.',
+            help="The forum id number to associate.",
         )
         parser.add_argument(
-            '--is_superuser',
-            action='store_true',
+            "--is_superuser",
+            action="store_true",
             default=False,
-            help='Whether the User is a superuser.',
+            help="Whether the User is a superuser.",
         )
         parser.add_argument(
-            '--is_staff',
-            action='store_true',
+            "--is_staff",
+            action="store_true",
             default=False,
-            help='Whether the User is a superuser.',
+            help="Whether the User is a superuser.",
         )
 
-    def handle(self, *args, **options):
+    def handle(self, *_, **options):
         """Verify the arguments and create the User."""
         # Only allow this command in local development
         if not settings.LOCAL:
-            raise CommandError(
-                'Command can only be run for local development.'
-            )
+            msg = "Command can only be run for local development."
+            raise CommandError(msg)
 
-        username = options['username']
+        username = options["username"]
         if User.objects.filter(username=username).exists():
-            raise CommandError(
-                f'User with the username "{username}" already exists.'
-            )
+            msg = f'User with the username "{username}" already exists.'
+            raise CommandError(msg)
 
-        forum_id = options['forum_id']
+        forum_id = options["forum_id"]
         if ForumUser.objects.filter(forum_id=forum_id).exists():
-            raise CommandError(
+            msg = (
                 f'A user is already associated with the forum id "{forum_id}".'
             )
+            raise CommandError(msg)
 
         try:
             user = User.objects.create_user(
                 username=username,
-                password=options['password'],
-                is_staff=options['is_staff'],
-                is_superuser=options['is_superuser'],
+                password=options["password"],
+                is_staff=options["is_staff"],
+                is_superuser=options["is_superuser"],
             )
         except Exception as exception:
-            raise CommandError(
-                f'Unable to create User due to: {exception}'
-            ) from exception
+            msg = f"Unable to create User due to: {exception}"
+            raise CommandError(msg) from exception
 
         ForumUser.objects.create(
             user=user,
             forum_id=forum_id,
         )
         logger.info(
-            'Successfully created user "%s" and associated it with forum id "%s".',
+            'Successfully created user "%s" and associated it with forum id'
+            ' "%s".',
             username,
             forum_id,
         )

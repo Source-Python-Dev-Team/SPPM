@@ -26,11 +26,11 @@ from users.models import ForumUser
 class PluginContributorTestCase(TestCase):
     def test_model_inheritance(self):
         self.assertTrue(
-            expr=issubclass(PluginContributor, AbstractUUIDPrimaryKeyModel)
+            expr=issubclass(PluginContributor, AbstractUUIDPrimaryKeyModel),
         )
 
     def test_plugin_field(self):
-        field = PluginContributor._meta.get_field('plugin')
+        field = PluginContributor._meta.get_field("plugin")
         self.assertIsInstance(
             obj=field,
             cls=models.ForeignKey,
@@ -47,7 +47,7 @@ class PluginContributorTestCase(TestCase):
         self.assertFalse(expr=field.null)
 
     def test_user_field(self):
-        field = PluginContributor._meta.get_field('user')
+        field = PluginContributor._meta.get_field("user")
         self.assertIsInstance(
             obj=field,
             cls=models.ForeignKey,
@@ -67,7 +67,7 @@ class PluginContributorTestCase(TestCase):
         obj = PluginContributorFactory()
         self.assertEqual(
             first=str(obj),
-            second=f'{obj.plugin} Contributor: {obj.user}',
+            second=f"{obj.plugin} Contributor: {obj.user}",
         )
 
     def test_clean(self):
@@ -90,30 +90,30 @@ class PluginContributorTestCase(TestCase):
             second=1,
         )
         self.assertIn(
-            member='user',
+            member="user",
             container=context.exception.message_dict,
         )
         self.assertEqual(
-            first=len(context.exception.message_dict['user']),
+            first=len(context.exception.message_dict["user"]),
             second=1,
         )
         self.assertEqual(
-            first=context.exception.message_dict['user'][0],
+            first=context.exception.message_dict["user"][0],
             second=(
-                f'{owner} is the owner and cannot be added as a contributor.'
+                f"{owner} is the owner and cannot be added as a contributor."
             ),
         )
 
     def test_meta_class(self):
         self.assertTupleEqual(
             tuple1=PluginContributor._meta.unique_together,
-            tuple2=(('plugin', 'user'),),
+            tuple2=(("plugin", "user"),),
         )
         self.assertEqual(
             first=PluginContributor._meta.verbose_name,
-            second='Plugin Contributor',
+            second="Plugin Contributor",
         )
         self.assertEqual(
             first=PluginContributor._meta.verbose_name_plural,
-            second='Plugin Contributors',
+            second="Plugin Contributors",
         )

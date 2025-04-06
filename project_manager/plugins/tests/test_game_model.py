@@ -21,11 +21,11 @@ from test_utils.factories.plugins import PluginGameFactory
 class PluginGameTestCase(TestCase):
     def test_model_inheritance(self):
         self.assertTrue(
-            expr=issubclass(PluginGame, AbstractUUIDPrimaryKeyModel)
+            expr=issubclass(PluginGame, AbstractUUIDPrimaryKeyModel),
         )
 
     def test_plugin_field(self):
-        field = PluginGame._meta.get_field('plugin')
+        field = PluginGame._meta.get_field("plugin")
         self.assertIsInstance(
             obj=field,
             cls=models.ForeignKey,
@@ -42,7 +42,7 @@ class PluginGameTestCase(TestCase):
         self.assertFalse(expr=field.null)
 
     def test_game_field(self):
-        field = PluginGame._meta.get_field('game')
+        field = PluginGame._meta.get_field("game")
         self.assertIsInstance(
             obj=field,
             cls=models.ForeignKey,
@@ -62,19 +62,19 @@ class PluginGameTestCase(TestCase):
         obj = PluginGameFactory()
         self.assertEqual(
             first=str(obj),
-            second=f'{obj.plugin} Game: {obj.game}',
+            second=f"{obj.plugin} Game: {obj.game}",
         )
 
     def test_meta_class(self):
         self.assertTupleEqual(
             tuple1=PluginGame._meta.unique_together,
-            tuple2=(('plugin', 'game'),),
+            tuple2=(("plugin", "game"),),
         )
         self.assertEqual(
             first=PluginGame._meta.verbose_name,
-            second='Plugin Game',
+            second="Plugin Game",
         )
         self.assertEqual(
             first=PluginGame._meta.verbose_name_plural,
-            second='Plugin Games',
+            second="Plugin Games",
         )

@@ -6,12 +6,11 @@
 # Django
 from django.apps import AppConfig
 
-
 # =============================================================================
 # ALL DECLARATION
 # =============================================================================
 __all__ = (
-    'RequirementConfig',
+    "RequirementConfig",
 )
 
 
@@ -21,5 +20,5 @@ __all__ = (
 class RequirementConfig(AppConfig):
     """Requirement app config."""
 
-    name = 'requirements'
-    verbose_name = 'Requirements'
+    name = "requirements"
+    verbose_name = "Requirements"

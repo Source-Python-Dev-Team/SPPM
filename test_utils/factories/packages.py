@@ -4,10 +4,9 @@
 # IMPORTS
 # =============================================================================
 # Django
-from django.utils.timezone import get_current_timezone
-
 # Third Party Django
 import factory
+from django.utils.timezone import get_current_timezone
 
 # App
 from project_manager.packages.models import (
@@ -23,21 +22,20 @@ from project_manager.packages.models import (
     PackageTag,
 )
 
-
 # =============================================================================
 # ALL DECLARATION
 # =============================================================================
 __all__ = (
-    'PackageContributorFactory',
-    'PackageFactory',
-    'PackageGameFactory',
-    'PackageImageFactory',
-    'PackageReleaseFactory',
-    'PackageReleaseDownloadRequirementFactory',
-    'PackageReleasePackageRequirementFactory',
-    'PackageReleasePyPiRequirementFactory',
-    'PackageReleaseVersionControlRequirementFactory',
-    'PackageTagFactory',
+    "PackageContributorFactory",
+    "PackageFactory",
+    "PackageGameFactory",
+    "PackageImageFactory",
+    "PackageReleaseDownloadRequirementFactory",
+    "PackageReleaseFactory",
+    "PackageReleasePackageRequirementFactory",
+    "PackageReleasePyPiRequirementFactory",
+    "PackageReleaseVersionControlRequirementFactory",
+    "PackageTagFactory",
 )
 
 
@@ -45,15 +43,15 @@ __all__ = (
 # FACTORIES
 # =============================================================================
 class PackageFactory(factory.django.DjangoModelFactory):
-    """Model factory to use when testing with Package objects."""
+    """Model factory for Package objects."""
 
-    name = factory.Sequence(function=lambda n: f'Package {n}')
-    basename = factory.Sequence(function=lambda n: f'package_{n}')
+    name = factory.Sequence(function=lambda n: f"Package {n}")
+    basename = factory.Sequence(function=lambda n: f"package_{n}")
     owner = factory.SubFactory(
-        factory='test_utils.factories.users.ForumUserFactory',
+        factory="test_utils.factories.users.ForumUserFactory",
     )
-    created = factory.Faker('date_time', tzinfo=get_current_timezone())
-    updated = factory.Faker('date_time', tzinfo=get_current_timezone())
+    created = factory.Faker("date_time", tzinfo=get_current_timezone())
+    updated = factory.Faker("date_time", tzinfo=get_current_timezone())
 
     class Meta:
         """Define metaclass attributes."""
@@ -62,14 +60,14 @@ class PackageFactory(factory.django.DjangoModelFactory):
 
 
 class PackageReleaseFactory(factory.django.DjangoModelFactory):
-    """Model factory to use when testing with PackageRelease objects."""
+    """Model factory for PackageRelease objects."""
 
     package = factory.SubFactory(
-        factory='test_utils.factories.packages.PackageFactory',
+        factory="test_utils.factories.packages.PackageFactory",
     )
-    version = factory.Sequence(function=lambda n: f'1.0.{n}')
+    version = factory.Sequence(function=lambda n: f"1.0.{n}")
     created_by = factory.SubFactory(
-        factory='test_utils.factories.users.ForumUserFactory',
+        factory="test_utils.factories.users.ForumUserFactory",
     )
 
     class Meta:
@@ -79,13 +77,13 @@ class PackageReleaseFactory(factory.django.DjangoModelFactory):
 
 
 class PackageContributorFactory(factory.django.DjangoModelFactory):
-    """Model factory to use when testing with PackageContributor objects."""
+    """Model factory for PackageContributor objects."""
 
     package = factory.SubFactory(
-        factory='test_utils.factories.packages.PackageFactory',
+        factory="test_utils.factories.packages.PackageFactory",
     )
     user = factory.SubFactory(
-        factory='test_utils.factories.users.ForumUserFactory',
+        factory="test_utils.factories.users.ForumUserFactory",
     )
 
     class Meta:
@@ -95,13 +93,13 @@ class PackageContributorFactory(factory.django.DjangoModelFactory):
 
 
 class PackageGameFactory(factory.django.DjangoModelFactory):
-    """Model factory to use when testing with PackageGame objects."""
+    """Model factory for PackageGame objects."""
 
     package = factory.SubFactory(
-        factory='test_utils.factories.packages.PackageFactory',
+        factory="test_utils.factories.packages.PackageFactory",
     )
     game = factory.SubFactory(
-        factory='test_utils.factories.games.GameFactory',
+        factory="test_utils.factories.games.GameFactory",
     )
 
     class Meta:
@@ -111,12 +109,12 @@ class PackageGameFactory(factory.django.DjangoModelFactory):
 
 
 class PackageImageFactory(factory.django.DjangoModelFactory):
-    """Model factory to use when testing with PackageImage objects."""
+    """Model factory for PackageImage objects."""
 
     package = factory.SubFactory(
-        factory='test_utils.factories.packages.PackageFactory',
+        factory="test_utils.factories.packages.PackageFactory",
     )
-    image = factory.Sequence(function=lambda n: f'image_{n}.jpg')
+    image = factory.Sequence(function=lambda n: f"image_{n}.jpg")
 
     class Meta:
         """Define the metaclass attributes."""
@@ -125,13 +123,13 @@ class PackageImageFactory(factory.django.DjangoModelFactory):
 
 
 class PackageTagFactory(factory.django.DjangoModelFactory):
-    """Model factory to use when testing with PackageTag objects."""
+    """Model factory for PackageTag objects."""
 
     package = factory.SubFactory(
-        factory='test_utils.factories.packages.PackageFactory',
+        factory="test_utils.factories.packages.PackageFactory",
     )
     tag = factory.SubFactory(
-        factory='test_utils.factories.tags.TagFactory',
+        factory="test_utils.factories.tags.TagFactory",
     )
 
     class Meta:
@@ -141,15 +139,15 @@ class PackageTagFactory(factory.django.DjangoModelFactory):
 
 
 class PackageReleaseDownloadRequirementFactory(
-    factory.django.DjangoModelFactory
+    factory.django.DjangoModelFactory,
 ):
-    """Model factory to use when testing with PackageReleaseDownloadRequirement objects."""
+    """Model factory for PackageReleaseDownloadRequirement objects."""
 
     package_release = factory.SubFactory(
-        factory='test_utils.factories.packages.PackageReleaseFactory',
+        factory="test_utils.factories.packages.PackageReleaseFactory",
     )
     download_requirement = factory.SubFactory(
-        factory='test_utils.factories.requirements.DownloadRequirementFactory',
+        factory="test_utils.factories.requirements.DownloadRequirementFactory",
     )
 
     class Meta:
@@ -159,15 +157,15 @@ class PackageReleaseDownloadRequirementFactory(
 
 
 class PackageReleasePackageRequirementFactory(
-    factory.django.DjangoModelFactory
+    factory.django.DjangoModelFactory,
 ):
-    """Model factory to use when testing with PackageReleasePackageRequirement objects."""
+    """Model factory for PackageReleasePackageRequirement objects."""
 
     package_release = factory.SubFactory(
-        factory='test_utils.factories.packages.PackageReleaseFactory',
+        factory="test_utils.factories.packages.PackageReleaseFactory",
     )
     package_requirement = factory.SubFactory(
-        factory='test_utils.factories.packages.PackageFactory',
+        factory="test_utils.factories.packages.PackageFactory",
     )
 
     class Meta:
@@ -177,15 +175,15 @@ class PackageReleasePackageRequirementFactory(
 
 
 class PackageReleasePyPiRequirementFactory(
-    factory.django.DjangoModelFactory
+    factory.django.DjangoModelFactory,
 ):
-    """Model factory to use when testing with PackageReleasePyPiRequirement objects."""
+    """Model factory for PackageReleasePyPiRequirement objects."""
 
     package_release = factory.SubFactory(
-        factory='test_utils.factories.packages.PackageReleaseFactory',
+        factory="test_utils.factories.packages.PackageReleaseFactory",
     )
     pypi_requirement = factory.SubFactory(
-        factory='test_utils.factories.requirements.PyPiRequirementFactory',
+        factory="test_utils.factories.requirements.PyPiRequirementFactory",
     )
 
     class Meta:
@@ -195,15 +193,15 @@ class PackageReleasePyPiRequirementFactory(
 
 
 class PackageReleaseVersionControlRequirementFactory(
-    factory.django.DjangoModelFactory
+    factory.django.DjangoModelFactory,
 ):
-    """Model factory to use when testing with PackageReleaseVersionControlRequirement objects."""
+    """Model factory for PackageReleaseVersionControlRequirement objects."""
 
     package_release = factory.SubFactory(
-        factory='test_utils.factories.packages.PackageReleaseFactory',
+        factory="test_utils.factories.packages.PackageReleaseFactory",
     )
     vcs_requirement = factory.SubFactory(
-        factory='test_utils.factories.requirements.VersionControlRequirementFactory',
+        factory="test_utils.factories.requirements.VersionControlRequirementFactory",
     )
 
     class Meta:

@@ -66,11 +66,11 @@ class PluginReleaseViewSetTestCase(APITestCase):
     def setUpTestData(cls):
         cls.owner = ForumUserFactory()
         cls.plugin_1 = PluginFactory(
-            basename='test_plugin',
+            basename="test_plugin",
             owner=cls.owner,
         )
         cls.plugin_2 = PluginFactory(
-            basename='test_plugin_2',
+            basename="test_plugin_2",
             owner=cls.owner,
         )
         cls.contributor = ForumUserFactory()
@@ -85,13 +85,13 @@ class PluginReleaseViewSetTestCase(APITestCase):
         cls.plugin_release_1 = PluginReleaseFactory(
             created=now() - timedelta(minutes=1),
             plugin=cls.plugin_1,
-            version='1.0.0',
-            zip_file='release_v1.0.0.zip',
+            version="1.0.0",
+            zip_file="release_v1.0.0.zip",
         )
         cls.plugin_release_2 = PluginReleaseFactory(
             plugin=cls.plugin_1,
-            version='1.0.1',
-            zip_file='release_v1.0.1.zip',
+            version="1.0.1",
+            zip_file="release_v1.0.1.zip",
         )
         download_requirement_1 = PluginReleaseDownloadRequirementFactory(
             plugin_release=cls.plugin_release_1,
@@ -130,142 +130,142 @@ class PluginReleaseViewSetTestCase(APITestCase):
             plugin_release=cls.plugin_release_2,
         )
         cls.regular_user = ForumUserFactory()
-        cls.detail_api = 'api:plugins:releases-detail'
-        cls.list_api = 'api:plugins:releases-list'
+        cls.detail_api = "api:plugins:releases-detail"
+        cls.list_api = "api:plugins:releases-list"
         cls.detail_path = reverse(
             viewname=cls.detail_api,
             kwargs={
-                'plugin_slug': cls.plugin_1.slug,
-                'version': cls.plugin_release_1.version,
+                "plugin_slug": cls.plugin_1.slug,
+                "version": cls.plugin_release_1.version,
             },
         )
         cls.list_path = reverse(
             viewname=cls.list_api,
             kwargs={
-                'plugin_slug': cls.plugin_1.slug,
+                "plugin_slug": cls.plugin_1.slug,
             },
         )
 
         cls.payload_1 = {
-            'notes': cls.plugin_release_1.notes,
-            'version': cls.plugin_release_1.version,
-            'created': {
-                'actual': cls.plugin_release_1.created.strftime(
-                    '%Y-%m-%dT%H:%M:%S.%fZ',
+            "notes": cls.plugin_release_1.notes,
+            "version": cls.plugin_release_1.version,
+            "created": {
+                "actual": cls.plugin_release_1.created.strftime(
+                    "%Y-%m-%dT%H:%M:%S.%fZ",
                 ),
-                'locale': formats.date_format(
+                "locale": formats.date_format(
                     cls.plugin_release_1.created,
-                    'DATETIME_FORMAT',
+                    "DATETIME_FORMAT",
                 ),
-                'locale_short': formats.date_format(
+                "locale_short": formats.date_format(
                     cls.plugin_release_1.created,
-                    'SHORT_DATETIME_FORMAT',
+                    "SHORT_DATETIME_FORMAT",
                 ),
             },
-            'created_by': {
-                'forum_id': cls.plugin_release_1.created_by.forum_id,
-                'username': cls.plugin_release_1.created_by.user.username,
+            "created_by": {
+                "forum_id": cls.plugin_release_1.created_by.forum_id,
+                "username": cls.plugin_release_1.created_by.user.username,
             },
-            'download_count': cls.plugin_release_1.download_count,
-            'download_requirements': [
+            "download_count": cls.plugin_release_1.download_count,
+            "download_requirements": [
                 {
-                    'url': download_requirement_1.download_requirement.url,
-                    'optional': download_requirement_1.optional,
+                    "url": download_requirement_1.download_requirement.url,
+                    "optional": download_requirement_1.optional,
                 },
                 {
-                    'url': download_requirement_2.download_requirement.url,
-                    'optional': download_requirement_2.optional,
-                },
-            ],
-            'package_requirements': [
-                {
-                    'name': package_requirement_1.package_requirement.name,
-                    'slug': package_requirement_1.package_requirement.slug,
-                    'version': package_requirement_1.version,
-                    'optional': package_requirement_1.optional,
-                },
-                {
-                    'name': package_requirement_2.package_requirement.name,
-                    'slug': package_requirement_2.package_requirement.slug,
-                    'version': package_requirement_2.version,
-                    'optional': package_requirement_2.optional,
+                    "url": download_requirement_2.download_requirement.url,
+                    "optional": download_requirement_2.optional,
                 },
             ],
-            'pypi_requirements': [
+            "package_requirements": [
                 {
-                    'name': pypi_requirement_1.pypi_requirement.name,
-                    'slug': pypi_requirement_1.pypi_requirement.slug,
-                    'version': pypi_requirement_1.version,
-                    'optional': pypi_requirement_1.optional,
+                    "name": package_requirement_1.package_requirement.name,
+                    "slug": package_requirement_1.package_requirement.slug,
+                    "version": package_requirement_1.version,
+                    "optional": package_requirement_1.optional,
                 },
                 {
-                    'name': pypi_requirement_2.pypi_requirement.name,
-                    'slug': pypi_requirement_2.pypi_requirement.slug,
-                    'version': pypi_requirement_2.version,
-                    'optional': pypi_requirement_2.optional,
+                    "name": package_requirement_2.package_requirement.name,
+                    "slug": package_requirement_2.package_requirement.slug,
+                    "version": package_requirement_2.version,
+                    "optional": package_requirement_2.optional,
                 },
             ],
-            'vcs_requirements': [
+            "pypi_requirements": [
                 {
-                    'url': vcs_requirement_1.vcs_requirement.url,
-                    'version': vcs_requirement_1.version,
-                    'optional': vcs_requirement_1.optional,
+                    "name": pypi_requirement_1.pypi_requirement.name,
+                    "slug": pypi_requirement_1.pypi_requirement.slug,
+                    "version": pypi_requirement_1.version,
+                    "optional": pypi_requirement_1.optional,
                 },
                 {
-                    'url': vcs_requirement_2.vcs_requirement.url,
-                    'version': vcs_requirement_2.version,
-                    'optional': vcs_requirement_2.optional,
+                    "name": pypi_requirement_2.pypi_requirement.name,
+                    "slug": pypi_requirement_2.pypi_requirement.slug,
+                    "version": pypi_requirement_2.version,
+                    "optional": pypi_requirement_2.optional,
+                },
+            ],
+            "vcs_requirements": [
+                {
+                    "url": vcs_requirement_1.vcs_requirement.url,
+                    "version": vcs_requirement_1.version,
+                    "optional": vcs_requirement_1.optional,
+                },
+                {
+                    "url": vcs_requirement_2.vcs_requirement.url,
+                    "version": vcs_requirement_2.version,
+                    "optional": vcs_requirement_2.optional,
                 },
             ],
         }
         cls.payload_2 = {
-            'notes': cls.plugin_release_2.notes,
-            'version': cls.plugin_release_2.version,
-            'created': {
-                'actual': cls.plugin_release_2.created.strftime(
-                    '%Y-%m-%dT%H:%M:%S.%fZ',
+            "notes": cls.plugin_release_2.notes,
+            "version": cls.plugin_release_2.version,
+            "created": {
+                "actual": cls.plugin_release_2.created.strftime(
+                    "%Y-%m-%dT%H:%M:%S.%fZ",
                 ),
-                'locale': formats.date_format(
+                "locale": formats.date_format(
                     cls.plugin_release_2.created,
-                    'DATETIME_FORMAT',
+                    "DATETIME_FORMAT",
                 ),
-                'locale_short': formats.date_format(
+                "locale_short": formats.date_format(
                     cls.plugin_release_2.created,
-                    'SHORT_DATETIME_FORMAT',
+                    "SHORT_DATETIME_FORMAT",
                 ),
             },
-            'created_by': {
-                'forum_id': cls.plugin_release_2.created_by.forum_id,
-                'username': cls.plugin_release_2.created_by.user.username,
+            "created_by": {
+                "forum_id": cls.plugin_release_2.created_by.forum_id,
+                "username": cls.plugin_release_2.created_by.user.username,
             },
-            'download_count': cls.plugin_release_2.download_count,
-            'download_requirements': [
+            "download_count": cls.plugin_release_2.download_count,
+            "download_requirements": [
                 {
-                    'url': download_requirement_3.download_requirement.url,
-                    'optional': download_requirement_3.optional,
+                    "url": download_requirement_3.download_requirement.url,
+                    "optional": download_requirement_3.optional,
                 },
             ],
-            'package_requirements': [
+            "package_requirements": [
                 {
-                    'name': package_requirement_3.package_requirement.name,
-                    'slug': package_requirement_3.package_requirement.slug,
-                    'version': package_requirement_3.version,
-                    'optional': package_requirement_3.optional,
+                    "name": package_requirement_3.package_requirement.name,
+                    "slug": package_requirement_3.package_requirement.slug,
+                    "version": package_requirement_3.version,
+                    "optional": package_requirement_3.optional,
                 },
             ],
-            'pypi_requirements': [
+            "pypi_requirements": [
                 {
-                    'name': pypi_requirement_3.pypi_requirement.name,
-                    'slug': pypi_requirement_3.pypi_requirement.slug,
-                    'version': pypi_requirement_3.version,
-                    'optional': pypi_requirement_3.optional,
+                    "name": pypi_requirement_3.pypi_requirement.name,
+                    "slug": pypi_requirement_3.pypi_requirement.slug,
+                    "version": pypi_requirement_3.version,
+                    "optional": pypi_requirement_3.optional,
                 },
             ],
-            'vcs_requirements': [
+            "vcs_requirements": [
                 {
-                    'url': vcs_requirement_3.vcs_requirement.url,
-                    'version': vcs_requirement_3.version,
-                    'optional': vcs_requirement_3.optional,
+                    "url": vcs_requirement_3.vcs_requirement.url,
+                    "version": vcs_requirement_3.version,
+                    "optional": vcs_requirement_3.optional,
                 },
             ],
         }
@@ -287,7 +287,7 @@ class PluginReleaseViewSetTestCase(APITestCase):
         )
         self.assertEqual(
             first=PluginReleaseViewSet.project_type,
-            second='plugin',
+            second="plugin",
         )
         self.assertEqual(
             first=PluginReleaseViewSet.project_model,
@@ -299,18 +299,15 @@ class PluginReleaseViewSetTestCase(APITestCase):
         )
         self.assertDictEqual(
             d1=PluginReleaseViewSet.queryset.query.select_related,
-            d2={'plugin': {}, 'created_by': {'user': {}}},
+            d2={"plugin": {}, "created_by": {"user": {}}},
         )
-        prefetch_lookups = getattr(
-            PluginReleaseViewSet.queryset,
-            '_prefetch_related_lookups'
-        )
+        prefetch_lookups = PluginReleaseViewSet.queryset._prefetch_related_lookups
         self.assertEqual(first=len(prefetch_lookups), second=4)
 
         lookup = prefetch_lookups[0]
         self.assertEqual(
             first=lookup.prefetch_to,
-            second='pluginreleasepackagerequirement_set',
+            second="pluginreleasepackagerequirement_set",
         )
         self.assertIs(
             expr1=lookup.queryset.model,
@@ -318,17 +315,17 @@ class PluginReleaseViewSetTestCase(APITestCase):
         )
         self.assertEqual(
             first=lookup.queryset.query.order_by,
-            second=('package_requirement__name',),
+            second=("package_requirement__name",),
         )
         self.assertEqual(
             first=lookup.queryset.query.select_related,
-            second={'package_requirement': {}},
+            second={"package_requirement": {}},
         )
 
         lookup = prefetch_lookups[1]
         self.assertEqual(
             first=lookup.prefetch_to,
-            second='pluginreleasedownloadrequirement_set',
+            second="pluginreleasedownloadrequirement_set",
         )
         self.assertIs(
             expr1=lookup.queryset.model,
@@ -336,17 +333,17 @@ class PluginReleaseViewSetTestCase(APITestCase):
         )
         self.assertEqual(
             first=lookup.queryset.query.order_by,
-            second=('download_requirement__url',),
+            second=("download_requirement__url",),
         )
         self.assertEqual(
             first=lookup.queryset.query.select_related,
-            second={'download_requirement': {}},
+            second={"download_requirement": {}},
         )
 
         lookup = prefetch_lookups[2]
         self.assertEqual(
             first=lookup.prefetch_to,
-            second='pluginreleasepypirequirement_set',
+            second="pluginreleasepypirequirement_set",
         )
         self.assertIs(
             expr1=lookup.queryset.model,
@@ -354,17 +351,17 @@ class PluginReleaseViewSetTestCase(APITestCase):
         )
         self.assertEqual(
             first=lookup.queryset.query.order_by,
-            second=('pypi_requirement__name',),
+            second=("pypi_requirement__name",),
         )
         self.assertEqual(
             first=lookup.queryset.query.select_related,
-            second={'pypi_requirement': {}},
+            second={"pypi_requirement": {}},
         )
 
         lookup = prefetch_lookups[3]
         self.assertEqual(
             first=lookup.prefetch_to,
-            second='pluginreleaseversioncontrolrequirement_set',
+            second="pluginreleaseversioncontrolrequirement_set",
         )
         self.assertIs(
             expr1=lookup.queryset.model,
@@ -372,17 +369,17 @@ class PluginReleaseViewSetTestCase(APITestCase):
         )
         self.assertEqual(
             first=lookup.queryset.query.order_by,
-            second=('vcs_requirement__url',),
+            second=("vcs_requirement__url",),
         )
         self.assertEqual(
             first=lookup.queryset.query.select_related,
-            second={'vcs_requirement': {}},
+            second={"vcs_requirement": {}},
         )
 
     def test_http_method_names(self):
         self.assertTupleEqual(
             tuple1=PluginReleaseViewSet.http_method_names,
-            tuple2=('get', 'post', 'options'),
+            tuple2=("get", "post", "options"),
         )
 
     @override_settings(DEBUG=True)
@@ -395,21 +392,21 @@ class PluginReleaseViewSetTestCase(APITestCase):
             second=status.HTTP_200_OK,
         )
         content = response.json()
-        self.assertEqual(first=content['count'], second=2)
+        self.assertEqual(first=content["count"], second=2)
         request = response.wsgi_request
-        zip_file_base = f'{request.scheme}://{request.get_host()}'
+        zip_file_base = f"{request.scheme}://{request.get_host()}"
         url_1 = self.plugin_release_1.zip_file.url
         payload_1 = deepcopy(self.payload_1)
-        payload_1['zip_file'] = f'{zip_file_base}{url_1}'
+        payload_1["zip_file"] = f"{zip_file_base}{url_1}"
         url_2 = self.plugin_release_2.zip_file.url
         payload_2 = deepcopy(self.payload_2)
-        payload_2['zip_file'] = f'{zip_file_base}{url_2}'
+        payload_2["zip_file"] = f"{zip_file_base}{url_2}"
         self.assertDictEqual(
-            d1=content['results'][0],
+            d1=content["results"][0],
             d2=payload_2,
         )
         self.assertDictEqual(
-            d1=content['results'][1],
+            d1=content["results"][1],
             d2=payload_1,
         )
 
@@ -422,13 +419,13 @@ class PluginReleaseViewSetTestCase(APITestCase):
             second=status.HTTP_200_OK,
         )
         content = response.json()
-        self.assertEqual(first=content['count'], second=2)
+        self.assertEqual(first=content["count"], second=2)
         self.assertDictEqual(
-            d1=content['results'][0],
+            d1=content["results"][0],
             d2=payload_2,
         )
         self.assertDictEqual(
-            d1=content['results'][1],
+            d1=content["results"][1],
             d2=payload_1,
         )
 
@@ -441,13 +438,13 @@ class PluginReleaseViewSetTestCase(APITestCase):
             second=status.HTTP_200_OK,
         )
         content = response.json()
-        self.assertEqual(first=content['count'], second=2)
+        self.assertEqual(first=content["count"], second=2)
         self.assertDictEqual(
-            d1=content['results'][0],
+            d1=content["results"][0],
             d2=payload_2,
         )
         self.assertDictEqual(
-            d1=content['results'][1],
+            d1=content["results"][1],
             d2=payload_1,
         )
 
@@ -460,13 +457,13 @@ class PluginReleaseViewSetTestCase(APITestCase):
             second=status.HTTP_200_OK,
         )
         content = response.json()
-        self.assertEqual(first=content['count'], second=2)
+        self.assertEqual(first=content["count"], second=2)
         self.assertDictEqual(
-            d1=content['results'][0],
+            d1=content["results"][0],
             d2=payload_2,
         )
         self.assertDictEqual(
-            d1=content['results'][1],
+            d1=content["results"][1],
             d2=payload_1,
         )
 
@@ -475,7 +472,7 @@ class PluginReleaseViewSetTestCase(APITestCase):
         list_path = reverse(
             viewname=self.list_api,
             kwargs={
-                'plugin_slug': self.plugin_2.slug,
+                "plugin_slug": self.plugin_2.slug,
             },
         )
 
@@ -486,7 +483,7 @@ class PluginReleaseViewSetTestCase(APITestCase):
             first=response.status_code,
             second=status.HTTP_200_OK,
         )
-        self.assertEqual(first=response.json()['count'], second=0)
+        self.assertEqual(first=response.json()["count"], second=0)
 
         # Verify that regular user can see results
         self.client.force_login(self.regular_user.user)
@@ -496,7 +493,7 @@ class PluginReleaseViewSetTestCase(APITestCase):
             first=response.status_code,
             second=status.HTTP_200_OK,
         )
-        self.assertEqual(first=response.json()['count'], second=0)
+        self.assertEqual(first=response.json()["count"], second=0)
 
         # Verify that contributors can see results
         self.client.force_login(self.contributor.user)
@@ -506,7 +503,7 @@ class PluginReleaseViewSetTestCase(APITestCase):
             first=response.status_code,
             second=status.HTTP_200_OK,
         )
-        self.assertEqual(first=response.json()['count'], second=0)
+        self.assertEqual(first=response.json()["count"], second=0)
 
         # Verify that the owner can see results
         self.client.force_login(self.owner.user)
@@ -516,7 +513,7 @@ class PluginReleaseViewSetTestCase(APITestCase):
             first=response.status_code,
             second=status.HTTP_200_OK,
         )
-        self.assertEqual(first=response.json()['count'], second=0)
+        self.assertEqual(first=response.json()["count"], second=0)
 
     @override_settings(DEBUG=True)
     def test_get_list_failure(self):
@@ -524,7 +521,7 @@ class PluginReleaseViewSetTestCase(APITestCase):
             path=reverse(
                 viewname=self.list_api,
                 kwargs={
-                    'plugin_slug': 'invalid',
+                    "plugin_slug": "invalid",
                 },
             ),
         )
@@ -535,7 +532,7 @@ class PluginReleaseViewSetTestCase(APITestCase):
         )
         self.assertDictEqual(
             d1=response.json(),
-            d2={'detail': 'Invalid plugin_slug.'},
+            d2={"detail": "Invalid plugin_slug."},
         )
 
     @override_settings(DEBUG=True)
@@ -544,15 +541,15 @@ class PluginReleaseViewSetTestCase(APITestCase):
         zip_file_base = f'{environ["wsgi.url_scheme"]}://{environ["SERVER_NAME"]}'
         url_1 = self.plugin_release_1.zip_file.url
         payload_1 = deepcopy(self.payload_1)
-        payload_1['zip_file'] = f'{zip_file_base}{url_1}'
+        payload_1["zip_file"] = f"{zip_file_base}{url_1}"
         url_2 = self.plugin_release_2.zip_file.url
         payload_2 = deepcopy(self.payload_2)
-        payload_2['zip_file'] = f'{zip_file_base}{url_2}'
+        payload_2["zip_file"] = f"{zip_file_base}{url_2}"
         detail_path_2 = reverse(
             viewname=self.detail_api,
             kwargs={
-                'plugin_slug': self.plugin_1.slug,
-                'version': self.plugin_release_2.version,
+                "plugin_slug": self.plugin_1.slug,
+                "version": self.plugin_release_2.version,
             },
         )
         for path, payload in (
@@ -618,8 +615,8 @@ class PluginReleaseViewSetTestCase(APITestCase):
             path=reverse(
                 viewname=self.detail_api,
                 kwargs={
-                    'plugin_slug': self.plugin_1.slug,
-                    'version': '0.0.0',
+                    "plugin_slug": self.plugin_1.slug,
+                    "version": "0.0.0",
                 },
             ),
         )
@@ -630,23 +627,23 @@ class PluginReleaseViewSetTestCase(APITestCase):
         )
         self.assertDictEqual(
             d1=response.json(),
-            d2={'detail': 'Not found.'},
+            d2={"detail": "No PluginRelease matches the given query."},
         )
 
     @override_settings(MEDIA_ROOT=MEDIA_ROOT)
     def test_post(self):
-        base_path = settings.BASE_DIR / 'fixtures' / 'releases' / 'plugins'
-        file_path = base_path / 'test-plugin' / 'test-plugin-v1.0.0.zip'
+        base_path = settings.BASE_DIR / "fixtures" / "releases" / "plugins"
+        file_path = base_path / "test-plugin" / "test-plugin-v1.0.0.zip"
 
         # Verify that non-logged-in user cannot create a release
-        version = '1.0.2'
-        with file_path.open('rb') as open_file:
-            zip_file = UploadedFile(open_file, content_type='application/zip')
+        version = "1.0.2"
+        with file_path.open("rb") as open_file:
+            zip_file = UploadedFile(open_file, content_type="application/zip")
             response = self.client.post(
                 path=self.list_path,
                 data={
-                    'version': version,
-                    'zip_file': zip_file,
+                    "version": version,
+                    "zip_file": zip_file,
                 },
             )
 
@@ -656,15 +653,15 @@ class PluginReleaseViewSetTestCase(APITestCase):
         )
 
         # Verify that regular user cannot create a release
-        version = '1.0.2'
-        with file_path.open('rb') as open_file:
-            zip_file = UploadedFile(open_file, content_type='application/zip')
+        version = "1.0.2"
+        with file_path.open("rb") as open_file:
+            zip_file = UploadedFile(open_file, content_type="application/zip")
             self.client.force_login(self.regular_user.user)
             response = self.client.post(
                 path=self.list_path,
                 data={
-                    'version': version,
-                    'zip_file': zip_file,
+                    "version": version,
+                    "zip_file": zip_file,
                 },
             )
 
@@ -674,15 +671,15 @@ class PluginReleaseViewSetTestCase(APITestCase):
         )
 
         # Verify that contributor can create a release
-        version = '1.0.2'
-        with file_path.open('rb') as open_file:
-            zip_file = UploadedFile(open_file, content_type='application/zip')
+        version = "1.0.2"
+        with file_path.open("rb") as open_file:
+            zip_file = UploadedFile(open_file, content_type="application/zip")
             self.client.force_login(self.contributor.user)
             response = self.client.post(
                 path=self.list_path,
                 data={
-                    'version': version,
-                    'zip_file': zip_file,
+                    "version": version,
+                    "zip_file": zip_file,
                 },
             )
         self.assertEqual(
@@ -694,7 +691,7 @@ class PluginReleaseViewSetTestCase(APITestCase):
             second=3,
         )
         content = response.json()
-        release = self.plugin_1.releases.get(version=content['version'])
+        release = self.plugin_1.releases.get(version=content["version"])
         self.assertEqual(
             first=release.created_by.forum_id,
             second=self.contributor.forum_id,
@@ -705,15 +702,15 @@ class PluginReleaseViewSetTestCase(APITestCase):
         )
 
         # Verify that owner can create a release
-        version = '1.0.3'
-        with file_path.open('rb') as open_file:
-            zip_file = UploadedFile(open_file, content_type='application/zip')
+        version = "1.0.3"
+        with file_path.open("rb") as open_file:
+            zip_file = UploadedFile(open_file, content_type="application/zip")
             self.client.force_login(self.owner.user)
             response = self.client.post(
                 path=self.list_path,
                 data={
-                    'version': version,
-                    'zip_file': zip_file,
+                    "version": version,
+                    "zip_file": zip_file,
                 },
             )
         self.assertEqual(
@@ -725,7 +722,7 @@ class PluginReleaseViewSetTestCase(APITestCase):
             second=4,
         )
         content = response.json()
-        release = self.plugin_1.releases.get(version=content['version'])
+        release = self.plugin_1.releases.get(version=content["version"])
         self.assertEqual(
             first=release.created_by.forum_id,
             second=self.owner.forum_id,
@@ -736,13 +733,13 @@ class PluginReleaseViewSetTestCase(APITestCase):
         )
 
         # Verify that the same version cannot be created twice
-        with file_path.open('rb') as open_file:
-            zip_file = UploadedFile(open_file, content_type='application/zip')
+        with file_path.open("rb") as open_file:
+            zip_file = UploadedFile(open_file, content_type="application/zip")
             response = self.client.post(
                 path=self.list_path,
                 data={
-                    'version': version,
-                    'zip_file': zip_file,
+                    "version": version,
+                    "zip_file": zip_file,
                 },
             )
 
@@ -752,32 +749,32 @@ class PluginReleaseViewSetTestCase(APITestCase):
         )
         self.assertDictEqual(
             d1=response.json(),
-            d2={'version': ['Given version matches existing version.']},
+            d2={"version": ["Given version matches existing version."]},
         )
 
         # Verify that the basename in the zip file is being verified against
         #   the basename from the url path
         zip_basename = self.plugin_1.basename
         plugin = PluginFactory(
-            basename='test_plugin_3',
+            basename="test_plugin_3",
             owner=self.owner,
         )
         PluginReleaseFactory(
             plugin=plugin,
-            version='1.0.0',
+            version="1.0.0",
         )
-        with file_path.open('rb') as open_file:
-            zip_file = UploadedFile(open_file, content_type='application/zip')
+        with file_path.open("rb") as open_file:
+            zip_file = UploadedFile(open_file, content_type="application/zip")
             response = self.client.post(
                 path=reverse(
                     viewname=self.list_api,
                     kwargs={
-                        'plugin_slug': plugin.slug,
+                        "plugin_slug": plugin.slug,
                     },
                 ),
                 data={
-                    'version': version,
-                    'zip_file': zip_file,
+                    "version": version,
+                    "zip_file": zip_file,
                 },
             )
 
@@ -788,31 +785,31 @@ class PluginReleaseViewSetTestCase(APITestCase):
         self.assertDictEqual(
             d1=response.json(),
             d2={
-                'zip_file': [
+                "zip_file": [
                     f"Basename in zip '{zip_basename}' does not match basename"
                     f" for plugin '{plugin.basename}'.",
                 ],
-            }
+            },
         )
 
     @override_settings(MEDIA_ROOT=MEDIA_ROOT)
     def test_post_with_requirements(self):
-        base_path = settings.BASE_DIR / 'fixtures' / 'releases' / 'plugins'
-        file_path = base_path / 'test-plugin' / 'test-plugin-requirements-v1.0.0.zip'
-        version = '1.1.0'
+        base_path = settings.BASE_DIR / "fixtures" / "releases" / "plugins"
+        file_path = base_path / "test-plugin" / "test-plugin-requirements-v1.0.0.zip"
+        version = "1.1.0"
         custom_package_1 = PackageFactory(
-            basename='custom_package_1',
+            basename="custom_package_1",
         )
         PackageReleaseFactory(
             package=custom_package_1,
-            version='1.0.0',
+            version="1.0.0",
         )
         custom_package_2 = PackageFactory(
-            basename='custom_package_2',
+            basename="custom_package_2",
         )
         PackageReleaseFactory(
             package=custom_package_2,
-            version='1.0.0',
+            version="1.0.0",
         )
         self.assertEqual(
             first=DownloadRequirement.objects.count(),
@@ -827,13 +824,13 @@ class PluginReleaseViewSetTestCase(APITestCase):
             second=3,
         )
         self.client.force_login(self.owner.user)
-        with file_path.open('rb') as open_file:
-            zip_file = UploadedFile(open_file, content_type='application/zip')
+        with file_path.open("rb") as open_file:
+            zip_file = UploadedFile(open_file, content_type="application/zip")
             response = self.client.post(
                 path=self.list_path,
                 data={
-                    'version': version,
-                    'zip_file': zip_file,
+                    "version": version,
+                    "zip_file": zip_file,
                 },
             )
 
@@ -842,7 +839,7 @@ class PluginReleaseViewSetTestCase(APITestCase):
             second=status.HTTP_201_CREATED,
         )
         release = self.plugin_1.releases.get(
-            version=response.json()['version'],
+            version=response.json()["version"],
         )
         self.assertEqual(
             first=DownloadRequirement.objects.count(),
@@ -875,10 +872,10 @@ class PluginReleaseViewSetTestCase(APITestCase):
         self.assertEqual(first=response.status_code, second=status.HTTP_200_OK)
         content = response.json()
         self.assertEqual(
-            first=content['name'],
-            second=f'{self.plugin_1} - Release',
+            first=content["name"],
+            second=f"{self.plugin_1} - Release",
         )
-        self.assertNotIn(member='actions', container=content)
+        self.assertNotIn(member="actions", container=content)
 
         # Verify that normal user cannot POST
         self.client.force_login(user=self.regular_user.user)
@@ -886,10 +883,10 @@ class PluginReleaseViewSetTestCase(APITestCase):
         self.assertEqual(first=response.status_code, second=status.HTTP_200_OK)
         content = response.json()
         self.assertEqual(
-            first=content['name'],
-            second=f'{self.plugin_1} - Release',
+            first=content["name"],
+            second=f"{self.plugin_1} - Release",
         )
-        self.assertNotIn(member='actions', container=content)
+        self.assertNotIn(member="actions", container=content)
 
         # Verify that contributors can POST
         self.client.force_login(user=self.contributor.user)
@@ -897,11 +894,11 @@ class PluginReleaseViewSetTestCase(APITestCase):
         self.assertEqual(first=response.status_code, second=status.HTTP_200_OK)
         content = response.json()
         self.assertEqual(
-            first=content['name'],
-            second=f'{self.plugin_1} - Release',
+            first=content["name"],
+            second=f"{self.plugin_1} - Release",
         )
-        self.assertIn(member='actions', container=content)
-        self.assertSetEqual(set1=set(content['actions']), set2={'POST'})
+        self.assertIn(member="actions", container=content)
+        self.assertSetEqual(set1=set(content["actions"]), set2={"POST"})
 
         # Verify that the owner can POST
         self.client.force_login(user=self.owner.user)
@@ -909,11 +906,11 @@ class PluginReleaseViewSetTestCase(APITestCase):
         self.assertEqual(first=response.status_code, second=status.HTTP_200_OK)
         content = response.json()
         self.assertEqual(
-            first=content['name'],
-            second=f'{self.plugin_1} - Release',
+            first=content["name"],
+            second=f"{self.plugin_1} - Release",
         )
-        self.assertIn(member='actions', container=content)
-        self.assertSetEqual(set1=set(content['actions']), set2={'POST'})
+        self.assertIn(member="actions", container=content)
+        self.assertSetEqual(set1=set(content["actions"]), set2={"POST"})
 
     def test_options_object(self):
         # Verify that non-logged-in user cannot DELETE/PATCH
@@ -921,10 +918,10 @@ class PluginReleaseViewSetTestCase(APITestCase):
         self.assertEqual(first=response.status_code, second=status.HTTP_200_OK)
         content = response.json()
         self.assertEqual(
-            first=content['name'],
-            second=f'{self.plugin_1} - Release',
+            first=content["name"],
+            second=f"{self.plugin_1} - Release",
         )
-        self.assertNotIn(member='actions', container=content)
+        self.assertNotIn(member="actions", container=content)
 
         # Verify that normal user cannot DELETE/PATCH
         self.client.force_login(user=self.regular_user.user)
@@ -932,10 +929,10 @@ class PluginReleaseViewSetTestCase(APITestCase):
         self.assertEqual(first=response.status_code, second=status.HTTP_200_OK)
         content = response.json()
         self.assertEqual(
-            first=content['name'],
-            second=f'{self.plugin_1} - Release',
+            first=content["name"],
+            second=f"{self.plugin_1} - Release",
         )
-        self.assertNotIn(member='actions', container=content)
+        self.assertNotIn(member="actions", container=content)
 
         # Verify that contributors cannot DELETE/PATCH
         self.client.force_login(user=self.contributor.user)
@@ -943,10 +940,10 @@ class PluginReleaseViewSetTestCase(APITestCase):
         self.assertEqual(first=response.status_code, second=status.HTTP_200_OK)
         content = response.json()
         self.assertEqual(
-            first=content['name'],
-            second=f'{self.plugin_1} - Release',
+            first=content["name"],
+            second=f"{self.plugin_1} - Release",
         )
-        self.assertNotIn(member='actions', container=content)
+        self.assertNotIn(member="actions", container=content)
 
         # Verify that the owner cannot DELETE/PATCH
         self.client.force_login(user=self.owner.user)
@@ -954,7 +951,7 @@ class PluginReleaseViewSetTestCase(APITestCase):
         self.assertEqual(first=response.status_code, second=status.HTTP_200_OK)
         content = response.json()
         self.assertEqual(
-            first=content['name'],
-            second=f'{self.plugin_1} - Release',
+            first=content["name"],
+            second=f"{self.plugin_1} - Release",
         )
-        self.assertNotIn(member='actions', container=content)
+        self.assertNotIn(member="actions", container=content)

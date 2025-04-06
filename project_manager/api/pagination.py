@@ -6,12 +6,11 @@
 # Third Party Django
 from rest_framework.pagination import PageNumberPagination
 
-
 # =============================================================================
 # ALL DECLARATION
 # =============================================================================
 __all__ = (
-    'BasePagination',
+    "BasePagination",
 )
 
 
@@ -21,5 +20,5 @@ __all__ = (
 class BasePagination(PageNumberPagination):
     """Base Pagination for Project Manger."""
 
-    page_size_query_param = 'page_size'
+    page_size_query_param = "page_size"
     max_page_size = 100

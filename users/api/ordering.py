@@ -6,12 +6,11 @@
 # Third Party Django
 from rest_framework.filters import OrderingFilter
 
-
 # =============================================================================
 # ALL DECLARATION
 # =============================================================================
 __all__ = (
-    'ForumUserOrderingFilter',
+    "ForumUserOrderingFilter",
 )
 
 
@@ -25,9 +24,9 @@ class ForumUserOrderingFilter(OrderingFilter):
         """Allow username in place of user__username."""
         ordering = list(super().get_ordering(request, queryset, view))
         for index, item in enumerate(ordering):
-            prefix = '-' if item.startswith('-') else ''
-            item_name = item[1:] if prefix == '-' else item
-            if item_name == 'username':
-                ordering[index] = f'{prefix}user__username'
+            prefix = "-" if item.startswith("-") else ""
+            item_name = item[1:] if prefix == "-" else item
+            if item_name == "username":
+                ordering[index] = f"{prefix}user__username"
 
         return tuple(ordering)

@@ -21,11 +21,11 @@ from test_utils.factories.sub_plugins import SubPluginTagFactory
 class SubPluginTagTestCase(TestCase):
     def test_model_inheritance(self):
         self.assertTrue(
-            expr=issubclass(SubPluginTag, AbstractUUIDPrimaryKeyModel)
+            expr=issubclass(SubPluginTag, AbstractUUIDPrimaryKeyModel),
         )
 
     def test_sub_plugin_field(self):
-        field = SubPluginTag._meta.get_field('sub_plugin')
+        field = SubPluginTag._meta.get_field("sub_plugin")
         self.assertIsInstance(
             obj=field,
             cls=models.ForeignKey,
@@ -42,7 +42,7 @@ class SubPluginTagTestCase(TestCase):
         self.assertFalse(expr=field.null)
 
     def test_tag_field(self):
-        field = SubPluginTag._meta.get_field('tag')
+        field = SubPluginTag._meta.get_field("tag")
         self.assertIsInstance(
             obj=field,
             cls=models.ForeignKey,
@@ -62,19 +62,19 @@ class SubPluginTagTestCase(TestCase):
         obj = SubPluginTagFactory()
         self.assertEqual(
             first=str(obj),
-            second=f'{obj.sub_plugin} Tag: {obj.tag}',
+            second=f"{obj.sub_plugin} Tag: {obj.tag}",
         )
 
     def test_meta_class(self):
         self.assertTupleEqual(
             tuple1=SubPluginTag._meta.unique_together,
-            tuple2=(('sub_plugin', 'tag'),),
+            tuple2=(("sub_plugin", "tag"),),
         )
         self.assertEqual(
             first=SubPluginTag._meta.verbose_name,
-            second='SubPlugin Tag',
+            second="SubPlugin Tag",
         )
         self.assertEqual(
             first=SubPluginTag._meta.verbose_name_plural,
-            second='SubPlugin Tags',
+            second="SubPlugin Tags",
         )

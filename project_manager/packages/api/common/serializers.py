@@ -10,13 +10,12 @@ from rest_framework.serializers import ModelSerializer
 # App
 from project_manager.packages.models import Package
 
-
 # =============================================================================
 # ALL DECLARATION
 # =============================================================================
 __all__ = (
-    'MinimalPackageSerializer',
-    'ReleasePackageRequirementSerializer',
+    "MinimalPackageSerializer",
+    "ReleasePackageRequirementSerializer",
 )
 
 
@@ -26,18 +25,18 @@ __all__ = (
 class ReleasePackageRequirementSerializer(ModelSerializer):
     """Serializer for Package requirements."""
 
-    name = ReadOnlyField(source='package_requirement.name')
-    slug = ReadOnlyField(source='package_requirement.slug')
+    name = ReadOnlyField(source="package_requirement.name")
+    slug = ReadOnlyField(source="package_requirement.slug")
     version = ReadOnlyField()
 
     class Meta:
         """Define metaclass attributes."""
 
         fields = (
-            'name',
-            'slug',
-            'version',
-            'optional',
+            "name",
+            "slug",
+            "version",
+            "optional",
         )
 
 
@@ -49,6 +48,6 @@ class MinimalPackageSerializer(ModelSerializer):
 
         model = Package
         fields = (
-            'name',
-            'slug',
+            "name",
+            "slug",
         )

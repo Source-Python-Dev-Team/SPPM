@@ -13,14 +13,13 @@ from requirements.models import (
     VersionControlRequirement,
 )
 
-
 # =============================================================================
 # ALL DECLARATION
 # =============================================================================
 __all__ = (
-    'DownloadRequirementFactory',
-    'PyPiRequirementFactory',
-    'VersionControlRequirementFactory',
+    "DownloadRequirementFactory",
+    "PyPiRequirementFactory",
+    "VersionControlRequirementFactory",
 )
 
 
@@ -28,9 +27,9 @@ __all__ = (
 # FACTORIES
 # =============================================================================
 class DownloadRequirementFactory(factory.django.DjangoModelFactory):
-    """Model factory to use when testing with Download Requirement objects."""
+    """Model factory for Download Requirement objects."""
 
-    url = factory.Sequence(function=lambda n: f'download_{n}')
+    url = factory.Sequence(function=lambda n: f"download_{n}")
 
     class Meta:
         """Define metaclass attributes."""
@@ -39,9 +38,9 @@ class DownloadRequirementFactory(factory.django.DjangoModelFactory):
 
 
 class PyPiRequirementFactory(factory.django.DjangoModelFactory):
-    """Model factory to use when testing with PyPi Requirement objects."""
+    """Model factory for PyPi Requirement objects."""
 
-    name = factory.Sequence(function=lambda n: f'pypi_{n}')
+    name = factory.Sequence(function=lambda n: f"pypi_{n}")
 
     class Meta:
         """Define metaclass attributes."""
@@ -50,9 +49,9 @@ class PyPiRequirementFactory(factory.django.DjangoModelFactory):
 
 
 class VersionControlRequirementFactory(factory.django.DjangoModelFactory):
-    """Model factory to use when testing with VCS Requirement objects."""
+    """Model factory for VCS Requirement objects."""
 
-    url = factory.Sequence(function=lambda n: f'vcs_{n}')
+    url = factory.Sequence(function=lambda n: f"vcs_{n}")
 
     class Meta:
         """Define metaclass attributes."""

@@ -7,12 +7,11 @@
 from project_manager.plugins.helpers import PluginZipFile
 from project_manager.plugins.models import Plugin
 
-
 # =============================================================================
 # ALL DECLARATION
 # =============================================================================
 __all__ = (
-    'PluginReleaseBase',
+    "PluginReleaseBase",
 )
 
 
@@ -23,7 +22,7 @@ class PluginReleaseBase:
     """Serializer for listing Plugin releases."""
 
     project_class = Plugin
-    project_type = 'plugin'
+    project_type = "plugin"
 
     @property
     def zip_parser(self):
@@ -33,5 +32,5 @@ class PluginReleaseBase:
     def get_project_kwargs(self):
         """Return kwargs for the project."""
         return {
-            'pk': getattr(self, 'context')['view'].kwargs.get('plugin_slug')
+            "pk": self.context["view"].kwargs.get("plugin_slug"),
         }

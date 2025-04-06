@@ -120,9 +120,9 @@ class SubPluginContributorViewSetTestCase(APITestCase):
             second=status.HTTP_200_OK,
         )
         content = response.json()
-        self.assertEqual(first=content['count'], second=2)
+        self.assertEqual(first=content["count"], second=2)
         self.assertDictEqual(
-            d1=content['results'][0],
+            d1=content["results"][0],
             d2={
                 'user': {
                     'forum_id': self.contributor.forum_id,
@@ -140,9 +140,9 @@ class SubPluginContributorViewSetTestCase(APITestCase):
             second=status.HTTP_200_OK,
         )
         content = response.json()
-        self.assertEqual(first=content['count'], second=2)
+        self.assertEqual(first=content["count"], second=2)
         self.assertDictEqual(
-            d1=content['results'][0],
+            d1=content["results"][0],
             d2={
                 'user': {
                     'forum_id': self.contributor.forum_id,
@@ -160,9 +160,9 @@ class SubPluginContributorViewSetTestCase(APITestCase):
             second=status.HTTP_200_OK,
         )
         content = response.json()
-        self.assertEqual(first=content['count'], second=2)
+        self.assertEqual(first=content["count"], second=2)
         self.assertDictEqual(
-            d1=content['results'][0],
+            d1=content["results"][0],
             d2={
                 'user': {
                     'forum_id': self.contributor.forum_id,
@@ -180,9 +180,9 @@ class SubPluginContributorViewSetTestCase(APITestCase):
             second=status.HTTP_200_OK,
         )
         content = response.json()
-        self.assertEqual(first=content['count'], second=2)
+        self.assertEqual(first=content["count"], second=2)
         self.assertDictEqual(
-            d1=content['results'][0],
+            d1=content["results"][0],
             d2={
                 'user': {
                     'forum_id': self.contributor.forum_id,
@@ -209,7 +209,7 @@ class SubPluginContributorViewSetTestCase(APITestCase):
             first=response.status_code,
             second=status.HTTP_200_OK,
         )
-        self.assertEqual(first=response.json()['count'], second=0)
+        self.assertEqual(first=response.json()["count"], second=0)
 
         # Verify that regular user can see results but not 'id'
         self.client.force_login(self.regular_user.user)
@@ -219,7 +219,7 @@ class SubPluginContributorViewSetTestCase(APITestCase):
             first=response.status_code,
             second=status.HTTP_200_OK,
         )
-        self.assertEqual(first=response.json()['count'], second=0)
+        self.assertEqual(first=response.json()["count"], second=0)
 
         # Verify that the owner can see results AND 'id'
         self.client.force_login(self.owner.user)
@@ -229,7 +229,7 @@ class SubPluginContributorViewSetTestCase(APITestCase):
             first=response.status_code,
             second=status.HTTP_200_OK,
         )
-        self.assertEqual(first=response.json()['count'], second=0)
+        self.assertEqual(first=response.json()["count"], second=0)
 
     @override_settings(DEBUG=True)
     def test_get_list_failure(self):
@@ -380,7 +380,7 @@ class SubPluginContributorViewSetTestCase(APITestCase):
         )
         self.assertDictEqual(
             d1=response.json(),
-            d2={'username': [f'User {self.contributor.user.username} is already a contributor']},
+            d2={'username': [f"User {self.contributor.user.username} is already a contributor"]},
         )
 
         # Verify owner cannot be added
@@ -454,7 +454,7 @@ class SubPluginContributorViewSetTestCase(APITestCase):
         self.assertEqual(first=response.status_code, second=status.HTTP_200_OK)
         content = response.json()
         self.assertEqual(
-            first=content['name'],
+            first=content["name"],
             second=f'{self.sub_plugin_1} - Contributor',
         )
         self.assertNotIn(member='actions', container=content)
@@ -465,7 +465,7 @@ class SubPluginContributorViewSetTestCase(APITestCase):
         self.assertEqual(first=response.status_code, second=status.HTTP_200_OK)
         content = response.json()
         self.assertEqual(
-            first=content['name'],
+            first=content["name"],
             second=f'{self.sub_plugin_1} - Contributor',
         )
         self.assertNotIn(member='actions', container=content)
@@ -476,7 +476,7 @@ class SubPluginContributorViewSetTestCase(APITestCase):
         self.assertEqual(first=response.status_code, second=status.HTTP_200_OK)
         content = response.json()
         self.assertEqual(
-            first=content['name'],
+            first=content["name"],
             second=f'{self.sub_plugin_1} - Contributor',
         )
         self.assertNotIn(member='actions', container=content)
@@ -487,11 +487,11 @@ class SubPluginContributorViewSetTestCase(APITestCase):
         self.assertEqual(first=response.status_code, second=status.HTTP_200_OK)
         content = response.json()
         self.assertEqual(
-            first=content['name'],
+            first=content["name"],
             second=f'{self.sub_plugin_1} - Contributor',
         )
         self.assertIn(member='actions', container=content)
-        self.assertSetEqual(set1=set(content['actions']), set2={'POST'})
+        self.assertSetEqual(set1=set(content["actions"]), set2={'POST'})
 
     def test_options_object(self):
         # Verify that non-logged-in user cannot DELETE
@@ -499,7 +499,7 @@ class SubPluginContributorViewSetTestCase(APITestCase):
         self.assertEqual(first=response.status_code, second=status.HTTP_200_OK)
         content = response.json()
         self.assertEqual(
-            first=content['name'],
+            first=content["name"],
             second=f'{self.sub_plugin_1} - Contributor',
         )
         self.assertNotIn(member='actions', container=content)
@@ -510,7 +510,7 @@ class SubPluginContributorViewSetTestCase(APITestCase):
         self.assertEqual(first=response.status_code, second=status.HTTP_200_OK)
         content = response.json()
         self.assertEqual(
-            first=content['name'],
+            first=content["name"],
             second=f'{self.sub_plugin_1} - Contributor',
         )
         self.assertNotIn(member='actions', container=content)
@@ -521,7 +521,7 @@ class SubPluginContributorViewSetTestCase(APITestCase):
         self.assertEqual(first=response.status_code, second=status.HTTP_200_OK)
         content = response.json()
         self.assertEqual(
-            first=content['name'],
+            first=content["name"],
             second=f'{self.sub_plugin_1} - Contributor',
         )
         self.assertNotIn(member='actions', container=content)
@@ -532,8 +532,8 @@ class SubPluginContributorViewSetTestCase(APITestCase):
         self.assertEqual(first=response.status_code, second=status.HTTP_200_OK)
         content = response.json()
         self.assertEqual(
-            first=content['name'],
+            first=content["name"],
             second=f'{self.sub_plugin_1} - Contributor',
         )
         self.assertIn(member='actions', container=content)
-        self.assertSetEqual(set1=set(content['actions']), set2={'DELETE'})
+        self.assertSetEqual(set1=set(content["actions"]), set2={'DELETE'})

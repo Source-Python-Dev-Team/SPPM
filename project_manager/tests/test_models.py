@@ -40,11 +40,11 @@ from project_manager.validators import version_validator
 class AbstractUUIDPrimaryKeyModelTestCase(TestCase):
     def test_model_inheritance(self):
         self.assertTrue(
-            expr=issubclass(AbstractUUIDPrimaryKeyModel, models.Model)
+            expr=issubclass(AbstractUUIDPrimaryKeyModel, models.Model),
         )
 
     def test_id_field(self):
-        field = AbstractUUIDPrimaryKeyModel._meta.get_field('id')
+        field = AbstractUUIDPrimaryKeyModel._meta.get_field("id")
         self.assertIsInstance(
             obj=field,
             cls=models.UUIDField,
@@ -53,7 +53,7 @@ class AbstractUUIDPrimaryKeyModelTestCase(TestCase):
         self.assertFalse(expr=field.editable)
         self.assertEqual(
             first=field.verbose_name,
-            second='ID',
+            second="ID",
         )
         self.assertEqual(
             first=field.default,
@@ -64,7 +64,7 @@ class AbstractUUIDPrimaryKeyModelTestCase(TestCase):
 
     def test_meta_class(self):
         self.assertTrue(
-            expr=AbstractUUIDPrimaryKeyModel._meta.abstract
+            expr=AbstractUUIDPrimaryKeyModel._meta.abstract,
         )
 
 
@@ -73,7 +73,7 @@ class ProjectTestCase(TestCase):
         self.assertTrue(expr=issubclass(Project, models.Model))
 
     def test_name_field(self):
-        field = Project._meta.get_field('name')
+        field = Project._meta.get_field("name")
         self.assertIsInstance(
             obj=field,
             cls=models.CharField,
@@ -93,7 +93,7 @@ class ProjectTestCase(TestCase):
         self.assertFalse(expr=field.null)
 
     def test_configuration_field(self):
-        field = Project._meta.get_field('configuration')
+        field = Project._meta.get_field("configuration")
         self.assertIsInstance(
             obj=field,
             cls=BBCodeTextField,
@@ -105,16 +105,16 @@ class ProjectTestCase(TestCase):
         self.assertEqual(
             first=field.help_text,
             second=(
-                'The configuration of the project. If too long, post on the '
-                'forum and provide the link here. BBCode is allowed. 1024 '
-                'char limit.'
+                "The configuration of the project. If too long, post on the "
+                "forum and provide the link here. BBCode is allowed. 1024 "
+                "char limit."
             ),
         )
         self.assertTrue(expr=field.blank)
         self.assertTrue(expr=field.null)
 
     def test_description_field(self):
-        field = Project._meta.get_field('description')
+        field = Project._meta.get_field("description")
         self.assertIsInstance(
             obj=field,
             cls=BBCodeTextField,
@@ -126,15 +126,15 @@ class ProjectTestCase(TestCase):
         self.assertEqual(
             first=field.help_text,
             second=(
-                'The full description of the project. BBCode is allowed. '
-                '1024 char limit.'
+                "The full description of the project. BBCode is allowed. "
+                "1024 char limit."
             ),
         )
         self.assertTrue(expr=field.blank)
         self.assertTrue(expr=field.null)
 
     def test_image_field(self):
-        field = Project._meta.get_field('logo')
+        field = Project._meta.get_field("logo")
         self.assertIsInstance(
             obj=field,
             cls=models.ImageField,
@@ -151,7 +151,7 @@ class ProjectTestCase(TestCase):
         self.assertTrue(expr=field.null)
 
     def test_video_field(self):
-        field = Project._meta.get_field('video')
+        field = Project._meta.get_field("video")
         self.assertIsInstance(
             obj=field,
             cls=EmbedVideoField,
@@ -164,7 +164,7 @@ class ProjectTestCase(TestCase):
         self.assertTrue(expr=field.null)
 
     def test_synopsis_field(self):
-        field = Project._meta.get_field('synopsis')
+        field = Project._meta.get_field("synopsis")
         self.assertIsInstance(
             obj=field,
             cls=BBCodeTextField,
@@ -176,15 +176,15 @@ class ProjectTestCase(TestCase):
         self.assertEqual(
             first=field.help_text,
             second=(
-                'A brief description of the project. BBCode is allowed. '
-                '128 char limit.'
+                "A brief description of the project. BBCode is allowed. "
+                "128 char limit."
             ),
         )
         self.assertTrue(expr=field.blank)
         self.assertTrue(expr=field.null)
 
     def test_topic_field(self):
-        field = Project._meta.get_field('topic')
+        field = Project._meta.get_field("topic")
         self.assertIsInstance(
             obj=field,
             cls=models.IntegerField,
@@ -194,33 +194,33 @@ class ProjectTestCase(TestCase):
         self.assertTrue(expr=field.null)
 
     def test_created_field(self):
-        field = Project._meta.get_field('created')
+        field = Project._meta.get_field("created")
         self.assertIsInstance(
             obj=field,
             cls=models.DateTimeField,
         )
         self.assertEqual(
             first=field.verbose_name,
-            second='created',
+            second="created",
         )
         self.assertFalse(expr=field.blank)
         self.assertFalse(expr=field.null)
 
     def test_updated_field(self):
-        field = Project._meta.get_field('updated')
+        field = Project._meta.get_field("updated")
         self.assertIsInstance(
             obj=field,
             cls=models.DateTimeField,
         )
         self.assertEqual(
             first=field.verbose_name,
-            second='updated',
+            second="updated",
         )
         self.assertFalse(expr=field.blank)
         self.assertFalse(expr=field.null)
 
     def test_handle_logo_upload_required(self):
-        obj = ''
+        obj = ""
         with self.assertRaises(NotImplementedError) as context:
             Project.handle_logo_upload.fget(obj)
 
@@ -233,7 +233,7 @@ class ProjectTestCase(TestCase):
         )
 
     def test_releases_required(self):
-        obj = ''
+        obj = ""
         with self.assertRaises(NotImplementedError) as context:
             Project.releases.fget(obj)
 
@@ -247,7 +247,7 @@ class ProjectTestCase(TestCase):
 
     def test_meta_class(self):
         self.assertTrue(
-            expr=Project._meta.abstract
+            expr=Project._meta.abstract,
         )
 
 
@@ -258,7 +258,7 @@ class ProjectReleaseTestCase(TestCase):
         )
 
     def test_version_field(self):
-        field = ProjectRelease._meta.get_field('version')
+        field = ProjectRelease._meta.get_field("version")
         self.assertIsInstance(
             obj=field,
             cls=models.CharField,
@@ -273,13 +273,13 @@ class ProjectReleaseTestCase(TestCase):
         )
         self.assertEqual(
             first=field.help_text,
-            second='The version for this release of the project.',
+            second="The version for this release of the project.",
         )
         self.assertFalse(expr=field.blank)
         self.assertFalse(expr=field.null)
 
     def test_notes_field(self):
-        field = ProjectRelease._meta.get_field('notes')
+        field = ProjectRelease._meta.get_field("notes")
         self.assertIsInstance(
             obj=field,
             cls=BBCodeTextField,
@@ -290,13 +290,13 @@ class ProjectReleaseTestCase(TestCase):
         )
         self.assertEqual(
             first=field.help_text,
-            second='The notes for this particular release of the project.',
+            second="The notes for this particular release of the project.",
         )
         self.assertTrue(expr=field.blank)
         self.assertTrue(expr=field.null)
 
     def test_zip_file_field(self):
-        field = ProjectRelease._meta.get_field('zip_file')
+        field = ProjectRelease._meta.get_field("zip_file")
         self.assertIsInstance(
             obj=field,
             cls=models.FileField,
@@ -309,7 +309,7 @@ class ProjectReleaseTestCase(TestCase):
         self.assertFalse(expr=field.null)
 
     def test_download_count_field(self):
-        field = ProjectRelease._meta.get_field('download_count')
+        field = ProjectRelease._meta.get_field("download_count")
         self.assertIsInstance(
             obj=field,
             cls=models.PositiveIntegerField,
@@ -322,18 +322,18 @@ class ProjectReleaseTestCase(TestCase):
         self.assertFalse(expr=field.null)
 
     def test_created_field(self):
-        field = ProjectRelease._meta.get_field('created')
+        field = ProjectRelease._meta.get_field("created")
         self.assertIsInstance(
             obj=field,
             cls=AutoCreatedField,
         )
         self.assertEqual(
             first=field.verbose_name,
-            second='created',
+            second="created",
         )
 
     def test_project_class_required(self):
-        obj = ''
+        obj = ""
         with self.assertRaises(NotImplementedError) as context:
             ProjectRelease.project_class.fget(obj)
 
@@ -346,7 +346,7 @@ class ProjectReleaseTestCase(TestCase):
         )
 
     def test_project_required(self):
-        obj = ''
+        obj = ""
         with self.assertRaises(NotImplementedError) as context:
             ProjectRelease.project.fget(obj)
 
@@ -359,7 +359,7 @@ class ProjectReleaseTestCase(TestCase):
         )
 
     def test_handle_zip_file_upload_required(self):
-        obj = ''
+        obj = ""
         with self.assertRaises(NotImplementedError) as context:
             ProjectRelease.handle_zip_file_upload.fget(obj)
 
@@ -373,5 +373,5 @@ class ProjectReleaseTestCase(TestCase):
 
     def test_meta_class(self):
         self.assertTrue(
-            expr=ProjectRelease._meta.abstract
+            expr=ProjectRelease._meta.abstract,
         )

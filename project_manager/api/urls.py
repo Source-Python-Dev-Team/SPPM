@@ -9,58 +9,57 @@ from django.urls import include, path
 # App
 from project_manager.api.views import ProjectManagerAPIView
 
-
 # =============================================================================
 # GLOBAL VARIABLES
 # =============================================================================
-app_name = 'api'
+app_name = "api"
 
 urlpatterns = [
     path(
-        route='games/',
+        route="games/",
         view=include(
-            'games.api.urls',
-            namespace='games',
+            "games.api.urls",
+            namespace="games",
         ),
     ),
     path(
-        route='packages/',
+        route="packages/",
         view=include(
-            'project_manager.packages.api.urls',
-            namespace='packages',
+            "project_manager.packages.api.urls",
+            namespace="packages",
         ),
     ),
     path(
-        route='plugins/',
+        route="plugins/",
         view=include(
-            'project_manager.plugins.api.urls',
-            namespace='plugins',
+            "project_manager.plugins.api.urls",
+            namespace="plugins",
         ),
     ),
     path(
-        route='sub-plugins/',
+        route="sub-plugins/",
         view=include(
-            'project_manager.sub_plugins.api.urls',
-            namespace='sub-plugins',
+            "project_manager.sub_plugins.api.urls",
+            namespace="sub-plugins",
         ),
     ),
     path(
-        route='tags/',
+        route="tags/",
         view=include(
-            'tags.api.urls',
-            namespace='tags',
+            "tags.api.urls",
+            namespace="tags",
         ),
     ),
     path(
-        route='users/',
+        route="users/",
         view=include(
-            'users.api.urls',
-            namespace='users',
+            "users.api.urls",
+            namespace="users",
         ),
     ),
     path(
-        route='',
+        route="",
         view=ProjectManagerAPIView.as_view(),
-        name='api-root',
+        name="api-root",
     ),
 ]

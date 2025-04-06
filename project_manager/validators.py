@@ -9,13 +9,12 @@ from django.core.validators import RegexValidator
 # App
 from project_manager.constants import RELEASE_VERSION_REGEX
 
-
 # =============================================================================
 # ALL DECLARATION
 # =============================================================================
 __all__ = (
-    'basename_validator',
-    'version_validator',
+    "basename_validator",
+    "version_validator",
 )
 
 
@@ -26,10 +25,10 @@ __all__ = (
 #   Start with a lower-case character.
 #   Contain only lower-case characters, numbers, and underscores.
 #   End in a lower-case character or number.
-basename_validator = RegexValidator(r'^[a-z][0-9a-z_]*[0-9a-z]')
+basename_validator = RegexValidator(r"^[a-z][0-9a-z_]*[0-9a-z]")
 
 # version values should:
 #   Start with a number.
 #   Contain only numbers, lower-case characters, and decimals.
 #   End in a number or lower-case character.
-version_validator = RegexValidator(r'^' + RELEASE_VERSION_REGEX)
+version_validator = RegexValidator(r"^" + RELEASE_VERSION_REGEX)

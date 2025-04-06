@@ -11,11 +11,11 @@ from django.test import TestCase
 # App
 from project_manager.constants import RELEASE_VERSION_MAX_LENGTH
 from project_manager.models.abstract import AbstractUUIDPrimaryKeyModel
-from project_manager.validators import version_validator
 from project_manager.plugins.models import (
     PluginRelease,
     PluginReleasePyPiRequirement,
 )
+from project_manager.validators import version_validator
 from requirements.models import PyPiRequirement
 from test_utils.factories.plugins import PluginReleasePyPiRequirementFactory
 from test_utils.factories.requirements import PyPiRequirementFactory
@@ -30,11 +30,11 @@ class PluginReleasePyPiRequirementTestCase(TestCase):
             expr=issubclass(
                 PluginReleasePyPiRequirement,
                 AbstractUUIDPrimaryKeyModel,
-            )
+            ),
         )
 
     def test_plugin_release_field(self):
-        field = PluginReleasePyPiRequirement._meta.get_field('plugin_release')
+        field = PluginReleasePyPiRequirement._meta.get_field("plugin_release")
         self.assertIsInstance(
             obj=field,
             cls=models.ForeignKey,
@@ -52,7 +52,7 @@ class PluginReleasePyPiRequirementTestCase(TestCase):
 
     def test_pypi_requirement_field(self):
         field = PluginReleasePyPiRequirement._meta.get_field(
-            'pypi_requirement',
+            "pypi_requirement",
         )
         self.assertIsInstance(
             obj=field,
@@ -70,7 +70,7 @@ class PluginReleasePyPiRequirementTestCase(TestCase):
         self.assertFalse(expr=field.null)
 
     def test_version_field(self):
-        field = PluginReleasePyPiRequirement._meta.get_field('version')
+        field = PluginReleasePyPiRequirement._meta.get_field("version")
         self.assertIsInstance(
             obj=field,
             cls=models.CharField,
@@ -86,15 +86,15 @@ class PluginReleasePyPiRequirementTestCase(TestCase):
         self.assertEqual(
             first=field.help_text,
             second=(
-                'The version of the PyPi package for this release of the '
-                'plugin.'
-            )
+                "The version of the PyPi package for this release of the "
+                "plugin."
+            ),
         )
         self.assertTrue(expr=field.blank)
         self.assertTrue(expr=field.null)
 
     def test_optional_field(self):
-        field = PluginReleasePyPiRequirement._meta.get_field('optional')
+        field = PluginReleasePyPiRequirement._meta.get_field("optional")
         self.assertIsInstance(
             obj=field,
             cls=models.BooleanField,
@@ -105,27 +105,27 @@ class PluginReleasePyPiRequirementTestCase(TestCase):
 
     def test__str__(self):
         requirement = PyPiRequirementFactory()
-        version = '.'.join(map(str, sample(range(100), 3)))
+        version = ".".join(map(str, sample(range(100), 3)))
         self.assertEqual(
             first=str(
                 PluginReleasePyPiRequirementFactory(
                     pypi_requirement=requirement,
                     version=version,
-                )
+                ),
             ),
-            second=f'{requirement.name} - {version}',
+            second=f"{requirement.name} - {version}",
         )
 
     def test_meta_class(self):
         self.assertTupleEqual(
             tuple1=PluginReleasePyPiRequirement._meta.unique_together,
-            tuple2=(('plugin_release', 'pypi_requirement'),),
+            tuple2=(("plugin_release", "pypi_requirement"),),
         )
         self.assertEqual(
             first=PluginReleasePyPiRequirement._meta.verbose_name,
-            second='Plugin Release PyPi Requirement',
+            second="Plugin Release PyPi Requirement",
         )
         self.assertEqual(
             first=PluginReleasePyPiRequirement._meta.verbose_name_plural,
-            second='Plugin Release PyPi Requirements',
+            second="Plugin Release PyPi Requirements",
         )

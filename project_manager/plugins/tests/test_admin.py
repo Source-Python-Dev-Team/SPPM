@@ -66,7 +66,7 @@ class PluginAdminTestCase(TestCase):
         ).query
         self.assertDictEqual(
             d1=query.select_related,
-            d2={'owner': {'user': {}}}
+            d2={"owner": {"user": {}}},
         )
 
 
@@ -81,69 +81,69 @@ class TestPluginReleaseAdminTestCase(TestCase):
             tuple1=PluginReleaseAdmin.fieldsets,
             tuple2=(
                 (
-                    'Release Info',
+                    "Release Info",
                     {
-                        'classes': ('wide',),
-                        'fields': (
-                            'version',
-                            'notes',
-                            'zip_file',
-                            'plugin',
-                        ),
-                    }
-                ),
-                (
-                    'Metadata',
-                    {
-                        'classes': ('collapse',),
-                        'fields': (
-                            'created',
-                            'created_by',
-                            'download_count',
+                        "classes": ("wide",),
+                        "fields": (
+                            "version",
+                            "notes",
+                            "zip_file",
+                            "plugin",
                         ),
                     },
-                )
-            )
+                ),
+                (
+                    "Metadata",
+                    {
+                        "classes": ("collapse",),
+                        "fields": (
+                            "created",
+                            "created_by",
+                            "download_count",
+                        ),
+                    },
+                ),
+            ),
         )
 
     def test_list_display(self):
         self.assertTupleEqual(
             tuple1=PluginReleaseAdmin.list_display,
             tuple2=(
-                'version',
-                'created',
-                'plugin',
-            )
+                "version",
+                "created",
+                "plugin",
+            ),
         )
 
     def test_ordering(self):
         self.assertTupleEqual(
             tuple1=PluginReleaseAdmin.ordering,
             tuple2=(
-                'plugin',
-                '-created',
-            )
+                "plugin",
+                "-created",
+            ),
         )
 
     def test_readonly_fields(self):
         self.assertTupleEqual(
             tuple1=PluginReleaseAdmin.readonly_fields,
             tuple2=(
-                'zip_file',
-                'download_count',
-                'created',
-                'created_by',
-                'plugin',
-            )
+                "zip_file",
+                "download_count",
+                "created",
+                "created_by",
+                "plugin",
+            ),
         )
 
     def test_search_fields(self):
         self.assertTupleEqual(
             tuple1=PluginReleaseAdmin.search_fields,
             tuple2=(
-                'version',
-                'plugin__name',
-            )
+                "version",
+                "plugin__name",
+            ),
         )
 
     def test_get_queryset(self):
@@ -156,19 +156,19 @@ class TestPluginReleaseAdminTestCase(TestCase):
         ).query
         self.assertDictEqual(
             d1=query.select_related,
-            d2={'created_by': {'user': {}}, 'plugin': {}},
+            d2={"created_by": {"user": {}}, "plugin": {}},
         )
 
     def test_has_add_permission(self):
         obj = PluginReleaseAdmin(PluginRelease, admin.AdminSite())
         self.assertFalse(
-            expr=obj.has_add_permission(''),
+            expr=obj.has_add_permission(""),
         )
 
     def test_has_delete_permission(self):
         obj = PluginReleaseAdmin(PluginRelease, admin.AdminSite())
         self.assertFalse(
-            expr=obj.has_delete_permission(''),
+            expr=obj.has_delete_permission(""),
         )
 
 
@@ -213,17 +213,17 @@ class PluginGameInlineTestCase(TestCase):
         ).query
         self.assertDictEqual(
             d1=query.select_related,
-            d2={'game': {}}
+            d2={"game": {}},
         )
         self.assertTupleEqual(
             tuple1=query.order_by,
-            tuple2=('game__name',),
+            tuple2=("game__name",),
         )
 
     def test_has_add_permission(self):
         obj = PluginGameInline(PluginGame, admin.AdminSite())
         self.assertFalse(
-            expr=obj.has_add_permission(''),
+            expr=obj.has_add_permission(""),
         )
 
 
@@ -245,7 +245,7 @@ class PluginImageInlineTestCase(TestCase):
     def test_has_add_permission(self):
         obj = PluginImageInline(PluginImage, admin.AdminSite())
         self.assertFalse(
-            expr=obj.has_add_permission(''),
+            expr=obj.has_add_permission(""),
         )
 
 
@@ -274,17 +274,17 @@ class PluginTagInlineTestCase(TestCase):
         ).query
         self.assertDictEqual(
             d1=query.select_related,
-            d2={'tag': {}}
+            d2={"tag": {}},
         )
         self.assertTupleEqual(
             tuple1=query.order_by,
-            tuple2=('tag__name',),
+            tuple2=("tag__name",),
         )
 
     def test_has_add_permission(self):
         obj = PluginTagInline(PluginTag, admin.AdminSite())
         self.assertFalse(
-            expr=obj.has_add_permission(''),
+            expr=obj.has_add_permission(""),
         )
 
 
@@ -310,10 +310,10 @@ class SubPluginPathInlineTestCase(TestCase):
         self.assertTupleEqual(
             tuple1=SubPluginPathInline.fields,
             tuple2=(
-                'path',
-                'allow_module',
-                'allow_package_using_basename',
-                'allow_package_using_init',
+                "path",
+                "allow_module",
+                "allow_package_using_basename",
+                "allow_package_using_init",
             ),
         )
 
@@ -331,4 +331,4 @@ class SubPluginPathInlineTestCase(TestCase):
 
     def test_has_add_permission(self):
         obj = SubPluginPathInline(SubPluginPath, admin.AdminSite())
-        self.assertFalse(expr=obj.has_add_permission(''))
+        self.assertFalse(expr=obj.has_add_permission(""))

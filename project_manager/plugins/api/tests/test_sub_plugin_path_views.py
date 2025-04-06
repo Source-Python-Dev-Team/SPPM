@@ -61,19 +61,19 @@ class SubPluginPathViewSetTestCase(APITestCase):
             allow_package_using_basename=True,
         )
         cls.regular_user = ForumUserFactory()
-        cls.detail_api = 'api:plugins:paths-detail'
-        cls.list_api = 'api:plugins:paths-list'
+        cls.detail_api = "api:plugins:paths-detail"
+        cls.list_api = "api:plugins:paths-list"
         cls.detail_path = reverse(
             viewname=cls.detail_api,
             kwargs={
-                'plugin_slug': cls.plugin_1.slug,
-                'pk': cls.sub_plugin_path_1.id,
+                "plugin_slug": cls.plugin_1.slug,
+                "pk": cls.sub_plugin_path_1.id,
             },
         )
         cls.list_path = reverse(
             viewname=cls.list_api,
             kwargs={
-                'plugin_slug': cls.plugin_1.slug,
+                "plugin_slug": cls.plugin_1.slug,
             },
         )
 
@@ -85,7 +85,7 @@ class SubPluginPathViewSetTestCase(APITestCase):
     def test_base_attributes(self):
         self.assertTupleEqual(
             tuple1=SubPluginPathViewSet.ordering,
-            tuple2=('path',),
+            tuple2=("path",),
         )
         self.assertEqual(
             first=SubPluginPathViewSet.serializer_class,
@@ -93,7 +93,7 @@ class SubPluginPathViewSetTestCase(APITestCase):
         )
         self.assertEqual(
             first=SubPluginPathViewSet.project_type,
-            second='plugin',
+            second="plugin",
         )
         self.assertEqual(
             first=SubPluginPathViewSet.project_model,
@@ -101,7 +101,7 @@ class SubPluginPathViewSetTestCase(APITestCase):
         )
         self.assertEqual(
             first=SubPluginPathViewSet.related_model_type,
-            second='Sub-Plugin Path',
+            second="Sub-Plugin Path",
         )
         self.assertIs(
             expr1=SubPluginPathViewSet.queryset.model,
@@ -109,13 +109,13 @@ class SubPluginPathViewSetTestCase(APITestCase):
         )
         self.assertDictEqual(
             d1=SubPluginPathViewSet.queryset.query.select_related,
-            d2={'plugin': {}},
+            d2={"plugin": {}},
         )
 
     def test_http_method_names(self):
         self.assertTupleEqual(
             tuple1=SubPluginPathViewSet.http_method_names,
-            tuple2=('get', 'post', 'patch', 'delete', 'options'),
+            tuple2=("get", "post", "patch", "delete", "options"),
         )
 
     @override_settings(DEBUG=True)
@@ -128,14 +128,14 @@ class SubPluginPathViewSetTestCase(APITestCase):
             second=status.HTTP_200_OK,
         )
         content = response.json()
-        self.assertEqual(first=content['count'], second=2)
+        self.assertEqual(first=content["count"], second=2)
         self.assertDictEqual(
-            d1=content['results'][0],
+            d1=content["results"][0],
             d2={
-                'path': self.sub_plugin_path_1.path,
-                'allow_module': self.sub_plugin_path_1.allow_module,
-                'allow_package_using_init': self.sub_plugin_path_1.allow_package_using_init,
-                'allow_package_using_basename': self.sub_plugin_path_1.allow_package_using_basename,
+                "path": self.sub_plugin_path_1.path,
+                "allow_module": self.sub_plugin_path_1.allow_module,
+                "allow_package_using_init": self.sub_plugin_path_1.allow_package_using_init,
+                "allow_package_using_basename": self.sub_plugin_path_1.allow_package_using_basename,
             },
         )
 
@@ -148,14 +148,14 @@ class SubPluginPathViewSetTestCase(APITestCase):
             second=status.HTTP_200_OK,
         )
         content = response.json()
-        self.assertEqual(first=content['count'], second=2)
+        self.assertEqual(first=content["count"], second=2)
         self.assertDictEqual(
-            d1=content['results'][0],
+            d1=content["results"][0],
             d2={
-                'path': self.sub_plugin_path_1.path,
-                'allow_module': self.sub_plugin_path_1.allow_module,
-                'allow_package_using_init': self.sub_plugin_path_1.allow_package_using_init,
-                'allow_package_using_basename': self.sub_plugin_path_1.allow_package_using_basename,
+                "path": self.sub_plugin_path_1.path,
+                "allow_module": self.sub_plugin_path_1.allow_module,
+                "allow_package_using_init": self.sub_plugin_path_1.allow_package_using_init,
+                "allow_package_using_basename": self.sub_plugin_path_1.allow_package_using_basename,
             },
         )
 
@@ -168,15 +168,15 @@ class SubPluginPathViewSetTestCase(APITestCase):
             second=status.HTTP_200_OK,
         )
         content = response.json()
-        self.assertEqual(first=content['count'], second=2)
+        self.assertEqual(first=content["count"], second=2)
         self.assertDictEqual(
-            d1=content['results'][0],
+            d1=content["results"][0],
             d2={
-                'path': self.sub_plugin_path_1.path,
-                'allow_module': self.sub_plugin_path_1.allow_module,
-                'allow_package_using_init': self.sub_plugin_path_1.allow_package_using_init,
-                'allow_package_using_basename': self.sub_plugin_path_1.allow_package_using_basename,
-                'id': str(self.sub_plugin_path_1.id),
+                "path": self.sub_plugin_path_1.path,
+                "allow_module": self.sub_plugin_path_1.allow_module,
+                "allow_package_using_init": self.sub_plugin_path_1.allow_package_using_init,
+                "allow_package_using_basename": self.sub_plugin_path_1.allow_package_using_basename,
+                "id": str(self.sub_plugin_path_1.id),
             },
         )
 
@@ -189,15 +189,15 @@ class SubPluginPathViewSetTestCase(APITestCase):
             second=status.HTTP_200_OK,
         )
         content = response.json()
-        self.assertEqual(first=content['count'], second=2)
+        self.assertEqual(first=content["count"], second=2)
         self.assertDictEqual(
-            d1=content['results'][0],
+            d1=content["results"][0],
             d2={
-                'path': self.sub_plugin_path_1.path,
-                'allow_module': self.sub_plugin_path_1.allow_module,
-                'allow_package_using_init': self.sub_plugin_path_1.allow_package_using_init,
-                'allow_package_using_basename': self.sub_plugin_path_1.allow_package_using_basename,
-                'id': str(self.sub_plugin_path_1.id),
+                "path": self.sub_plugin_path_1.path,
+                "allow_module": self.sub_plugin_path_1.allow_module,
+                "allow_package_using_init": self.sub_plugin_path_1.allow_package_using_init,
+                "allow_package_using_basename": self.sub_plugin_path_1.allow_package_using_basename,
+                "id": str(self.sub_plugin_path_1.id),
             },
         )
 
@@ -206,7 +206,7 @@ class SubPluginPathViewSetTestCase(APITestCase):
         list_path = reverse(
             viewname=self.list_api,
             kwargs={
-                'plugin_slug': self.plugin_2.slug,
+                "plugin_slug": self.plugin_2.slug,
             },
         )
 
@@ -217,7 +217,7 @@ class SubPluginPathViewSetTestCase(APITestCase):
             first=response.status_code,
             second=status.HTTP_200_OK,
         )
-        self.assertEqual(first=response.json()['count'], second=0)
+        self.assertEqual(first=response.json()["count"], second=0)
 
         # Verify that regular user can see results but not 'id'
         self.client.force_login(self.regular_user.user)
@@ -227,7 +227,7 @@ class SubPluginPathViewSetTestCase(APITestCase):
             first=response.status_code,
             second=status.HTTP_200_OK,
         )
-        self.assertEqual(first=response.json()['count'], second=0)
+        self.assertEqual(first=response.json()["count"], second=0)
 
         # Verify that contributors can see results AND 'id'
         self.client.force_login(self.contributor.user)
@@ -237,7 +237,7 @@ class SubPluginPathViewSetTestCase(APITestCase):
             first=response.status_code,
             second=status.HTTP_200_OK,
         )
-        self.assertEqual(first=response.json()['count'], second=0)
+        self.assertEqual(first=response.json()["count"], second=0)
 
         # Verify that the owner can see results AND 'id'
         self.client.force_login(self.owner.user)
@@ -247,7 +247,7 @@ class SubPluginPathViewSetTestCase(APITestCase):
             first=response.status_code,
             second=status.HTTP_200_OK,
         )
-        self.assertEqual(first=response.json()['count'], second=0)
+        self.assertEqual(first=response.json()["count"], second=0)
 
     @override_settings(DEBUG=True)
     def test_get_list_failure(self):
@@ -255,8 +255,8 @@ class SubPluginPathViewSetTestCase(APITestCase):
             path=reverse(
                 viewname=self.list_api,
                 kwargs={
-                    'plugin_slug': 'invalid',
-                }
+                    "plugin_slug": "invalid",
+                },
             ),
         )
         self.assertEqual(first=len(connection.queries), second=1)
@@ -266,7 +266,7 @@ class SubPluginPathViewSetTestCase(APITestCase):
         )
         self.assertDictEqual(
             d1=response.json(),
-            d2={'detail': 'Invalid plugin_slug.'},
+            d2={"detail": "Invalid plugin_slug."},
         )
 
     @override_settings(DEBUG=True)
@@ -299,11 +299,11 @@ class SubPluginPathViewSetTestCase(APITestCase):
         self.assertDictEqual(
             d1=response.json(),
             d2={
-                'path': self.sub_plugin_path_1.path,
-                'allow_module': self.sub_plugin_path_1.allow_module,
-                'allow_package_using_init': self.sub_plugin_path_1.allow_package_using_init,
-                'allow_package_using_basename': self.sub_plugin_path_1.allow_package_using_basename,
-                'id': str(self.sub_plugin_path_1.id),
+                "path": self.sub_plugin_path_1.path,
+                "allow_module": self.sub_plugin_path_1.allow_module,
+                "allow_package_using_init": self.sub_plugin_path_1.allow_package_using_init,
+                "allow_package_using_basename": self.sub_plugin_path_1.allow_package_using_basename,
+                "id": str(self.sub_plugin_path_1.id),
             },
         )
 
@@ -318,11 +318,11 @@ class SubPluginPathViewSetTestCase(APITestCase):
         self.assertDictEqual(
             d1=response.json(),
             d2={
-                'path': self.sub_plugin_path_1.path,
-                'allow_module': self.sub_plugin_path_1.allow_module,
-                'allow_package_using_init': self.sub_plugin_path_1.allow_package_using_init,
-                'allow_package_using_basename': self.sub_plugin_path_1.allow_package_using_basename,
-                'id': str(self.sub_plugin_path_1.id),
+                "path": self.sub_plugin_path_1.path,
+                "allow_module": self.sub_plugin_path_1.allow_module,
+                "allow_package_using_init": self.sub_plugin_path_1.allow_package_using_init,
+                "allow_package_using_basename": self.sub_plugin_path_1.allow_package_using_basename,
+                "id": str(self.sub_plugin_path_1.id),
             },
         )
 
@@ -333,8 +333,8 @@ class SubPluginPathViewSetTestCase(APITestCase):
             path=reverse(
                 viewname=self.detail_api,
                 kwargs={
-                    'plugin_slug': self.plugin_1.slug,
-                    'pk': 'invalid',
+                    "plugin_slug": self.plugin_1.slug,
+                    "pk": "invalid",
                 },
             ),
         )
@@ -345,7 +345,7 @@ class SubPluginPathViewSetTestCase(APITestCase):
         )
         self.assertDictEqual(
             d1=response.json(),
-            d2={'detail': 'Not found.'},
+            d2={"detail": "Not found."},
         )
 
     def test_post(self):
@@ -353,10 +353,10 @@ class SubPluginPathViewSetTestCase(APITestCase):
         response = self.client.post(
             path=self.list_path,
             data={
-                'path': 'new-path-1',
-                'allow_module': False,
-                'allow_package_using_init': True,
-                'allow_package_using_basename': False,
+                "path": "new-path-1",
+                "allow_module": False,
+                "allow_package_using_init": True,
+                "allow_package_using_basename": False,
             },
         )
         self.assertEqual(
@@ -369,10 +369,10 @@ class SubPluginPathViewSetTestCase(APITestCase):
         response = self.client.post(
             path=self.list_path,
             data={
-                'path': 'new-path-1',
-                'allow_module': False,
-                'allow_package_using_init': True,
-                'allow_package_using_basename': False,
+                "path": "new-path-1",
+                "allow_module": False,
+                "allow_package_using_init": True,
+                "allow_package_using_basename": False,
             },
         )
         self.assertEqual(
@@ -385,10 +385,10 @@ class SubPluginPathViewSetTestCase(APITestCase):
         response = self.client.post(
             path=self.list_path,
             data={
-                'path': 'new-path-1',
-                'allow_module': False,
-                'allow_package_using_init': True,
-                'allow_package_using_basename': False,
+                "path": "new-path-1",
+                "allow_module": False,
+                "allow_package_using_init": True,
+                "allow_package_using_basename": False,
             },
         )
         self.assertEqual(
@@ -401,10 +401,10 @@ class SubPluginPathViewSetTestCase(APITestCase):
         response = self.client.post(
             path=self.list_path,
             data={
-                'path': 'new-path-2',
-                'allow_module': False,
-                'allow_package_using_init': True,
-                'allow_package_using_basename': True,
+                "path": "new-path-2",
+                "allow_module": False,
+                "allow_package_using_init": True,
+                "allow_package_using_basename": True,
             },
         )
         self.assertEqual(
@@ -417,9 +417,9 @@ class SubPluginPathViewSetTestCase(APITestCase):
         response = self.client.patch(
             path=self.detail_path,
             data={
-                'allow_module': False,
-                'allow_package_using_init': True,
-            }
+                "allow_module": False,
+                "allow_package_using_init": True,
+            },
         )
         self.assertEqual(
             first=response.status_code,
@@ -431,9 +431,9 @@ class SubPluginPathViewSetTestCase(APITestCase):
         response = self.client.patch(
             path=self.detail_path,
             data={
-                'allow_module': False,
-                'allow_package_using_init': True,
-            }
+                "allow_module": False,
+                "allow_package_using_init": True,
+            },
         )
         self.assertEqual(
             first=response.status_code,
@@ -445,9 +445,9 @@ class SubPluginPathViewSetTestCase(APITestCase):
         response = self.client.patch(
             path=self.detail_path,
             data={
-                'allow_module': False,
-                'allow_package_using_init': True,
-            }
+                "allow_module": False,
+                "allow_package_using_init": True,
+            },
         )
         self.assertEqual(
             first=response.status_code,
@@ -459,9 +459,9 @@ class SubPluginPathViewSetTestCase(APITestCase):
         response = self.client.patch(
             path=self.detail_path,
             data={
-                'allow_module': True,
-                'allow_package_using_init': False,
-            }
+                "allow_module": True,
+                "allow_package_using_init": False,
+            },
         )
         self.assertEqual(
             first=response.status_code,
@@ -498,8 +498,8 @@ class SubPluginPathViewSetTestCase(APITestCase):
             path=reverse(
                 viewname=self.detail_api,
                 kwargs={
-                    'plugin_slug': self.plugin_1.slug,
-                    'pk': self.sub_plugin_path_2.id,
+                    "plugin_slug": self.plugin_1.slug,
+                    "pk": self.sub_plugin_path_2.id,
                 },
             ),
         )
@@ -514,10 +514,10 @@ class SubPluginPathViewSetTestCase(APITestCase):
         self.assertEqual(first=response.status_code, second=status.HTTP_200_OK)
         content = response.json()
         self.assertEqual(
-            first=content['name'],
-            second=f'{self.plugin_1} - Sub-Plugin Path',
+            first=content["name"],
+            second=f"{self.plugin_1} - Sub-Plugin Path",
         )
-        self.assertNotIn(member='actions', container=content)
+        self.assertNotIn(member="actions", container=content)
 
         # Verify that normal user cannot POST
         self.client.force_login(user=self.regular_user.user)
@@ -525,10 +525,10 @@ class SubPluginPathViewSetTestCase(APITestCase):
         self.assertEqual(first=response.status_code, second=status.HTTP_200_OK)
         content = response.json()
         self.assertEqual(
-            first=content['name'],
-            second=f'{self.plugin_1} - Sub-Plugin Path',
+            first=content["name"],
+            second=f"{self.plugin_1} - Sub-Plugin Path",
         )
-        self.assertNotIn(member='actions', container=content)
+        self.assertNotIn(member="actions", container=content)
 
         # Verify that contributors can POST
         self.client.force_login(user=self.contributor.user)
@@ -536,11 +536,11 @@ class SubPluginPathViewSetTestCase(APITestCase):
         self.assertEqual(first=response.status_code, second=status.HTTP_200_OK)
         content = response.json()
         self.assertEqual(
-            first=content['name'],
-            second=f'{self.plugin_1} - Sub-Plugin Path',
+            first=content["name"],
+            second=f"{self.plugin_1} - Sub-Plugin Path",
         )
-        self.assertIn(member='actions', container=content)
-        self.assertSetEqual(set1=set(content['actions']), set2={'POST'})
+        self.assertIn(member="actions", container=content)
+        self.assertSetEqual(set1=set(content["actions"]), set2={"POST"})
 
         # Verify that the owner can POST
         self.client.force_login(user=self.owner.user)
@@ -548,11 +548,11 @@ class SubPluginPathViewSetTestCase(APITestCase):
         self.assertEqual(first=response.status_code, second=status.HTTP_200_OK)
         content = response.json()
         self.assertEqual(
-            first=content['name'],
-            second=f'{self.plugin_1} - Sub-Plugin Path',
+            first=content["name"],
+            second=f"{self.plugin_1} - Sub-Plugin Path",
         )
-        self.assertIn(member='actions', container=content)
-        self.assertSetEqual(set1=set(content['actions']), set2={'POST'})
+        self.assertIn(member="actions", container=content)
+        self.assertSetEqual(set1=set(content["actions"]), set2={"POST"})
 
     def test_options_object(self):
         # Verify that non-logged-in user cannot DELETE/PATCH
@@ -560,10 +560,10 @@ class SubPluginPathViewSetTestCase(APITestCase):
         self.assertEqual(first=response.status_code, second=status.HTTP_200_OK)
         content = response.json()
         self.assertEqual(
-            first=content['name'],
-            second=f'{self.plugin_1} - Sub-Plugin Path',
+            first=content["name"],
+            second=f"{self.plugin_1} - Sub-Plugin Path",
         )
-        self.assertNotIn(member='actions', container=content)
+        self.assertNotIn(member="actions", container=content)
 
         # Verify that normal user cannot DELETE/PATCH
         self.client.force_login(user=self.regular_user.user)
@@ -571,10 +571,10 @@ class SubPluginPathViewSetTestCase(APITestCase):
         self.assertEqual(first=response.status_code, second=status.HTTP_200_OK)
         content = response.json()
         self.assertEqual(
-            first=content['name'],
-            second=f'{self.plugin_1} - Sub-Plugin Path',
+            first=content["name"],
+            second=f"{self.plugin_1} - Sub-Plugin Path",
         )
-        self.assertNotIn(member='actions', container=content)
+        self.assertNotIn(member="actions", container=content)
 
         # Verify that contributors can DELETE/PATCH
         self.client.force_login(user=self.contributor.user)
@@ -582,13 +582,13 @@ class SubPluginPathViewSetTestCase(APITestCase):
         self.assertEqual(first=response.status_code, second=status.HTTP_200_OK)
         content = response.json()
         self.assertEqual(
-            first=content['name'],
-            second=f'{self.plugin_1} - Sub-Plugin Path',
+            first=content["name"],
+            second=f"{self.plugin_1} - Sub-Plugin Path",
         )
-        self.assertIn(member='actions', container=content)
+        self.assertIn(member="actions", container=content)
         self.assertSetEqual(
-            set1=set(content['actions']),
-            set2={'DELETE', 'PATCH'},
+            set1=set(content["actions"]),
+            set2={"DELETE", "PATCH"},
         )
 
         # Verify that the owner can DELETE/PATCH
@@ -597,11 +597,11 @@ class SubPluginPathViewSetTestCase(APITestCase):
         self.assertEqual(first=response.status_code, second=status.HTTP_200_OK)
         content = response.json()
         self.assertEqual(
-            first=content['name'],
-            second=f'{self.plugin_1} - Sub-Plugin Path',
+            first=content["name"],
+            second=f"{self.plugin_1} - Sub-Plugin Path",
         )
-        self.assertIn(member='actions', container=content)
+        self.assertIn(member="actions", container=content)
         self.assertSetEqual(
-            set1=set(content['actions']),
-            set2={'DELETE', 'PATCH'},
+            set1=set(content["actions"]),
+            set2={"DELETE", "PATCH"},
         )

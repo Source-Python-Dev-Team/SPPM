@@ -22,7 +22,6 @@ from users.constants import (
 )
 from users.models import ForumUser, User
 
-
 # =============================================================================
 # GLOBAL VARIABLES
 # =============================================================================
@@ -39,7 +38,7 @@ class ForumUserTestCase(TestCase):
         )
 
     def test_user_field(self):
-        field = ForumUser._meta.get_field('user')
+        field = ForumUser._meta.get_field("user")
         self.assertIsInstance(
             obj=field,
             cls=models.OneToOneField,
@@ -54,13 +53,13 @@ class ForumUserTestCase(TestCase):
         )
         self.assertEqual(
             first=field.remote_field.related_name,
-            second='forum_user',
+            second="forum_user",
         )
         self.assertFalse(expr=field.blank)
         self.assertFalse(expr=field.null)
 
     def test_forum_id_field(self):
-        field = ForumUser._meta.get_field('forum_id')
+        field = ForumUser._meta.get_field("forum_id")
         self.assertIsInstance(
             obj=field,
             cls=models.IntegerField,
@@ -73,11 +72,11 @@ class ForumUserTestCase(TestCase):
     def test_meta_class(self):
         self.assertEqual(
             first=ForumUser._meta.verbose_name,
-            second='Forum User',
+            second="Forum User",
         )
         self.assertEqual(
             first=ForumUser._meta.verbose_name_plural,
-            second='Forum Users',
+            second="Forum Users",
         )
 
     def test__str__(self):
@@ -91,7 +90,7 @@ class ForumUserTestCase(TestCase):
         user = ForumUserFactory()
         self.assertEqual(
             first=user.get_forum_url(),
-            second=FORUM_MEMBER_URL.format(user_id=user.forum_id)
+            second=FORUM_MEMBER_URL.format(user_id=user.forum_id),
         )
 
     def test_get_absolute_url(self):
@@ -99,11 +98,11 @@ class ForumUserTestCase(TestCase):
         self.assertEqual(
             first=user.get_absolute_url(),
             second=reverse(
-                viewname='users:detail',
+                viewname="users:detail",
                 kwargs={
-                    'pk': user.forum_id,
-                }
-            )
+                    "pk": user.forum_id,
+                },
+            ),
         )
 
 
@@ -117,7 +116,7 @@ class UserTestCase(TestCase):
         )
 
     def test_username_field(self):
-        field = User._meta.get_field('username')
+        field = User._meta.get_field("username")
         self.assertIsInstance(
             obj=field,
             cls=models.CharField,
@@ -132,7 +131,7 @@ class UserTestCase(TestCase):
         self.assertFalse(expr=field.null)
 
     def test_is_staff_field(self):
-        field = User._meta.get_field('is_staff')
+        field = User._meta.get_field("is_staff")
         self.assertIsInstance(
             obj=field,
             cls=models.BooleanField,
@@ -144,11 +143,11 @@ class UserTestCase(TestCase):
     def test_meta_class(self):
         self.assertEqual(
             first=User._meta.verbose_name,
-            second='User',
+            second="User",
         )
         self.assertEqual(
             first=User._meta.verbose_name_plural,
-            second='Users',
+            second="Users",
         )
 
     def test_objects(self):
@@ -177,5 +176,5 @@ class UserTestCase(TestCase):
 
         self.assertEqual(
             first=str(context.exception),
-            second='The given username must be set',
+            second="The given username must be set",
         )

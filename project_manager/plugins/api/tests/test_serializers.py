@@ -23,7 +23,10 @@ from project_manager.api.common.serializers import (
     ProjectTagSerializer,
 )
 from project_manager.api.common.serializers.mixins import ProjectThroughMixin
-from project_manager.packages.api.common.serializers import ReleasePackageRequirementSerializer
+from project_manager.packages.api.common.serializers import (
+    ReleasePackageRequirementSerializer,
+)
+from project_manager.plugins.api.common.serializers import MinimalPluginSerializer
 from project_manager.plugins.api.serializers import (
     PluginContributorSerializer,
     PluginCreateReleaseSerializer,
@@ -39,7 +42,6 @@ from project_manager.plugins.api.serializers import (
     PluginTagSerializer,
     SubPluginPathSerializer,
 )
-from project_manager.plugins.api.common.serializers import MinimalPluginSerializer
 from project_manager.plugins.api.serializers.mixins import PluginReleaseBase
 from project_manager.plugins.helpers import PluginZipFile
 from project_manager.plugins.models import (
@@ -125,17 +127,17 @@ class PluginCreateSerializerTestCase(TestCase):
     def test_releases(self):
         mock.patch(
             target=(
-                'project_manager.api.common.serializers.ProjectSerializer.'
-                'get_extra_kwargs'
+                "project_manager.api.common.serializers.ProjectSerializer."
+                "get_extra_kwargs"
             ),
             return_value={},
         ).start()
         obj = PluginCreateSerializer()
-        obj.context['view'] = mock.Mock(
-            action='list',
+        obj.context["view"] = mock.Mock(
+            action="list",
         )
-        self.assertIn(member='releases', container=obj.fields)
-        field = obj.fields['releases']
+        self.assertIn(member="releases", container=obj.fields)
+        field = obj.fields["releases"]
         self.assertIsInstance(obj=field, cls=PluginCreateReleaseSerializer)
         self.assertTrue(expr=field.write_only)
 
@@ -148,7 +150,7 @@ class PluginCreateSerializerTestCase(TestCase):
         )
         self.assertEqual(
             first=PluginCreateSerializer.Meta.fields,
-            second=PluginSerializer.Meta.fields + ('releases',),
+            second=PluginSerializer.Meta.fields + ("releases",),
         )
 
 
@@ -223,32 +225,32 @@ class PluginReleasePackageRequirementSerializerTestCase(TestCase):
 
     def test_name_field(self):
         obj = PluginReleasePackageRequirementSerializer()
-        self.assertIn(member='name', container=obj.fields)
-        field = obj.fields['name']
+        self.assertIn(member="name", container=obj.fields)
+        field = obj.fields["name"]
         self.assertIsInstance(obj=field, cls=ReadOnlyField)
         self.assertEqual(
             first=field.source,
-            second='package_requirement.name',
+            second="package_requirement.name",
         )
 
     def test_slug_field(self):
         obj = PluginReleasePackageRequirementSerializer()
-        self.assertIn(member='slug', container=obj.fields)
-        field = obj.fields['slug']
+        self.assertIn(member="slug", container=obj.fields)
+        field = obj.fields["slug"]
         self.assertIsInstance(obj=field, cls=ReadOnlyField)
         self.assertEqual(
             first=field.source,
-            second='package_requirement.slug',
+            second="package_requirement.slug",
         )
 
     def test_version_field(self):
         obj = PluginReleasePackageRequirementSerializer()
-        self.assertIn(member='version', container=obj.fields)
-        field = obj.fields['version']
+        self.assertIn(member="version", container=obj.fields)
+        field = obj.fields["version"]
         self.assertIsInstance(obj=field, cls=ReadOnlyField)
         self.assertEqual(
             first=field.source,
-            second='version',
+            second="version",
         )
 
     def test_meta_class(self):
@@ -300,8 +302,8 @@ class PluginReleaseSerializerTestCase(TestCase):
 
     def test_download_requirements(self):
         obj = PluginReleaseSerializer()
-        self.assertIn(member='download_requirements', container=obj.fields)
-        field = obj.fields['download_requirements']
+        self.assertIn(member="download_requirements", container=obj.fields)
+        field = obj.fields["download_requirements"]
         self.assertIsInstance(obj=field, cls=ListSerializer)
         self.assertTrue(expr=field.many)
         self.assertTrue(expr=field.read_only)
@@ -311,14 +313,14 @@ class PluginReleaseSerializerTestCase(TestCase):
         )
         self.assertEqual(
             first=field.source,
-            second='pluginreleasedownloadrequirement_set',
+            second="pluginreleasedownloadrequirement_set",
         )
         self.assertTrue(expr=field.child.read_only)
 
     def test_package_requirements(self):
         obj = PluginReleaseSerializer()
-        self.assertIn(member='package_requirements', container=obj.fields)
-        field = obj.fields['package_requirements']
+        self.assertIn(member="package_requirements", container=obj.fields)
+        field = obj.fields["package_requirements"]
         self.assertIsInstance(obj=field, cls=ListSerializer)
         self.assertTrue(expr=field.many)
         self.assertTrue(expr=field.read_only)
@@ -328,14 +330,14 @@ class PluginReleaseSerializerTestCase(TestCase):
         )
         self.assertEqual(
             first=field.source,
-            second='pluginreleasepackagerequirement_set',
+            second="pluginreleasepackagerequirement_set",
         )
         self.assertTrue(expr=field.child.read_only)
 
     def test_pypi_requirements(self):
         obj = PluginReleaseSerializer()
-        self.assertIn(member='pypi_requirements', container=obj.fields)
-        field = obj.fields['pypi_requirements']
+        self.assertIn(member="pypi_requirements", container=obj.fields)
+        field = obj.fields["pypi_requirements"]
         self.assertIsInstance(obj=field, cls=ListSerializer)
         self.assertTrue(expr=field.many)
         self.assertTrue(expr=field.read_only)
@@ -345,14 +347,14 @@ class PluginReleaseSerializerTestCase(TestCase):
         )
         self.assertEqual(
             first=field.source,
-            second='pluginreleasepypirequirement_set',
+            second="pluginreleasepypirequirement_set",
         )
         self.assertTrue(expr=field.child.read_only)
 
     def test_vcs_requirements(self):
         obj = PluginReleaseSerializer()
-        self.assertIn(member='vcs_requirements', container=obj.fields)
-        field = obj.fields['vcs_requirements']
+        self.assertIn(member="vcs_requirements", container=obj.fields)
+        field = obj.fields["vcs_requirements"]
         self.assertIsInstance(obj=field, cls=ListSerializer)
         self.assertTrue(expr=field.many)
         self.assertTrue(expr=field.read_only)
@@ -362,7 +364,7 @@ class PluginReleaseSerializerTestCase(TestCase):
         )
         self.assertEqual(
             first=field.source,
-            second='pluginreleaseversioncontrolrequirement_set',
+            second="pluginreleaseversioncontrolrequirement_set",
         )
         self.assertTrue(expr=field.child.read_only)
 
@@ -408,7 +410,7 @@ class PluginSerializerTestCase(TestCase):
     def test_primary_attributes(self):
         self.assertEqual(
             first=PluginSerializer.project_type,
-            second='plugin',
+            second="plugin",
         )
         self.assertEqual(
             first=PluginSerializer.release_model,
@@ -417,49 +419,49 @@ class PluginSerializerTestCase(TestCase):
 
     def test_get_fields(self):
         obj = PluginSerializer()
-        obj.context['view'] = mock.Mock(
-            action='list',
+        obj.context["view"] = mock.Mock(
+            action="list",
         )
         fields = obj.get_fields()
         self.assertSetEqual(
             set1=set(fields.keys()),
             set2={
-                'name',
-                'slug',
-                'total_downloads',
-                'current_release',
-                'created',
-                'updated',
-                'synopsis',
-                'description',
-                'configuration',
-                'logo',
-                'video',
-                'owner',
-                'contributors',
+                "name",
+                "slug",
+                "total_downloads",
+                "current_release",
+                "created",
+                "updated",
+                "synopsis",
+                "description",
+                "configuration",
+                "logo",
+                "video",
+                "owner",
+                "contributors",
             },
         )
 
         obj = PluginSerializer()
-        obj.context['view'] = mock.Mock(
-            action='retrieve',
+        obj.context["view"] = mock.Mock(
+            action="retrieve",
         )
         fields = obj.get_fields()
         self.assertSetEqual(
             set1=set(fields.keys()),
             set2={
-                'name',
-                'slug',
-                'total_downloads',
-                'current_release',
-                'created',
-                'updated',
-                'synopsis',
-                'description',
-                'configuration',
-                'logo',
-                'video',
-                'owner',
+                "name",
+                "slug",
+                "total_downloads",
+                "current_release",
+                "created",
+                "updated",
+                "synopsis",
+                "description",
+                "configuration",
+                "logo",
+                "video",
+                "owner",
             },
         )
 
@@ -504,9 +506,9 @@ class SubPluginPathSerializerTestCase(TestCase):
     def test_get_field_names(self):
         obj = SubPluginPathSerializer(
             context={
-                'request': mock.Mock(
-                    method='POST',
-                )
+                "request": mock.Mock(
+                    method="POST",
+                ),
             },
         )
         field_names = obj.get_field_names(
@@ -516,18 +518,18 @@ class SubPluginPathSerializerTestCase(TestCase):
         self.assertTupleEqual(
             tuple1=field_names,
             tuple2=(
-                'allow_module',
-                'allow_package_using_basename',
-                'allow_package_using_init',
-                'path',
+                "allow_module",
+                "allow_package_using_basename",
+                "allow_package_using_init",
+                "path",
             ),
         )
 
         obj = SubPluginPathSerializer(
             context={
-                'request': mock.Mock(
-                    method='PATCH',
-                )
+                "request": mock.Mock(
+                    method="PATCH",
+                ),
             },
         )
         field_names = obj.get_field_names(
@@ -537,9 +539,9 @@ class SubPluginPathSerializerTestCase(TestCase):
         self.assertTupleEqual(
             tuple1=field_names,
             tuple2=(
-                'allow_module',
-                'allow_package_using_basename',
-                'allow_package_using_init',
+                "allow_module",
+                "allow_package_using_basename",
+                "allow_package_using_init",
             ),
         )
 
@@ -547,16 +549,16 @@ class SubPluginPathSerializerTestCase(TestCase):
         plugin = PluginFactory()
         obj = SubPluginPathSerializer(
             context={
-                'view': mock.Mock(
-                    project_type='plugin',
+                "view": mock.Mock(
+                    project_type="plugin",
                     project=plugin,
-                )
-            }
+                ),
+            },
         )
         field_names = (
-            'allow_module',
-            'allow_package_using_basename',
-            'allow_package_using_init',
+            "allow_module",
+            "allow_package_using_basename",
+            "allow_package_using_init",
         )
         attrs = {
             field_name: False for field_name in field_names
@@ -580,7 +582,7 @@ class SubPluginPathSerializerTestCase(TestCase):
             )
             self.assertEqual(
                 first=error.code,
-                second='invalid',
+                second="invalid",
             )
 
         for field_name in field_names:
@@ -591,7 +593,7 @@ class SubPluginPathSerializerTestCase(TestCase):
             value = obj.validate(attrs=current_attrs)
             self.assertDictEqual(
                 d1=value,
-                d2={**current_attrs, **{'plugin': plugin}},
+                d2={**current_attrs, "plugin": plugin},
             )
 
     def test_meta_class(self):
@@ -602,11 +604,11 @@ class SubPluginPathSerializerTestCase(TestCase):
         self.assertTupleEqual(
             tuple1=SubPluginPathSerializer.Meta.fields,
             tuple2=(
-                'allow_module',
-                'allow_package_using_basename',
-                'allow_package_using_init',
-                'path',
-            )
+                "allow_module",
+                "allow_package_using_basename",
+                "allow_package_using_init",
+                "path",
+            ),
         )
 
 
@@ -617,7 +619,7 @@ class MinimalPluginSerializerTestCase(TestCase):
         )
 
     def test_declared_fields(self):
-        declared_fields = getattr(MinimalPluginSerializer, '_declared_fields')
+        declared_fields = MinimalPluginSerializer._declared_fields
         self.assertEqual(
             first=len(declared_fields),
             second=0,
@@ -631,8 +633,8 @@ class MinimalPluginSerializerTestCase(TestCase):
         self.assertTupleEqual(
             tuple1=MinimalPluginSerializer.Meta.fields,
             tuple2=(
-                'name',
-                'slug',
+                "name",
+                "slug",
             ),
         )
 
@@ -645,7 +647,7 @@ class PluginReleaseBaseTestCase(TestCase):
         )
         self.assertEqual(
             first=PluginReleaseBase.project_type,
-            second='plugin',
+            second="plugin",
         )
 
     def test_zip_parser(self):
@@ -656,13 +658,13 @@ class PluginReleaseBaseTestCase(TestCase):
 
     def test_get_project_kwargs(self):
         obj = PluginReleaseBase()
-        slug = 'test-plugin'
+        slug = "test-plugin"
         obj.context = {
-            'view': mock.Mock(
-                kwargs={'plugin_slug': slug},
+            "view": mock.Mock(
+                kwargs={"plugin_slug": slug},
             ),
         }
         self.assertDictEqual(
             d1=obj.get_project_kwargs(),
-            d2={'pk': slug},
+            d2={"pk": slug},
         )

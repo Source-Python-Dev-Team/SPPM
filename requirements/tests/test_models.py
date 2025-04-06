@@ -6,8 +6,8 @@ from django.db import models
 from django.test import TestCase
 
 # App
-from requirements.constants import PYPI_URL
 from requirements.constants import (
+    PYPI_URL,
     REQUIREMENT_NAME_MAX_LENGTH,
     REQUIREMENT_SLUG_MAX_LENGTH,
     REQUIREMENT_URL_MAX_LENGTH,
@@ -34,7 +34,7 @@ class DownloadRequirementTestCase(TestCase):
         )
 
     def test_url_field(self):
-        field = DownloadRequirement._meta.get_field('url')
+        field = DownloadRequirement._meta.get_field("url")
         self.assertIsInstance(
             obj=field,
             cls=models.CharField,
@@ -49,11 +49,11 @@ class DownloadRequirementTestCase(TestCase):
     def test_meta_class(self):
         self.assertEqual(
             first=DownloadRequirement._meta.verbose_name,
-            second='Download Requirement',
+            second="Download Requirement",
         )
         self.assertEqual(
             first=DownloadRequirement._meta.verbose_name_plural,
-            second='Download Requirements',
+            second="Download Requirements",
         )
 
     def test__str__(self):
@@ -71,7 +71,7 @@ class PyPiRequirementTestCase(TestCase):
         )
 
     def test_name_field(self):
-        field = PyPiRequirement._meta.get_field('name')
+        field = PyPiRequirement._meta.get_field("name")
         self.assertIsInstance(
             obj=field,
             cls=models.CharField,
@@ -85,7 +85,7 @@ class PyPiRequirementTestCase(TestCase):
         self.assertFalse(expr=field.null)
 
     def test_slug_field(self):
-        field = PyPiRequirement._meta.get_field('slug')
+        field = PyPiRequirement._meta.get_field("slug")
         self.assertIsInstance(
             obj=field,
             cls=models.SlugField,
@@ -101,11 +101,11 @@ class PyPiRequirementTestCase(TestCase):
     def test_meta_class(self):
         self.assertEqual(
             first=PyPiRequirement._meta.verbose_name,
-            second='PyPi Requirement',
+            second="PyPi Requirement",
         )
         self.assertEqual(
             first=PyPiRequirement._meta.verbose_name_plural,
-            second='PyPi Requirements',
+            second="PyPi Requirements",
         )
 
     def test__str__(self):
@@ -119,7 +119,7 @@ class PyPiRequirementTestCase(TestCase):
         pypi_requirement = PyPiRequirementFactory()
         self.assertEqual(
             first=pypi_requirement.get_pypi_url(),
-            second=PYPI_URL + f'/{pypi_requirement.name}'
+            second=PYPI_URL + f"/{pypi_requirement.name}",
         )
 
 
@@ -130,7 +130,7 @@ class VersionControlRequirementTestCase(TestCase):
         )
 
     def test_url_field(self):
-        field = VersionControlRequirement._meta.get_field('url')
+        field = VersionControlRequirement._meta.get_field("url")
         self.assertIsInstance(
             obj=field,
             cls=models.CharField,
@@ -145,11 +145,11 @@ class VersionControlRequirementTestCase(TestCase):
     def test_meta_class(self):
         self.assertEqual(
             first=VersionControlRequirement._meta.verbose_name,
-            second='Version Control Requirement',
+            second="Version Control Requirement",
         )
         self.assertEqual(
             first=VersionControlRequirement._meta.verbose_name_plural,
-            second='Version Control Requirements',
+            second="Version Control Requirements",
         )
 
     def test__str__(self):

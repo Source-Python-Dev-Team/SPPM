@@ -27,9 +27,9 @@ class TagAdminTestCase(TestCase):
         self.assertTupleEqual(
             tuple1=TagAdmin.list_display,
             tuple2=(
-                'name',
-                'black_listed',
-                'creator',
+                "name",
+                "black_listed",
+                "creator",
             ),
         )
 
@@ -39,13 +39,13 @@ class TagAdminTestCase(TestCase):
     def test_list_filter(self):
         self.assertTupleEqual(
             tuple1=TagAdmin.list_filter,
-            tuple2=('black_listed',),
+            tuple2=("black_listed",),
         )
 
     def test_list_editable(self):
         self.assertTupleEqual(
             tuple1=TagAdmin.list_editable,
-            tuple2=('black_listed',),
+            tuple2=("black_listed",),
         )
 
     def test_raw_id_fields(self):
@@ -57,22 +57,22 @@ class TagAdminTestCase(TestCase):
     def test_readonly_fields(self):
         self.assertTupleEqual(
             tuple1=TagAdmin.readonly_fields,
-            tuple2=('creator', 'name'),
+            tuple2=("creator", "name"),
         )
 
     def test_get_queryset(self):
-        query = TagAdmin(Tag, '').get_queryset('').query
+        query = TagAdmin(Tag, "").get_queryset("").query
         self.assertDictEqual(
             d1=query.select_related,
-            d2={'creator': {'user': {}}}
+            d2={"creator": {"user": {}}},
         )
 
     def test_has_add_permission(self):
         self.assertFalse(
-            expr=TagAdmin(Tag, '').has_add_permission(''),
+            expr=TagAdmin(Tag, "").has_add_permission(""),
         )
 
     def test_has_delete_permission(self):
         self.assertFalse(
-            expr=TagAdmin(Tag, '').has_delete_permission(''),
+            expr=TagAdmin(Tag, "").has_delete_permission(""),
         )

@@ -25,11 +25,11 @@ class PackageReleaseDownloadRequirementTestCase(TestCase):
             expr=issubclass(
                 PackageReleaseDownloadRequirement,
                 AbstractUUIDPrimaryKeyModel,
-            )
+            ),
         )
 
     def test_package_release_field(self):
-        field = PackageReleaseDownloadRequirement._meta.get_field('package_release')
+        field = PackageReleaseDownloadRequirement._meta.get_field("package_release")
         self.assertIsInstance(
             obj=field,
             cls=models.ForeignKey,
@@ -47,7 +47,7 @@ class PackageReleaseDownloadRequirementTestCase(TestCase):
 
     def test_download_requirement_field(self):
         field = PackageReleaseDownloadRequirement._meta.get_field(
-            'download_requirement',
+            "download_requirement",
         )
         self.assertIsInstance(
             obj=field,
@@ -65,7 +65,7 @@ class PackageReleaseDownloadRequirementTestCase(TestCase):
         self.assertFalse(expr=field.null)
 
     def test_optional_field(self):
-        field = PackageReleaseDownloadRequirement._meta.get_field('optional')
+        field = PackageReleaseDownloadRequirement._meta.get_field("optional")
         self.assertIsInstance(
             obj=field,
             cls=models.BooleanField,
@@ -80,7 +80,7 @@ class PackageReleaseDownloadRequirementTestCase(TestCase):
             first=str(
                 PackageReleaseDownloadRequirementFactory(
                     download_requirement=requirement,
-                )
+                ),
             ),
             second=requirement.url,
         )
@@ -88,13 +88,13 @@ class PackageReleaseDownloadRequirementTestCase(TestCase):
     def test_meta_class(self):
         self.assertTupleEqual(
             tuple1=PackageReleaseDownloadRequirement._meta.unique_together,
-            tuple2=(('package_release', 'download_requirement'),),
+            tuple2=(("package_release", "download_requirement"),),
         )
         self.assertEqual(
             first=PackageReleaseDownloadRequirement._meta.verbose_name,
-            second='Package Release Download Requirement',
+            second="Package Release Download Requirement",
         )
         self.assertEqual(
             first=PackageReleaseDownloadRequirement._meta.verbose_name_plural,
-            second='Package Release Download Requirements',
+            second="Package Release Download Requirements",
         )

@@ -13,12 +13,11 @@ from rest_framework.filters import OrderingFilter
 from rest_framework.permissions import SAFE_METHODS
 from rest_framework.viewsets import ModelViewSet
 
-
 # =============================================================================
 # ALL DECLARATION
 # =============================================================================
 __all__ = (
-    'ProjectRelatedInfoMixin',
+    "ProjectRelatedInfoMixin",
 )
 
 
@@ -29,7 +28,7 @@ class ProjectRelatedInfoMixin(ModelViewSet):
     """Mixin used to retrieve information for a specific project."""
 
     filter_backends = (OrderingFilter, DjangoFilterBackend)
-    http_method_names = ('get', 'post', 'delete', 'options')
+    http_method_names = ("get", "post", "delete", "options")
 
     allow_retrieve_access = False
     owner_only_id_access = False
@@ -45,9 +44,9 @@ class ProjectRelatedInfoMixin(ModelViewSet):
         """Return a Queryset for the project's contributors."""
         return list(
             self.project.contributors.values_list(
-                'user',
+                "user",
                 flat=True,
-            )
+            ),
         )
 
     @cached_property
@@ -56,7 +55,7 @@ class ProjectRelatedInfoMixin(ModelViewSet):
         kwargs = self.get_project_kwargs()
         try:
             return self.project_model.objects.select_related(
-                'owner__user'
+                "owner__user",
             ).get(**kwargs)
         except self.project_model.DoesNotExist as exception:
             raise NotFound(
@@ -66,39 +65,41 @@ class ProjectRelatedInfoMixin(ModelViewSet):
     @property
     def project_model(self):
         """Return the model to use for the project."""
-        raise NotImplementedError(
+        msg = (
             f'Class "{self.__class__.__name__}" must implement a '
             '"project_model" attribute.'
         )
+        raise NotImplementedError(msg)
 
     @property
     def project_type(self):
         """Return the project's type."""
-        raise NotImplementedError(
+        msg = (
             f'Class "{self.__class__.__name__}" must implement a '
             '"project_type" attribute.'
         )
+        raise NotImplementedError(msg)
 
     def get_project_kwargs(self):
         """Return the kwargs to use to filter for the project."""
         project_slug = f"{self.project_type.replace('-', '_')}_slug"
         return {
-            'slug': self.kwargs.get(project_slug)
+            "slug": self.kwargs.get(project_slug),
         }
 
     def get_queryset(self):
         """Filter the queryset to only the ones for the current project."""
         queryset = super().get_queryset()
         kwargs = {
-            self.project_type.replace('-', '_'): self.project
+            self.project_type.replace("-", "_"): self.project,
         }
         return queryset.filter(**kwargs)
 
     def get_view_name(self):
         """Return the name for the view."""
-        if hasattr(self, 'kwargs'):  # pragma: no branch
-            plural = 's' if self.action == 'list' else ''
-            return f'{self.project} - {self.related_model_type}{plural}'
+        if hasattr(self, "kwargs"):  # pragma: no branch
+            plural = "s" if self.action == "list" else ""
+            return f"{self.project} - {self.related_model_type}{plural}"
         return super().get_view_name()  # pragma: no cover
 
     def check_object_permissions(self, request, obj):
@@ -116,7 +117,7 @@ class ProjectRelatedInfoMixin(ModelViewSet):
 
     def check_permissions(self, request):
         """Only allow the owner and contributors to add data relationships."""
-        if request.method == 'POST':
+        if request.method == "POST":
             self._check_permissions(user_id=request.user.id)
 
         return super().check_permissions(request=request)

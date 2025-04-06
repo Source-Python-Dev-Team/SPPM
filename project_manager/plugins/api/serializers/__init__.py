@@ -17,7 +17,9 @@ from project_manager.api.common.serializers import (
     ProjectTagSerializer,
 )
 from project_manager.api.common.serializers.mixins import ProjectThroughMixin
-from project_manager.packages.api.common.serializers import ReleasePackageRequirementSerializer
+from project_manager.packages.api.common.serializers import (
+    ReleasePackageRequirementSerializer,
+)
 from project_manager.plugins.api.serializers.mixins import PluginReleaseBase
 from project_manager.plugins.models import (
     Plugin,
@@ -38,24 +40,23 @@ from requirements.api.serializers.common import (
     ReleaseVersionControlRequirementSerializer,
 )
 
-
 # =============================================================================
 # ALL DECLARATION
 # =============================================================================
 __all__ = (
-    'PluginContributorSerializer',
-    'PluginCreateReleaseSerializer',
-    'PluginCreateSerializer',
-    'PluginGameSerializer',
-    'PluginImageSerializer',
-    'PluginReleaseDownloadRequirementSerializer',
-    'PluginReleasePackageRequirementSerializer',
-    'PluginReleasePyPiRequirementSerializer',
-    'PluginReleaseSerializer',
-    'PluginReleaseVersionControlRequirementSerializer',
-    'PluginSerializer',
-    'PluginTagSerializer',
-    'SubPluginPathSerializer',
+    "PluginContributorSerializer",
+    "PluginCreateReleaseSerializer",
+    "PluginCreateSerializer",
+    "PluginGameSerializer",
+    "PluginImageSerializer",
+    "PluginReleaseDownloadRequirementSerializer",
+    "PluginReleasePackageRequirementSerializer",
+    "PluginReleasePyPiRequirementSerializer",
+    "PluginReleaseSerializer",
+    "PluginReleaseVersionControlRequirementSerializer",
+    "PluginSerializer",
+    "PluginTagSerializer",
+    "SubPluginPathSerializer",
 )
 
 
@@ -72,7 +73,7 @@ class PluginImageSerializer(ProjectImageSerializer):
 
 
 class PluginReleasePackageRequirementSerializer(
-    ReleasePackageRequirementSerializer
+    ReleasePackageRequirementSerializer,
 ):
     """Serializer for Plugin Release Package requirements."""
 
@@ -83,7 +84,7 @@ class PluginReleasePackageRequirementSerializer(
 
 
 class PluginReleaseDownloadRequirementSerializer(
-    ReleaseDownloadRequirementSerializer
+    ReleaseDownloadRequirementSerializer,
 ):
     """Serializer for Plugin Release Download requirements."""
 
@@ -103,7 +104,7 @@ class PluginReleasePyPiRequirementSerializer(ReleasePyPiRequirementSerializer):
 
 
 class PluginReleaseVersionControlRequirementSerializer(
-    ReleaseVersionControlRequirementSerializer
+    ReleaseVersionControlRequirementSerializer,
 ):
     """Serializer for Plugin Release VCS requirements."""
 
@@ -117,22 +118,22 @@ class PluginReleaseSerializer(PluginReleaseBase, ProjectReleaseSerializer):
     """Serializer for listing Plugin releases."""
 
     download_requirements = PluginReleaseDownloadRequirementSerializer(
-        source='pluginreleasedownloadrequirement_set',
+        source="pluginreleasedownloadrequirement_set",
         read_only=True,
         many=True,
     )
     package_requirements = PluginReleasePackageRequirementSerializer(
-        source='pluginreleasepackagerequirement_set',
+        source="pluginreleasepackagerequirement_set",
         read_only=True,
         many=True,
     )
     pypi_requirements = PluginReleasePyPiRequirementSerializer(
-        source='pluginreleasepypirequirement_set',
+        source="pluginreleasepypirequirement_set",
         read_only=True,
         many=True,
     )
     vcs_requirements = PluginReleaseVersionControlRequirementSerializer(
-        source='pluginreleaseversioncontrolrequirement_set',
+        source="pluginreleaseversioncontrolrequirement_set",
         read_only=True,
         many=True,
     )
@@ -144,7 +145,7 @@ class PluginReleaseSerializer(PluginReleaseBase, ProjectReleaseSerializer):
 
 
 class PluginCreateReleaseSerializer(
-    PluginReleaseBase, ProjectCreateReleaseSerializer
+    PluginReleaseBase, ProjectCreateReleaseSerializer,
 ):
     """Serializer for creating and retrieving Plugin releases."""
 
@@ -157,7 +158,7 @@ class PluginCreateReleaseSerializer(
 class PluginSerializer(ProjectSerializer):
     """Serializer for updating and listing Plugins."""
 
-    project_type = 'plugin'
+    project_type = "plugin"
     release_model = PluginRelease
 
     class Meta(ProjectSerializer.Meta):
@@ -177,7 +178,7 @@ class PluginCreateSerializer(PluginSerializer):
         """Define metaclass attributes."""
 
         fields = PluginSerializer.Meta.fields + (
-            'releases',
+            "releases",
         )
 
 
@@ -216,10 +217,10 @@ class SubPluginPathSerializer(ProjectThroughMixin):
 
         model = SubPluginPath
         fields = (
-            'allow_module',
-            'allow_package_using_basename',
-            'allow_package_using_init',
-            'path',
+            "allow_module",
+            "allow_package_using_basename",
+            "allow_package_using_init",
+            "path",
         )
 
     def get_field_names(self, declared_fields, info):
@@ -228,9 +229,9 @@ class SubPluginPathSerializer(ProjectThroughMixin):
             declared_fields=declared_fields,
             info=info,
         )
-        if self.context['request'].method == 'PATCH':
+        if self.context["request"].method == "PATCH":
             field_names = list(field_names)
-            field_names.remove('path')
+            field_names.remove("path")
             field_names = tuple(field_names)
 
         return field_names
@@ -239,23 +240,23 @@ class SubPluginPathSerializer(ProjectThroughMixin):
         """Validate that at least one of the 'Allow' fields is True."""
         if not any([
             attrs.get(
-                'allow_module',
-                getattr(self.instance, 'allow_module', None),
+                "allow_module",
+                getattr(self.instance, "allow_module", None),
             ),
             attrs.get(
-                'allow_package_using_basename',
-                getattr(self.instance, 'allow_package_using_basename', None),
+                "allow_package_using_basename",
+                getattr(self.instance, "allow_package_using_basename", None),
             ),
             attrs.get(
-                'allow_package_using_init',
-                getattr(self.instance, 'allow_package_using_init', None),
+                "allow_package_using_init",
+                getattr(self.instance, "allow_package_using_init", None),
             ),
         ]):
             message = "At least one of the 'Allow' fields must be True."
             raise ValidationError({
-                'allow_module': message,
-                'allow_package_using_basename': message,
-                'allow_package_using_init': message,
+                "allow_module": message,
+                "allow_package_using_basename": message,
+                "allow_package_using_init": message,
             })
 
         return super().validate(attrs=attrs)

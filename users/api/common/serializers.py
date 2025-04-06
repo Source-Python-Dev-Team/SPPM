@@ -10,12 +10,11 @@ from rest_framework.serializers import ModelSerializer
 # App
 from users.models import ForumUser
 
-
 # =============================================================================
 # ALL DECLARATION
 # =============================================================================
 __all__ = (
-    'ForumUserContributorSerializer',
+    "ForumUserContributorSerializer",
 )
 
 
@@ -32,8 +31,8 @@ class ForumUserContributorSerializer(ModelSerializer):
 
         model = ForumUser
         fields = (
-            'forum_id',
-            'username',
+            "forum_id",
+            "username",
         )
 
     @staticmethod

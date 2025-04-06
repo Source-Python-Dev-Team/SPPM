@@ -9,22 +9,21 @@ from rest_framework import routers
 # App
 from tags.api.views import TagViewSet
 
-
 # =============================================================================
 # ROUTERS
 # =============================================================================
 router = routers.SimpleRouter()
 router.register(
-    prefix='',
+    prefix="",
     viewset=TagViewSet,
-    basename='tags',
+    basename="tags",
 )
 
 
 # =============================================================================
 # GLOBAL VARIABLES
 # =============================================================================
-app_name = 'games'
+app_name = "games"
 
 urlpatterns = []
 urlpatterns += router.urls

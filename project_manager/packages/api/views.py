@@ -39,18 +39,17 @@ from project_manager.packages.models import (
     PackageTag,
 )
 
-
 # =============================================================================
 # ALL DECLARATION
 # =============================================================================
 __all__ = (
-    'PackageAPIView',
-    'PackageContributorViewSet',
-    'PackageGameViewSet',
-    'PackageImageViewSet',
-    'PackageReleaseViewSet',
-    'PackageTagViewSet',
-    'PackageViewSet',
+    "PackageAPIView",
+    "PackageContributorViewSet",
+    "PackageGameViewSet",
+    "PackageImageViewSet",
+    "PackageReleaseViewSet",
+    "PackageTagViewSet",
+    "PackageViewSet",
 )
 
 
@@ -60,7 +59,7 @@ __all__ = (
 class PackageAPIView(ProjectAPIView):
     """Package API routes."""
 
-    project_type = 'package'
+    project_type = "package"
 
 
 class PackageViewSet(ProjectViewSet):
@@ -69,12 +68,12 @@ class PackageViewSet(ProjectViewSet):
     __doc__ += ProjectViewSet.doc_string
     filterset_class = PackageFilterSet
     queryset = Package.objects.select_related(
-        'owner__user',
+        "owner__user",
     ).prefetch_related(
         Prefetch(
-            lookup='releases',
+            lookup="releases",
             queryset=PackageRelease.objects.order_by(
-                '-created',
+                "-created",
             ),
         ),
     )
@@ -88,11 +87,11 @@ class PackageImageViewSet(ProjectImageViewSet):
 
     __doc__ += ProjectImageViewSet.doc_string
     queryset = PackageImage.objects.select_related(
-        'package',
+        "package",
     )
     serializer_class = PackageImageSerializer
 
-    project_type = 'package'
+    project_type = "package"
     project_model = Package
 
 
@@ -101,45 +100,45 @@ class PackageReleaseViewSet(ProjectReleaseViewSet):
 
     __doc__ += ProjectReleaseViewSet.doc_string
     queryset = PackageRelease.objects.select_related(
-        'package',
-        'created_by__user',
+        "package",
+        "created_by__user",
     ).prefetch_related(
         Prefetch(
-            lookup='packagereleasepackagerequirement_set',
+            lookup="packagereleasepackagerequirement_set",
             queryset=PackageReleasePackageRequirement.objects.order_by(
-                'package_requirement__name',
+                "package_requirement__name",
             ).select_related(
-                'package_requirement',
-            )
+                "package_requirement",
+            ),
         ),
         Prefetch(
-            lookup='packagereleasedownloadrequirement_set',
+            lookup="packagereleasedownloadrequirement_set",
             queryset=PackageReleaseDownloadRequirement.objects.order_by(
-                'download_requirement__url',
+                "download_requirement__url",
             ).select_related(
-                'download_requirement',
-            )
+                "download_requirement",
+            ),
         ),
         Prefetch(
-            lookup='packagereleasepypirequirement_set',
+            lookup="packagereleasepypirequirement_set",
             queryset=PackageReleasePyPiRequirement.objects.order_by(
-                'pypi_requirement__name',
+                "pypi_requirement__name",
             ).select_related(
-                'pypi_requirement',
-            )
+                "pypi_requirement",
+            ),
         ),
         Prefetch(
-            lookup='packagereleaseversioncontrolrequirement_set',
+            lookup="packagereleaseversioncontrolrequirement_set",
             queryset=PackageReleaseVersionControlRequirement.objects.order_by(
-                'vcs_requirement__url',
+                "vcs_requirement__url",
             ).select_related(
-                'vcs_requirement',
-            )
+                "vcs_requirement",
+            ),
         ),
     )
     serializer_class = PackageReleaseSerializer
 
-    project_type = 'package'
+    project_type = "package"
     project_model = Package
 
 
@@ -148,12 +147,12 @@ class PackageGameViewSet(ProjectGameViewSet):
 
     __doc__ += ProjectGameViewSet.doc_string
     queryset = PackageGame.objects.select_related(
-        'game',
-        'package',
+        "game",
+        "package",
     )
     serializer_class = PackageGameSerializer
 
-    project_type = 'package'
+    project_type = "package"
     project_model = Package
 
 
@@ -162,12 +161,12 @@ class PackageTagViewSet(ProjectTagViewSet):
 
     __doc__ += ProjectTagViewSet.doc_string
     queryset = PackageTag.objects.select_related(
-        'tag',
-        'package',
+        "tag",
+        "package",
     )
     serializer_class = PackageTagSerializer
 
-    project_type = 'package'
+    project_type = "package"
     project_model = Package
 
 
@@ -176,10 +175,10 @@ class PackageContributorViewSet(ProjectContributorViewSet):
 
     __doc__ += ProjectContributorViewSet.doc_string
     queryset = PackageContributor.objects.select_related(
-        'user__user',
-        'package',
+        "user__user",
+        "package",
     )
     serializer_class = PackageContributorSerializer
 
-    project_type = 'package'
+    project_type = "package"
     project_model = Package

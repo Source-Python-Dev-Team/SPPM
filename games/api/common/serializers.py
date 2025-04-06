@@ -9,12 +9,11 @@ from rest_framework.serializers import ModelSerializer
 # App
 from games.models import Game
 
-
 # =============================================================================
 # ALL DECLARATION
 # =============================================================================
 __all__ = (
-    'MinimalGameSerializer',
+    "MinimalGameSerializer",
 )
 
 
@@ -29,7 +28,7 @@ class MinimalGameSerializer(ModelSerializer):
 
         model = Game
         fields = (
-            'name',
-            'slug',
-            'icon',
+            "name",
+            "slug",
+            "icon",
         )

@@ -12,29 +12,28 @@ from project_manager.sub_plugins.views import (
     SubPluginView,
 )
 
-
 # =============================================================================
 # GLOBAL VARIABLES
 # =============================================================================
-app_name = 'sub-plugins'
+app_name = "sub-plugins"
 
 urlpatterns = [
     path(
         # /plugins/<slug>/sub-plugins
-        route='',
+        route="",
         view=SubPluginView.as_view(),
-        name='list',
+        name="list",
     ),
     path(
         # /plugins/<slug>/sub-plugins/create
-        route='create',
+        route="create",
         view=SubPluginCreateView.as_view(),
-        name='create',
+        name="create",
     ),
     path(
         # /plugins/<slug>/sub-plugins/<sub_plugin_slug>
-        route='<slug:sub_plugin_slug>/',
+        route="<slug:sub_plugin_slug>/",
         view=SubPluginView.as_view(),
-        name='detail',
+        name="detail",
     ),
 ]

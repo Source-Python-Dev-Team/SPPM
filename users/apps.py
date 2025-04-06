@@ -6,12 +6,11 @@
 # Django
 from django.apps import AppConfig
 
-
 # =============================================================================
 # ALL DECLARATION
 # =============================================================================
 __all__ = (
-    'UserConfig',
+    "UserConfig",
 )
 
 
@@ -21,5 +20,5 @@ __all__ = (
 class UserConfig(AppConfig):
     """User app config."""
 
-    name = 'users'
-    verbose_name = 'Users'
+    name = "users"
+    verbose_name = "Users"

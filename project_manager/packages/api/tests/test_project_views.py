@@ -42,8 +42,8 @@ from requirements.models import (
 )
 from test_utils.factories.games import GameFactory
 from test_utils.factories.packages import (
-    PackageFactory,
     PackageContributorFactory,
+    PackageFactory,
     PackageGameFactory,
     PackageReleaseFactory,
     PackageTagFactory,
@@ -67,7 +67,7 @@ class PackageViewSetTestCase(APITestCase):
         cls.owner = ForumUserFactory()
         cls.package_1 = PackageFactory(
             owner=cls.owner,
-            logo='logo.jpg',
+            logo="logo.jpg",
             created=now() - timedelta(minutes=3),
             updated=now() - timedelta(minutes=2),
         )
@@ -79,26 +79,26 @@ class PackageViewSetTestCase(APITestCase):
         PackageReleaseFactory(
             created=now() - timedelta(minutes=3),
             package=cls.package_1,
-            zip_file='/media/release_v1.0.0.zip',
+            zip_file="/media/release_v1.0.0.zip",
         )
         cls.current_release_1 = PackageReleaseFactory(
             created=now() - timedelta(minutes=2),
             package=cls.package_1,
-            zip_file='/media/release_v1.0.1.zip',
+            zip_file="/media/release_v1.0.1.zip",
         )
         cls.current_release_2 = PackageReleaseFactory(
             package=cls.package_2,
-            zip_file='/media/release_v1.0.0.zip',
+            zip_file="/media/release_v1.0.0.zip",
         )
         cls.list_path = reverse(
-            viewname='api:packages:projects-list',
+            viewname="api:packages:projects-list",
         )
-        cls.detail_api = 'api:packages:projects-detail'
+        cls.detail_api = "api:packages:projects-detail"
         cls.detail_path = reverse(
             viewname=cls.detail_api,
             kwargs={
-                'pk': cls.package_1.slug,
-            }
+                "pk": cls.package_1.slug,
+            },
         )
         cls.contributor_1 = ForumUserFactory()
         cls.contributor_2 = ForumUserFactory()
@@ -113,102 +113,102 @@ class PackageViewSetTestCase(APITestCase):
         cls.regular_user = ForumUserFactory()
 
         cls.payload_1 = {
-            'name': cls.package_1.name,
-            'slug': cls.package_1.slug,
-            'total_downloads': cls.package_1.total_downloads,
-            'current_release': {
-                'version': cls.current_release_1.version,
-                'notes': cls.current_release_1.notes,
+            "name": cls.package_1.name,
+            "slug": cls.package_1.slug,
+            "total_downloads": cls.package_1.total_downloads,
+            "current_release": {
+                "version": cls.current_release_1.version,
+                "notes": cls.current_release_1.notes,
             },
-            'created': {
-                'actual': cls.package_1.created.strftime(
-                    '%Y-%m-%dT%H:%M:%S.%fZ',
+            "created": {
+                "actual": cls.package_1.created.strftime(
+                    "%Y-%m-%dT%H:%M:%S.%fZ",
                 ),
-                'locale': formats.date_format(
+                "locale": formats.date_format(
                     cls.package_1.created,
-                    'DATETIME_FORMAT',
+                    "DATETIME_FORMAT",
                 ),
-                'locale_short': formats.date_format(
+                "locale_short": formats.date_format(
                     cls.package_1.created,
-                    'SHORT_DATETIME_FORMAT',
+                    "SHORT_DATETIME_FORMAT",
                 ),
             },
-            'updated': {
-                'actual': cls.package_1.updated.strftime(
-                    '%Y-%m-%dT%H:%M:%S.%fZ',
+            "updated": {
+                "actual": cls.package_1.updated.strftime(
+                    "%Y-%m-%dT%H:%M:%S.%fZ",
                 ),
-                'locale': formats.date_format(
+                "locale": formats.date_format(
                     cls.package_1.updated,
-                    'DATETIME_FORMAT',
+                    "DATETIME_FORMAT",
                 ),
-                'locale_short': formats.date_format(
+                "locale_short": formats.date_format(
                     cls.package_1.updated,
-                    'SHORT_DATETIME_FORMAT',
+                    "SHORT_DATETIME_FORMAT",
                 ),
             },
-            'synopsis': cls.package_1.synopsis,
-            'description': cls.package_1.description,
-            'configuration': cls.package_1.configuration,
-            'video': cls.package_1.video,
-            'owner': {
-                'forum_id': cls.package_1.owner.forum_id,
-                'username': cls.package_1.owner.user.username,
+            "synopsis": cls.package_1.synopsis,
+            "description": cls.package_1.description,
+            "configuration": cls.package_1.configuration,
+            "video": cls.package_1.video,
+            "owner": {
+                "forum_id": cls.package_1.owner.forum_id,
+                "username": cls.package_1.owner.user.username,
             },
-            'contributors': [
+            "contributors": [
                 {
-                    'forum_id': cls.contributor_1.forum_id,
-                    'username': cls.contributor_1.user.username,
+                    "forum_id": cls.contributor_1.forum_id,
+                    "username": cls.contributor_1.user.username,
                 },
                 {
-                    'forum_id': cls.contributor_2.forum_id,
-                    'username': cls.contributor_2.user.username,
+                    "forum_id": cls.contributor_2.forum_id,
+                    "username": cls.contributor_2.user.username,
                 },
             ],
         }
         cls.payload_2 = {
-            'name': cls.package_2.name,
-            'slug': cls.package_2.slug,
-            'total_downloads': cls.package_2.total_downloads,
-            'current_release': {
-                'version': cls.current_release_2.version,
-                'notes': cls.current_release_2.notes,
+            "name": cls.package_2.name,
+            "slug": cls.package_2.slug,
+            "total_downloads": cls.package_2.total_downloads,
+            "current_release": {
+                "version": cls.current_release_2.version,
+                "notes": cls.current_release_2.notes,
             },
-            'created': {
-                'actual': cls.package_2.created.strftime(
-                    '%Y-%m-%dT%H:%M:%S.%fZ',
+            "created": {
+                "actual": cls.package_2.created.strftime(
+                    "%Y-%m-%dT%H:%M:%S.%fZ",
                 ),
-                'locale': formats.date_format(
+                "locale": formats.date_format(
                     cls.package_2.created,
-                    'DATETIME_FORMAT',
+                    "DATETIME_FORMAT",
                 ),
-                'locale_short': formats.date_format(
+                "locale_short": formats.date_format(
                     cls.package_2.created,
-                    'SHORT_DATETIME_FORMAT',
+                    "SHORT_DATETIME_FORMAT",
                 ),
             },
-            'updated': {
-                'actual': cls.package_2.updated.strftime(
-                    '%Y-%m-%dT%H:%M:%S.%fZ',
+            "updated": {
+                "actual": cls.package_2.updated.strftime(
+                    "%Y-%m-%dT%H:%M:%S.%fZ",
                 ),
-                'locale': formats.date_format(
+                "locale": formats.date_format(
                     cls.package_2.updated,
-                    'DATETIME_FORMAT',
+                    "DATETIME_FORMAT",
                 ),
-                'locale_short': formats.date_format(
+                "locale_short": formats.date_format(
                     cls.package_2.updated,
-                    'SHORT_DATETIME_FORMAT',
+                    "SHORT_DATETIME_FORMAT",
                 ),
             },
-            'synopsis': cls.package_2.synopsis,
-            'description': cls.package_2.description,
-            'configuration': cls.package_2.configuration,
-            'logo': None,
-            'video': cls.package_2.video,
-            'owner': {
-                'forum_id': cls.package_2.owner.forum_id,
-                'username': cls.package_2.owner.user.username,
+            "synopsis": cls.package_2.synopsis,
+            "description": cls.package_2.description,
+            "configuration": cls.package_2.configuration,
+            "logo": None,
+            "video": cls.package_2.video,
+            "owner": {
+                "forum_id": cls.package_2.owner.forum_id,
+                "username": cls.package_2.owner.user.username,
             },
-            'contributors': [],
+            "contributors": [],
         }
 
     @classmethod
@@ -233,53 +233,44 @@ class PackageViewSetTestCase(APITestCase):
             second=PackageCreateSerializer,
         )
         self.assertIs(expr1=PackageViewSet.queryset.model, expr2=Package)
-        prefetch_lookups = getattr(
-            PackageViewSet.queryset,
-            '_prefetch_related_lookups'
-        )
+        prefetch_lookups = PackageViewSet.queryset._prefetch_related_lookups
         self.assertEqual(first=len(prefetch_lookups), second=1)
         lookup = prefetch_lookups[0]
-        self.assertEqual(first=lookup.prefetch_to, second='releases')
+        self.assertEqual(first=lookup.prefetch_to, second="releases")
         self.assertEqual(
             first=lookup.queryset.query.order_by,
-            second=('-created',),
+            second=("-created",),
         )
 
         self.assertDictEqual(
             d1=PackageViewSet.queryset.query.select_related,
-            d2={'owner': {'user': {}}},
+            d2={"owner": {"user": {}}},
         )
 
     def test_http_method_names(self):
         self.assertTupleEqual(
             tuple1=PackageViewSet.http_method_names,
-            tuple2=('get', 'post', 'patch', 'options'),
+            tuple2=("get", "post", "patch", "options"),
         )
 
     def test_get_queryset(self):
         obj = PackageViewSet()
-        setattr(obj, 'action', 'retrieve')
-        prefetch_lookups = getattr(
-            obj.get_queryset(),
-            '_prefetch_related_lookups'
-        )
+        obj.action = "retrieve"
+        prefetch_lookups = obj.get_queryset()._prefetch_related_lookups
         self.assertEqual(first=len(prefetch_lookups), second=1)
 
-        setattr(obj, 'action', 'list')
-        prefetch_lookups = getattr(
-            obj.get_queryset(),
-            '_prefetch_related_lookups'
-        )
+        obj.action = "list"
+        prefetch_lookups = obj.get_queryset()._prefetch_related_lookups
         self.assertEqual(first=len(prefetch_lookups), second=2)
         lookup = prefetch_lookups[1]
-        self.assertEqual(first=lookup.prefetch_to, second='contributors')
+        self.assertEqual(first=lookup.prefetch_to, second="contributors")
         self.assertIs(
             expr1=lookup.queryset.model,
             expr2=ForumUser,
         )
         self.assertEqual(
             first=lookup.queryset.query.select_related,
-            second={'user': {}}
+            second={"user": {}},
         )
 
     @override_settings(DEBUG=True)
@@ -292,22 +283,22 @@ class PackageViewSetTestCase(APITestCase):
             second=status.HTTP_200_OK,
         )
         content = response.json()
-        self.assertEqual(first=content['count'], second=2)
+        self.assertEqual(first=content["count"], second=2)
         request = response.wsgi_request
-        domain = f'{request.scheme}://{request.get_host()}'
-        zip_file_1 = f'{domain}{self.current_release_1.get_absolute_url()}'
+        domain = f"{request.scheme}://{request.get_host()}"
+        zip_file_1 = f"{domain}{self.current_release_1.get_absolute_url()}"
         payload_1 = deepcopy(self.payload_1)
-        payload_1['current_release']['zip_file'] = zip_file_1
-        payload_1['logo'] = f'{domain}{self.package_1.logo.url}'
-        zip_file_2 = f'{domain}{self.current_release_2.get_absolute_url()}'
+        payload_1["current_release"]["zip_file"] = zip_file_1
+        payload_1["logo"] = f"{domain}{self.package_1.logo.url}"
+        zip_file_2 = f"{domain}{self.current_release_2.get_absolute_url()}"
         payload_2 = deepcopy(self.payload_2)
-        payload_2['current_release']['zip_file'] = zip_file_2
+        payload_2["current_release"]["zip_file"] = zip_file_2
         self.assertDictEqual(
-            d1=content['results'][0],
+            d1=content["results"][0],
             d2=payload_2,
         )
         self.assertDictEqual(
-            d1=content['results'][1],
+            d1=content["results"][1],
             d2=payload_1,
         )
 
@@ -320,13 +311,13 @@ class PackageViewSetTestCase(APITestCase):
             second=status.HTTP_200_OK,
         )
         content = response.json()
-        self.assertEqual(first=content['count'], second=2)
+        self.assertEqual(first=content["count"], second=2)
         self.assertDictEqual(
-            d1=content['results'][0],
+            d1=content["results"][0],
             d2=payload_2,
         )
         self.assertDictEqual(
-            d1=content['results'][1],
+            d1=content["results"][1],
             d2=payload_1,
         )
 
@@ -339,13 +330,13 @@ class PackageViewSetTestCase(APITestCase):
             second=status.HTTP_200_OK,
         )
         content = response.json()
-        self.assertEqual(first=content['count'], second=2)
+        self.assertEqual(first=content["count"], second=2)
         self.assertDictEqual(
-            d1=content['results'][0],
+            d1=content["results"][0],
             d2=payload_2,
         )
         self.assertDictEqual(
-            d1=content['results'][1],
+            d1=content["results"][1],
             d2=payload_1,
         )
 
@@ -358,13 +349,13 @@ class PackageViewSetTestCase(APITestCase):
             second=status.HTTP_200_OK,
         )
         content = response.json()
-        self.assertEqual(first=content['count'], second=2)
+        self.assertEqual(first=content["count"], second=2)
         self.assertDictEqual(
-            d1=content['results'][0],
+            d1=content["results"][0],
             d2=payload_2,
         )
         self.assertDictEqual(
-            d1=content['results'][1],
+            d1=content["results"][1],
             d2=payload_1,
         )
 
@@ -377,14 +368,14 @@ class PackageViewSetTestCase(APITestCase):
             second=status.HTTP_200_OK,
         )
         self.assertEqual(
-            first=response.json()['count'],
+            first=response.json()["count"],
             second=2,
         )
 
         # Validate tag filtering
         response = self.client.get(
             path=self.list_path,
-            data={'tag': 'test_tag'},
+            data={"tag": "test_tag"},
         )
         self.assertEqual(first=len(connection.queries), second=1)
         self.assertEqual(
@@ -392,17 +383,17 @@ class PackageViewSetTestCase(APITestCase):
             second=status.HTTP_200_OK,
         )
         self.assertEqual(
-            first=response.json()['count'],
+            first=response.json()["count"],
             second=0,
         )
-        tag = TagFactory(name='test_tag')
+        tag = TagFactory(name="test_tag")
         PackageTagFactory(
             package=self.package_1,
             tag=tag,
         )
         response = self.client.get(
             path=self.list_path,
-            data={'tag': 'test_tag'},
+            data={"tag": "test_tag"},
         )
         self.assertEqual(first=len(connection.queries), second=4)
         self.assertEqual(
@@ -410,14 +401,14 @@ class PackageViewSetTestCase(APITestCase):
             second=status.HTTP_200_OK,
         )
         self.assertEqual(
-            first=response.json()['count'],
+            first=response.json()["count"],
             second=1,
         )
 
         # Validate game filtering
         response = self.client.get(
             path=self.list_path,
-            data={'game': 'game1'},
+            data={"game": "game1"},
         )
         self.assertEqual(first=len(connection.queries), second=1)
         self.assertEqual(
@@ -425,13 +416,13 @@ class PackageViewSetTestCase(APITestCase):
             second=status.HTTP_200_OK,
         )
         self.assertEqual(
-            first=response.json()['count'],
+            first=response.json()["count"],
             second=0,
         )
         game = GameFactory(
-            name='Game1',
-            basename='game1',
-            icon='icon1.jpg',
+            name="Game1",
+            basename="game1",
+            icon="icon1.jpg",
         )
         PackageGameFactory(
             package=self.package_1,
@@ -439,7 +430,7 @@ class PackageViewSetTestCase(APITestCase):
         )
         response = self.client.get(
             path=self.list_path,
-            data={'game': 'game1'},
+            data={"game": "game1"},
         )
         self.assertEqual(first=len(connection.queries), second=4)
         self.assertEqual(
@@ -447,14 +438,14 @@ class PackageViewSetTestCase(APITestCase):
             second=status.HTTP_200_OK,
         )
         self.assertEqual(
-            first=response.json()['count'],
+            first=response.json()["count"],
             second=1,
         )
 
         # Validate user filtering
         response = self.client.get(
             path=self.list_path,
-            data={'user': self.regular_user.user.username},
+            data={"user": self.regular_user.user.username},
         )
         self.assertEqual(first=len(connection.queries), second=1)
         self.assertEqual(
@@ -462,12 +453,12 @@ class PackageViewSetTestCase(APITestCase):
             second=status.HTTP_200_OK,
         )
         self.assertEqual(
-            first=response.json()['count'],
+            first=response.json()["count"],
             second=0,
         )
         response = self.client.get(
             path=self.list_path,
-            data={'user': self.contributor_1.user.username},
+            data={"user": self.contributor_1.user.username},
         )
         self.assertEqual(first=len(connection.queries), second=4)
         self.assertEqual(
@@ -475,12 +466,12 @@ class PackageViewSetTestCase(APITestCase):
             second=status.HTTP_200_OK,
         )
         self.assertEqual(
-            first=response.json()['count'],
+            first=response.json()["count"],
             second=1,
         )
         response = self.client.get(
             path=self.list_path,
-            data={'user': self.owner.user.username},
+            data={"user": self.owner.user.username},
         )
         self.assertEqual(first=len(connection.queries), second=4)
         self.assertEqual(
@@ -488,7 +479,7 @@ class PackageViewSetTestCase(APITestCase):
             second=status.HTTP_200_OK,
         )
         self.assertEqual(
-            first=response.json()['count'],
+            first=response.json()["count"],
             second=2,
         )
 
@@ -496,28 +487,28 @@ class PackageViewSetTestCase(APITestCase):
     def test_get_details(self):
         environ = getattr(self.client, '_base_environ')()
         domain = f'{environ["wsgi.url_scheme"]}://{environ["SERVER_NAME"]}'
-        zip_file_1 = f'{domain}{self.current_release_1.get_absolute_url()}'
+        zip_file_1 = f"{domain}{self.current_release_1.get_absolute_url()}"
         payload_1 = deepcopy(self.payload_1)
-        payload_1['current_release']['zip_file'] = zip_file_1
-        payload_1['current_release']['download_requirements'] = []
-        payload_1['current_release']['package_requirements'] = []
-        payload_1['current_release']['pypi_requirements'] = []
-        payload_1['current_release']['version_control_requirements'] = []
-        payload_1['logo'] = f'{domain}{self.package_1.logo.url}'
-        del payload_1['contributors']
-        zip_file_2 = f'{domain}{self.current_release_2.get_absolute_url()}'
+        payload_1["current_release"]["zip_file"] = zip_file_1
+        payload_1["current_release"]["download_requirements"] = []
+        payload_1["current_release"]["package_requirements"] = []
+        payload_1["current_release"]["pypi_requirements"] = []
+        payload_1["current_release"]["version_control_requirements"] = []
+        payload_1["logo"] = f"{domain}{self.package_1.logo.url}"
+        del payload_1["contributors"]
+        zip_file_2 = f"{domain}{self.current_release_2.get_absolute_url()}"
         payload_2 = deepcopy(self.payload_2)
-        payload_2['current_release']['zip_file'] = zip_file_2
-        payload_2['current_release']['download_requirements'] = []
-        payload_2['current_release']['package_requirements'] = []
-        payload_2['current_release']['pypi_requirements'] = []
-        payload_2['current_release']['version_control_requirements'] = []
-        del payload_2['contributors']
+        payload_2["current_release"]["zip_file"] = zip_file_2
+        payload_2["current_release"]["download_requirements"] = []
+        payload_2["current_release"]["package_requirements"] = []
+        payload_2["current_release"]["pypi_requirements"] = []
+        payload_2["current_release"]["version_control_requirements"] = []
+        del payload_2["contributors"]
         detail_path_2 = reverse(
             viewname=self.detail_api,
             kwargs={
-                'pk': self.package_2.slug,
-            }
+                "pk": self.package_2.slug,
+            },
         )
         for path, payload in (
             (self.detail_path, payload_1),
@@ -578,18 +569,18 @@ class PackageViewSetTestCase(APITestCase):
     @override_settings(MEDIA_ROOT=MEDIA_ROOT)
     def test_post(self):
         # Verify non-logged-in user cannot create a package
-        base_path = settings.BASE_DIR / 'fixtures' / 'releases' / 'packages'
-        file_path = base_path / 'test-package' / 'test-package-v1.0.0.zip'
-        version = '1.0.0'
-        with file_path.open('rb') as open_file:
-            zip_file = UploadedFile(open_file, content_type='application/zip')
+        base_path = settings.BASE_DIR / "fixtures" / "releases" / "packages"
+        file_path = base_path / "test-package" / "test-package-v1.0.0.zip"
+        version = "1.0.0"
+        with file_path.open("rb") as open_file:
+            zip_file = UploadedFile(open_file, content_type="application/zip")
             response = self.client.post(
                 path=self.list_path,
                 data={
-                    'name': 'Test Package',
-                    'releases.notes': '',
-                    'releases.version': version,
-                    'releases.zip_file': zip_file,
+                    "name": "Test Package",
+                    "releases.notes": "",
+                    "releases.version": version,
+                    "releases.zip_file": zip_file,
                 },
             )
 
@@ -603,16 +594,16 @@ class PackageViewSetTestCase(APITestCase):
             first=Package.objects.count(),
             second=2,
         )
-        with file_path.open('rb') as open_file:
-            zip_file = UploadedFile(open_file, content_type='application/zip')
+        with file_path.open("rb") as open_file:
+            zip_file = UploadedFile(open_file, content_type="application/zip")
             self.client.force_login(self.regular_user.user)
             response = self.client.post(
                 path=self.list_path,
                 data={
-                    'name': 'Test Package',
-                    'releases.notes': '',
-                    'releases.version': version,
-                    'releases.zip_file': zip_file,
+                    "name": "Test Package",
+                    "releases.notes": "",
+                    "releases.version": version,
+                    "releases.zip_file": zip_file,
                 },
             )
 
@@ -625,7 +616,7 @@ class PackageViewSetTestCase(APITestCase):
             second=3,
         )
         content = response.json()
-        package = Package.objects.get(slug=content['slug'])
+        package = Package.objects.get(slug=content["slug"])
         self.assertEqual(
             first=package.releases.count(),
             second=1,
@@ -641,15 +632,15 @@ class PackageViewSetTestCase(APITestCase):
         )
 
         # Verify cannot create a package where the basename already exists
-        with file_path.open('rb') as open_file:
-            zip_file = UploadedFile(open_file, content_type='application/zip')
+        with file_path.open("rb") as open_file:
+            zip_file = UploadedFile(open_file, content_type="application/zip")
             response = self.client.post(
                 path=self.list_path,
                 data={
-                    'name': 'Test Package',
-                    'releases.notes': '',
-                    'releases.version': version,
-                    'releases.zip_file': zip_file,
+                    "name": "Test Package",
+                    "releases.notes": "",
+                    "releases.version": version,
+                    "releases.zip_file": zip_file,
                 },
             )
 
@@ -659,27 +650,27 @@ class PackageViewSetTestCase(APITestCase):
         )
         self.assertDictEqual(
             d1=response.json(),
-            d2={'basename': 'Package already exists. Cannot create.'}
+            d2={"basename": "Package already exists. Cannot create."},
         )
 
     @override_settings(MEDIA_ROOT=MEDIA_ROOT)
     def test_post_with_requirements(self):
-        base_path = settings.BASE_DIR / 'fixtures' / 'releases' / 'packages'
-        file_path = base_path / 'test-package' / 'test-package-requirements-v1.0.0.zip'
-        version = '1.0.0'
+        base_path = settings.BASE_DIR / "fixtures" / "releases" / "packages"
+        file_path = base_path / "test-package" / "test-package-requirements-v1.0.0.zip"
+        version = "1.0.0"
         custom_package_1 = PackageFactory(
-            basename='custom_package_1',
+            basename="custom_package_1",
         )
         PackageReleaseFactory(
             package=custom_package_1,
-            version='1.0.0',
+            version="1.0.0",
         )
         custom_package_2 = PackageFactory(
-            basename='custom_package_2',
+            basename="custom_package_2",
         )
         PackageReleaseFactory(
             package=custom_package_2,
-            version='1.0.0',
+            version="1.0.0",
         )
         self.assertEqual(
             first=DownloadRequirement.objects.count(),
@@ -694,15 +685,15 @@ class PackageViewSetTestCase(APITestCase):
             second=0,
         )
         self.client.force_login(self.owner.user)
-        with file_path.open('rb') as open_file:
-            zip_file = UploadedFile(open_file, content_type='application/zip')
+        with file_path.open("rb") as open_file:
+            zip_file = UploadedFile(open_file, content_type="application/zip")
             response = self.client.post(
                 path=self.list_path,
                 data={
-                    'name': 'Test Package',
-                    'releases.notes': '',
-                    'releases.version': version,
-                    'releases.zip_file': zip_file,
+                    "name": "Test Package",
+                    "releases.notes": "",
+                    "releases.version": version,
+                    "releases.zip_file": zip_file,
                 },
             )
 
@@ -711,7 +702,7 @@ class PackageViewSetTestCase(APITestCase):
             second=status.HTTP_201_CREATED,
         )
         contents = response.json()
-        package = Package.objects.get(slug=contents['slug'])
+        package = Package.objects.get(slug=contents["slug"])
         release = PackageRelease.objects.get(package=package)
         self.assertEqual(
             first=DownloadRequirement.objects.count(),
@@ -743,8 +734,8 @@ class PackageViewSetTestCase(APITestCase):
         response = self.client.patch(
             path=self.detail_path,
             data={
-                'synopsis': 'Test Synopsis',
-            }
+                "synopsis": "Test Synopsis",
+            },
         )
         self.assertEqual(
             first=response.status_code,
@@ -756,8 +747,8 @@ class PackageViewSetTestCase(APITestCase):
         response = self.client.patch(
             path=self.detail_path,
             data={
-                'synopsis': 'Test Synopsis',
-            }
+                "synopsis": "Test Synopsis",
+            },
         )
         self.assertEqual(
             first=response.status_code,
@@ -769,8 +760,8 @@ class PackageViewSetTestCase(APITestCase):
         response = self.client.patch(
             path=self.detail_path,
             data={
-                'synopsis': 'Test Synopsis',
-            }
+                "synopsis": "Test Synopsis",
+            },
         )
         self.assertEqual(
             first=response.status_code,
@@ -782,8 +773,8 @@ class PackageViewSetTestCase(APITestCase):
         response = self.client.patch(
             path=self.detail_path,
             data={
-                'synopsis': 'New Test Synopsis',
-            }
+                "synopsis": "New Test Synopsis",
+            },
         )
         self.assertEqual(
             first=response.status_code,
@@ -796,10 +787,10 @@ class PackageViewSetTestCase(APITestCase):
         self.assertEqual(first=response.status_code, second=status.HTTP_200_OK)
         content = response.json()
         self.assertEqual(
-            first=content['name'],
-            second='Package List',
+            first=content["name"],
+            second="Package List",
         )
-        self.assertNotIn(member='actions', container=content)
+        self.assertNotIn(member="actions", container=content)
 
         # Verify that normal user can POST
         self.client.force_login(user=self.regular_user.user)
@@ -807,11 +798,11 @@ class PackageViewSetTestCase(APITestCase):
         self.assertEqual(first=response.status_code, second=status.HTTP_200_OK)
         content = response.json()
         self.assertEqual(
-            first=content['name'],
-            second='Package List',
+            first=content["name"],
+            second="Package List",
         )
-        self.assertIn(member='actions', container=content)
-        self.assertSetEqual(set1=set(content['actions']), set2={'POST'})
+        self.assertIn(member="actions", container=content)
+        self.assertSetEqual(set1=set(content["actions"]), set2={"POST"})
 
     def test_options_object(self):
         # Verify that non-logged-in user cannot PATCH
@@ -819,10 +810,10 @@ class PackageViewSetTestCase(APITestCase):
         self.assertEqual(first=response.status_code, second=status.HTTP_200_OK)
         content = response.json()
         self.assertEqual(
-            first=content['name'],
-            second='Package Instance',
+            first=content["name"],
+            second="Package Instance",
         )
-        self.assertNotIn(member='actions', container=content)
+        self.assertNotIn(member="actions", container=content)
 
         # Verify that normal user cannot PATCH
         self.client.force_login(user=self.regular_user.user)
@@ -830,10 +821,10 @@ class PackageViewSetTestCase(APITestCase):
         self.assertEqual(first=response.status_code, second=status.HTTP_200_OK)
         content = response.json()
         self.assertEqual(
-            first=content['name'],
-            second='Package Instance',
+            first=content["name"],
+            second="Package Instance",
         )
-        self.assertNotIn(member='actions', container=content)
+        self.assertNotIn(member="actions", container=content)
 
         # Verify that contributors can PATCH
         self.client.force_login(user=self.contributor_1.user)
@@ -841,11 +832,11 @@ class PackageViewSetTestCase(APITestCase):
         self.assertEqual(first=response.status_code, second=status.HTTP_200_OK)
         content = response.json()
         self.assertEqual(
-            first=content['name'],
-            second='Package Instance',
+            first=content["name"],
+            second="Package Instance",
         )
-        self.assertIn(member='actions', container=content)
-        self.assertSetEqual(set1=set(content['actions']), set2={'PATCH'})
+        self.assertIn(member="actions", container=content)
+        self.assertSetEqual(set1=set(content["actions"]), set2={"PATCH"})
 
         # Verify that the owner can PATCH
         self.client.force_login(user=self.owner.user)
@@ -853,8 +844,8 @@ class PackageViewSetTestCase(APITestCase):
         self.assertEqual(first=response.status_code, second=status.HTTP_200_OK)
         content = response.json()
         self.assertEqual(
-            first=content['name'],
-            second='Package Instance',
+            first=content["name"],
+            second="Package Instance",
         )
-        self.assertIn(member='actions', container=content)
-        self.assertSetEqual(set1=set(content['actions']), set2={'PATCH'})
+        self.assertIn(member="actions", container=content)
+        self.assertSetEqual(set1=set(content["actions"]), set2={"PATCH"})

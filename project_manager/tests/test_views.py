@@ -38,7 +38,7 @@ from test_utils.factories.users import ForumUserFactory
 class StatisticsViewTestCase(TestCase):
 
     api_path = reverse(
-        viewname='statistics',
+        viewname="statistics",
     )
 
     def test_class_inheritance(self):
@@ -49,13 +49,13 @@ class StatisticsViewTestCase(TestCase):
     def test_http_method_names(self):
         self.assertTupleEqual(
             tuple1=StatisticsView.http_method_names,
-            tuple2=('get', 'options'),
+            tuple2=("get", "options"),
         )
 
     def test_template_name(self):
         self.assertEqual(
             first=StatisticsView.template_name,
-            second='statistics.html',
+            second="statistics.html",
         )
 
     def test_get(self):
@@ -146,28 +146,28 @@ class StatisticsViewTestCase(TestCase):
             second=status.HTTP_200_OK,
         )
         data = dict(response.context_data)
-        del data['view']
+        del data["view"]
         self.assertDictEqual(
             d1=data,
             d2={
-                'users': len(contributing_users),
-                'package_count': package_count,
-                'plugin_count': plugin_count,
-                'sub_plugin_count': sub_plugin_count,
-                'total_projects': sum([
+                "users": len(contributing_users),
+                "package_count": package_count,
+                "plugin_count": plugin_count,
+                "sub_plugin_count": sub_plugin_count,
+                "total_projects": sum([
                     package_count,
                     plugin_count,
                     sub_plugin_count,
                 ]),
-                'package_downloads': package_download_count,
-                'plugin_downloads': plugin_download_count,
-                'sub_plugin_downloads': sub_plugin_download_count,
-                'total_downloads': sum([
+                "package_downloads": package_download_count,
+                "plugin_downloads": plugin_download_count,
+                "sub_plugin_downloads": sub_plugin_download_count,
+                "total_downloads": sum([
                     package_download_count,
                     plugin_download_count,
                     sub_plugin_download_count,
-                ])
-            }
+                ]),
+            },
         )
 
     def test_options(self):
@@ -177,6 +177,6 @@ class StatisticsViewTestCase(TestCase):
             second=status.HTTP_200_OK,
         )
         self.assertIn(
-            member='Source.Python Project Manager Statistics',
+            member="Source.Python Project Manager Statistics",
             container=str(response.content),
         )

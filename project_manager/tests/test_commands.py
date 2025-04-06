@@ -19,33 +19,33 @@ from project_manager.management.commands.create_secret_key_file import ALLOWED_C
 class CommandsTestCase(TestCase):
 
     @mock.patch(
-        target='project_manager.management.commands.create_secret_key_file.SECRET_FILE'
+        target="project_manager.management.commands.create_secret_key_file.SECRET_FILE",
     )
     @mock.patch(
-        target='project_manager.management.commands.create_secret_key_file.get_random_string'
+        target="project_manager.management.commands.create_secret_key_file.get_random_string",
     )
     def test_create_secret_key_file(self, mock_get_random_string, mock_secret_file):
         length = 50
-        mock_secret_file.isfile.return_value = False
-        call_command('create_secret_key_file', length)
-        mock_secret_file.isfile.assert_called_once_with()
+        mock_secret_file.is_file.return_value = False
+        call_command("create_secret_key_file", length)
+        mock_secret_file.is_file.assert_called_once_with()
         mock_get_random_string.assert_called_once_with(
             length=length,
             allowed_chars=ALLOWED_CHARS,
         )
-        mock_secret_file.open.assert_called_once_with('w')
+        mock_secret_file.open.assert_called_once_with("w")
         open_file = mock_secret_file.open.return_value.__enter__.return_value
         open_file.write.assert_called_once_with(mock_get_random_string.return_value)
 
     @mock.patch(
-        target='project_manager.management.commands.create_secret_key_file.SECRET_FILE'
+        target="project_manager.management.commands.create_secret_key_file.SECRET_FILE",
     )
     def test_create_secret_key_file_key_file_exists(self, mock_secret_file):
-        mock_secret_file.isfile.return_value = True
+        mock_secret_file.is_file.return_value = True
         with self.assertRaises(CommandError) as context:
-            call_command('create_secret_key_file', 50)
+            call_command("create_secret_key_file", 50)
 
         self.assertEqual(
             first=str(context.exception),
-            second='Secret key file already exists.'
+            second="Secret key file already exists.",
         )

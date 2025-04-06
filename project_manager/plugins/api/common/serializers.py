@@ -9,12 +9,11 @@ from rest_framework.serializers import ModelSerializer
 # App
 from project_manager.plugins.models import Plugin
 
-
 # =============================================================================
 # ALL DECLARATION
 # =============================================================================
 __all__ = (
-    'MinimalPluginSerializer',
+    "MinimalPluginSerializer",
 )
 
 
@@ -29,6 +28,6 @@ class MinimalPluginSerializer(ModelSerializer):
 
         model = Plugin
         fields = (
-            'name',
-            'slug',
+            "name",
+            "slug",
         )

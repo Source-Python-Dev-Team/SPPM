@@ -7,15 +7,14 @@
 from django.conf import settings
 from django.db.models import F
 from django.http import Http404, HttpResponse
-from django.views.generic import View
 from django.utils.functional import cached_property
-
+from django.views.generic import View
 
 # =============================================================================
 # ALL DECLARATION
 # =============================================================================
 __all__ = (
-    'DownloadMixin',
+    "DownloadMixin",
 )
 
 
@@ -28,59 +27,63 @@ class DownloadMixin(View):
     @property
     def model(self):
         """Return the release model."""
-        raise NotImplementedError(
+        msg = (
             f'Class "{self.__class__.__name__}" must implement a '
             '"model" attribute.'
         )
+        raise NotImplementedError(msg)
 
     @property
     def base_url(self):
         """Return the base url for the download."""
-        raise NotImplementedError(
+        msg = (
             f'Class "{self.__class__.__name__}" must implement a '
             '"base_url" attribute.'
         )
+        raise NotImplementedError(msg)
 
     @property
     def project_model(self):
         """Return the project model."""
-        raise NotImplementedError(
+        msg = (
             f'Class "{self.__class__.__name__}" must implement a '
             '"project_model" attribute.'
         )
+        raise NotImplementedError(msg)
 
     @property
     def model_kwarg(self):
         """Return the project's kwarg key."""
-        raise NotImplementedError(
+        msg = (
             f'Class "{self.__class__.__name__}" must implement a '
             '"model_kwarg" attribute.'
         )
+        raise NotImplementedError(msg)
 
     @cached_property
     def full_path(self):
         """Return the full path for the download."""
-        return self.get_base_path() / self.kwargs['zip_file']
+        return self.get_base_path() / self.kwargs["zip_file"]
 
     def get_base_path(self):
         """Return the base path for the download."""
-        return settings.MEDIA_ROOT / self.base_url / self.kwargs['slug']
+        return settings.MEDIA_ROOT / self.base_url / self.kwargs["slug"]
 
     def dispatch(self, request, *args, **kwargs):
         """Handle dispatching the file."""
-        if not self.full_path.isfile():
+        if not self.full_path.is_file():
             raise Http404
         return super().dispatch(request, *args, **kwargs)
 
-    def get(self, request, **kwargs):
+    def get(self, _, **kwargs):
         """Handle the download and download counter."""
-        zip_file = kwargs['zip_file']
-        with self.full_path.open('rb') as open_file:
+        zip_file = kwargs["zip_file"]
+        with self.full_path.open("rb") as open_file:
             response = HttpResponse(
                 content=open_file.read(),
-                content_type='application/force-download',
+                content_type="application/force-download",
             )
-        response['Content-Disposition'] = f'attachment: filename={zip_file}'
+        response["Content-Disposition"] = f"attachment: filename={zip_file}"
         self.update_download_count(
             kwargs=kwargs,
             zip_file=zip_file,
@@ -89,18 +92,18 @@ class DownloadMixin(View):
 
     def get_instance(self, kwargs):
         """Return the project's instance."""
-        return self.project_model.objects.get(slug=kwargs['slug'])
+        return self.project_model.objects.get(slug=kwargs["slug"])
 
     def update_download_count(self, kwargs, zip_file):
         """Increments the download count for the release."""
         # TODO: update without having to use a query from get_instance
         instance = self.get_instance(kwargs)
         version = zip_file.split(
-            f'{instance.slug}-v', 1
-        )[1].rsplit('.', 1)[0]
+            f"{instance.slug}-v", 1,
+        )[1].rsplit(".", 1)[0]
         self.model.objects.filter(**{
             self.model_kwarg: instance,
-            'version': version,
+            "version": version,
         }).update(
-            download_count=F('download_count') + 1
+            download_count=F("download_count") + 1,
         )

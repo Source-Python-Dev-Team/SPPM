@@ -44,11 +44,11 @@ from users.models import ForumUser
 class PluginReleaseTestCase(TestCase):
     def test_model_inheritance(self):
         self.assertTrue(
-            expr=issubclass(PluginRelease, ProjectRelease)
+            expr=issubclass(PluginRelease, ProjectRelease),
         )
 
     def test_plugin_field(self):
-        field = PluginRelease._meta.get_field('plugin')
+        field = PluginRelease._meta.get_field("plugin")
         self.assertIsInstance(
             obj=field,
             cls=models.ForeignKey,
@@ -63,13 +63,13 @@ class PluginReleaseTestCase(TestCase):
         )
         self.assertEqual(
             first=field.remote_field.related_name,
-            second='releases',
+            second="releases",
         )
         self.assertFalse(expr=field.blank)
         self.assertFalse(expr=field.null)
 
     def test_created_by_field(self):
-        field = PluginRelease._meta.get_field('created_by')
+        field = PluginRelease._meta.get_field("created_by")
         self.assertIsInstance(
             obj=field,
             cls=models.ForeignKey,
@@ -84,13 +84,13 @@ class PluginReleaseTestCase(TestCase):
         )
         self.assertEqual(
             first=field.remote_field.related_name,
-            second='plugin_releases',
+            second="plugin_releases",
         )
         self.assertFalse(expr=field.blank)
         self.assertTrue(expr=field.null)
 
     def test_download_requirements_field(self):
-        field = PluginRelease._meta.get_field('download_requirements')
+        field = PluginRelease._meta.get_field("download_requirements")
         self.assertIsInstance(
             obj=field,
             cls=models.ManyToManyField,
@@ -101,7 +101,7 @@ class PluginReleaseTestCase(TestCase):
         )
         self.assertEqual(
             first=field.remote_field.related_name,
-            second='required_in_plugin_releases',
+            second="required_in_plugin_releases",
         )
         self.assertEqual(
             first=field.remote_field.through,
@@ -109,7 +109,7 @@ class PluginReleaseTestCase(TestCase):
         )
 
     def test_package_requirements_field(self):
-        field = PluginRelease._meta.get_field('package_requirements')
+        field = PluginRelease._meta.get_field("package_requirements")
         self.assertIsInstance(
             obj=field,
             cls=models.ManyToManyField,
@@ -120,7 +120,7 @@ class PluginReleaseTestCase(TestCase):
         )
         self.assertEqual(
             first=field.remote_field.related_name,
-            second='required_in_plugin_releases',
+            second="required_in_plugin_releases",
         )
         self.assertEqual(
             first=field.remote_field.through,
@@ -128,7 +128,7 @@ class PluginReleaseTestCase(TestCase):
         )
 
     def test_pypi_requirements_field(self):
-        field = PluginRelease._meta.get_field('pypi_requirements')
+        field = PluginRelease._meta.get_field("pypi_requirements")
         self.assertIsInstance(
             obj=field,
             cls=models.ManyToManyField,
@@ -139,7 +139,7 @@ class PluginReleaseTestCase(TestCase):
         )
         self.assertEqual(
             first=field.remote_field.related_name,
-            second='required_in_plugin_releases',
+            second="required_in_plugin_releases",
         )
         self.assertEqual(
             first=field.remote_field.through,
@@ -147,7 +147,7 @@ class PluginReleaseTestCase(TestCase):
         )
 
     def test_vcs_requirements_field(self):
-        field = PluginRelease._meta.get_field('vcs_requirements')
+        field = PluginRelease._meta.get_field("vcs_requirements")
         self.assertIsInstance(
             obj=field,
             cls=models.ManyToManyField,
@@ -158,7 +158,7 @@ class PluginReleaseTestCase(TestCase):
         )
         self.assertEqual(
             first=field.remote_field.related_name,
-            second='required_in_plugin_releases',
+            second="required_in_plugin_releases",
         )
         self.assertEqual(
             first=field.remote_field.through,
@@ -166,14 +166,14 @@ class PluginReleaseTestCase(TestCase):
         )
 
     def test_field_tracker(self):
-        self.assertTrue(expr=hasattr(PluginRelease, 'field_tracker'))
+        self.assertTrue(expr=hasattr(PluginRelease, "field_tracker"))
         self.assertIsInstance(
             obj=PluginRelease.field_tracker,
             cls=FieldTracker,
         )
         self.assertSetEqual(
             set1=PluginRelease.field_tracker.fields,
-            set2={'version'},
+            set2={"version"},
         )
 
     def test_primary_attributes(self):
@@ -187,9 +187,9 @@ class PluginReleaseTestCase(TestCase):
         )
 
     def test_file_name(self):
-        file_name = 'test.zip'
+        file_name = "test.zip"
         release = PluginReleaseFactory(
-            zip_file=f'directory/path/{file_name}',
+            zip_file=f"directory/path/{file_name}",
         )
         self.assertEqual(
             first=release.file_name,
@@ -200,29 +200,29 @@ class PluginReleaseTestCase(TestCase):
         release = PluginReleaseFactory()
         self.assertEqual(
             first=str(release),
-            second=f'{release.plugin} - {release.version}',
+            second=f"{release.plugin} - {release.version}",
         )
 
     def test_clean(self):
         release = PluginReleaseFactory(
-            version='1.0.0',
+            version="1.0.0",
         )
         PluginReleaseFactory(
             plugin=release.plugin,
-            version='1.0.1',
+            version="1.0.1",
         )
 
         release.clean()
-        release.version = '1.0.2'
+        release.version = "1.0.2"
         release.clean()
 
-        release.version = '1.0.1'
+        release.version = "1.0.1"
         with self.assertRaises(ValidationError) as context:
             release.clean()
 
         self.assertDictEqual(
             d1=context.exception.message_dict,
-            d2={'version': ['Version already exists.']}
+            d2={"version": ["Version already exists."]},
         )
 
     def test_save(self):
@@ -236,7 +236,7 @@ class PluginReleaseTestCase(TestCase):
             pk=None,
             plugin=plugin,
             created=release_created,
-            version='1.0.0',
+            version="1.0.0",
         )
         self.assertEqual(
             first=Plugin.objects.get(pk=plugin.pk).updated,
@@ -244,14 +244,14 @@ class PluginReleaseTestCase(TestCase):
         )
 
     def test_get_absolute_url(self):
-        release = PluginReleaseFactory(zip_file='/test/this.py')
+        release = PluginReleaseFactory(zip_file="/test/this.py")
         self.assertEqual(
             first=release.get_absolute_url(),
             second=reverse(
-                viewname='plugin-download',
+                viewname="plugin-download",
                 kwargs={
-                    'slug': release.plugin.slug,
-                    'zip_file': release.file_name,
+                    "slug": release.plugin.slug,
+                    "zip_file": release.file_name,
                 },
             ),
         )
@@ -260,13 +260,13 @@ class PluginReleaseTestCase(TestCase):
         self.assertTrue(issubclass(PluginRelease.Meta, ProjectRelease.Meta))
         self.assertTupleEqual(
             tuple1=PluginRelease._meta.unique_together,
-            tuple2=(('plugin', 'version'),),
+            tuple2=(("plugin", "version"),),
         )
         self.assertEqual(
             first=PluginRelease._meta.verbose_name,
-            second='Plugin Release',
+            second="Plugin Release",
         )
         self.assertEqual(
             first=PluginRelease._meta.verbose_name_plural,
-            second='Plugin Releases',
+            second="Plugin Releases",
         )

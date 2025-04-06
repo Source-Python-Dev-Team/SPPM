@@ -38,7 +38,7 @@ class ProjectRelatedInfoMixinTestCase(TestCase):
         )
         self.assertTupleEqual(
             tuple1=ProjectRelatedInfoMixin.http_method_names,
-            tuple2=('get', 'post', 'delete', 'options'),
+            tuple2=("get", "post", "delete", "options"),
         )
 
     def test_project_type_required(self):
@@ -75,7 +75,7 @@ class ProjectAPIViewTestCase(TestCase):
     def test_http_method_names(self):
         self.assertTupleEqual(
             tuple1=ProjectAPIView.http_method_names,
-            tuple2=('get', 'options'),
+            tuple2=("get", "options"),
         )
 
 
@@ -90,15 +90,15 @@ class ProjectViewSetTestCase(TestCase):
         )
         self.assertTupleEqual(
             tuple1=ProjectViewSet.http_method_names,
-            tuple2=('get', 'post', 'patch', 'options'),
+            tuple2=("get", "post", "patch", "options"),
         )
         self.assertTupleEqual(
             tuple1=ProjectViewSet.ordering,
-            tuple2=('-updated',),
+            tuple2=("-updated",),
         )
         self.assertTupleEqual(
             tuple1=ProjectViewSet.ordering_fields,
-            tuple2=('name', 'basename', 'updated', 'created'),
+            tuple2=("name", "basename", "updated", "created"),
         )
 
     def test_creation_serializer_class_required(self):
@@ -124,15 +124,15 @@ class ProjectImageViewSetTestCase(TestCase):
     def test_base_attributes(self):
         self.assertTupleEqual(
             tuple1=ProjectImageViewSet.ordering,
-            tuple2=('-created',),
+            tuple2=("-created",),
         )
         self.assertTupleEqual(
             tuple1=ProjectImageViewSet.ordering_fields,
-            tuple2=('created',),
+            tuple2=("created",),
         )
         self.assertEqual(
             first=ProjectImageViewSet.related_model_type,
-            second='Image',
+            second="Image",
         )
 
 
@@ -145,15 +145,15 @@ class ProjectReleaseViewSetTestCase(TestCase):
     def test_base_attributes(self):
         self.assertTupleEqual(
             tuple1=ProjectReleaseViewSet.http_method_names,
-            tuple2=('get', 'post', 'options'),
+            tuple2=("get", "post", "options"),
         )
         self.assertTupleEqual(
             tuple1=ProjectReleaseViewSet.ordering,
-            tuple2=('-created',),
+            tuple2=("-created",),
         )
         self.assertTupleEqual(
             tuple1=ProjectReleaseViewSet.ordering_fields,
-            tuple2=('created', 'version'),
+            tuple2=("created", "version"),
         )
         self.assertEqual(
             first=ProjectReleaseViewSet.lookup_value_regex,
@@ -161,11 +161,11 @@ class ProjectReleaseViewSetTestCase(TestCase):
         )
         self.assertEqual(
             first=ProjectReleaseViewSet.lookup_field,
-            second='version',
+            second="version",
         )
         self.assertEqual(
             first=ProjectReleaseViewSet.related_model_type,
-            second='Release',
+            second="Release",
         )
 
 
@@ -178,15 +178,15 @@ class ProjectGameViewSetTestCase(TestCase):
     def test_base_attributes(self):
         self.assertTupleEqual(
             tuple1=ProjectGameViewSet.ordering,
-            tuple2=('-game',),
+            tuple2=("-game",),
         )
         self.assertTupleEqual(
             tuple1=ProjectGameViewSet.ordering_fields,
-            tuple2=('game',),
+            tuple2=("game",),
         )
         self.assertEqual(
             first=ProjectGameViewSet.related_model_type,
-            second='Game',
+            second="Game",
         )
 
 
@@ -199,15 +199,15 @@ class ProjectTagViewSetTestCase(TestCase):
     def test_base_attributes(self):
         self.assertTupleEqual(
             tuple1=ProjectTagViewSet.ordering,
-            tuple2=('-tag',),
+            tuple2=("-tag",),
         )
         self.assertTupleEqual(
             tuple1=ProjectTagViewSet.ordering_fields,
-            tuple2=('tag',),
+            tuple2=("tag",),
         )
         self.assertEqual(
             first=ProjectTagViewSet.related_model_type,
-            second='Tag',
+            second="Tag",
         )
 
 
@@ -223,14 +223,14 @@ class ProjectContributorViewSetTestCase(TestCase):
     def test_base_attributes(self):
         self.assertTupleEqual(
             tuple1=ProjectContributorViewSet.ordering,
-            tuple2=('user',),
+            tuple2=("user",),
         )
         self.assertTupleEqual(
             tuple1=ProjectContributorViewSet.ordering_fields,
-            tuple2=('user',),
+            tuple2=("user",),
         )
         self.assertEqual(
             first=ProjectContributorViewSet.related_model_type,
-            second='Contributor',
+            second="Contributor",
         )
         self.assertTrue(expr=ProjectContributorViewSet.owner_only_id_access)

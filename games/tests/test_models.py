@@ -26,7 +26,7 @@ class GameTestCase(TestCase):
         )
 
     def test_name_field(self):
-        field = Game._meta.get_field('name')
+        field = Game._meta.get_field("name")
         self.assertIsInstance(
             obj=field,
             cls=models.CharField,
@@ -40,7 +40,7 @@ class GameTestCase(TestCase):
         self.assertFalse(expr=field.null)
 
     def test_basename_field(self):
-        field = Game._meta.get_field('basename')
+        field = Game._meta.get_field("basename")
         self.assertIsInstance(
             obj=field,
             cls=models.CharField,
@@ -54,7 +54,7 @@ class GameTestCase(TestCase):
         self.assertFalse(expr=field.null)
 
     def test_slug_field(self):
-        field = Game._meta.get_field('slug')
+        field = Game._meta.get_field("slug")
         self.assertIsInstance(
             obj=field,
             cls=models.CharField,
@@ -69,7 +69,7 @@ class GameTestCase(TestCase):
         self.assertFalse(expr=field.null)
 
     def test_icon_field(self):
-        field = Game._meta.get_field('icon')
+        field = Game._meta.get_field("icon")
         self.assertIsInstance(
             obj=field,
             cls=models.ImageField,
@@ -80,11 +80,11 @@ class GameTestCase(TestCase):
     def test_meta_class(self):
         self.assertEqual(
             first=Game._meta.verbose_name,
-            second='Game',
+            second="Game",
         )
         self.assertEqual(
             first=Game._meta.verbose_name_plural,
-            second='Games',
+            second="Games",
         )
 
     def test__str__(self):
@@ -92,7 +92,7 @@ class GameTestCase(TestCase):
         obj = GameFactory(
             name=GAMES[game],
             basename=game,
-            icon=f'games/{game}.png',
+            icon=f"games/{game}.png",
         )
         self.assertEqual(
             first=str(obj),

@@ -44,11 +44,11 @@ from users.models import ForumUser
 class SubPluginReleaseTestCase(TestCase):
     def test_model_inheritance(self):
         self.assertTrue(
-            expr=issubclass(SubPluginRelease, ProjectRelease)
+            expr=issubclass(SubPluginRelease, ProjectRelease),
         )
 
     def test_sub_plugin_field(self):
-        field = SubPluginRelease._meta.get_field('sub_plugin')
+        field = SubPluginRelease._meta.get_field("sub_plugin")
         self.assertIsInstance(
             obj=field,
             cls=models.ForeignKey,
@@ -63,13 +63,13 @@ class SubPluginReleaseTestCase(TestCase):
         )
         self.assertEqual(
             first=field.remote_field.related_name,
-            second='releases',
+            second="releases",
         )
         self.assertFalse(expr=field.blank)
         self.assertFalse(expr=field.null)
 
     def test_created_by_field(self):
-        field = SubPluginRelease._meta.get_field('created_by')
+        field = SubPluginRelease._meta.get_field("created_by")
         self.assertIsInstance(
             obj=field,
             cls=models.ForeignKey,
@@ -84,13 +84,13 @@ class SubPluginReleaseTestCase(TestCase):
         )
         self.assertEqual(
             first=field.remote_field.related_name,
-            second='sub_plugin_releases',
+            second="sub_plugin_releases",
         )
         self.assertFalse(expr=field.blank)
         self.assertTrue(expr=field.null)
 
     def test_download_requirements_field(self):
-        field = SubPluginRelease._meta.get_field('download_requirements')
+        field = SubPluginRelease._meta.get_field("download_requirements")
         self.assertIsInstance(
             obj=field,
             cls=models.ManyToManyField,
@@ -101,7 +101,7 @@ class SubPluginReleaseTestCase(TestCase):
         )
         self.assertEqual(
             first=field.remote_field.related_name,
-            second='required_in_sub_plugin_releases',
+            second="required_in_sub_plugin_releases",
         )
         self.assertEqual(
             first=field.remote_field.through,
@@ -109,7 +109,7 @@ class SubPluginReleaseTestCase(TestCase):
         )
 
     def test_package_requirements_field(self):
-        field = SubPluginRelease._meta.get_field('package_requirements')
+        field = SubPluginRelease._meta.get_field("package_requirements")
         self.assertIsInstance(
             obj=field,
             cls=models.ManyToManyField,
@@ -120,7 +120,7 @@ class SubPluginReleaseTestCase(TestCase):
         )
         self.assertEqual(
             first=field.remote_field.related_name,
-            second='required_in_sub_plugin_releases',
+            second="required_in_sub_plugin_releases",
         )
         self.assertEqual(
             first=field.remote_field.through,
@@ -128,7 +128,7 @@ class SubPluginReleaseTestCase(TestCase):
         )
 
     def test_pypi_requirements_field(self):
-        field = SubPluginRelease._meta.get_field('pypi_requirements')
+        field = SubPluginRelease._meta.get_field("pypi_requirements")
         self.assertIsInstance(
             obj=field,
             cls=models.ManyToManyField,
@@ -139,7 +139,7 @@ class SubPluginReleaseTestCase(TestCase):
         )
         self.assertEqual(
             first=field.remote_field.related_name,
-            second='required_in_sub_plugin_releases',
+            second="required_in_sub_plugin_releases",
         )
         self.assertEqual(
             first=field.remote_field.through,
@@ -147,7 +147,7 @@ class SubPluginReleaseTestCase(TestCase):
         )
 
     def test_vcs_requirements_field(self):
-        field = SubPluginRelease._meta.get_field('vcs_requirements')
+        field = SubPluginRelease._meta.get_field("vcs_requirements")
         self.assertIsInstance(
             obj=field,
             cls=models.ManyToManyField,
@@ -158,7 +158,7 @@ class SubPluginReleaseTestCase(TestCase):
         )
         self.assertEqual(
             first=field.remote_field.related_name,
-            second='required_in_sub_plugin_releases',
+            second="required_in_sub_plugin_releases",
         )
         self.assertEqual(
             first=field.remote_field.through,
@@ -166,14 +166,14 @@ class SubPluginReleaseTestCase(TestCase):
         )
 
     def test_field_tracker(self):
-        self.assertTrue(expr=hasattr(SubPluginRelease, 'field_tracker'))
+        self.assertTrue(expr=hasattr(SubPluginRelease, "field_tracker"))
         self.assertIsInstance(
             obj=SubPluginRelease.field_tracker,
             cls=FieldTracker,
         )
         self.assertSetEqual(
             set1=SubPluginRelease.field_tracker.fields,
-            set2={'version'},
+            set2={"version"},
         )
 
     def test_primary_attributes(self):
@@ -187,9 +187,9 @@ class SubPluginReleaseTestCase(TestCase):
         )
 
     def test_file_name(self):
-        file_name = 'test.zip'
+        file_name = "test.zip"
         release = SubPluginReleaseFactory(
-            zip_file=f'directory/path/{file_name}',
+            zip_file=f"directory/path/{file_name}",
         )
         self.assertEqual(
             first=release.file_name,
@@ -200,29 +200,29 @@ class SubPluginReleaseTestCase(TestCase):
         release = SubPluginReleaseFactory()
         self.assertEqual(
             first=str(release),
-            second=f'{release.sub_plugin} - {release.version}',
+            second=f"{release.sub_plugin} - {release.version}",
         )
 
     def test_clean(self):
         release = SubPluginReleaseFactory(
-            version='1.0.0',
+            version="1.0.0",
         )
         SubPluginReleaseFactory(
             sub_plugin=release.sub_plugin,
-            version='1.0.1',
+            version="1.0.1",
         )
 
         release.clean()
-        release.version = '1.0.2'
+        release.version = "1.0.2"
         release.clean()
 
-        release.version = '1.0.1'
+        release.version = "1.0.1"
         with self.assertRaises(ValidationError) as context:
             release.clean()
 
         self.assertDictEqual(
             d1=context.exception.message_dict,
-            d2={'version': ['Version already exists.']}
+            d2={"version": ["Version already exists."]},
         )
 
     def test_save(self):
@@ -236,7 +236,7 @@ class SubPluginReleaseTestCase(TestCase):
             pk=None,
             sub_plugin=sub_plugin,
             created=release_created,
-            version='1.0.0',
+            version="1.0.0",
         )
         self.assertEqual(
             first=SubPlugin.objects.get(pk=sub_plugin.pk).updated,
@@ -244,15 +244,15 @@ class SubPluginReleaseTestCase(TestCase):
         )
 
     def test_get_absolute_url(self):
-        release = SubPluginReleaseFactory(zip_file='/test/this.py')
+        release = SubPluginReleaseFactory(zip_file="/test/this.py")
         self.assertEqual(
             first=release.get_absolute_url(),
             second=reverse(
-                viewname='sub-plugin-download',
+                viewname="sub-plugin-download",
                 kwargs={
-                    'slug': release.sub_plugin.plugin.slug,
-                    'sub_plugin_slug': release.sub_plugin.slug,
-                    'zip_file': release.file_name,
+                    "slug": release.sub_plugin.plugin.slug,
+                    "sub_plugin_slug": release.sub_plugin.slug,
+                    "zip_file": release.file_name,
                 },
             ),
         )
@@ -261,13 +261,13 @@ class SubPluginReleaseTestCase(TestCase):
         self.assertTrue(issubclass(SubPluginRelease.Meta, ProjectRelease.Meta))
         self.assertTupleEqual(
             tuple1=SubPluginRelease._meta.unique_together,
-            tuple2=(('sub_plugin', 'version'),),
+            tuple2=(("sub_plugin", "version"),),
         )
         self.assertEqual(
             first=SubPluginRelease._meta.verbose_name,
-            second='SubPlugin Release',
+            second="SubPlugin Release",
         )
         self.assertEqual(
             first=SubPluginRelease._meta.verbose_name_plural,
-            second='SubPlugin Releases',
+            second="SubPlugin Releases",
         )

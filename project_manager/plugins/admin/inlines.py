@@ -21,16 +21,15 @@ from project_manager.plugins.models import (
     SubPluginPath,
 )
 
-
 # =============================================================================
 # ALL DECLARATION
 # =============================================================================
 __all__ = (
-    'PluginContributorInline',
-    'PluginGameInline',
-    'PluginImageInline',
-    'PluginTagInline',
-    'SubPluginPathInline',
+    "PluginContributorInline",
+    "PluginGameInline",
+    "PluginImageInline",
+    "PluginTagInline",
+    "SubPluginPathInline",
 )
 
 
@@ -67,13 +66,13 @@ class SubPluginPathInline(admin.StackedInline):
     extra = 0
     view_on_site = False
     fields = (
-        'path',
-        'allow_module',
-        'allow_package_using_basename',
-        'allow_package_using_init',
+        "path",
+        "allow_module",
+        "allow_package_using_basename",
+        "allow_package_using_init",
     )
     model = SubPluginPath
 
-    def has_add_permission(self, request, obj=None):
+    def has_add_permission(self, _, __=None):
         """Disallow adding new images in the Admin."""
         return False

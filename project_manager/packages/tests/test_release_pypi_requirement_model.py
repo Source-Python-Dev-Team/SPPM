@@ -11,11 +11,11 @@ from django.test import TestCase
 # App
 from project_manager.constants import RELEASE_VERSION_MAX_LENGTH
 from project_manager.models.abstract import AbstractUUIDPrimaryKeyModel
-from project_manager.validators import version_validator
 from project_manager.packages.models import (
     PackageRelease,
     PackageReleasePyPiRequirement,
 )
+from project_manager.validators import version_validator
 from requirements.models import PyPiRequirement
 from test_utils.factories.packages import PackageReleasePyPiRequirementFactory
 from test_utils.factories.requirements import PyPiRequirementFactory
@@ -30,11 +30,11 @@ class PackageReleasePyPiRequirementTestCase(TestCase):
             expr=issubclass(
                 PackageReleasePyPiRequirement,
                 AbstractUUIDPrimaryKeyModel,
-            )
+            ),
         )
 
     def test_package_release_field(self):
-        field = PackageReleasePyPiRequirement._meta.get_field('package_release')
+        field = PackageReleasePyPiRequirement._meta.get_field("package_release")
         self.assertIsInstance(
             obj=field,
             cls=models.ForeignKey,
@@ -52,7 +52,7 @@ class PackageReleasePyPiRequirementTestCase(TestCase):
 
     def test_pypi_requirement_field(self):
         field = PackageReleasePyPiRequirement._meta.get_field(
-            'pypi_requirement',
+            "pypi_requirement",
         )
         self.assertIsInstance(
             obj=field,
@@ -70,7 +70,7 @@ class PackageReleasePyPiRequirementTestCase(TestCase):
         self.assertFalse(expr=field.null)
 
     def test_version_field(self):
-        field = PackageReleasePyPiRequirement._meta.get_field('version')
+        field = PackageReleasePyPiRequirement._meta.get_field("version")
         self.assertIsInstance(
             obj=field,
             cls=models.CharField,
@@ -86,15 +86,15 @@ class PackageReleasePyPiRequirementTestCase(TestCase):
         self.assertEqual(
             first=field.help_text,
             second=(
-                'The version of the PyPi package for this release of the '
-                'package.'
-            )
+                "The version of the PyPi package for this release of the "
+                "package."
+            ),
         )
         self.assertTrue(expr=field.blank)
         self.assertTrue(expr=field.null)
 
     def test_optional_field(self):
-        field = PackageReleasePyPiRequirement._meta.get_field('optional')
+        field = PackageReleasePyPiRequirement._meta.get_field("optional")
         self.assertIsInstance(
             obj=field,
             cls=models.BooleanField,
@@ -105,27 +105,27 @@ class PackageReleasePyPiRequirementTestCase(TestCase):
 
     def test__str__(self):
         requirement = PyPiRequirementFactory()
-        version = '.'.join(map(str, sample(range(100), 3)))
+        version = ".".join(map(str, sample(range(100), 3)))
         self.assertEqual(
             first=str(
                 PackageReleasePyPiRequirementFactory(
                     pypi_requirement=requirement,
                     version=version,
-                )
+                ),
             ),
-            second=f'{requirement.name} - {version}',
+            second=f"{requirement.name} - {version}",
         )
 
     def test_meta_class(self):
         self.assertTupleEqual(
             tuple1=PackageReleasePyPiRequirement._meta.unique_together,
-            tuple2=(('package_release', 'pypi_requirement'),),
+            tuple2=(("package_release", "pypi_requirement"),),
         )
         self.assertEqual(
             first=PackageReleasePyPiRequirement._meta.verbose_name,
-            second='Package Release PyPi Requirement',
+            second="Package Release PyPi Requirement",
         )
         self.assertEqual(
             first=PackageReleasePyPiRequirement._meta.verbose_name_plural,
-            second='Package Release PyPi Requirements',
+            second="Package Release PyPi Requirements",
         )

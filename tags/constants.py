@@ -4,7 +4,7 @@
 # ALL DECLARATION
 # =============================================================================
 __all__ = (
-    'TAG_NAME_MAX_LENGTH',
+    "TAG_NAME_MAX_LENGTH",
 )
 
 

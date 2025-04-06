@@ -37,7 +37,7 @@ from users.api.views import ForumUserViewSet
 class ForumUserViewSetTestCase(APITestCase):
 
     api_path = reverse(
-        viewname='api:users:users-list',
+        viewname="api:users:users-list",
     )
     user_1 = user_2 = user_3 = None
 
@@ -152,7 +152,7 @@ class ForumUserViewSetTestCase(APITestCase):
     def test_filter_backends(self):
         self.assertTupleEqual(
             tuple1=ForumUserViewSet.filter_backends,
-            tuple2=(ForumUserOrderingFilter, DjangoFilterBackend)
+            tuple2=(ForumUserOrderingFilter, DjangoFilterBackend),
         )
 
     def test_filterset_class(self):
@@ -164,7 +164,7 @@ class ForumUserViewSetTestCase(APITestCase):
     def test_http_method_names(self):
         self.assertTupleEqual(
             tuple1=ForumUserViewSet.http_method_names,
-            tuple2=('get', 'options'),
+            tuple2=("get", "options"),
         )
 
     def test_serializer_class(self):
@@ -176,13 +176,13 @@ class ForumUserViewSetTestCase(APITestCase):
     def test_ordering(self):
         self.assertTupleEqual(
             tuple1=ForumUserViewSet.ordering,
-            tuple2=('username',),
+            tuple2=("username",),
         )
 
     def test_ordering_fields(self):
         self.assertTupleEqual(
             tuple1=ForumUserViewSet.ordering_fields,
-            tuple2=('forum_id', 'username'),
+            tuple2=("forum_id", "username"),
         )
 
     @override_settings(DEBUG=True)
@@ -196,7 +196,7 @@ class ForumUserViewSetTestCase(APITestCase):
         )
         content = response.json()
         self.assertEqual(
-            first=content['count'],
+            first=content["count"],
             second=4,
         )
         for count, forum_user in enumerate([
@@ -205,20 +205,20 @@ class ForumUserViewSetTestCase(APITestCase):
             self.user_3,
             self.user_4,
         ]):
-            content_user = content['results'][count]
+            content_user = content["results"][count]
             self.assertEqual(
-                first=content_user['forum_id'],
+                first=content_user["forum_id"],
                 second=forum_user.forum_id,
             )
             self.assertEqual(
-                first=content_user['username'],
+                first=content_user["username"],
                 second=forum_user.user.username,
             )
 
         # Test alphabetized custom ordering
         response = self.client.get(
             path=self.api_path,
-            data={'ordering': 'username'},
+            data={"ordering": "username"},
         )
         self.assertEqual(first=len(connection.queries), second=2)
         self.assertEqual(
@@ -227,7 +227,7 @@ class ForumUserViewSetTestCase(APITestCase):
         )
         content = response.json()
         self.assertEqual(
-            first=content['count'],
+            first=content["count"],
             second=4,
         )
         for count, forum_user in enumerate([
@@ -236,20 +236,20 @@ class ForumUserViewSetTestCase(APITestCase):
             self.user_3,
             self.user_4,
         ]):
-            content_user = content['results'][count]
+            content_user = content["results"][count]
             self.assertEqual(
-                first=content_user['forum_id'],
+                first=content_user["forum_id"],
                 second=forum_user.forum_id,
             )
             self.assertEqual(
-                first=content_user['username'],
+                first=content_user["username"],
                 second=forum_user.user.username,
             )
 
         # Test reverse alphabetized custom ordering
         response = self.client.get(
             path=self.api_path,
-            data={'ordering': '-username'},
+            data={"ordering": "-username"},
         )
         self.assertEqual(first=len(connection.queries), second=2)
         self.assertEqual(
@@ -258,7 +258,7 @@ class ForumUserViewSetTestCase(APITestCase):
         )
         content = response.json()
         self.assertEqual(
-            first=content['count'],
+            first=content["count"],
             second=4,
         )
         for count, forum_user in enumerate([
@@ -267,20 +267,20 @@ class ForumUserViewSetTestCase(APITestCase):
             self.user_2,
             self.user_1,
         ]):
-            content_user = content['results'][count]
+            content_user = content["results"][count]
             self.assertEqual(
-                first=content_user['forum_id'],
+                first=content_user["forum_id"],
                 second=forum_user.forum_id,
             )
             self.assertEqual(
-                first=content_user['username'],
+                first=content_user["username"],
                 second=forum_user.user.username,
             )
 
         # Test forum_id ordering
         response = self.client.get(
             path=self.api_path,
-            data={'ordering': 'forum_id'},
+            data={"ordering": "forum_id"},
         )
         self.assertEqual(first=len(connection.queries), second=2)
         self.assertEqual(
@@ -289,7 +289,7 @@ class ForumUserViewSetTestCase(APITestCase):
         )
         content = response.json()
         self.assertEqual(
-            first=content['count'],
+            first=content["count"],
             second=4,
         )
         for count, forum_user in enumerate([
@@ -298,20 +298,20 @@ class ForumUserViewSetTestCase(APITestCase):
             self.user_4,
             self.user_2,
         ]):
-            content_user = content['results'][count]
+            content_user = content["results"][count]
             self.assertEqual(
-                first=content_user['forum_id'],
+                first=content_user["forum_id"],
                 second=forum_user.forum_id,
             )
             self.assertEqual(
-                first=content_user['username'],
+                first=content_user["username"],
                 second=forum_user.user.username,
             )
 
         # Test reverse forum_id ordering
         response = self.client.get(
             path=self.api_path,
-            data={'ordering': '-forum_id'},
+            data={"ordering": "-forum_id"},
         )
         self.assertEqual(first=len(connection.queries), second=2)
         self.assertEqual(
@@ -320,7 +320,7 @@ class ForumUserViewSetTestCase(APITestCase):
         )
         content = response.json()
         self.assertEqual(
-            first=content['count'],
+            first=content["count"],
             second=4,
         )
         for count, forum_user in enumerate([
@@ -329,13 +329,13 @@ class ForumUserViewSetTestCase(APITestCase):
             self.user_1,
             self.user_3,
         ]):
-            content_user = content['results'][count]
+            content_user = content["results"][count]
             self.assertEqual(
-                first=content_user['forum_id'],
+                first=content_user["forum_id"],
                 second=forum_user.forum_id,
             )
             self.assertEqual(
-                first=content_user['username'],
+                first=content_user["username"],
                 second=forum_user.user.username,
             )
 
@@ -349,10 +349,10 @@ class ForumUserViewSetTestCase(APITestCase):
         ):
             response = self.client.get(
                 path=reverse(
-                    viewname='api:users:users-detail',
+                    viewname="api:users:users-detail",
                     kwargs={
-                        'pk': user.forum_id,
-                    }
+                        "pk": user.forum_id,
+                    },
                 ),
             )
             self.assertEqual(first=len(connection.queries), second=7)
@@ -362,11 +362,11 @@ class ForumUserViewSetTestCase(APITestCase):
             )
             content = response.json()
             self.assertEqual(
-                first=content['forum_id'],
+                first=content["forum_id"],
                 second=user.forum_id,
             )
             self.assertEqual(
-                first=content['username'],
+                first=content["username"],
                 second=user.user.username,
             )
 
@@ -374,7 +374,7 @@ class ForumUserViewSetTestCase(APITestCase):
     def test_get_filter(self):
         response = self.client.get(
             path=self.api_path,
-            data={'has_contributions': True},
+            data={"has_contributions": True},
         )
         self.assertEqual(first=len(connection.queries), second=2)
         self.assertEqual(
@@ -383,21 +383,21 @@ class ForumUserViewSetTestCase(APITestCase):
         )
         content = response.json()
         self.assertEqual(
-            first=content['count'],
+            first=content["count"],
             second=3,
         )
         self.assertSetEqual(
-            set1={result['forum_id'] for result in content['results']},
+            set1={result["forum_id"] for result in content["results"]},
             set2={
                 self.user_1.forum_id,
                 self.user_2.forum_id,
                 self.user_3.forum_id,
-            }
+            },
         )
 
         response = self.client.get(
             path=self.api_path,
-            data={'has_contributions': False},
+            data={"has_contributions": False},
         )
         self.assertEqual(first=len(connection.queries), second=2)
         self.assertEqual(
@@ -406,11 +406,11 @@ class ForumUserViewSetTestCase(APITestCase):
         )
         content = response.json()
         self.assertEqual(
-            first=content['count'],
+            first=content["count"],
             second=1,
         )
         self.assertEqual(
-            first=content['results'][0]['forum_id'],
+            first=content["results"][0]["forum_id"],
             second=self.user_4.forum_id,
         )
 
@@ -421,6 +421,6 @@ class ForumUserViewSetTestCase(APITestCase):
             second=status.HTTP_200_OK,
         )
         self.assertEqual(
-            first=response.json()['name'],
-            second='Forum User List',
+            first=response.json()["name"],
+            second="Forum User List",
         )

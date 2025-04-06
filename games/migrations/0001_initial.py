@@ -12,16 +12,16 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='Game',
+            name="Game",
             fields=[
-                ('name', models.CharField(max_length=16, unique=True)),
-                ('basename', models.CharField(max_length=16, unique=True)),
-                ('slug', models.CharField(blank=True, max_length=16, primary_key=True, serialize=False, unique=True)),
-                ('icon', models.ImageField(upload_to='')),
+                ("name", models.CharField(max_length=16, unique=True)),
+                ("basename", models.CharField(max_length=16, unique=True)),
+                ("slug", models.CharField(blank=True, max_length=16, primary_key=True, serialize=False, unique=True)),
+                ("icon", models.ImageField(upload_to="")),
             ],
             options={
-                'verbose_name': 'Game',
-                'verbose_name_plural': 'Games',
+                "verbose_name": "Game",
+                "verbose_name_plural": "Games",
             },
         ),
     ]

@@ -7,15 +7,16 @@
 from rest_framework.serializers import ModelSerializer
 
 # App
-from project_manager.plugins.api.common.serializers import MinimalPluginSerializer
+from project_manager.plugins.api.common.serializers import (
+    MinimalPluginSerializer,
+)
 from project_manager.sub_plugins.models import SubPlugin
-
 
 # =============================================================================
 # ALL DECLARATION
 # =============================================================================
 __all__ = (
-    'MinimalSubPluginSerializer',
+    "MinimalSubPluginSerializer",
 )
 
 
@@ -32,7 +33,7 @@ class MinimalSubPluginSerializer(ModelSerializer):
 
         model = SubPlugin
         fields = (
-            'name',
-            'slug',
-            'plugin',
+            "name",
+            "slug",
+            "plugin",
         )

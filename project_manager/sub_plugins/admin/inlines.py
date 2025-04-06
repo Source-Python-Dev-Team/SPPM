@@ -17,15 +17,14 @@ from project_manager.sub_plugins.models import (
     SubPluginTag,
 )
 
-
 # =============================================================================
 # ALL DECLARATION
 # =============================================================================
 __all__ = (
-    'SubPluginContributorInline',
-    'SubPluginGameInline',
-    'SubPluginImageInline',
-    'SubPluginTagInline',
+    "SubPluginContributorInline",
+    "SubPluginGameInline",
+    "SubPluginImageInline",
+    "SubPluginTagInline",
 )
 
 

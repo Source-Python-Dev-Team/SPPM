@@ -37,14 +37,13 @@ from project_manager.helpers import (
 )
 from project_manager.validators import version_validator
 
-
 # =============================================================================
 # ALL DECLARATION
 # =============================================================================
 __all__ = (
-    'AbstractUUIDPrimaryKeyModel',
-    'Project',
-    'ProjectRelease',
+    "AbstractUUIDPrimaryKeyModel",
+    "Project",
+    "ProjectRelease",
 )
 
 
@@ -55,7 +54,7 @@ class AbstractUUIDPrimaryKeyModel(models.Model):
     """Abstract model that creates an non-editable UUID primary key."""
 
     id = models.UUIDField(
-        verbose_name='ID',
+        verbose_name="ID",
         primary_key=True,
         default=uuid4,
         editable=False,
@@ -82,18 +81,18 @@ class Project(models.Model):
         blank=True,
         null=True,
         help_text=(
-            'The configuration of the project. If too long, post on the forum '
-            'and provide the link here. BBCode is allowed. 1024 char limit.'
-        )
+            "The configuration of the project. If too long, post on the forum "
+            "and provide the link here. BBCode is allowed. 1024 char limit."
+        ),
     )
     description = BBCodeTextField(
         max_length=PROJECT_DESCRIPTION_MAX_LENGTH,
         blank=True,
         null=True,
         help_text=(
-            'The full description of the project. BBCode is allowed. '
-            '1024 char limit.'
-        )
+            "The full description of the project. BBCode is allowed. "
+            "1024 char limit."
+        ),
     )
     logo = models.ImageField(
         upload_to=handle_project_logo_upload,
@@ -103,16 +102,16 @@ class Project(models.Model):
     )
     video = EmbedVideoField(
         null=True,
-        help_text="The project's video."
+        help_text="The project's video.",
     )
     synopsis = BBCodeTextField(
         max_length=PROJECT_SYNOPSIS_MAX_LENGTH,
         blank=True,
         null=True,
         help_text=(
-            'A brief description of the project. BBCode is allowed. '
-            '128 char limit.'
-        )
+            "A brief description of the project. BBCode is allowed. "
+            "128 char limit."
+        ),
     )
     topic = models.IntegerField(
         unique=True,
@@ -120,10 +119,10 @@ class Project(models.Model):
         null=True,
     )
     created = models.DateTimeField(
-        verbose_name='created',
+        verbose_name="created",
     )
     updated = models.DateTimeField(
-        verbose_name='updated',
+        verbose_name="updated",
     )
     basename = None
     logo_path = None
@@ -141,28 +140,30 @@ class Project(models.Model):
     @property
     def handle_logo_upload(self):
         """Return the function to use for handling logo uploads."""
-        raise NotImplementedError(
+        msg = (
             f'Class "{self.__class__.__name__}" must implement a '
             '"handle_logo_upload" attribute.'
         )
+        raise NotImplementedError(msg)
 
     @property
     def releases(self):
         """Raise error if class doesn't have a related field for 'releases'."""
-        raise NotImplementedError(
+        msg = (
             f'Class "{self.__class__.__name__}" must implement a '
             '"releases" field via ForeignKey relationship.'
         )
+        raise NotImplementedError(msg)
 
     @property
     def current_version(self):
         """Return the current release's version."""
         # TODO: rework this query
         return self.releases.values_list(
-            'version',
+            "version",
             flat=True,
         ).order_by(
-            '-created'
+            "-created",
         )[0]
 
     @property
@@ -171,9 +172,9 @@ class Project(models.Model):
         # TODO: rework this query
         return sum(
             map(
-                attrgetter('download_count'),
-                self.releases.all()
-            )
+                attrgetter("download_count"),
+                self.releases.all(),
+            ),
         )
 
     def clean(self):
@@ -189,11 +190,11 @@ class Project(models.Model):
 
         width, height = Image.open(self.logo).size
         if width > LOGO_MAX_WIDTH:
-            errors.append(f'Logo width must be no more than {LOGO_MAX_WIDTH}.')
+            errors.append(f"Logo width must be no more than {LOGO_MAX_WIDTH}.")
 
         if height > LOGO_MAX_HEIGHT:
             errors.append(
-                f'Logo height must be no more than {LOGO_MAX_HEIGHT}.'
+                f"Logo height must be no more than {LOGO_MAX_HEIGHT}.",
             )
 
         if errors:
@@ -205,10 +206,10 @@ class Project(models.Model):
         if all([
             self.logo_path is not None,
             self.logo,
-            self.logo_path not in str(self.logo)
+            self.logo_path not in str(self.logo),
         ]):
             path = settings.MEDIA_ROOT / self.logo_path
-            if path.isdir():  # pragma: no branch
+            if path.is_dir():  # pragma: no branch
                 logo_files = [x for x in path.files() if x.stem == self.slug]
                 if logo_files:  # pragma: no branch
                     logo_files[0].remove()
@@ -223,7 +224,7 @@ class Project(models.Model):
 
     def get_slug_value(self):
         """Return the project's slug value."""
-        return slugify(self.basename).replace('_', '-')
+        return slugify(self.basename).replace("_", "-")
 
 
 class ProjectRelease(AbstractUUIDPrimaryKeyModel):
@@ -232,13 +233,13 @@ class ProjectRelease(AbstractUUIDPrimaryKeyModel):
     version = models.CharField(
         max_length=RELEASE_VERSION_MAX_LENGTH,
         validators=[version_validator],
-        help_text='The version for this release of the project.',
+        help_text="The version for this release of the project.",
     )
     notes = BBCodeTextField(
         max_length=RELEASE_NOTES_MAX_LENGTH,
         blank=True,
         null=True,
-        help_text='The notes for this particular release of the project.',
+        help_text="The notes for this particular release of the project.",
     )
     zip_file = models.FileField(
         upload_to=handle_release_zip_file_upload,
@@ -247,7 +248,7 @@ class ProjectRelease(AbstractUUIDPrimaryKeyModel):
         default=0,
     )
     created = AutoCreatedField(
-        verbose_name='created',
+        verbose_name="created",
     )
 
     field_tracker = None
@@ -260,43 +261,46 @@ class ProjectRelease(AbstractUUIDPrimaryKeyModel):
     @property
     def project_class(self):
         """Return the project's class."""
-        raise NotImplementedError(
+        msg = (
             f'Class "{self.__class__.__name__}" must implement a '
             '"project_class" attribute.'
         )
+        raise NotImplementedError(msg)
 
     @property
     def project(self):
         """Return the project's class."""
-        raise NotImplementedError(
+        msg = (
             f'Class "{self.__class__.__name__}" must implement a '
             '"project" property.'
         )
+        raise NotImplementedError(msg)
 
     @property
     def file_name(self):
         """Return the name of the zip file."""
-        return self.zip_file.name.rsplit('/', 1)[1]
+        return self.zip_file.name.rsplit("/", 1)[1]
 
     @property
     def handle_zip_file_upload(self):
         """Return the function to use for handling zip file uploads."""
-        raise NotImplementedError(
+        msg = (
             f'Class "{self.__class__.__name__}" must implement a '
             '"handle_zip_file_upload" attribute.'
         )
+        raise NotImplementedError(msg)
 
     def __str__(self):
         """Return the project name + release version."""
-        return f'{self.project} - {self.version}'
+        return f"{self.project} - {self.version}"
 
     def clean(self):
         """Raise a proper error when setting version to an existing value."""
-        if self.field_tracker.has_changed('version'):
-            new_version = self.field_tracker.current()['version']
+        if self.field_tracker.has_changed("version"):
+            new_version = self.field_tracker.current()["version"]
             if self.project.releases.filter(version=new_version).exists():
                 raise ValidationError({
-                    'version': 'Version already exists.'
+                    "version": "Version already exists.",
                 })
 
         return super().clean()

@@ -13,8 +13,8 @@ MIDDLEWARE += [
     'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
 
-TEMPLATES[0]['OPTIONS']['context_processors'] += [
+TEMPLATES[0]["OPTIONS"]["context_processors"] += [
     'django.template.context_processors.debug',
 ]
-TEMPLATES[0]['DIRS'].append(BASE_DIR / 'local-templates')
+TEMPLATES[0]["DIRS"].append(BASE_DIR / 'local-templates')
 LOGIN_REDIRECT_URL = '/'

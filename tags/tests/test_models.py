@@ -26,7 +26,7 @@ class TagTestCase(TestCase):
         )
 
     def test_name_field(self):
-        field = Tag._meta.get_field('name')
+        field = Tag._meta.get_field("name")
         self.assertIsInstance(
             obj=field,
             cls=models.CharField,
@@ -45,7 +45,7 @@ class TagTestCase(TestCase):
         self.assertFalse(expr=field.null)
 
     def test_black_listed_field(self):
-        field = Tag._meta.get_field('black_listed')
+        field = Tag._meta.get_field("black_listed")
         self.assertIsInstance(
             obj=field,
             cls=models.BooleanField,
@@ -55,7 +55,7 @@ class TagTestCase(TestCase):
         self.assertFalse(expr=field.null)
 
     def test_creator_field(self):
-        field = Tag._meta.get_field('creator')
+        field = Tag._meta.get_field("creator")
         self.assertIsInstance(
             obj=field,
             cls=models.ForeignKey,
@@ -70,7 +70,7 @@ class TagTestCase(TestCase):
         )
         self.assertEqual(
             first=field.remote_field.related_name,
-            second='created_tags',
+            second="created_tags",
         )
         self.assertTrue(expr=field.blank)
         self.assertTrue(expr=field.null)
@@ -78,11 +78,11 @@ class TagTestCase(TestCase):
     def test_meta_class(self):
         self.assertEqual(
             first=Tag._meta.verbose_name,
-            second='Tag',
+            second="Tag",
         )
         self.assertEqual(
             first=Tag._meta.verbose_name_plural,
-            second='Tags',
+            second="Tags",
         )
 
     def test__str__(self):
@@ -94,18 +94,18 @@ class TagTestCase(TestCase):
 
     @mock.patch.object(
         target=Tag,
-        attribute='packagetag_set',
+        attribute="packagetag_set",
     )
     @mock.patch.object(
         target=Tag,
-        attribute='plugintag_set',
+        attribute="plugintag_set",
     )
     @mock.patch.object(
         target=Tag,
-        attribute='subplugintag_set',
+        attribute="subplugintag_set",
     )
     def test_save_on_black_listed(
-        self, sub_plugin_set, plugin_set, package_set
+        self, sub_plugin_set, plugin_set, package_set,
     ):
         tag = TagFactory()
         tag.black_listed = True

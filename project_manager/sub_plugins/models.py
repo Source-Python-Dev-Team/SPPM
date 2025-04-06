@@ -23,32 +23,31 @@ from project_manager.models.abstract import (
     Project,
     ProjectRelease,
 )
-from project_manager.validators import (
-    basename_validator,
-    version_validator,
-)
 from project_manager.sub_plugins.constants import SUB_PLUGIN_LOGO_URL
 from project_manager.sub_plugins.helpers import (
     handle_sub_plugin_image_upload,
     handle_sub_plugin_logo_upload,
     handle_sub_plugin_zip_upload,
 )
-
+from project_manager.validators import (
+    basename_validator,
+    version_validator,
+)
 
 # =============================================================================
 # ALL DECLARATION
 # =============================================================================
 __all__ = (
-    'SubPlugin',
-    'SubPluginContributor',
-    'SubPluginGame',
-    'SubPluginImage',
-    'SubPluginRelease',
-    'SubPluginReleaseDownloadRequirement',
-    'SubPluginReleasePackageRequirement',
-    'SubPluginReleasePyPiRequirement',
-    'SubPluginReleaseVersionControlRequirement',
-    'SubPluginTag',
+    "SubPlugin",
+    "SubPluginContributor",
+    "SubPluginGame",
+    "SubPluginImage",
+    "SubPluginRelease",
+    "SubPluginReleaseDownloadRequirement",
+    "SubPluginReleasePackageRequirement",
+    "SubPluginReleasePyPiRequirement",
+    "SubPluginReleaseVersionControlRequirement",
+    "SubPluginTag",
 )
 
 
@@ -69,34 +68,34 @@ class SubPlugin(Project):
         blank=True,
     )
     owner = models.ForeignKey(
-        to='users.ForumUser',
-        related_name='sub_plugins',
+        to="users.ForumUser",
+        related_name="sub_plugins",
         on_delete=models.SET_NULL,
         null=True,
     )
     contributors = models.ManyToManyField(
-        to='users.ForumUser',
-        related_name='sub_plugin_contributions',
-        through='project_manager.SubPluginContributor',
+        to="users.ForumUser",
+        related_name="sub_plugin_contributions",
+        through="project_manager.SubPluginContributor",
     )
     slug = models.SlugField(
         max_length=PROJECT_SLUG_MAX_LENGTH,
         blank=True,
     )
     plugin = models.ForeignKey(
-        to='project_manager.Plugin',
-        related_name='sub_plugins',
+        to="project_manager.Plugin",
+        related_name="sub_plugins",
         on_delete=models.CASCADE,
     )
     supported_games = models.ManyToManyField(
-        to='games.Game',
-        related_name='sub_plugins',
-        through='project_manager.SubPluginGame',
+        to="games.Game",
+        related_name="sub_plugins",
+        through="project_manager.SubPluginGame",
     )
     tags = models.ManyToManyField(
-        to='tags.Tag',
-        related_name='sub_plugins',
-        through='project_manager.SubPluginTag',
+        to="tags.Tag",
+        related_name="sub_plugins",
+        through="project_manager.SubPluginTag",
     )
 
     handle_logo_upload = handle_sub_plugin_logo_upload
@@ -106,30 +105,30 @@ class SubPlugin(Project):
         """Define metaclass attributes."""
 
         unique_together = (
-            ('plugin', 'basename'),
-            ('plugin', 'name'),
-            ('plugin', 'slug'),
+            ("plugin", "basename"),
+            ("plugin", "name"),
+            ("plugin", "slug"),
         )
-        verbose_name = 'SubPlugin'
-        verbose_name_plural = 'SubPlugins'
+        verbose_name = "SubPlugin"
+        verbose_name_plural = "SubPlugins"
 
     def __str__(self):
         """Return the string formatted name for the sub-plugin."""
-        return f'{self.plugin.name}: {self.name}'
+        return f"{self.plugin.name}: {self.name}"
 
     def get_absolute_url(self):
         """Return the URL for the SubPlugin."""
         return reverse(
-            viewname='plugins:sub-plugins:detail',
+            viewname="plugins:sub-plugins:detail",
             kwargs={
-                'slug': self.plugin_id,
-                'sub_plugin_slug': self.slug,
-            }
+                "slug": self.plugin_id,
+                "sub_plugin_slug": self.slug,
+            },
         )
 
     def save(self, *args, **kwargs):
         """Set the id using the plugin's slug and the sub_plugin's slug."""
-        self.id = f'{self.plugin_id}.{self.get_slug_value()}'
+        self.id = f"{self.plugin_id}.{self.get_slug_value()}"
         super().save(*args, **kwargs)
 
 
@@ -137,35 +136,35 @@ class SubPluginRelease(ProjectRelease):
     """SubPlugin release type model."""
 
     sub_plugin = models.ForeignKey(
-        to='project_manager.SubPlugin',
-        related_name='releases',
+        to="project_manager.SubPlugin",
+        related_name="releases",
         on_delete=models.CASCADE,
     )
     created_by = models.ForeignKey(
-        to='users.ForumUser',
-        related_name='sub_plugin_releases',
+        to="users.ForumUser",
+        related_name="sub_plugin_releases",
         on_delete=models.SET_NULL,
         null=True,
     )
     download_requirements = models.ManyToManyField(
-        to='requirements.DownloadRequirement',
-        related_name='required_in_sub_plugin_releases',
-        through='project_manager.SubPluginReleaseDownloadRequirement',
+        to="requirements.DownloadRequirement",
+        related_name="required_in_sub_plugin_releases",
+        through="project_manager.SubPluginReleaseDownloadRequirement",
     )
     package_requirements = models.ManyToManyField(
-        to='project_manager.Package',
-        related_name='required_in_sub_plugin_releases',
-        through='project_manager.SubPluginReleasePackageRequirement',
+        to="project_manager.Package",
+        related_name="required_in_sub_plugin_releases",
+        through="project_manager.SubPluginReleasePackageRequirement",
     )
     pypi_requirements = models.ManyToManyField(
-        to='requirements.PyPiRequirement',
-        related_name='required_in_sub_plugin_releases',
-        through='project_manager.SubPluginReleasePyPiRequirement',
+        to="requirements.PyPiRequirement",
+        related_name="required_in_sub_plugin_releases",
+        through="project_manager.SubPluginReleasePyPiRequirement",
     )
     vcs_requirements = models.ManyToManyField(
-        to='requirements.VersionControlRequirement',
-        related_name='required_in_sub_plugin_releases',
-        through='project_manager.SubPluginReleaseVersionControlRequirement',
+        to="requirements.VersionControlRequirement",
+        related_name="required_in_sub_plugin_releases",
+        through="project_manager.SubPluginReleaseVersionControlRequirement",
     )
 
     handle_zip_file_upload = handle_sub_plugin_zip_upload
@@ -173,16 +172,16 @@ class SubPluginRelease(ProjectRelease):
 
     field_tracker = FieldTracker(
         fields=[
-            'version',
-        ]
+            "version",
+        ],
     )
 
     class Meta(ProjectRelease.Meta):
         """Define metaclass attributes."""
 
-        unique_together = ('sub_plugin', 'version')
-        verbose_name = 'SubPlugin Release'
-        verbose_name_plural = 'SubPlugin Releases'
+        unique_together = ("sub_plugin", "version")
+        verbose_name = "SubPlugin Release"
+        verbose_name_plural = "SubPlugin Releases"
 
     @property
     def project(self):
@@ -192,12 +191,12 @@ class SubPluginRelease(ProjectRelease):
     def get_absolute_url(self):
         """Return the URL for the SubPluginRelease."""
         return reverse(
-            viewname='sub-plugin-download',
+            viewname="sub-plugin-download",
             kwargs={
-                'slug': self.sub_plugin.plugin_id,
-                'sub_plugin_slug': self.sub_plugin.slug,
-                'zip_file': self.file_name,
-            }
+                "slug": self.sub_plugin.plugin_id,
+                "sub_plugin_slug": self.sub_plugin.slug,
+                "zip_file": self.file_name,
+            },
         )
 
 
@@ -205,59 +204,59 @@ class SubPluginImage(AbstractUUIDPrimaryKeyModel):
     """SubPlugin image type model."""
 
     sub_plugin = models.ForeignKey(
-        to='project_manager.SubPlugin',
-        related_name='images',
+        to="project_manager.SubPlugin",
+        related_name="images",
         on_delete=models.CASCADE,
     )
     image = models.ImageField(
         upload_to=handle_sub_plugin_image_upload,
     )
     created = AutoCreatedField(
-        verbose_name='created',
+        verbose_name="created",
     )
 
     class Meta:
         """Define metaclass attributes."""
 
-        verbose_name = 'SubPlugin Image'
-        verbose_name_plural = 'SubPlugin Images'
+        verbose_name = "SubPlugin Image"
+        verbose_name_plural = "SubPlugin Images"
 
     def __str__(self):
         """Return the proper str value of the object."""
-        return f'{self.sub_plugin} - {self.image}'
+        return f"{self.sub_plugin} - {self.image}"
 
 
 class SubPluginContributor(AbstractUUIDPrimaryKeyModel):
     """SubPlugin contributors through model."""
 
     sub_plugin = models.ForeignKey(
-        to='project_manager.SubPlugin',
+        to="project_manager.SubPlugin",
         on_delete=models.CASCADE,
     )
     user = models.ForeignKey(
-        to='users.ForumUser',
+        to="users.ForumUser",
         on_delete=models.CASCADE,
     )
 
     class Meta:
         """Define metaclass attributes."""
 
-        unique_together = ('sub_plugin', 'user')
-        verbose_name = 'SubPlugin Contributor'
-        verbose_name_plural = 'SubPlugin Contributors'
+        unique_together = ("sub_plugin", "user")
+        verbose_name = "SubPlugin Contributor"
+        verbose_name_plural = "SubPlugin Contributors"
 
     def __str__(self):
         """Return the base string."""
-        return f'{self.sub_plugin} Contributor: {self.user}'
+        return f"{self.sub_plugin} Contributor: {self.user}"
 
     def clean(self):
         """Validate that the sub_plugin's owner cannot be a contributor."""
-        if hasattr(self, 'user') and self.sub_plugin.owner == self.user:
+        if hasattr(self, "user") and self.sub_plugin.owner == self.user:
             raise ValidationError({
-                'user': (
-                    f'{self.user} is the owner and cannot be added '
-                    f'as a contributor.'
-                )
+                "user": (
+                    f"{self.user} is the owner and cannot be added "
+                    f"as a contributor."
+                ),
             })
         return super().clean()
 
@@ -266,59 +265,59 @@ class SubPluginGame(AbstractUUIDPrimaryKeyModel):
     """SubPlugin supported_games through model."""
 
     sub_plugin = models.ForeignKey(
-        to='project_manager.SubPlugin',
+        to="project_manager.SubPlugin",
         on_delete=models.CASCADE,
     )
     game = models.ForeignKey(
-        to='games.Game',
+        to="games.Game",
         on_delete=models.CASCADE,
     )
 
     class Meta:
         """Define metaclass attributes."""
 
-        unique_together = ('sub_plugin', 'game')
-        verbose_name = 'SubPlugin Game'
-        verbose_name_plural = 'SubPlugin Games'
+        unique_together = ("sub_plugin", "game")
+        verbose_name = "SubPlugin Game"
+        verbose_name_plural = "SubPlugin Games"
 
     def __str__(self):
         """Return the base string."""
-        return f'{self.sub_plugin} Game: {self.game}'
+        return f"{self.sub_plugin} Game: {self.game}"
 
 
 class SubPluginTag(AbstractUUIDPrimaryKeyModel):
     """SubPlugin tags through model."""
 
     sub_plugin = models.ForeignKey(
-        to='project_manager.SubPlugin',
+        to="project_manager.SubPlugin",
         on_delete=models.CASCADE,
     )
     tag = models.ForeignKey(
-        to='tags.Tag',
+        to="tags.Tag",
         on_delete=models.CASCADE,
     )
 
     class Meta:
         """Define metaclass attributes."""
 
-        unique_together = ('sub_plugin', 'tag')
-        verbose_name = 'SubPlugin Tag'
-        verbose_name_plural = 'SubPlugin Tags'
+        unique_together = ("sub_plugin", "tag")
+        verbose_name = "SubPlugin Tag"
+        verbose_name_plural = "SubPlugin Tags"
 
     def __str__(self):
         """Return the base string."""
-        return f'{self.sub_plugin} Tag: {self.tag}'
+        return f"{self.sub_plugin} Tag: {self.tag}"
 
 
 class SubPluginReleaseDownloadRequirement(AbstractUUIDPrimaryKeyModel):
     """SubPlugin Download Requirement for Release model."""
 
     sub_plugin_release = models.ForeignKey(
-        to='project_manager.SubPluginRelease',
+        to="project_manager.SubPluginRelease",
         on_delete=models.CASCADE,
     )
     download_requirement = models.ForeignKey(
-        to='requirements.DownloadRequirement',
+        to="requirements.DownloadRequirement",
         on_delete=models.CASCADE,
     )
     optional = models.BooleanField(
@@ -328,9 +327,9 @@ class SubPluginReleaseDownloadRequirement(AbstractUUIDPrimaryKeyModel):
     class Meta:
         """Define metaclass attributes."""
 
-        unique_together = ('sub_plugin_release', 'download_requirement')
-        verbose_name = 'SubPlugin Release Download Requirement'
-        verbose_name_plural = 'SubPlugin Release Download Requirements'
+        unique_together = ("sub_plugin_release", "download_requirement")
+        verbose_name = "SubPlugin Release Download Requirement"
+        verbose_name_plural = "SubPlugin Release Download Requirements"
 
     def __str__(self):
         """Return the requirement's url."""
@@ -341,19 +340,19 @@ class SubPluginReleasePackageRequirement(AbstractUUIDPrimaryKeyModel):
     """SubPlugin Package Requirement for Release model."""
 
     sub_plugin_release = models.ForeignKey(
-        to='project_manager.SubPluginRelease',
+        to="project_manager.SubPluginRelease",
         on_delete=models.CASCADE,
     )
     package_requirement = models.ForeignKey(
-        to='project_manager.Package',
+        to="project_manager.Package",
         on_delete=models.CASCADE,
     )
     version = models.CharField(
         max_length=RELEASE_VERSION_MAX_LENGTH,
         validators=[version_validator],
         help_text=(
-            'The version of the custom package for this release '
-            'of the sub_plugin.'
+            "The version of the custom package for this release "
+            "of the sub_plugin."
         ),
         blank=True,
         null=True,
@@ -365,31 +364,32 @@ class SubPluginReleasePackageRequirement(AbstractUUIDPrimaryKeyModel):
     class Meta:
         """Define metaclass attributes."""
 
-        unique_together = ('sub_plugin_release', 'package_requirement')
-        verbose_name = 'SubPlugin Release Package Requirement'
-        verbose_name_plural = 'SubPlugin Release Package Requirements'
+        unique_together = ("sub_plugin_release", "package_requirement")
+        verbose_name = "SubPlugin Release Package Requirement"
+        verbose_name_plural = "SubPlugin Release Package Requirements"
 
     def __str__(self):
         """Return the requirement's name and version."""
-        return f'{self.package_requirement.name} - {self.version}'
+        return f"{self.package_requirement.name} - {self.version}"
 
 
 class SubPluginReleasePyPiRequirement(AbstractUUIDPrimaryKeyModel):
     """SubPlugin PyPi Requirement for Release model."""
 
     sub_plugin_release = models.ForeignKey(
-        to='project_manager.SubPluginRelease',
+        to="project_manager.SubPluginRelease",
         on_delete=models.CASCADE,
     )
     pypi_requirement = models.ForeignKey(
-        to='requirements.PyPiRequirement',
+        to="requirements.PyPiRequirement",
         on_delete=models.CASCADE,
     )
     version = models.CharField(
         max_length=RELEASE_VERSION_MAX_LENGTH,
         validators=[version_validator],
         help_text=(
-            'The version of the PyPi package for this release of the sub_plugin.'
+            "The version of the PyPi package for this release of the"
+            " sub_plugin."
         ),
         blank=True,
         null=True,
@@ -401,31 +401,31 @@ class SubPluginReleasePyPiRequirement(AbstractUUIDPrimaryKeyModel):
     class Meta:
         """Define metaclass attributes."""
 
-        unique_together = ('sub_plugin_release', 'pypi_requirement')
-        verbose_name = 'SubPlugin Release PyPi Requirement'
-        verbose_name_plural = 'SubPlugin Release PyPi Requirements'
+        unique_together = ("sub_plugin_release", "pypi_requirement")
+        verbose_name = "SubPlugin Release PyPi Requirement"
+        verbose_name_plural = "SubPlugin Release PyPi Requirements"
 
     def __str__(self):
         """Return the requirement's name and version."""
-        return f'{self.pypi_requirement.name} - {self.version}'
+        return f"{self.pypi_requirement.name} - {self.version}"
 
 
 class SubPluginReleaseVersionControlRequirement(AbstractUUIDPrimaryKeyModel):
     """SubPlugin VCS Requirement for Release model."""
 
     sub_plugin_release = models.ForeignKey(
-        to='project_manager.SubPluginRelease',
+        to="project_manager.SubPluginRelease",
         on_delete=models.CASCADE,
     )
     vcs_requirement = models.ForeignKey(
-        to='requirements.VersionControlRequirement',
+        to="requirements.VersionControlRequirement",
         on_delete=models.CASCADE,
     )
     version = models.CharField(
         max_length=RELEASE_VERSION_MAX_LENGTH,
         validators=[version_validator],
         help_text=(
-            'The version of the VCS package for this release of the sub_plugin.'
+            "The version of the VCS package for this release of the sub_plugin."
         ),
         blank=True,
         null=True,
@@ -437,10 +437,10 @@ class SubPluginReleaseVersionControlRequirement(AbstractUUIDPrimaryKeyModel):
     class Meta:
         """Define metaclass attributes."""
 
-        unique_together = ('sub_plugin_release', 'vcs_requirement')
-        verbose_name = 'SubPlugin Release Version Control Requirement'
-        verbose_name_plural = 'SubPlugin Release Version Control Requirements'
+        unique_together = ("sub_plugin_release", "vcs_requirement")
+        verbose_name = "SubPlugin Release Version Control Requirement"
+        verbose_name_plural = "SubPlugin Release Version Control Requirements"
 
     def __str__(self):
         """Return the requirement's name and version."""
-        return f'{self.vcs_requirement.url} - {self.version}'
+        return f"{self.vcs_requirement.url} - {self.version}"

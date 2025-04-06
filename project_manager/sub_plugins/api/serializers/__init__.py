@@ -19,9 +19,13 @@ from project_manager.api.common.serializers import (
     ProjectSerializer,
     ProjectTagSerializer,
 )
-from project_manager.packages.api.common.serializers import ReleasePackageRequirementSerializer
+from project_manager.packages.api.common.serializers import (
+    ReleasePackageRequirementSerializer,
+)
 from project_manager.plugins.models import Plugin
-from project_manager.sub_plugins.api.serializers.mixins import SubPluginReleaseBase
+from project_manager.sub_plugins.api.serializers.mixins import (
+    SubPluginReleaseBase,
+)
 from project_manager.sub_plugins.models import (
     SubPlugin,
     SubPluginContributor,
@@ -40,23 +44,22 @@ from requirements.api.serializers.common import (
     ReleaseVersionControlRequirementSerializer,
 )
 
-
 # =============================================================================
 # ALL DECLARATION
 # =============================================================================
 __all__ = (
-    'SubPluginContributorSerializer',
-    'SubPluginCreateReleaseSerializer',
-    'SubPluginCreateSerializer',
-    'SubPluginGameSerializer',
-    'SubPluginImageSerializer',
-    'SubPluginReleaseSerializer',
-    'SubPluginReleaseDownloadRequirementSerializer',
-    'SubPluginReleasePackageRequirementSerializer',
-    'SubPluginReleasePyPiRequirementSerializer',
-    'SubPluginSerializer',
-    'SubPluginReleaseVersionControlRequirementSerializer',
-    'SubPluginTagSerializer',
+    "SubPluginContributorSerializer",
+    "SubPluginCreateReleaseSerializer",
+    "SubPluginCreateSerializer",
+    "SubPluginGameSerializer",
+    "SubPluginImageSerializer",
+    "SubPluginReleaseDownloadRequirementSerializer",
+    "SubPluginReleasePackageRequirementSerializer",
+    "SubPluginReleasePyPiRequirementSerializer",
+    "SubPluginReleaseSerializer",
+    "SubPluginReleaseVersionControlRequirementSerializer",
+    "SubPluginSerializer",
+    "SubPluginTagSerializer",
 )
 
 
@@ -73,7 +76,7 @@ class SubPluginImageSerializer(ProjectImageSerializer):
 
 
 class SubPluginReleasePackageRequirementSerializer(
-    ReleasePackageRequirementSerializer
+    ReleasePackageRequirementSerializer,
 ):
     """Serializer for SubPlugin Release Package requirements."""
 
@@ -84,7 +87,7 @@ class SubPluginReleasePackageRequirementSerializer(
 
 
 class SubPluginReleaseDownloadRequirementSerializer(
-    ReleaseDownloadRequirementSerializer
+    ReleaseDownloadRequirementSerializer,
 ):
     """Serializer for SubPlugin Release Download requirements."""
 
@@ -95,7 +98,7 @@ class SubPluginReleaseDownloadRequirementSerializer(
 
 
 class SubPluginReleasePyPiRequirementSerializer(
-    ReleasePyPiRequirementSerializer
+    ReleasePyPiRequirementSerializer,
 ):
     """Serializer for SubPlugin Release PyPi requirements."""
 
@@ -106,7 +109,7 @@ class SubPluginReleasePyPiRequirementSerializer(
 
 
 class SubPluginReleaseVersionControlRequirementSerializer(
-    ReleaseVersionControlRequirementSerializer
+    ReleaseVersionControlRequirementSerializer,
 ):
     """Serializer for SubPlugin Release VCS requirements."""
 
@@ -117,27 +120,27 @@ class SubPluginReleaseVersionControlRequirementSerializer(
 
 
 class SubPluginReleaseSerializer(
-    SubPluginReleaseBase, ProjectReleaseSerializer
+    SubPluginReleaseBase, ProjectReleaseSerializer,
 ):
     """Serializer for listing Plugin releases."""
 
     download_requirements = SubPluginReleaseDownloadRequirementSerializer(
-        source='subpluginreleasedownloadrequirement_set',
+        source="subpluginreleasedownloadrequirement_set",
         read_only=True,
         many=True,
     )
     package_requirements = SubPluginReleasePackageRequirementSerializer(
-        source='subpluginreleasepackagerequirement_set',
+        source="subpluginreleasepackagerequirement_set",
         read_only=True,
         many=True,
     )
     pypi_requirements = SubPluginReleasePyPiRequirementSerializer(
-        source='subpluginreleasepypirequirement_set',
+        source="subpluginreleasepypirequirement_set",
         read_only=True,
         many=True,
     )
     vcs_requirements = SubPluginReleaseVersionControlRequirementSerializer(
-        source='subpluginreleaseversioncontrolrequirement_set',
+        source="subpluginreleaseversioncontrolrequirement_set",
         read_only=True,
         many=True,
     )
@@ -153,7 +156,7 @@ class SubPluginReleaseSerializer(
 
 
 class SubPluginCreateReleaseSerializer(
-    SubPluginReleaseBase, ProjectCreateReleaseSerializer
+    SubPluginReleaseBase, ProjectCreateReleaseSerializer,
 ):
     """Serializer for creating and listing SubPlugin releases."""
 
@@ -170,7 +173,7 @@ class SubPluginCreateReleaseSerializer(
 class SubPluginSerializer(ProjectSerializer):
     """Serializer for updating and listing SubPlugins."""
 
-    project_type = 'sub-plugin'
+    project_type = "sub-plugin"
     release_model = SubPluginRelease
 
     class Meta(ProjectSerializer.Meta):
@@ -181,13 +184,13 @@ class SubPluginSerializer(ProjectSerializer):
     @cached_property
     def parent_project(self):
         """Return the parent plugin."""
-        kwargs = self.context['view'].kwargs
-        plugin_slug = kwargs.get('plugin_slug')
+        kwargs = self.context["view"].kwargs
+        plugin_slug = kwargs.get("plugin_slug")
         try:
             plugin = Plugin.objects.get(slug=plugin_slug)
         except Plugin.DoesNotExist as exception:
             raise ValidationError({
-                'plugin': f"Plugin '{plugin_slug}' not found."
+                "plugin": f"Plugin '{plugin_slug}' not found.",
             }) from exception
         return plugin
 
@@ -195,15 +198,15 @@ class SubPluginSerializer(ProjectSerializer):
     def get_download_kwargs(obj, release):
         """Return the release's reverse kwargs."""
         return {
-            'slug': obj.plugin.slug,
-            'sub_plugin_slug': obj.slug,
-            'zip_file': release.file_name,
+            "slug": obj.plugin.slug,
+            "sub_plugin_slug": obj.slug,
+            "zip_file": release.file_name,
         }
 
     def get_extra_validated_data(self, validated_data):
         """Add any extra data to be used on create."""
         validated_data = super().get_extra_validated_data(validated_data)
-        validated_data['plugin'] = self.parent_project
+        validated_data["plugin"] = self.parent_project
         return validated_data
 
 
@@ -218,7 +221,7 @@ class SubPluginCreateSerializer(SubPluginSerializer):
         """Define metaclass attributes."""
 
         fields = SubPluginSerializer.Meta.fields + (
-            'releases',
+            "releases",
         )
 
 

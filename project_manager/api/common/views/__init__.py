@@ -25,18 +25,17 @@ from project_manager.api.common.views.mixins import ProjectRelatedInfoMixin
 from project_manager.constants import RELEASE_VERSION_REGEX
 from users.models import ForumUser
 
-
 # =============================================================================
 # ALL DECLARATION
 # =============================================================================
 __all__ = (
-    'ProjectAPIView',
-    'ProjectContributorViewSet',
-    'ProjectGameViewSet',
-    'ProjectImageViewSet',
-    'ProjectReleaseViewSet',
-    'ProjectTagViewSet',
-    'ProjectViewSet',
+    "ProjectAPIView",
+    "ProjectContributorViewSet",
+    "ProjectGameViewSet",
+    "ProjectImageViewSet",
+    "ProjectReleaseViewSet",
+    "ProjectTagViewSet",
+    "ProjectViewSet",
 )
 
 
@@ -46,16 +45,16 @@ __all__ = (
 class ProjectAPIView(APIView):
     """Base Project API routes."""
 
-    http_method_names = ('get', 'options')
+    http_method_names = ("get", "options")
 
     project_type = None
     views = (
-        'contributors',
-        'games',
-        'images',
-        'projects',
-        'releases',
-        'tags',
+        "contributors",
+        "games",
+        "images",
+        "projects",
+        "releases",
+        "tags",
     )
     base_kwargs = {}
 
@@ -66,23 +65,27 @@ class ProjectAPIView(APIView):
             data={
                 key: unquote(
                     reverse(
-                        viewname=f'api:{self.project_type}s:{key}-list',
-                        kwargs=self.base_kwargs if key == 'projects' else kwargs,
+                        viewname=f"api:{self.project_type}s:{key}-list",
+                        kwargs=(
+                            self.base_kwargs
+                            if key == "projects"
+                            else kwargs
+                        ),
                         request=request,
-                    )
+                    ),
                 ) for key in sorted(self.views)
-            }
+            },
         )
 
     def get_view_name(self):
         """Return the project type API name."""
-        return f'{self.project_type.title()} APIs'
+        return f"{self.project_type.title()} APIs"
 
     def get_project_kwargs(self):
         """Return the reverse kwargs for the project."""
         key = f'{self.project_type.replace("-", "_")}_slug'
         return {
-            key: f'<{self.project_type}>',
+            key: f"<{self.project_type}>",
             **self.base_kwargs,
         }
 
@@ -130,17 +133,18 @@ class ProjectViewSet(ModelViewSet):
         `?ordering=-updated`
     """
     filter_backends = (OrderingFilter, DjangoFilterBackend)
-    http_method_names = ('get', 'post', 'patch', 'options')
-    ordering = ('-updated',)
-    ordering_fields = ('name', 'basename', 'updated', 'created')
+    http_method_names = ("get", "post", "patch", "options")
+    ordering = ("-updated",)
+    ordering_fields = ("name", "basename", "updated", "created")
 
     @property
     def creation_serializer_class(self):
         """Return the serializer class to use ONLY when creating a project."""
-        raise NotImplementedError(
+        msg = (
             f'Class "{self.__class__.__name__}" must implement a '
             '"creation_serializer_class" attribute.'
         )
+        raise NotImplementedError(msg)
 
     def check_object_permissions(self, request, obj):
         """Only allow the owner and contributors to update the project."""
@@ -163,27 +167,30 @@ class ProjectViewSet(ModelViewSet):
             return super().create(request, *args, **kwargs)
         except IntegrityError as exception:
             raise ValidationError({
-                'basename': f'{self.queryset.model.__name__} already exists. Cannot create.'
+                "basename": (
+                    f"{self.queryset.model.__name__} already exists."
+                    f" Cannot create."
+                ),
             }) from exception
 
     def get_serializer_class(self):
         """Return the serializer class for the current method."""
-        if self.request.method == 'POST':
+        if self.request.method == "POST":
             return self.creation_serializer_class
         return super().get_serializer_class()
 
     def get_queryset(self):
         """Prefetch the contributors in the list view."""
         queryset = super().get_queryset()
-        if self.action == 'list':
+        if self.action == "list":
             queryset = queryset.prefetch_related(
                 Prefetch(
-                    lookup='contributors',
+                    lookup="contributors",
                     queryset=ForumUser.objects.select_related(
-                        'user'
+                        "user",
                     ).only(
-                        'forum_id',
-                        'user__username',
+                        "forum_id",
+                        "user__username",
                     ),
                 ),
             )
@@ -204,9 +211,9 @@ class ProjectImageViewSet(ProjectRelatedInfoMixin):
 
         `?ordering=-created`
     """
-    ordering = ('-created',)
-    ordering_fields = ('created',)
-    related_model_type = 'Image'
+    ordering = ("-created",)
+    ordering_fields = ("created",)
+    related_model_type = "Image"
 
 
 class ProjectReleaseViewSet(ProjectRelatedInfoMixin):
@@ -223,14 +230,14 @@ class ProjectReleaseViewSet(ProjectRelatedInfoMixin):
 
         `?ordering=-created`
     """
-    http_method_names = ('get', 'post', 'options')
-    ordering = ('-created',)
-    ordering_fields = ('created', 'version')
+    http_method_names = ("get", "post", "options")
+    ordering = ("-created",)
+    ordering_fields = ("created", "version")
     lookup_value_regex = RELEASE_VERSION_REGEX
-    lookup_field = 'version'
+    lookup_field = "version"
 
     allow_retrieve_access = True
-    related_model_type = 'Release'
+    related_model_type = "Release"
 
 
 class ProjectGameViewSet(ProjectRelatedInfoMixin):
@@ -247,9 +254,9 @@ class ProjectGameViewSet(ProjectRelatedInfoMixin):
 
         `?ordering=-game`
     """
-    ordering = ('-game',)
-    ordering_fields = ('game',)
-    related_model_type = 'Game'
+    ordering = ("-game",)
+    ordering_fields = ("game",)
+    related_model_type = "Game"
 
 
 class ProjectTagViewSet(ProjectRelatedInfoMixin):
@@ -266,9 +273,9 @@ class ProjectTagViewSet(ProjectRelatedInfoMixin):
 
         `?ordering=-tag`
     """
-    ordering = ('-tag',)
-    ordering_fields = ('tag',)
-    related_model_type = 'Tag'
+    ordering = ("-tag",)
+    ordering_fields = ("tag",)
+    related_model_type = "Tag"
 
 
 class ProjectContributorViewSet(ProjectRelatedInfoMixin):
@@ -285,8 +292,8 @@ class ProjectContributorViewSet(ProjectRelatedInfoMixin):
 
         `?ordering=-user`
     """
-    ordering = ('user',)
-    ordering_fields = ('user',)
-    related_model_type = 'Contributor'
+    ordering = ("user",)
+    ordering_fields = ("user",)
+    related_model_type = "Contributor"
 
     owner_only_id_access = True

@@ -13,14 +13,14 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='Tag',
+            name="Tag",
             fields=[
-                ('name', models.CharField(max_length=16, primary_key=True, serialize=False, unique=True, validators=[django.core.validators.RegexValidator('^[a-z]*')])),
-                ('black_listed', models.BooleanField(default=False)),
+                ("name", models.CharField(max_length=16, primary_key=True, serialize=False, unique=True, validators=[django.core.validators.RegexValidator("^[a-z]*")])),
+                ("black_listed", models.BooleanField(default=False)),
             ],
             options={
-                'verbose_name': 'Tag',
-                'verbose_name_plural': 'Tags',
+                "verbose_name": "Tag",
+                "verbose_name_plural": "Tags",
             },
         ),
     ]

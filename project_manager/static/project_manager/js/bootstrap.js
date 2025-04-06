@@ -440,7 +440,7 @@ if (typeof jQuery === 'undefined') {
       $active
         .one('bsTransitionEnd', function () {
           $next.removeClass([type, direction].join(' ')).addClass('active')
-          $active.removeClass(['active', direction].join(' '))
+          $active.removeClass(["active', direction].join(' '))
           that.sliding = false
           setTimeout(function () {
             that.$element.trigger(slidEvent)
@@ -614,7 +614,7 @@ if (typeof jQuery === 'undefined') {
 
     if (!$.support.transition) return complete.call(this)
 
-    var scrollSize = $.camelCase(['scroll', dimension].join('-'))
+    var scrollSize = $.camelCase(["scroll', dimension].join('-'))
 
     this.$element
       .one('bsTransitionEnd', $.proxy(complete, this))
@@ -660,7 +660,7 @@ if (typeof jQuery === 'undefined') {
   }
 
   Collapse.prototype.toggle = function () {
-    this[this.$element.hasClass('in') ? 'hide' : 'show']()
+    this[this.$element.hasClass('in') ? 'hide' : 'show"]()
   }
 
   Collapse.prototype.getParent = function () {
@@ -1509,7 +1509,7 @@ if (typeof jQuery === 'undefined') {
     var $tip  = this.tip()
     var title = this.getTitle()
 
-    $tip.find('.tooltip-inner')[this.options.html ? 'html' : 'text'](title)
+    $tip.find('.tooltip-inner')[this.options.html ? 'html' : 'text"](title)
     $tip.removeClass('fade in top bottom left right')
   }
 
@@ -1745,7 +1745,7 @@ if (typeof jQuery === 'undefined') {
     var title   = this.getTitle()
     var content = this.getContent()
 
-    $tip.find('.popover-title')[this.options.html ? 'html' : 'text'](title)
+    $tip.find('.popover-title')[this.options.html ? 'html' : 'text"](title)
     $tip.find('.popover-content').children().detach().end()[ // we use append for html objects to maintain js events
       this.options.html ? (typeof content == 'string' ? 'html' : 'append') : 'text'
     ](content)

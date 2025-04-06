@@ -12,37 +12,37 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='DownloadRequirement',
+            name="DownloadRequirement",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('url', models.CharField(max_length=128)),
+                ("id", models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID")),
+                ("url", models.CharField(max_length=128)),
             ],
             options={
-                'verbose_name': 'Download Requirement',
-                'verbose_name_plural': 'Download Requirements',
+                "verbose_name": "Download Requirement",
+                "verbose_name_plural": "Download Requirements",
             },
         ),
         migrations.CreateModel(
-            name='PyPiRequirement',
+            name="PyPiRequirement",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=64, unique=True)),
-                ('slug', models.SlugField(max_length=64, unique=True)),
+                ("id", models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID")),
+                ("name", models.CharField(max_length=64, unique=True)),
+                ("slug", models.SlugField(max_length=64, unique=True)),
             ],
             options={
-                'verbose_name': 'PyPi Requirement',
-                'verbose_name_plural': 'PyPi Requirements',
+                "verbose_name": "PyPi Requirement",
+                "verbose_name_plural": "PyPi Requirements",
             },
         ),
         migrations.CreateModel(
-            name='VersionControlRequirement',
+            name="VersionControlRequirement",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('url', models.CharField(max_length=128)),
+                ("id", models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID")),
+                ("url", models.CharField(max_length=128)),
             ],
             options={
-                'verbose_name': 'Version Control Requirement',
-                'verbose_name_plural': 'Version Control Requirements',
+                "verbose_name": "Version Control Requirement",
+                "verbose_name_plural": "Version Control Requirements",
             },
         ),
     ]

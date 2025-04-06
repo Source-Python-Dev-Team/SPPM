@@ -8,18 +8,23 @@ from rest_framework.fields import IntegerField, SerializerMethodField
 from rest_framework.serializers import ModelSerializer
 
 # App
-from project_manager.packages.api.common.serializers import MinimalPackageSerializer
-from project_manager.plugins.api.common.serializers import MinimalPluginSerializer
-from project_manager.sub_plugins.api.common.serializers import MinimalSubPluginSerializer
+from project_manager.packages.api.common.serializers import (
+    MinimalPackageSerializer,
+)
+from project_manager.plugins.api.common.serializers import (
+    MinimalPluginSerializer,
+)
+from project_manager.sub_plugins.api.common.serializers import (
+    MinimalSubPluginSerializer,
+)
 from users.models import ForumUser
-
 
 # =============================================================================
 # ALL DECLARATION
 # =============================================================================
 __all__ = (
-    'ForumUserListSerializer',
-    'ForumUserRetrieveSerializer',
+    "ForumUserListSerializer",
+    "ForumUserRetrieveSerializer",
 )
 
 
@@ -60,14 +65,14 @@ class ForumUserRetrieveSerializer(ModelSerializer):
 
         model = ForumUser
         fields = (
-            'forum_id',
-            'username',
-            'packages',
-            'package_contributions',
-            'plugins',
-            'plugin_contributions',
-            'sub_plugins',
-            'sub_plugin_contributions',
+            "forum_id",
+            "username",
+            "packages",
+            "package_contributions",
+            "plugins",
+            "plugin_contributions",
+            "sub_plugins",
+            "sub_plugin_contributions",
         )
 
     @staticmethod
@@ -95,17 +100,17 @@ class ForumUserListSerializer(ModelSerializer):
 
         model = ForumUser
         fields = (
-            'forum_id',
-            'username',
-            'package_count',
-            'package_contribution_count',
-            'plugin_count',
-            'plugin_contribution_count',
-            'sub_plugin_count',
-            'sub_plugin_contribution_count',
-            'project_count',
-            'project_contribution_count',
-            'total_count',
+            "forum_id",
+            "username",
+            "package_count",
+            "package_contribution_count",
+            "plugin_count",
+            "plugin_contribution_count",
+            "sub_plugin_count",
+            "sub_plugin_contribution_count",
+            "project_count",
+            "project_contribution_count",
+            "total_count",
         )
 
     @staticmethod

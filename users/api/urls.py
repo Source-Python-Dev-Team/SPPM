@@ -12,26 +12,25 @@ from rest_framework import routers
 # App
 from users.api.views import ForumUserViewSet
 
-
 # =============================================================================
 # ROUTERS
 # =============================================================================
 router = routers.SimpleRouter()
 router.register(
-    prefix='',
+    prefix="",
     viewset=ForumUserViewSet,
-    basename='users'
+    basename="users",
 )
 
 
 # =============================================================================
 # GLOBAL VARIABLES
 # =============================================================================
-app_name = 'users'
+app_name = "users"
 
 urlpatterns = [
     path(
-        route='',
+        route="",
         view=include(router.urls),
-    )
+    ),
 ]

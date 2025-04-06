@@ -17,7 +17,7 @@ from project_manager.api.views import ProjectManagerAPIView
 class ProjectManagerAPIViewTestCase(APITestCase):
 
     api_path = reverse(
-        viewname='api:api-root',
+        viewname="api:api-root",
     )
 
     def test_class_inheritance(self):
@@ -26,7 +26,7 @@ class ProjectManagerAPIViewTestCase(APITestCase):
     def test_allowed_methods(self):
         self.assertListEqual(
             list1=ProjectManagerAPIView().allowed_methods,
-            list2=['GET', 'OPTIONS'],
+            list2=["GET", "OPTIONS"],
         )
 
     def test_get(self):
@@ -38,28 +38,28 @@ class ProjectManagerAPIViewTestCase(APITestCase):
         self.assertDictEqual(
             d1=response.json(),
             d2={
-                'games': reverse(
-                    viewname='api:games:games-list',
+                "games": reverse(
+                    viewname="api:games:games-list",
                     request=response.wsgi_request,
                 ),
-                'packages': reverse(
-                    viewname='api:packages:endpoints',
+                "packages": reverse(
+                    viewname="api:packages:endpoints",
                     request=response.wsgi_request,
                 ),
-                'plugins': reverse(
-                    viewname='api:plugins:endpoints',
+                "plugins": reverse(
+                    viewname="api:plugins:endpoints",
                     request=response.wsgi_request,
                 ),
-                'sub-plugins': reverse(
-                    viewname='api:sub-plugins:endpoints',
+                "sub-plugins": reverse(
+                    viewname="api:sub-plugins:endpoints",
                     request=response.wsgi_request,
                 ),
-                'tags': reverse(
-                    viewname='api:tags:tags-list',
+                "tags": reverse(
+                    viewname="api:tags:tags-list",
                     request=response.wsgi_request,
                 ),
-                'users': reverse(
-                    viewname='api:users:users-list',
+                "users": reverse(
+                    viewname="api:users:users-list",
                     request=response.wsgi_request,
                 ),
             },
@@ -72,6 +72,6 @@ class ProjectManagerAPIViewTestCase(APITestCase):
             second=status.HTTP_200_OK,
         )
         self.assertEqual(
-            first=response.json()['name'],
-            second='Project Manager APIs',
+            first=response.json()["name"],
+            second="Project Manager APIs",
         )

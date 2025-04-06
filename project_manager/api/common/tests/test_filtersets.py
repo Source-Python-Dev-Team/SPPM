@@ -23,69 +23,69 @@ class ProjectFilterSetTestCase(TestCase):
         )
 
     def test_base_filters(self):
-        base_filters = getattr(ProjectFilterSet, 'base_filters')
+        base_filters = ProjectFilterSet.base_filters
         self.assertEqual(
             first=len(base_filters),
             second=3,
         )
 
         self.assertIn(
-            member='game',
+            member="game",
             container=base_filters,
         )
         self.assertIsInstance(
-            obj=base_filters['game'],
+            obj=base_filters["game"],
             cls=CharFilter,
         )
         self.assertEqual(
-            first=base_filters['game'].field_name,
-            second='supported_games__basename',
+            first=base_filters["game"].field_name,
+            second="supported_games__basename",
         )
         self.assertEqual(
-            first=base_filters['game'].label,
-            second='Game',
+            first=base_filters["game"].label,
+            second="Game",
         )
 
         self.assertIn(
-            member='tag',
+            member="tag",
             container=base_filters,
         )
         self.assertIsInstance(
-            obj=base_filters['tag'],
+            obj=base_filters["tag"],
             cls=CharFilter,
         )
         self.assertEqual(
-            first=base_filters['tag'].field_name,
-            second='tags__name',
+            first=base_filters["tag"].field_name,
+            second="tags__name",
         )
         self.assertEqual(
-            first=base_filters['tag'].label,
-            second='Tag',
+            first=base_filters["tag"].label,
+            second="Tag",
         )
 
         self.assertIn(
-            member='user',
+            member="user",
             container=base_filters,
         )
         self.assertIsInstance(
-            obj=base_filters['user'],
+            obj=base_filters["user"],
             cls=CharFilter,
         )
         self.assertEqual(
-            first=base_filters['user'].method,
-            second='filter_user',
+            first=base_filters["user"].method,
+            second="filter_user",
         )
         self.assertEqual(
-            first=base_filters['user'].label,
-            second='User',
+            first=base_filters["user"].label,
+            second="User",
         )
 
     def test_meta_class(self):
         self.assertTupleEqual(
             tuple1=ProjectFilterSet.Meta.fields,
             tuple2=(
-                'game',
-                'tag',
-                'user',
+                "game",
+                "tag",
+                "user",
             ),
         )

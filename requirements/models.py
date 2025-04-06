@@ -8,21 +8,20 @@ from django.db import models
 from django.utils.text import slugify
 
 # App
-from requirements.constants import PYPI_URL
 from requirements.constants import (
+    PYPI_URL,
     REQUIREMENT_NAME_MAX_LENGTH,
     REQUIREMENT_SLUG_MAX_LENGTH,
     REQUIREMENT_URL_MAX_LENGTH,
 )
 
-
 # =============================================================================
 # ALL DECLARATION
 # =============================================================================
 __all__ = (
-    'DownloadRequirement',
-    'PyPiRequirement',
-    'VersionControlRequirement',
+    "DownloadRequirement",
+    "PyPiRequirement",
+    "VersionControlRequirement",
 )
 
 
@@ -39,8 +38,8 @@ class DownloadRequirement(models.Model):
     class Meta:
         """Define metaclass attributes."""
 
-        verbose_name = 'Download Requirement'
-        verbose_name_plural = 'Download Requirements'
+        verbose_name = "Download Requirement"
+        verbose_name_plural = "Download Requirements"
 
     def __str__(self):
         """Return the object's url when str cast."""
@@ -62,8 +61,8 @@ class PyPiRequirement(models.Model):
     class Meta:
         """Define metaclass attributes."""
 
-        verbose_name = 'PyPi Requirement'
-        verbose_name_plural = 'PyPi Requirements'
+        verbose_name = "PyPi Requirement"
+        verbose_name_plural = "PyPi Requirements"
 
     def __str__(self):
         """Return the object's name when str cast."""
@@ -76,7 +75,7 @@ class PyPiRequirement(models.Model):
 
     def get_pypi_url(self):
         """Return the PyPi URL for the requirement."""
-        return PYPI_URL + f'/{self.name}'
+        return PYPI_URL + f"/{self.name}"
 
 
 class VersionControlRequirement(models.Model):
@@ -89,8 +88,8 @@ class VersionControlRequirement(models.Model):
     class Meta:
         """Define metaclass attributes."""
 
-        verbose_name = 'Version Control Requirement'
-        verbose_name_plural = 'Version Control Requirements'
+        verbose_name = "Version Control Requirement"
+        verbose_name_plural = "Version Control Requirements"
 
     def __str__(self):
         """Return the object's url when str cast."""

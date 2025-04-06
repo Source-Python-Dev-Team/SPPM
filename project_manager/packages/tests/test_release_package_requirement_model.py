@@ -11,12 +11,12 @@ from django.test import TestCase
 # App
 from project_manager.constants import RELEASE_VERSION_MAX_LENGTH
 from project_manager.models.abstract import AbstractUUIDPrimaryKeyModel
-from project_manager.validators import version_validator
 from project_manager.packages.models import (
     Package,
     PackageRelease,
     PackageReleasePackageRequirement,
 )
+from project_manager.validators import version_validator
 from test_utils.factories.packages import (
     PackageFactory,
     PackageReleasePackageRequirementFactory,
@@ -32,11 +32,11 @@ class PackageReleasePackageRequirementTestCase(TestCase):
             expr=issubclass(
                 PackageReleasePackageRequirement,
                 AbstractUUIDPrimaryKeyModel,
-            )
+            ),
         )
 
     def test_package_release_field(self):
-        field = PackageReleasePackageRequirement._meta.get_field('package_release')
+        field = PackageReleasePackageRequirement._meta.get_field("package_release")
         self.assertIsInstance(
             obj=field,
             cls=models.ForeignKey,
@@ -54,7 +54,7 @@ class PackageReleasePackageRequirementTestCase(TestCase):
 
     def test_package_requirement_field(self):
         field = PackageReleasePackageRequirement._meta.get_field(
-            'package_requirement',
+            "package_requirement",
         )
         self.assertIsInstance(
             obj=field,
@@ -72,7 +72,7 @@ class PackageReleasePackageRequirementTestCase(TestCase):
         self.assertFalse(expr=field.null)
 
     def test_version_field(self):
-        field = PackageReleasePackageRequirement._meta.get_field('version')
+        field = PackageReleasePackageRequirement._meta.get_field("version")
         self.assertIsInstance(
             obj=field,
             cls=models.CharField,
@@ -88,15 +88,15 @@ class PackageReleasePackageRequirementTestCase(TestCase):
         self.assertEqual(
             first=field.help_text,
             second=(
-                'The version of the custom package for this release of the '
-                'package.'
-            )
+                "The version of the custom package for this release of the "
+                "package."
+            ),
         )
         self.assertTrue(expr=field.blank)
         self.assertTrue(expr=field.null)
 
     def test_optional_field(self):
-        field = PackageReleasePackageRequirement._meta.get_field('optional')
+        field = PackageReleasePackageRequirement._meta.get_field("optional")
         self.assertIsInstance(
             obj=field,
             cls=models.BooleanField,
@@ -107,27 +107,27 @@ class PackageReleasePackageRequirementTestCase(TestCase):
 
     def test__str__(self):
         requirement = PackageFactory()
-        version = '.'.join(map(str, sample(range(100), 3)))
+        version = ".".join(map(str, sample(range(100), 3)))
         self.assertEqual(
             first=str(
                 PackageReleasePackageRequirementFactory(
                     package_requirement=requirement,
                     version=version,
-                )
+                ),
             ),
-            second=f'{requirement.name} - {version}',
+            second=f"{requirement.name} - {version}",
         )
 
     def test_meta_class(self):
         self.assertTupleEqual(
             tuple1=PackageReleasePackageRequirement._meta.unique_together,
-            tuple2=(('package_release', 'package_requirement'),),
+            tuple2=(("package_release", "package_requirement"),),
         )
         self.assertEqual(
             first=PackageReleasePackageRequirement._meta.verbose_name,
-            second='Package Release Package Requirement',
+            second="Package Release Package Requirement",
         )
         self.assertEqual(
             first=PackageReleasePackageRequirement._meta.verbose_name_plural,
-            second='Package Release Package Requirements',
+            second="Package Release Package Requirements",
         )

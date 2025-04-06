@@ -7,12 +7,11 @@
 from project_manager.packages.helpers import PackageZipFile
 from project_manager.packages.models import Package
 
-
 # =============================================================================
 # ALL DECLARATION
 # =============================================================================
 __all__ = (
-    'PackageReleaseBase',
+    "PackageReleaseBase",
 )
 
 
@@ -23,7 +22,7 @@ class PackageReleaseBase:
     """Serializer for listing Package releases."""
 
     project_class = Package
-    project_type = 'package'
+    project_type = "package"
 
     @property
     def zip_parser(self):
@@ -33,5 +32,5 @@ class PackageReleaseBase:
     def get_project_kwargs(self):
         """Return kwargs for the project."""
         return {
-            'pk': getattr(self, 'context')['view'].kwargs.get('package_slug')
+            "pk": self.context["view"].kwargs.get("package_slug"),
         }

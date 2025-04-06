@@ -9,12 +9,11 @@ from django.contrib import admin
 # App
 from tags.models import Tag
 
-
 # =============================================================================
 # ALL DECLARATION
 # =============================================================================
 __all__ = (
-    'TagAdmin',
+    "TagAdmin",
 )
 
 
@@ -27,20 +26,20 @@ class TagAdmin(admin.ModelAdmin):
 
     actions = None
     list_display = (
-        'name',
-        'black_listed',
-        'creator',
+        "name",
+        "black_listed",
+        "creator",
     )
     list_display_links = None
     list_filter = (
-        'black_listed',
+        "black_listed",
     )
     list_editable = (
-        'black_listed',
+        "black_listed",
     )
     readonly_fields = (
-        'creator',
-        'name',
+        "creator",
+        "name",
     )
 
     def get_queryset(self, request):
@@ -48,13 +47,13 @@ class TagAdmin(admin.ModelAdmin):
         return super().get_queryset(
             request=request,
         ).select_related(
-            'creator__user',
+            "creator__user",
         )
 
-    def has_add_permission(self, request):
+    def has_add_permission(self, _):
         """Disallow adding of tags in the Admin."""
         return False
 
-    def has_delete_permission(self, request, obj=None):
+    def has_delete_permission(self, _, __=None):
         """Disallow deletion of tags in the Admin (should use black-list)."""
         return False

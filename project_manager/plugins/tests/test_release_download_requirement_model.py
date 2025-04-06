@@ -25,11 +25,11 @@ class PluginReleaseDownloadRequirementTestCase(TestCase):
             expr=issubclass(
                 PluginReleaseDownloadRequirement,
                 AbstractUUIDPrimaryKeyModel,
-            )
+            ),
         )
 
     def test_plugin_release_field(self):
-        field = PluginReleaseDownloadRequirement._meta.get_field('plugin_release')
+        field = PluginReleaseDownloadRequirement._meta.get_field("plugin_release")
         self.assertIsInstance(
             obj=field,
             cls=models.ForeignKey,
@@ -47,7 +47,7 @@ class PluginReleaseDownloadRequirementTestCase(TestCase):
 
     def test_download_requirement_field(self):
         field = PluginReleaseDownloadRequirement._meta.get_field(
-            'download_requirement',
+            "download_requirement",
         )
         self.assertIsInstance(
             obj=field,
@@ -65,7 +65,7 @@ class PluginReleaseDownloadRequirementTestCase(TestCase):
         self.assertFalse(expr=field.null)
 
     def test_optional_field(self):
-        field = PluginReleaseDownloadRequirement._meta.get_field('optional')
+        field = PluginReleaseDownloadRequirement._meta.get_field("optional")
         self.assertIsInstance(
             obj=field,
             cls=models.BooleanField,
@@ -80,7 +80,7 @@ class PluginReleaseDownloadRequirementTestCase(TestCase):
             first=str(
                 PluginReleaseDownloadRequirementFactory(
                     download_requirement=requirement,
-                )
+                ),
             ),
             second=requirement.url,
         )
@@ -88,13 +88,13 @@ class PluginReleaseDownloadRequirementTestCase(TestCase):
     def test_meta_class(self):
         self.assertTupleEqual(
             tuple1=PluginReleaseDownloadRequirement._meta.unique_together,
-            tuple2=(('plugin_release', 'download_requirement'),),
+            tuple2=(("plugin_release", "download_requirement"),),
         )
         self.assertEqual(
             first=PluginReleaseDownloadRequirement._meta.verbose_name,
-            second='Plugin Release Download Requirement',
+            second="Plugin Release Download Requirement",
         )
         self.assertEqual(
             first=PluginReleaseDownloadRequirement._meta.verbose_name_plural,
-            second='Plugin Release Download Requirements',
+            second="Plugin Release Download Requirements",
         )
