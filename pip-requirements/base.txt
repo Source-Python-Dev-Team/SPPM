@@ -1,9 +1,9 @@
-django==5.1.5
+django==5.2
 django-embed-video==1.4.10
 django-extensions==3.2.3
-django-filter==24.3
+django-filter==25.1
 django-model-utils==5.0.0
 django-precise-bbcode==1.2.16
-djangorestframework==3.15.2
+djangorestframework==3.16.0
 Markdown==3.7
 path==17.1.0
