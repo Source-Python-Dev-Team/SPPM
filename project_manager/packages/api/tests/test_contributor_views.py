@@ -12,15 +12,17 @@ from rest_framework.test import APITestCase
 
 # App
 from project_manager.api.common.views import ProjectContributorViewSet
-from project_manager.packages.api.serializers import PackageContributorSerializer
+from project_manager.packages.api.serializers import (
+    PackageContributorSerializer,
+)
 from project_manager.packages.api.views import PackageContributorViewSet
 from project_manager.packages.models import (
     Package,
     PackageContributor,
 )
 from test_utils.factories.packages import (
-    PackageFactory,
     PackageContributorFactory,
+    PackageFactory,
 )
 from test_utils.factories.users import ForumUserFactory
 
@@ -52,19 +54,19 @@ class PackageContributorViewSetTestCase(APITestCase):
         )
         cls.new_contributor = ForumUserFactory()
         cls.regular_user = ForumUserFactory()
-        cls.detail_api = 'api:packages:contributors-detail'
-        cls.list_api = 'api:packages:contributors-list'
+        cls.detail_api = "api:packages:contributors-detail"
+        cls.list_api = "api:packages:contributors-list"
         cls.detail_path = reverse(
             viewname=cls.detail_api,
             kwargs={
-                'package_slug': cls.package_1.slug,
-                'pk': cls.package_contributor.id,
+                "package_slug": cls.package_1.slug,
+                "pk": cls.package_contributor.id,
             },
         )
         cls.list_path = reverse(
             viewname=cls.list_api,
             kwargs={
-                'package_slug': cls.package_1.slug,
+                "package_slug": cls.package_1.slug,
             },
         )
 
@@ -83,7 +85,7 @@ class PackageContributorViewSetTestCase(APITestCase):
         )
         self.assertEqual(
             first=PackageContributorViewSet.project_type,
-            second='package',
+            second="package",
         )
         self.assertEqual(
             first=PackageContributorViewSet.project_model,
@@ -95,13 +97,13 @@ class PackageContributorViewSetTestCase(APITestCase):
         )
         self.assertDictEqual(
             d1=PackageContributorViewSet.queryset.query.select_related,
-            d2={'user': {'user': {}}, 'package': {}}
+            d2={"user": {"user": {}}, "package": {}},
         )
 
     def test_http_method_names(self):
         self.assertTupleEqual(
             tuple1=PackageContributorViewSet.http_method_names,
-            tuple2=('get', 'post', 'delete', 'options'),
+            tuple2=("get", "post", "delete", "options"),
         )
 
     @override_settings(DEBUG=True)
@@ -118,9 +120,9 @@ class PackageContributorViewSetTestCase(APITestCase):
         self.assertDictEqual(
             d1=content["results"][0],
             d2={
-                'user': {
-                    'forum_id': self.contributor.forum_id,
-                    'username': self.contributor.user.username,
+                "user": {
+                    "forum_id": self.contributor.forum_id,
+                    "username": self.contributor.user.username,
                 },
             },
         )
@@ -138,9 +140,9 @@ class PackageContributorViewSetTestCase(APITestCase):
         self.assertDictEqual(
             d1=content["results"][0],
             d2={
-                'user': {
-                    'forum_id': self.contributor.forum_id,
-                    'username': self.contributor.user.username,
+                "user": {
+                    "forum_id": self.contributor.forum_id,
+                    "username": self.contributor.user.username,
                 },
             },
         )
@@ -158,9 +160,9 @@ class PackageContributorViewSetTestCase(APITestCase):
         self.assertDictEqual(
             d1=content["results"][0],
             d2={
-                'user': {
-                    'forum_id': self.contributor.forum_id,
-                    'username': self.contributor.user.username,
+                "user": {
+                    "forum_id": self.contributor.forum_id,
+                    "username": self.contributor.user.username,
                 },
             },
         )
@@ -178,11 +180,11 @@ class PackageContributorViewSetTestCase(APITestCase):
         self.assertDictEqual(
             d1=content["results"][0],
             d2={
-                'user': {
-                    'forum_id': self.contributor.forum_id,
-                    'username': self.contributor.user.username,
+                "user": {
+                    "forum_id": self.contributor.forum_id,
+                    "username": self.contributor.user.username,
                 },
-                'id': str(self.package_contributor.id),
+                "id": str(self.package_contributor.id),
             },
         )
 
@@ -191,7 +193,7 @@ class PackageContributorViewSetTestCase(APITestCase):
         list_path = reverse(
             viewname=self.list_api,
             kwargs={
-                'package_slug': self.package_2.slug,
+                "package_slug": self.package_2.slug,
             },
         )
 
@@ -230,7 +232,7 @@ class PackageContributorViewSetTestCase(APITestCase):
             path=reverse(
                 viewname=self.list_api,
                 kwargs={
-                    'package_slug': 'invalid',
+                    "package_slug": "invalid",
                 },
             ),
         )
@@ -241,7 +243,7 @@ class PackageContributorViewSetTestCase(APITestCase):
         )
         self.assertDictEqual(
             d1=response.json(),
-            d2={'detail': 'Invalid package_slug.'},
+            d2={"detail": "Invalid package_slug."},
         )
 
     @override_settings(DEBUG=True)
@@ -283,11 +285,11 @@ class PackageContributorViewSetTestCase(APITestCase):
         self.assertDictEqual(
             d1=response.json(),
             d2={
-                'user': {
-                    'forum_id': self.package_contributor.user.forum_id,
-                    'username': self.package_contributor.user.user.username,
+                "user": {
+                    "forum_id": self.package_contributor.user.forum_id,
+                    "username": self.package_contributor.user.user.username,
                 },
-                'id': str(self.package_contributor.id),
+                "id": str(self.package_contributor.id),
             },
         )
 
@@ -298,8 +300,8 @@ class PackageContributorViewSetTestCase(APITestCase):
             path=reverse(
                 viewname=self.detail_api,
                 kwargs={
-                    'package_slug': self.package_1.slug,
-                    'pk': 'invalid',
+                    "package_slug": self.package_1.slug,
+                    "pk": "invalid",
                 },
             ),
         )
@@ -310,14 +312,14 @@ class PackageContributorViewSetTestCase(APITestCase):
         )
         self.assertDictEqual(
             d1=response.json(),
-            d2={'detail': 'Not found.'},
+            d2={"detail": "Not found."},
         )
 
     def test_post(self):
         # Verify that non-logged-in user cannot add a contributor
         response = self.client.post(
             path=self.list_path,
-            data={'username': self.new_contributor.user.username},
+            data={"username": self.new_contributor.user.username},
         )
         self.assertEqual(
             first=response.status_code,
@@ -328,7 +330,7 @@ class PackageContributorViewSetTestCase(APITestCase):
         self.client.force_login(self.regular_user.user)
         response = self.client.post(
             path=self.list_path,
-            data={'username': self.new_contributor.user.username},
+            data={"username": self.new_contributor.user.username},
         )
         self.assertEqual(
             first=response.status_code,
@@ -339,7 +341,7 @@ class PackageContributorViewSetTestCase(APITestCase):
         self.client.force_login(self.contributor.user)
         response = self.client.post(
             path=self.list_path,
-            data={'username': self.new_contributor.user.username},
+            data={"username": self.new_contributor.user.username},
         )
         self.assertEqual(
             first=response.status_code,
@@ -350,7 +352,7 @@ class PackageContributorViewSetTestCase(APITestCase):
         self.client.force_login(self.owner.user)
         response = self.client.post(
             path=self.list_path,
-            data={'username': self.new_contributor.user.username},
+            data={"username": self.new_contributor.user.username},
         )
         self.assertEqual(
             first=response.status_code,
@@ -363,7 +365,7 @@ class PackageContributorViewSetTestCase(APITestCase):
         # Verify existing contributor cannot be added
         response = self.client.post(
             path=self.list_path,
-            data={'username': self.contributor.user.username},
+            data={"username": self.contributor.user.username},
         )
         self.assertEqual(
             first=response.status_code,
@@ -371,13 +373,13 @@ class PackageContributorViewSetTestCase(APITestCase):
         )
         self.assertDictEqual(
             d1=response.json(),
-            d2={'username': [f"User {self.contributor.user.username} is already a contributor"]},
+            d2={"username": [f"User {self.contributor.user.username} is already a contributor"]},
         )
 
         # Verify owner cannot be added
         response = self.client.post(
             path=self.list_path,
-            data={'username': self.owner.user.username},
+            data={"username": self.owner.user.username},
         )
         self.assertEqual(
             first=response.status_code,
@@ -386,17 +388,17 @@ class PackageContributorViewSetTestCase(APITestCase):
         self.assertDictEqual(
             d1=response.json(),
             d2={
-                'username': [
-                    f'User {self.owner.user.username} is the owner, cannot add as a contributor',
+                "username": [
+                    f"User {self.owner.user.username} is the owner, cannot add as a contributor",
                 ],
             },
         )
 
         # Verify unknown username cannot be added
-        invalid_username = 'invalid'
+        invalid_username = "invalid"
         response = self.client.post(
             path=self.list_path,
-            data={'username': invalid_username},
+            data={"username": invalid_username},
         )
         self.assertEqual(
             first=response.status_code,
@@ -404,7 +406,7 @@ class PackageContributorViewSetTestCase(APITestCase):
         )
         self.assertDictEqual(
             d1=response.json(),
-            d2={'username': [f'No user named "{invalid_username}".']},
+            d2={"username": [f'No user named "{invalid_username}".']},
         )
 
     def test_delete(self):
@@ -446,9 +448,9 @@ class PackageContributorViewSetTestCase(APITestCase):
         content = response.json()
         self.assertEqual(
             first=content["name"],
-            second=f'{self.package_1} - Contributor',
+            second=f"{self.package_1} - Contributor",
         )
-        self.assertNotIn(member='actions', container=content)
+        self.assertNotIn(member="actions", container=content)
 
         # Verify that normal user cannot POST
         self.client.force_login(user=self.regular_user.user)
@@ -457,9 +459,9 @@ class PackageContributorViewSetTestCase(APITestCase):
         content = response.json()
         self.assertEqual(
             first=content["name"],
-            second=f'{self.package_1} - Contributor',
+            second=f"{self.package_1} - Contributor",
         )
-        self.assertNotIn(member='actions', container=content)
+        self.assertNotIn(member="actions", container=content)
 
         # Verify that contributors cannot POST
         self.client.force_login(user=self.contributor.user)
@@ -468,9 +470,9 @@ class PackageContributorViewSetTestCase(APITestCase):
         content = response.json()
         self.assertEqual(
             first=content["name"],
-            second=f'{self.package_1} - Contributor',
+            second=f"{self.package_1} - Contributor",
         )
-        self.assertNotIn(member='actions', container=content)
+        self.assertNotIn(member="actions", container=content)
 
         # Verify that the owner can POST
         self.client.force_login(user=self.owner.user)
@@ -479,10 +481,10 @@ class PackageContributorViewSetTestCase(APITestCase):
         content = response.json()
         self.assertEqual(
             first=content["name"],
-            second=f'{self.package_1} - Contributor',
+            second=f"{self.package_1} - Contributor",
         )
-        self.assertIn(member='actions', container=content)
-        self.assertSetEqual(set1=set(content["actions"]), set2={'POST'})
+        self.assertIn(member="actions", container=content)
+        self.assertSetEqual(set1=set(content["actions"]), set2={"POST"})
 
     def test_options_object(self):
         # Verify that non-logged-in user cannot DELETE
@@ -491,9 +493,9 @@ class PackageContributorViewSetTestCase(APITestCase):
         content = response.json()
         self.assertEqual(
             first=content["name"],
-            second=f'{self.package_1} - Contributor',
+            second=f"{self.package_1} - Contributor",
         )
-        self.assertNotIn(member='actions', container=content)
+        self.assertNotIn(member="actions", container=content)
 
         # Verify that normal user cannot DELETE
         self.client.force_login(user=self.regular_user.user)
@@ -502,9 +504,9 @@ class PackageContributorViewSetTestCase(APITestCase):
         content = response.json()
         self.assertEqual(
             first=content["name"],
-            second=f'{self.package_1} - Contributor',
+            second=f"{self.package_1} - Contributor",
         )
-        self.assertNotIn(member='actions', container=content)
+        self.assertNotIn(member="actions", container=content)
 
         # Verify that contributors cannot DELETE
         self.client.force_login(user=self.contributor.user)
@@ -513,9 +515,9 @@ class PackageContributorViewSetTestCase(APITestCase):
         content = response.json()
         self.assertEqual(
             first=content["name"],
-            second=f'{self.package_1} - Contributor',
+            second=f"{self.package_1} - Contributor",
         )
-        self.assertNotIn(member='actions', container=content)
+        self.assertNotIn(member="actions", container=content)
 
         # Verify that the owner can DELETE
         self.client.force_login(user=self.owner.user)
@@ -524,7 +526,7 @@ class PackageContributorViewSetTestCase(APITestCase):
         content = response.json()
         self.assertEqual(
             first=content["name"],
-            second=f'{self.package_1} - Contributor',
+            second=f"{self.package_1} - Contributor",
         )
-        self.assertIn(member='actions', container=content)
-        self.assertSetEqual(set1=set(content["actions"]), set2={'DELETE'})
+        self.assertIn(member="actions", container=content)
+        self.assertSetEqual(set1=set(content["actions"]), set2={"DELETE"})

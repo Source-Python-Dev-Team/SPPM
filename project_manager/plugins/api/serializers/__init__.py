@@ -177,9 +177,7 @@ class PluginCreateSerializer(PluginSerializer):
     class Meta(PluginSerializer.Meta):
         """Define metaclass attributes."""
 
-        fields = PluginSerializer.Meta.fields + (
-            "releases",
-        )
+        fields = (*PluginSerializer.Meta.fields, "releases")
 
 
 class PluginGameSerializer(ProjectGameSerializer):

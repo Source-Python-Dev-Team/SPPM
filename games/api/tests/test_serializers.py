@@ -12,8 +12,12 @@ from rest_framework.serializers import ListSerializer, ModelSerializer
 from games.api.common.serializers import MinimalGameSerializer
 from games.api.serializers import GameListSerializer, GameRetrieveSerializer
 from games.models import Game
-from project_manager.packages.api.common.serializers import MinimalPackageSerializer
-from project_manager.plugins.api.common.serializers import MinimalPluginSerializer
+from project_manager.packages.api.common.serializers import (
+    MinimalPackageSerializer,
+)
+from project_manager.plugins.api.common.serializers import (
+    MinimalPluginSerializer,
+)
 from project_manager.sub_plugins.api.common.serializers import (
     MinimalSubPluginSerializer,
 )

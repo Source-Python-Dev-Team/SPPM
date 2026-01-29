@@ -26,7 +26,9 @@ from project_manager.api.common.serializers.mixins import ProjectThroughMixin
 from project_manager.packages.api.common.serializers import (
     ReleasePackageRequirementSerializer,
 )
-from project_manager.plugins.api.common.serializers import MinimalPluginSerializer
+from project_manager.plugins.api.common.serializers import (
+    MinimalPluginSerializer,
+)
 from project_manager.plugins.api.serializers import (
     PluginContributorSerializer,
     PluginCreateReleaseSerializer,
@@ -560,9 +562,7 @@ class SubPluginPathSerializerTestCase(TestCase):
             "allow_package_using_basename",
             "allow_package_using_init",
         )
-        attrs = {
-            field_name: False for field_name in field_names
-        }
+        attrs = dict.fromkeys(field_names, False)
         with self.assertRaises(ValidationError) as context:
             obj.validate(attrs=attrs)
 

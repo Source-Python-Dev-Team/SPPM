@@ -9,8 +9,12 @@ from rest_framework.fields import IntegerField
 from rest_framework.serializers import ListSerializer, ModelSerializer
 
 # App
-from project_manager.packages.api.common.serializers import MinimalPackageSerializer
-from project_manager.plugins.api.common.serializers import MinimalPluginSerializer
+from project_manager.packages.api.common.serializers import (
+    MinimalPackageSerializer,
+)
+from project_manager.plugins.api.common.serializers import (
+    MinimalPluginSerializer,
+)
 from project_manager.sub_plugins.api.common.serializers import (
     MinimalSubPluginSerializer,
 )

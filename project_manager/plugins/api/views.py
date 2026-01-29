@@ -64,7 +64,7 @@ class PluginAPIView(ProjectAPIView):
     """Plugin API routes."""
 
     project_type = "plugin"
-    views = ProjectAPIView.views + ("paths",)
+    views = (*ProjectAPIView.views, "paths")
 
 
 class PluginViewSet(ProjectViewSet):

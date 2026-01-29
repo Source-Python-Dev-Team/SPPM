@@ -33,7 +33,7 @@ __all__ = (
 # =============================================================================
 _project_fieldsets = deepcopy(ProjectAdmin.fieldsets)
 _fields = _project_fieldsets[0][1]["fields"]
-_project_fieldsets[0][1]["fields"] = ("plugin",) + _fields
+_project_fieldsets[0][1]["fields"] = ("plugin", *_fields)
 
 
 # =============================================================================
@@ -50,13 +50,13 @@ class SubPluginAdmin(ProjectAdmin):
         SubPluginImageInline,
         SubPluginTagInline,
     )
-    list_display = ProjectAdmin.list_display + (
+    list_display = (*ProjectAdmin.list_display,
         "plugin",
     )
-    readonly_fields = ProjectAdmin.readonly_fields + (
+    readonly_fields = (*ProjectAdmin.readonly_fields,
         "plugin",
     )
-    search_fields = ProjectAdmin.search_fields + (
+    search_fields = (*ProjectAdmin.search_fields,
         "plugin__name",
         "plugin__basename",
     )
@@ -76,10 +76,10 @@ class SubPluginReleaseAdmin(ProjectReleaseAdmin):
 
     fieldsets = deepcopy(ProjectReleaseAdmin.fieldsets)
     fieldsets[0][1]["fields"] += ("sub_plugin",)
-    list_display = ProjectReleaseAdmin.list_display + ("sub_plugin",)
+    list_display = (*ProjectReleaseAdmin.list_display, "sub_plugin")
     ordering = ("sub_plugin", "-created")
-    readonly_fields = ProjectReleaseAdmin.readonly_fields + ("sub_plugin",)
-    search_fields = ProjectReleaseAdmin.search_fields + ("sub_plugin__name",)
+    readonly_fields = (*ProjectReleaseAdmin.readonly_fields, "sub_plugin")
+    search_fields = (*ProjectReleaseAdmin.search_fields, "sub_plugin__name")
 
     def get_queryset(self, request):
         """Cache 'plugin' for the queryset."""

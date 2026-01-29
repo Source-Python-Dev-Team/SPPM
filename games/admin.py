@@ -44,6 +44,6 @@ class GameAdmin(admin.ModelAdmin):
     def get_readonly_fields(self, _, obj=None):
         """Allow basename to be created but not edited."""
         if obj:
-            return self.readonly_fields + ("basename",)
+            return (*self.readonly_fields, "basename")
 
         return self.readonly_fields

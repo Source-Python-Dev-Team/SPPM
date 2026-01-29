@@ -26,11 +26,10 @@ ignore = [
     "D203",
     "D213",
     "DJ001",  # remove
-    "DJ012",  # remove
     "FBT002",
     "FIX002",  # remove and work on fixes
     "N999",
-    "RUF005",  # remove
+    "PT009",  # assert
     "RUF012",  # remove
     "SLF001",
     "TD002",

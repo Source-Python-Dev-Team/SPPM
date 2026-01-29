@@ -51,10 +51,10 @@ class PluginReleaseAdmin(ProjectReleaseAdmin):
 
     fieldsets = deepcopy(ProjectReleaseAdmin.fieldsets)
     fieldsets[0][1]["fields"] += ("plugin",)
-    list_display = ProjectReleaseAdmin.list_display + ("plugin",)
+    list_display = (*ProjectReleaseAdmin.list_display, "plugin")
     ordering = ("plugin", "-created")
-    readonly_fields = ProjectReleaseAdmin.readonly_fields + ("plugin",)
-    search_fields = ProjectReleaseAdmin.search_fields + ("plugin__name",)
+    readonly_fields = (*ProjectReleaseAdmin.readonly_fields, "plugin")
+    search_fields = (*ProjectReleaseAdmin.search_fields, "plugin__name")
 
     def get_queryset(self, request):
         """Cache 'plugin' for the queryset."""

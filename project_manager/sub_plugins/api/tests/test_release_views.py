@@ -25,7 +25,9 @@ from rest_framework.test import APITestCase
 
 # App
 from project_manager.api.common.views import ProjectReleaseViewSet
-from project_manager.sub_plugins.api.serializers import SubPluginReleaseSerializer
+from project_manager.sub_plugins.api.serializers import (
+    SubPluginReleaseSerializer,
+)
 from project_manager.sub_plugins.api.views import SubPluginReleaseViewSet
 from project_manager.sub_plugins.models import (
     SubPlugin,
@@ -552,7 +554,7 @@ class SubPluginReleaseViewSetTestCase(APITestCase):
 
     @override_settings(DEBUG=True)
     def test_get_details(self):
-        environ = getattr(self.client, '_base_environ')()
+        environ = self.client._base_environ()
         zip_file_base = f'{environ["wsgi.url_scheme"]}://{environ["SERVER_NAME"]}'
         url_1 = self.sub_plugin_release_1.zip_file.url
         payload_1 = deepcopy(self.payload_1)

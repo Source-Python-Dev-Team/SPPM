@@ -20,8 +20,8 @@ from project_manager.packages.models import (
 )
 from test_utils.factories.games import GameFactory
 from test_utils.factories.packages import (
-    PackageFactory,
     PackageContributorFactory,
+    PackageFactory,
     PackageGameFactory,
 )
 from test_utils.factories.users import ForumUserFactory
@@ -54,24 +54,24 @@ class PackageGameViewSetTestCase(APITestCase):
             user=cls.contributor,
         )
         cls.game_1 = GameFactory(
-            name='Game1',
-            basename='game1',
-            icon='icon1.jpg',
+            name="Game1",
+            basename="game1",
+            icon="icon1.jpg",
         )
         cls.game_2 = GameFactory(
-            name='Game2',
-            basename='game2',
-            icon='icon2.jpg',
+            name="Game2",
+            basename="game2",
+            icon="icon2.jpg",
         )
         cls.game_3 = GameFactory(
-            name='Game3',
-            basename='game3',
-            icon='icon3.jpg',
+            name="Game3",
+            basename="game3",
+            icon="icon3.jpg",
         )
         cls.game_4 = GameFactory(
-            name='Game4',
-            basename='game4',
-            icon='icon4.jpg',
+            name="Game4",
+            basename="game4",
+            icon="icon4.jpg",
         )
         cls.package_game_1 = PackageGameFactory(
             package=cls.package_1,
@@ -82,19 +82,19 @@ class PackageGameViewSetTestCase(APITestCase):
             game=cls.game_2,
         )
         cls.regular_user = ForumUserFactory()
-        cls.detail_api = 'api:packages:games-detail'
-        cls.list_api = 'api:packages:games-list'
+        cls.detail_api = "api:packages:games-detail"
+        cls.list_api = "api:packages:games-list"
         cls.list_path = reverse(
             viewname=cls.list_api,
             kwargs={
-                'package_slug': cls.package_1.slug,
+                "package_slug": cls.package_1.slug,
             },
         )
         cls.detail_path = reverse(
             viewname=cls.detail_api,
             kwargs={
-                'package_slug': cls.package_1.slug,
-                'pk': cls.package_game_1.id,
+                "package_slug": cls.package_1.slug,
+                "pk": cls.package_game_1.id,
             },
         )
 
@@ -110,7 +110,7 @@ class PackageGameViewSetTestCase(APITestCase):
         )
         self.assertEqual(
             first=PackageGameViewSet.project_type,
-            second='package',
+            second="package",
         )
         self.assertEqual(
             first=PackageGameViewSet.project_model,
@@ -122,13 +122,13 @@ class PackageGameViewSetTestCase(APITestCase):
         )
         self.assertDictEqual(
             d1=PackageGameViewSet.queryset.query.select_related,
-            d2={'game': {}, 'package': {}}
+            d2={"game": {}, "package": {}},
         )
 
     def test_http_method_names(self):
         self.assertTupleEqual(
             tuple1=PackageGameViewSet.http_method_names,
-            tuple2=('get', 'post', 'delete', 'options'),
+            tuple2=("get", "post", "delete", "options"),
         )
 
     @override_settings(DEBUG=True)
@@ -143,14 +143,14 @@ class PackageGameViewSetTestCase(APITestCase):
         content = response.json()
         self.assertEqual(first=content["count"], second=2)
         request = response.wsgi_request
-        icon = f'{request.scheme}://{request.get_host()}{self.game_2.icon.url}'
+        icon = f"{request.scheme}://{request.get_host()}{self.game_2.icon.url}"
         self.assertDictEqual(
             d1=content["results"][0],
             d2={
-                'game': {
-                    'name': self.game_2.name,
-                    'slug': self.game_2.slug,
-                    'icon': icon,
+                "game": {
+                    "name": self.game_2.name,
+                    "slug": self.game_2.slug,
+                    "icon": icon,
                 },
             },
         )
@@ -168,10 +168,10 @@ class PackageGameViewSetTestCase(APITestCase):
         self.assertDictEqual(
             d1=content["results"][0],
             d2={
-                'game': {
-                    'name': self.game_2.name,
-                    'slug': self.game_2.slug,
-                    'icon': icon,
+                "game": {
+                    "name": self.game_2.name,
+                    "slug": self.game_2.slug,
+                    "icon": icon,
                 },
             },
         )
@@ -189,12 +189,12 @@ class PackageGameViewSetTestCase(APITestCase):
         self.assertDictEqual(
             d1=content["results"][0],
             d2={
-                'game': {
-                    'name': self.game_2.name,
-                    'slug': self.game_2.slug,
-                    'icon': icon,
+                "game": {
+                    "name": self.game_2.name,
+                    "slug": self.game_2.slug,
+                    "icon": icon,
                 },
-                'id': str(self.package_game_2.id),
+                "id": str(self.package_game_2.id),
             },
         )
 
@@ -211,12 +211,12 @@ class PackageGameViewSetTestCase(APITestCase):
         self.assertDictEqual(
             d1=content["results"][0],
             d2={
-                'game': {
-                    'name': self.game_2.name,
-                    'slug': self.game_2.slug,
-                    'icon': icon,
+                "game": {
+                    "name": self.game_2.name,
+                    "slug": self.game_2.slug,
+                    "icon": icon,
                 },
-                'id': str(self.package_game_2.id),
+                "id": str(self.package_game_2.id),
             },
         )
 
@@ -225,7 +225,7 @@ class PackageGameViewSetTestCase(APITestCase):
         list_path = reverse(
             viewname=self.list_api,
             kwargs={
-                'package_slug': self.package_2.slug,
+                "package_slug": self.package_2.slug,
             },
         )
 
@@ -274,8 +274,8 @@ class PackageGameViewSetTestCase(APITestCase):
             path=reverse(
                 viewname=self.list_api,
                 kwargs={
-                    'package_slug': 'invalid',
-                }
+                    "package_slug": "invalid",
+                },
             ),
         )
         self.assertEqual(first=len(connection.queries), second=1)
@@ -285,7 +285,7 @@ class PackageGameViewSetTestCase(APITestCase):
         )
         self.assertDictEqual(
             d1=response.json(),
-            d2={'detail': 'Invalid package_slug.'},
+            d2={"detail": "Invalid package_slug."},
         )
 
     @override_settings(DEBUG=True)
@@ -312,7 +312,7 @@ class PackageGameViewSetTestCase(APITestCase):
         response = self.client.get(path=self.detail_path)
         self.assertEqual(first=len(connection.queries), second=5)
         request = response.wsgi_request
-        icon = f'{request.scheme}://{request.get_host()}{self.game_1.icon.url}'
+        icon = f"{request.scheme}://{request.get_host()}{self.game_1.icon.url}"
         self.assertEqual(
             first=response.status_code,
             second=status.HTTP_200_OK,
@@ -320,12 +320,12 @@ class PackageGameViewSetTestCase(APITestCase):
         self.assertDictEqual(
             d1=response.json(),
             d2={
-                'game': {
-                    'name': self.game_1.name,
-                    'slug': self.game_1.slug,
-                    'icon': icon,
+                "game": {
+                    "name": self.game_1.name,
+                    "slug": self.game_1.slug,
+                    "icon": icon,
                 },
-                'id': str(self.package_game_1.id),
+                "id": str(self.package_game_1.id),
             },
         )
 
@@ -340,12 +340,12 @@ class PackageGameViewSetTestCase(APITestCase):
         self.assertDictEqual(
             d1=response.json(),
             d2={
-                'game': {
-                    'name': self.game_1.name,
-                    'slug': self.game_1.slug,
-                    'icon': icon,
+                "game": {
+                    "name": self.game_1.name,
+                    "slug": self.game_1.slug,
+                    "icon": icon,
                 },
-                'id': str(self.package_game_1.id),
+                "id": str(self.package_game_1.id),
             },
         )
 
@@ -356,8 +356,8 @@ class PackageGameViewSetTestCase(APITestCase):
             path=reverse(
                 viewname=self.detail_api,
                 kwargs={
-                    'package_slug': self.package_1.slug,
-                    'pk': 'invalid',
+                    "package_slug": self.package_1.slug,
+                    "pk": "invalid",
                 },
             ),
         )
@@ -368,14 +368,14 @@ class PackageGameViewSetTestCase(APITestCase):
         )
         self.assertDictEqual(
             d1=response.json(),
-            d2={'detail': 'Not found.'},
+            d2={"detail": "Not found."},
         )
 
     def test_post(self):
         # Verify that non-logged-in user cannot add a game
         response = self.client.post(
             path=self.list_path,
-            data={'game_slug': self.game_3.slug},
+            data={"game_slug": self.game_3.slug},
         )
         self.assertEqual(
             first=response.status_code,
@@ -386,7 +386,7 @@ class PackageGameViewSetTestCase(APITestCase):
         self.client.force_login(self.regular_user.user)
         response = self.client.post(
             path=self.list_path,
-            data={'game_slug': self.game_3.slug},
+            data={"game_slug": self.game_3.slug},
         )
         self.assertEqual(
             first=response.status_code,
@@ -397,7 +397,7 @@ class PackageGameViewSetTestCase(APITestCase):
         self.client.force_login(self.contributor.user)
         response = self.client.post(
             path=self.list_path,
-            data={'game_slug': self.game_3.slug},
+            data={"game_slug": self.game_3.slug},
         )
         self.assertEqual(
             first=response.status_code,
@@ -408,7 +408,7 @@ class PackageGameViewSetTestCase(APITestCase):
         self.client.force_login(self.owner.user)
         response = self.client.post(
             path=self.list_path,
-            data={'game_slug': self.game_4.slug},
+            data={"game_slug": self.game_4.slug},
         )
         self.assertEqual(
             first=response.status_code,
@@ -421,7 +421,7 @@ class PackageGameViewSetTestCase(APITestCase):
         # Verify existing affiliated game cannot be added
         response = self.client.post(
             path=self.list_path,
-            data={'game_slug': self.game_1.slug},
+            data={"game_slug": self.game_1.slug},
         )
         self.assertEqual(
             first=response.status_code,
@@ -429,14 +429,14 @@ class PackageGameViewSetTestCase(APITestCase):
         )
         self.assertDictEqual(
             d1=response.json(),
-            d2={'game': [f"Game already linked to {PackageGameViewSet.project_type}."]}
+            d2={"game": [f"Game already linked to {PackageGameViewSet.project_type}."]},
         )
 
         # Verify non-existing game cannot be added
-        invalid_slug = 'invalid'
+        invalid_slug = "invalid"
         response = self.client.post(
             path=self.list_path,
-            data={'game_slug': invalid_slug},
+            data={"game_slug": invalid_slug},
         )
         self.assertEqual(
             first=response.status_code,
@@ -444,7 +444,7 @@ class PackageGameViewSetTestCase(APITestCase):
         )
         self.assertDictEqual(
             d1=response.json(),
-            d2={'game': [f'Invalid game "{invalid_slug}".']}
+            d2={"game": [f'Invalid game "{invalid_slug}".']},
         )
 
     def test_delete(self):
@@ -477,8 +477,8 @@ class PackageGameViewSetTestCase(APITestCase):
             path=reverse(
                 viewname=self.detail_api,
                 kwargs={
-                    'package_slug': self.package_1.slug,
-                    'pk': self.package_game_2.id,
+                    "package_slug": self.package_1.slug,
+                    "pk": self.package_game_2.id,
                 },
             ),
         )
@@ -494,9 +494,9 @@ class PackageGameViewSetTestCase(APITestCase):
         content = response.json()
         self.assertEqual(
             first=content["name"],
-            second=f'{self.package_1} - Game',
+            second=f"{self.package_1} - Game",
         )
-        self.assertNotIn(member='actions', container=content)
+        self.assertNotIn(member="actions", container=content)
 
         # Verify that normal user cannot POST
         self.client.force_login(user=self.regular_user.user)
@@ -505,9 +505,9 @@ class PackageGameViewSetTestCase(APITestCase):
         content = response.json()
         self.assertEqual(
             first=content["name"],
-            second=f'{self.package_1} - Game',
+            second=f"{self.package_1} - Game",
         )
-        self.assertNotIn(member='actions', container=content)
+        self.assertNotIn(member="actions", container=content)
 
         # Verify that contributors can POST
         self.client.force_login(user=self.contributor.user)
@@ -516,10 +516,10 @@ class PackageGameViewSetTestCase(APITestCase):
         content = response.json()
         self.assertEqual(
             first=content["name"],
-            second=f'{self.package_1} - Game',
+            second=f"{self.package_1} - Game",
         )
-        self.assertIn(member='actions', container=content)
-        self.assertSetEqual(set1=set(content["actions"]), set2={'POST'})
+        self.assertIn(member="actions", container=content)
+        self.assertSetEqual(set1=set(content["actions"]), set2={"POST"})
 
         # Verify that the owner can POST
         self.client.force_login(user=self.owner.user)
@@ -528,10 +528,10 @@ class PackageGameViewSetTestCase(APITestCase):
         content = response.json()
         self.assertEqual(
             first=content["name"],
-            second=f'{self.package_1} - Game',
+            second=f"{self.package_1} - Game",
         )
-        self.assertIn(member='actions', container=content)
-        self.assertSetEqual(set1=set(content["actions"]), set2={'POST'})
+        self.assertIn(member="actions", container=content)
+        self.assertSetEqual(set1=set(content["actions"]), set2={"POST"})
 
     def test_options_object(self):
         # Verify that non-logged-in user cannot DELETE
@@ -540,9 +540,9 @@ class PackageGameViewSetTestCase(APITestCase):
         content = response.json()
         self.assertEqual(
             first=content["name"],
-            second=f'{self.package_1} - Game',
+            second=f"{self.package_1} - Game",
         )
-        self.assertNotIn(member='actions', container=content)
+        self.assertNotIn(member="actions", container=content)
 
         # Verify that normal user cannot DELETE
         self.client.force_login(user=self.regular_user.user)
@@ -551,9 +551,9 @@ class PackageGameViewSetTestCase(APITestCase):
         content = response.json()
         self.assertEqual(
             first=content["name"],
-            second=f'{self.package_1} - Game',
+            second=f"{self.package_1} - Game",
         )
-        self.assertNotIn(member='actions', container=content)
+        self.assertNotIn(member="actions", container=content)
 
         # Verify that contributors can DELETE
         self.client.force_login(user=self.contributor.user)
@@ -562,10 +562,10 @@ class PackageGameViewSetTestCase(APITestCase):
         content = response.json()
         self.assertEqual(
             first=content["name"],
-            second=f'{self.package_1} - Game',
+            second=f"{self.package_1} - Game",
         )
-        self.assertIn(member='actions', container=content)
-        self.assertSetEqual(set1=set(content["actions"]), set2={'DELETE'})
+        self.assertIn(member="actions", container=content)
+        self.assertSetEqual(set1=set(content["actions"]), set2={"DELETE"})
 
         # Verify that the owner can DELETE
         self.client.force_login(user=self.owner.user)
@@ -574,7 +574,7 @@ class PackageGameViewSetTestCase(APITestCase):
         content = response.json()
         self.assertEqual(
             first=content["name"],
-            second=f'{self.package_1} - Game',
+            second=f"{self.package_1} - Game",
         )
-        self.assertIn(member='actions', container=content)
-        self.assertSetEqual(set1=set(content["actions"]), set2={'DELETE'})
+        self.assertIn(member="actions", container=content)
+        self.assertSetEqual(set1=set(content["actions"]), set2={"DELETE"})

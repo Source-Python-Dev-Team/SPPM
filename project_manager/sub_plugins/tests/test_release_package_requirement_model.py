@@ -18,7 +18,9 @@ from project_manager.sub_plugins.models import (
 )
 from project_manager.validators import version_validator
 from test_utils.factories.packages import PackageFactory
-from test_utils.factories.sub_plugins import SubPluginReleasePackageRequirementFactory
+from test_utils.factories.sub_plugins import (
+    SubPluginReleasePackageRequirementFactory,
+)
 
 
 # =============================================================================

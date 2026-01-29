@@ -26,7 +26,9 @@ from project_manager.api.common.serializers import (
 from project_manager.packages.api.common.serializers import (
     ReleasePackageRequirementSerializer,
 )
-from project_manager.plugins.api.common.serializers import MinimalPluginSerializer
+from project_manager.plugins.api.common.serializers import (
+    MinimalPluginSerializer,
+)
 from project_manager.sub_plugins.api.common.serializers import (
     MinimalSubPluginSerializer,
 )
@@ -44,7 +46,9 @@ from project_manager.sub_plugins.api.serializers import (
     SubPluginSerializer,
     SubPluginTagSerializer,
 )
-from project_manager.sub_plugins.api.serializers.mixins import SubPluginReleaseBase
+from project_manager.sub_plugins.api.serializers.mixins import (
+    SubPluginReleaseBase,
+)
 from project_manager.sub_plugins.helpers import SubPluginZipFile
 from project_manager.sub_plugins.models import (
     SubPlugin,

@@ -17,7 +17,9 @@ from project_manager.plugins.models import (
 )
 from project_manager.validators import version_validator
 from requirements.models import VersionControlRequirement
-from test_utils.factories.plugins import PluginReleaseVersionControlRequirementFactory
+from test_utils.factories.plugins import (
+    PluginReleaseVersionControlRequirementFactory,
+)
 from test_utils.factories.requirements import VersionControlRequirementFactory
 
 

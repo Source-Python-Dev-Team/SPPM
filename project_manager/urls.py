@@ -94,11 +94,13 @@ urlpatterns = [
         ),
         name="users",
     ),
-] + static(
-    settings.MEDIA_URL, document_root=settings.MEDIA_ROOT,
-) + static(
-    settings.STATIC_URL, document_root=settings.STATIC_ROOT,
-)
+    *static(
+        settings.MEDIA_URL, document_root=settings.MEDIA_ROOT,
+    ),
+    *static(
+        settings.STATIC_URL, document_root=settings.STATIC_ROOT,
+    ),
+]
 
 if settings.LOCAL:  # pragma: no branch
     import debug_toolbar

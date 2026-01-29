@@ -13,7 +13,9 @@ from project_manager.sub_plugins.models import (
 )
 from requirements.models import DownloadRequirement
 from test_utils.factories.requirements import DownloadRequirementFactory
-from test_utils.factories.sub_plugins import SubPluginReleaseDownloadRequirementFactory
+from test_utils.factories.sub_plugins import (
+    SubPluginReleaseDownloadRequirementFactory,
+)
 
 
 # =============================================================================

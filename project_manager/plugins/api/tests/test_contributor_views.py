@@ -52,19 +52,19 @@ class PluginContributorViewSetTestCase(APITestCase):
         )
         cls.new_contributor = ForumUserFactory()
         cls.regular_user = ForumUserFactory()
-        cls.detail_api = 'api:plugins:contributors-detail'
-        cls.list_api = 'api:plugins:contributors-list'
+        cls.detail_api = "api:plugins:contributors-detail"
+        cls.list_api = "api:plugins:contributors-list"
         cls.detail_path = reverse(
             viewname=cls.detail_api,
             kwargs={
-                'plugin_slug': cls.plugin_1.slug,
-                'pk': cls.plugin_contributor.id,
+                "plugin_slug": cls.plugin_1.slug,
+                "pk": cls.plugin_contributor.id,
             },
         )
         cls.list_path = reverse(
             viewname=cls.list_api,
             kwargs={
-                'plugin_slug': cls.plugin_1.slug,
+                "plugin_slug": cls.plugin_1.slug,
             },
         )
 
@@ -83,7 +83,7 @@ class PluginContributorViewSetTestCase(APITestCase):
         )
         self.assertEqual(
             first=PluginContributorViewSet.project_type,
-            second='plugin',
+            second="plugin",
         )
         self.assertEqual(
             first=PluginContributorViewSet.project_model,
@@ -95,13 +95,13 @@ class PluginContributorViewSetTestCase(APITestCase):
         )
         self.assertDictEqual(
             d1=PluginContributorViewSet.queryset.query.select_related,
-            d2={'user': {'user': {}}, 'plugin': {}}
+            d2={"user": {"user": {}}, "plugin": {}},
         )
 
     def test_http_method_names(self):
         self.assertTupleEqual(
             tuple1=PluginContributorViewSet.http_method_names,
-            tuple2=('get', 'post', 'delete', 'options'),
+            tuple2=("get", "post", "delete", "options"),
         )
 
     @override_settings(DEBUG=True)
@@ -118,9 +118,9 @@ class PluginContributorViewSetTestCase(APITestCase):
         self.assertDictEqual(
             d1=content["results"][0],
             d2={
-                'user': {
-                    'forum_id': self.contributor.forum_id,
-                    'username': self.contributor.user.username,
+                "user": {
+                    "forum_id": self.contributor.forum_id,
+                    "username": self.contributor.user.username,
                 },
             },
         )
@@ -138,9 +138,9 @@ class PluginContributorViewSetTestCase(APITestCase):
         self.assertDictEqual(
             d1=content["results"][0],
             d2={
-                'user': {
-                    'forum_id': self.contributor.forum_id,
-                    'username': self.contributor.user.username,
+                "user": {
+                    "forum_id": self.contributor.forum_id,
+                    "username": self.contributor.user.username,
                 },
             },
         )
@@ -158,9 +158,9 @@ class PluginContributorViewSetTestCase(APITestCase):
         self.assertDictEqual(
             d1=content["results"][0],
             d2={
-                'user': {
-                    'forum_id': self.contributor.forum_id,
-                    'username': self.contributor.user.username,
+                "user": {
+                    "forum_id": self.contributor.forum_id,
+                    "username": self.contributor.user.username,
                 },
             },
         )
@@ -178,11 +178,11 @@ class PluginContributorViewSetTestCase(APITestCase):
         self.assertDictEqual(
             d1=content["results"][0],
             d2={
-                'user': {
-                    'forum_id': self.contributor.forum_id,
-                    'username': self.contributor.user.username,
+                "user": {
+                    "forum_id": self.contributor.forum_id,
+                    "username": self.contributor.user.username,
                 },
-                'id': str(self.plugin_contributor.id),
+                "id": str(self.plugin_contributor.id),
             },
         )
 
@@ -191,7 +191,7 @@ class PluginContributorViewSetTestCase(APITestCase):
         list_path = reverse(
             viewname=self.list_api,
             kwargs={
-                'plugin_slug': self.plugin_2.slug,
+                "plugin_slug": self.plugin_2.slug,
             },
         )
 
@@ -230,8 +230,8 @@ class PluginContributorViewSetTestCase(APITestCase):
             path=reverse(
                 viewname=self.list_api,
                 kwargs={
-                    'plugin_slug': 'invalid',
-                }
+                    "plugin_slug": "invalid",
+                },
             ),
         )
         self.assertEqual(first=len(connection.queries), second=1)
@@ -241,7 +241,7 @@ class PluginContributorViewSetTestCase(APITestCase):
         )
         self.assertDictEqual(
             d1=response.json(),
-            d2={'detail': 'Invalid plugin_slug.'},
+            d2={"detail": "Invalid plugin_slug."},
         )
 
     @override_settings(DEBUG=True)
@@ -283,11 +283,11 @@ class PluginContributorViewSetTestCase(APITestCase):
         self.assertDictEqual(
             d1=response.json(),
             d2={
-                'user': {
-                    'forum_id': self.plugin_contributor.user.forum_id,
-                    'username': self.plugin_contributor.user.user.username,
+                "user": {
+                    "forum_id": self.plugin_contributor.user.forum_id,
+                    "username": self.plugin_contributor.user.user.username,
                 },
-                'id': str(self.plugin_contributor.id),
+                "id": str(self.plugin_contributor.id),
             },
         )
 
@@ -298,8 +298,8 @@ class PluginContributorViewSetTestCase(APITestCase):
             path=reverse(
                 viewname=self.detail_api,
                 kwargs={
-                    'plugin_slug': self.plugin_1.slug,
-                    'pk': 'invalid',
+                    "plugin_slug": self.plugin_1.slug,
+                    "pk": "invalid",
                 },
             ),
         )
@@ -310,14 +310,14 @@ class PluginContributorViewSetTestCase(APITestCase):
         )
         self.assertDictEqual(
             d1=response.json(),
-            d2={'detail': 'Not found.'},
+            d2={"detail": "Not found."},
         )
 
     def test_post(self):
         # Verify that non-logged-in user cannot add a contributor
         response = self.client.post(
             path=self.list_path,
-            data={'username': self.new_contributor.user.username},
+            data={"username": self.new_contributor.user.username},
         )
         self.assertEqual(
             first=response.status_code,
@@ -328,7 +328,7 @@ class PluginContributorViewSetTestCase(APITestCase):
         self.client.force_login(self.regular_user.user)
         response = self.client.post(
             path=self.list_path,
-            data={'username': self.new_contributor.user.username},
+            data={"username": self.new_contributor.user.username},
         )
         self.assertEqual(
             first=response.status_code,
@@ -339,7 +339,7 @@ class PluginContributorViewSetTestCase(APITestCase):
         self.client.force_login(self.contributor.user)
         response = self.client.post(
             path=self.list_path,
-            data={'username': self.new_contributor.user.username},
+            data={"username": self.new_contributor.user.username},
         )
         self.assertEqual(
             first=response.status_code,
@@ -350,7 +350,7 @@ class PluginContributorViewSetTestCase(APITestCase):
         self.client.force_login(self.owner.user)
         response = self.client.post(
             path=self.list_path,
-            data={'username': self.new_contributor.user.username},
+            data={"username": self.new_contributor.user.username},
         )
         self.assertEqual(
             first=response.status_code,
@@ -363,7 +363,7 @@ class PluginContributorViewSetTestCase(APITestCase):
         # Verify existing contributor cannot be added
         response = self.client.post(
             path=self.list_path,
-            data={'username': self.contributor.user.username},
+            data={"username": self.contributor.user.username},
         )
         self.assertEqual(
             first=response.status_code,
@@ -371,13 +371,13 @@ class PluginContributorViewSetTestCase(APITestCase):
         )
         self.assertDictEqual(
             d1=response.json(),
-            d2={'username': [f"User {self.contributor.user.username} is already a contributor"]},
+            d2={"username": [f"User {self.contributor.user.username} is already a contributor"]},
         )
 
         # Verify owner cannot be added
         response = self.client.post(
             path=self.list_path,
-            data={'username': self.owner.user.username},
+            data={"username": self.owner.user.username},
         )
         self.assertEqual(
             first=response.status_code,
@@ -386,17 +386,17 @@ class PluginContributorViewSetTestCase(APITestCase):
         self.assertDictEqual(
             d1=response.json(),
             d2={
-                'username': [
-                    f'User {self.owner.user.username} is the owner, cannot add as a contributor',
+                "username": [
+                    f"User {self.owner.user.username} is the owner, cannot add as a contributor",
                 ],
             },
         )
 
         # Verify unknown username cannot be added
-        invalid_username = 'invalid'
+        invalid_username = "invalid"
         response = self.client.post(
             path=self.list_path,
-            data={'username': invalid_username},
+            data={"username": invalid_username},
         )
         self.assertEqual(
             first=response.status_code,
@@ -404,7 +404,7 @@ class PluginContributorViewSetTestCase(APITestCase):
         )
         self.assertDictEqual(
             d1=response.json(),
-            d2={'username': [f'No user named "{invalid_username}".']},
+            d2={"username": [f'No user named "{invalid_username}".']},
         )
 
     def test_delete(self):
@@ -446,9 +446,9 @@ class PluginContributorViewSetTestCase(APITestCase):
         content = response.json()
         self.assertEqual(
             first=content["name"],
-            second=f'{self.plugin_1} - Contributor',
+            second=f"{self.plugin_1} - Contributor",
         )
-        self.assertNotIn(member='actions', container=content)
+        self.assertNotIn(member="actions", container=content)
 
         # Verify that normal user cannot POST
         self.client.force_login(user=self.regular_user.user)
@@ -457,9 +457,9 @@ class PluginContributorViewSetTestCase(APITestCase):
         content = response.json()
         self.assertEqual(
             first=content["name"],
-            second=f'{self.plugin_1} - Contributor',
+            second=f"{self.plugin_1} - Contributor",
         )
-        self.assertNotIn(member='actions', container=content)
+        self.assertNotIn(member="actions", container=content)
 
         # Verify that contributors cannot POST
         self.client.force_login(user=self.contributor.user)
@@ -468,9 +468,9 @@ class PluginContributorViewSetTestCase(APITestCase):
         content = response.json()
         self.assertEqual(
             first=content["name"],
-            second=f'{self.plugin_1} - Contributor',
+            second=f"{self.plugin_1} - Contributor",
         )
-        self.assertNotIn(member='actions', container=content)
+        self.assertNotIn(member="actions", container=content)
 
         # Verify that the owner can POST
         self.client.force_login(user=self.owner.user)
@@ -479,10 +479,10 @@ class PluginContributorViewSetTestCase(APITestCase):
         content = response.json()
         self.assertEqual(
             first=content["name"],
-            second=f'{self.plugin_1} - Contributor',
+            second=f"{self.plugin_1} - Contributor",
         )
-        self.assertIn(member='actions', container=content)
-        self.assertSetEqual(set1=set(content["actions"]), set2={'POST'})
+        self.assertIn(member="actions", container=content)
+        self.assertSetEqual(set1=set(content["actions"]), set2={"POST"})
 
     def test_options_object(self):
         # Verify that non-logged-in user cannot DELETE
@@ -491,9 +491,9 @@ class PluginContributorViewSetTestCase(APITestCase):
         content = response.json()
         self.assertEqual(
             first=content["name"],
-            second=f'{self.plugin_1} - Contributor',
+            second=f"{self.plugin_1} - Contributor",
         )
-        self.assertNotIn(member='actions', container=content)
+        self.assertNotIn(member="actions", container=content)
 
         # Verify that normal user cannot DELETE
         self.client.force_login(user=self.regular_user.user)
@@ -502,9 +502,9 @@ class PluginContributorViewSetTestCase(APITestCase):
         content = response.json()
         self.assertEqual(
             first=content["name"],
-            second=f'{self.plugin_1} - Contributor',
+            second=f"{self.plugin_1} - Contributor",
         )
-        self.assertNotIn(member='actions', container=content)
+        self.assertNotIn(member="actions", container=content)
 
         # Verify that contributors cannot DELETE
         self.client.force_login(user=self.contributor.user)
@@ -513,9 +513,9 @@ class PluginContributorViewSetTestCase(APITestCase):
         content = response.json()
         self.assertEqual(
             first=content["name"],
-            second=f'{self.plugin_1} - Contributor',
+            second=f"{self.plugin_1} - Contributor",
         )
-        self.assertNotIn(member='actions', container=content)
+        self.assertNotIn(member="actions", container=content)
 
         # Verify that the owner can DELETE
         self.client.force_login(user=self.owner.user)
@@ -524,7 +524,7 @@ class PluginContributorViewSetTestCase(APITestCase):
         content = response.json()
         self.assertEqual(
             first=content["name"],
-            second=f'{self.plugin_1} - Contributor',
+            second=f"{self.plugin_1} - Contributor",
         )
-        self.assertIn(member='actions', container=content)
-        self.assertSetEqual(set1=set(content["actions"]), set2={'DELETE'})
+        self.assertIn(member="actions", container=content)
+        self.assertSetEqual(set1=set(content["actions"]), set2={"DELETE"})

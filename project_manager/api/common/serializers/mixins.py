@@ -229,9 +229,9 @@ class ProjectThroughMixin(ModelSerializer):
             view = self.context["view"]
             user = request.user.id
             if view.owner == user:
-                return field_names + ("id",)
+                return (*field_names, "id")
             if user in view.contributors and not view.owner_only_id_access:
-                return field_names + ("id",)
+                return (*field_names, "id")
         return field_names
 
     def validate(self, attrs):

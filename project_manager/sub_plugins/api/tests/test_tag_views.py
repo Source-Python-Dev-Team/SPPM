@@ -63,21 +63,21 @@ class SubPluginTagViewSetTestCase(APITestCase):
             sub_plugin=cls.sub_plugin_1,
         )
         cls.regular_user = ForumUserFactory()
-        cls.detail_api = 'api:sub-plugins:tags-detail'
-        cls.list_api = 'api:sub-plugins:tags-list'
+        cls.detail_api = "api:sub-plugins:tags-detail"
+        cls.list_api = "api:sub-plugins:tags-list"
         cls.detail_path = reverse(
             viewname=cls.detail_api,
             kwargs={
-                'plugin_slug': cls.plugin.slug,
-                'sub_plugin_slug': cls.sub_plugin_1.slug,
-                'pk': cls.sub_plugin_tag_1.id,
+                "plugin_slug": cls.plugin.slug,
+                "sub_plugin_slug": cls.sub_plugin_1.slug,
+                "pk": cls.sub_plugin_tag_1.id,
             },
         )
         cls.list_path = reverse(
             viewname=cls.list_api,
             kwargs={
-                'plugin_slug': cls.plugin.slug,
-                'sub_plugin_slug': cls.sub_plugin_1.slug,
+                "plugin_slug": cls.plugin.slug,
+                "sub_plugin_slug": cls.sub_plugin_1.slug,
             },
         )
 
@@ -91,7 +91,7 @@ class SubPluginTagViewSetTestCase(APITestCase):
         )
         self.assertEqual(
             first=SubPluginTagViewSet.project_type,
-            second='sub-plugin',
+            second="sub-plugin",
         )
         self.assertEqual(
             first=SubPluginTagViewSet.project_model,
@@ -103,13 +103,13 @@ class SubPluginTagViewSetTestCase(APITestCase):
         )
         self.assertDictEqual(
             d1=SubPluginTagViewSet.queryset.query.select_related,
-            d2={'tag': {}, 'sub_plugin': {}}
+            d2={"tag": {}, "sub_plugin": {}},
         )
 
     def test_http_method_names(self):
         self.assertTupleEqual(
             tuple1=SubPluginTagViewSet.http_method_names,
-            tuple2=('get', 'post', 'delete', 'options'),
+            tuple2=("get", "post", "delete", "options"),
         )
 
     @override_settings(DEBUG=True)
@@ -126,7 +126,7 @@ class SubPluginTagViewSetTestCase(APITestCase):
         self.assertDictEqual(
             d1=content["results"][0],
             d2={
-                'tag': self.sub_plugin_tag_2.tag.name,
+                "tag": self.sub_plugin_tag_2.tag.name,
             },
         )
 
@@ -143,7 +143,7 @@ class SubPluginTagViewSetTestCase(APITestCase):
         self.assertDictEqual(
             d1=content["results"][0],
             d2={
-                'tag': self.sub_plugin_tag_2.tag.name,
+                "tag": self.sub_plugin_tag_2.tag.name,
             },
         )
 
@@ -160,8 +160,8 @@ class SubPluginTagViewSetTestCase(APITestCase):
         self.assertDictEqual(
             d1=content["results"][0],
             d2={
-                'tag': self.sub_plugin_tag_2.tag.name,
-                'id': str(self.sub_plugin_tag_2.id),
+                "tag": self.sub_plugin_tag_2.tag.name,
+                "id": str(self.sub_plugin_tag_2.id),
             },
         )
 
@@ -178,8 +178,8 @@ class SubPluginTagViewSetTestCase(APITestCase):
         self.assertDictEqual(
             d1=content["results"][0],
             d2={
-                'tag': self.sub_plugin_tag_2.tag.name,
-                'id': str(self.sub_plugin_tag_2.id),
+                "tag": self.sub_plugin_tag_2.tag.name,
+                "id": str(self.sub_plugin_tag_2.id),
             },
         )
 
@@ -188,8 +188,8 @@ class SubPluginTagViewSetTestCase(APITestCase):
         list_path = reverse(
             viewname=self.list_api,
             kwargs={
-                'plugin_slug': self.plugin.slug,
-                'sub_plugin_slug': self.sub_plugin_2.slug,
+                "plugin_slug": self.plugin.slug,
+                "sub_plugin_slug": self.sub_plugin_2.slug,
             },
         )
 
@@ -238,8 +238,8 @@ class SubPluginTagViewSetTestCase(APITestCase):
             path=reverse(
                 viewname=self.list_api,
                 kwargs={
-                    'plugin_slug': self.plugin.slug,
-                    'sub_plugin_slug': 'invalid',
+                    "plugin_slug": self.plugin.slug,
+                    "sub_plugin_slug": "invalid",
                 },
             ),
         )
@@ -250,7 +250,7 @@ class SubPluginTagViewSetTestCase(APITestCase):
         )
         self.assertDictEqual(
             d1=response.json(),
-            d2={'detail': 'Invalid sub_plugin_slug.'},
+            d2={"detail": "Invalid sub_plugin_slug."},
         )
 
     @override_settings(DEBUG=True)
@@ -283,8 +283,8 @@ class SubPluginTagViewSetTestCase(APITestCase):
         self.assertDictEqual(
             d1=response.json(),
             d2={
-                'tag': self.sub_plugin_tag_1.tag.name,
-                'id': str(self.sub_plugin_tag_1.id),
+                "tag": self.sub_plugin_tag_1.tag.name,
+                "id": str(self.sub_plugin_tag_1.id),
             },
         )
 
@@ -299,8 +299,8 @@ class SubPluginTagViewSetTestCase(APITestCase):
         self.assertDictEqual(
             d1=response.json(),
             d2={
-                'tag': self.sub_plugin_tag_1.tag.name,
-                'id': str(self.sub_plugin_tag_1.id),
+                "tag": self.sub_plugin_tag_1.tag.name,
+                "id": str(self.sub_plugin_tag_1.id),
             },
         )
 
@@ -311,9 +311,9 @@ class SubPluginTagViewSetTestCase(APITestCase):
             path=reverse(
                 viewname=self.detail_api,
                 kwargs={
-                    'plugin_slug': self.plugin.slug,
-                    'sub_plugin_slug': self.sub_plugin_1.slug,
-                    'pk': 'invalid',
+                    "plugin_slug": self.plugin.slug,
+                    "sub_plugin_slug": self.sub_plugin_1.slug,
+                    "pk": "invalid",
                 },
             ),
         )
@@ -324,14 +324,14 @@ class SubPluginTagViewSetTestCase(APITestCase):
         )
         self.assertDictEqual(
             d1=response.json(),
-            d2={'detail': 'Not found.'},
+            d2={"detail": "Not found."},
         )
 
     def test_post(self):
         # Verify that non-logged-in user cannot add a tag
         response = self.client.post(
             path=self.list_path,
-            data={'tag': 'new-tag-1'},
+            data={"tag": "new-tag-1"},
         )
         self.assertEqual(
             first=response.status_code,
@@ -342,7 +342,7 @@ class SubPluginTagViewSetTestCase(APITestCase):
         self.client.force_login(self.regular_user.user)
         response = self.client.post(
             path=self.list_path,
-            data={'tag': 'new-tag-1'},
+            data={"tag": "new-tag-1"},
         )
         self.assertEqual(
             first=response.status_code,
@@ -353,7 +353,7 @@ class SubPluginTagViewSetTestCase(APITestCase):
         self.client.force_login(self.contributor.user)
         response = self.client.post(
             path=self.list_path,
-            data={'tag': 'new-tag-1'},
+            data={"tag": "new-tag-1"},
         )
         self.assertEqual(
             first=response.status_code,
@@ -364,7 +364,7 @@ class SubPluginTagViewSetTestCase(APITestCase):
         self.client.force_login(self.owner.user)
         response = self.client.post(
             path=self.list_path,
-            data={'tag': 'new-tag-2'},
+            data={"tag": "new-tag-2"},
         )
         self.assertEqual(
             first=response.status_code,
@@ -377,7 +377,7 @@ class SubPluginTagViewSetTestCase(APITestCase):
         # Verify existing affiliated tag cannot be added
         response = self.client.post(
             path=self.list_path,
-            data={'tag': self.sub_plugin_tag_1.tag},
+            data={"tag": self.sub_plugin_tag_1.tag},
         )
         self.assertEqual(
             first=response.status_code,
@@ -385,7 +385,7 @@ class SubPluginTagViewSetTestCase(APITestCase):
         )
         self.assertDictEqual(
             d1=response.json(),
-            d2={'tag': [f"Tag already linked to {SubPluginTagViewSet.project_type}."]}
+            d2={"tag": [f"Tag already linked to {SubPluginTagViewSet.project_type}."]},
         )
 
         # Verify black-listed tag cannot be added
@@ -394,7 +394,7 @@ class SubPluginTagViewSetTestCase(APITestCase):
         )
         response = self.client.post(
             path=self.list_path,
-            data={'tag': tag.name},
+            data={"tag": tag.name},
         )
         self.assertEqual(
             first=response.status_code,
@@ -402,7 +402,7 @@ class SubPluginTagViewSetTestCase(APITestCase):
         )
         self.assertDictEqual(
             d1=response.json(),
-            d2={'tag': [f"Tag '{tag.name}' is black-listed, unable to add."]}
+            d2={"tag": [f"Tag '{tag.name}' is black-listed, unable to add."]},
         )
 
     def test_delete(self):
@@ -435,9 +435,9 @@ class SubPluginTagViewSetTestCase(APITestCase):
             path=reverse(
                 viewname=self.detail_api,
                 kwargs={
-                    'plugin_slug': self.plugin.slug,
-                    'sub_plugin_slug': self.sub_plugin_1.slug,
-                    'pk': self.sub_plugin_tag_2.id,
+                    "plugin_slug": self.plugin.slug,
+                    "sub_plugin_slug": self.sub_plugin_1.slug,
+                    "pk": self.sub_plugin_tag_2.id,
                 },
             ),
         )
@@ -453,9 +453,9 @@ class SubPluginTagViewSetTestCase(APITestCase):
         content = response.json()
         self.assertEqual(
             first=content["name"],
-            second=f'{self.sub_plugin_1} - Tag',
+            second=f"{self.sub_plugin_1} - Tag",
         )
-        self.assertNotIn(member='actions', container=content)
+        self.assertNotIn(member="actions", container=content)
 
         # Verify that normal user cannot POST
         self.client.force_login(user=self.regular_user.user)
@@ -464,9 +464,9 @@ class SubPluginTagViewSetTestCase(APITestCase):
         content = response.json()
         self.assertEqual(
             first=content["name"],
-            second=f'{self.sub_plugin_1} - Tag',
+            second=f"{self.sub_plugin_1} - Tag",
         )
-        self.assertNotIn(member='actions', container=content)
+        self.assertNotIn(member="actions", container=content)
 
         # Verify that contributors can POST
         self.client.force_login(user=self.contributor.user)
@@ -475,10 +475,10 @@ class SubPluginTagViewSetTestCase(APITestCase):
         content = response.json()
         self.assertEqual(
             first=content["name"],
-            second=f'{self.sub_plugin_1} - Tag',
+            second=f"{self.sub_plugin_1} - Tag",
         )
-        self.assertIn(member='actions', container=content)
-        self.assertSetEqual(set1=set(content["actions"]), set2={'POST'})
+        self.assertIn(member="actions", container=content)
+        self.assertSetEqual(set1=set(content["actions"]), set2={"POST"})
 
         # Verify that the owner can POST
         self.client.force_login(user=self.owner.user)
@@ -487,10 +487,10 @@ class SubPluginTagViewSetTestCase(APITestCase):
         content = response.json()
         self.assertEqual(
             first=content["name"],
-            second=f'{self.sub_plugin_1} - Tag',
+            second=f"{self.sub_plugin_1} - Tag",
         )
-        self.assertIn(member='actions', container=content)
-        self.assertSetEqual(set1=set(content["actions"]), set2={'POST'})
+        self.assertIn(member="actions", container=content)
+        self.assertSetEqual(set1=set(content["actions"]), set2={"POST"})
 
     def test_options_object(self):
         # Verify that non-logged-in user cannot DELETE
@@ -499,9 +499,9 @@ class SubPluginTagViewSetTestCase(APITestCase):
         content = response.json()
         self.assertEqual(
             first=content["name"],
-            second=f'{self.sub_plugin_1} - Tag',
+            second=f"{self.sub_plugin_1} - Tag",
         )
-        self.assertNotIn(member='actions', container=content)
+        self.assertNotIn(member="actions", container=content)
 
         # Verify that normal user cannot DELETE
         self.client.force_login(user=self.regular_user.user)
@@ -510,9 +510,9 @@ class SubPluginTagViewSetTestCase(APITestCase):
         content = response.json()
         self.assertEqual(
             first=content["name"],
-            second=f'{self.sub_plugin_1} - Tag',
+            second=f"{self.sub_plugin_1} - Tag",
         )
-        self.assertNotIn(member='actions', container=content)
+        self.assertNotIn(member="actions", container=content)
 
         # Verify that contributors can DELETE
         self.client.force_login(user=self.contributor.user)
@@ -521,10 +521,10 @@ class SubPluginTagViewSetTestCase(APITestCase):
         content = response.json()
         self.assertEqual(
             first=content["name"],
-            second=f'{self.sub_plugin_1} - Tag',
+            second=f"{self.sub_plugin_1} - Tag",
         )
-        self.assertIn(member='actions', container=content)
-        self.assertSetEqual(set1=set(content["actions"]), set2={'DELETE'})
+        self.assertIn(member="actions", container=content)
+        self.assertSetEqual(set1=set(content["actions"]), set2={"DELETE"})
 
         # Verify that the owner can DELETE
         self.client.force_login(user=self.owner.user)
@@ -533,7 +533,7 @@ class SubPluginTagViewSetTestCase(APITestCase):
         content = response.json()
         self.assertEqual(
             first=content["name"],
-            second=f'{self.sub_plugin_1} - Tag',
+            second=f"{self.sub_plugin_1} - Tag",
         )
-        self.assertIn(member='actions', container=content)
-        self.assertSetEqual(set1=set(content["actions"]), set2={'DELETE'})
+        self.assertIn(member="actions", container=content)
+        self.assertSetEqual(set1=set(content["actions"]), set2={"DELETE"})

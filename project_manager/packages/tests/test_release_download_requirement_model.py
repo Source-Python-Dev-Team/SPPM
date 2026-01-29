@@ -12,7 +12,9 @@ from project_manager.packages.models import (
     PackageReleaseDownloadRequirement,
 )
 from requirements.models import DownloadRequirement
-from test_utils.factories.packages import PackageReleaseDownloadRequirementFactory
+from test_utils.factories.packages import (
+    PackageReleaseDownloadRequirementFactory,
+)
 from test_utils.factories.requirements import DownloadRequirementFactory
 
 

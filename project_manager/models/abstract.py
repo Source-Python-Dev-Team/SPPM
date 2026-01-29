@@ -137,6 +137,28 @@ class Project(models.Model):
         """Return the object's name when str cast."""
         return str(self.name)
 
+    def save(self, *args, **kwargs):
+        """Store the slug and remove old logo if necessary."""
+        self.slug = self.get_slug_value()
+        if all([
+            self.logo_path is not None,
+            self.logo,
+            self.logo_path not in str(self.logo),
+        ]):
+            path = settings.MEDIA_ROOT / self.logo_path
+            if path.is_dir():  # pragma: no branch
+                logo_files = [x for x in path.files() if x.stem == self.slug]
+                if logo_files:  # pragma: no branch
+                    logo_files[0].remove()
+
+        super().save(*args, **kwargs)
+
+    def get_forum_url(self):
+        """Return the forum topic URL."""
+        if self.topic is not None:
+            return FORUM_THREAD_URL.format(topic=self.topic)
+        return None
+
     @property
     def handle_logo_upload(self):
         """Return the function to use for handling logo uploads."""
@@ -200,28 +222,6 @@ class Project(models.Model):
         if errors:
             raise ValidationError(errors)
 
-    def save(self, *args, **kwargs):
-        """Store the slug and remove old logo if necessary."""
-        self.slug = self.get_slug_value()
-        if all([
-            self.logo_path is not None,
-            self.logo,
-            self.logo_path not in str(self.logo),
-        ]):
-            path = settings.MEDIA_ROOT / self.logo_path
-            if path.is_dir():  # pragma: no branch
-                logo_files = [x for x in path.files() if x.stem == self.slug]
-                if logo_files:  # pragma: no branch
-                    logo_files[0].remove()
-
-        super().save(*args, **kwargs)
-
-    def get_forum_url(self):
-        """Return the forum topic URL."""
-        if self.topic is not None:
-            return FORUM_THREAD_URL.format(topic=self.topic)
-        return None
-
     def get_slug_value(self):
         """Return the project's slug value."""
         return slugify(self.basename).replace("_", "-")
@@ -258,6 +258,21 @@ class ProjectRelease(AbstractUUIDPrimaryKeyModel):
 
         abstract = True
 
+    def __str__(self):
+        """Return the project name + release version."""
+        return f"{self.project} - {self.version}"
+
+    def save(self, *args, **kwargs):
+        """Update the Project's 'updated' value to the releases 'created'."""
+        pk = self.pk
+        super().save(*args, **kwargs)
+        if pk is None:
+            self.project_class.objects.filter(
+                pk=self.project.pk,
+            ).update(
+                updated=self.created,
+            )
+
     @property
     def project_class(self):
         """Return the project's class."""
@@ -290,10 +305,6 @@ class ProjectRelease(AbstractUUIDPrimaryKeyModel):
         )
         raise NotImplementedError(msg)
 
-    def __str__(self):
-        """Return the project name + release version."""
-        return f"{self.project} - {self.version}"
-
     def clean(self):
         """Raise a proper error when setting version to an existing value."""
         if self.field_tracker.has_changed("version"):
@@ -304,14 +315,3 @@ class ProjectRelease(AbstractUUIDPrimaryKeyModel):
                 })
 
         return super().clean()
-
-    def save(self, *args, **kwargs):
-        """Update the Project's 'updated' value to the releases 'created'."""
-        pk = self.pk
-        super().save(*args, **kwargs)
-        if pk is None:
-            self.project_class.objects.filter(
-                pk=self.project.pk,
-            ).update(
-                updated=self.created,
-            )

@@ -12,7 +12,9 @@ from rest_framework.test import APITestCase
 
 # App
 from project_manager.api.common.views import ProjectContributorViewSet
-from project_manager.sub_plugins.api.serializers import SubPluginContributorSerializer
+from project_manager.sub_plugins.api.serializers import (
+    SubPluginContributorSerializer,
+)
 from project_manager.sub_plugins.api.views import SubPluginContributorViewSet
 from project_manager.sub_plugins.models import (
     SubPlugin,
@@ -56,21 +58,21 @@ class SubPluginContributorViewSetTestCase(APITestCase):
         )
         cls.new_contributor = ForumUserFactory()
         cls.regular_user = ForumUserFactory()
-        cls.detail_api = 'api:sub-plugins:contributors-detail'
-        cls.list_api = 'api:sub-plugins:contributors-list'
+        cls.detail_api = "api:sub-plugins:contributors-detail"
+        cls.list_api = "api:sub-plugins:contributors-list"
         cls.detail_path = reverse(
             viewname=cls.detail_api,
             kwargs={
-                'plugin_slug': cls.plugin.slug,
-                'sub_plugin_slug': cls.sub_plugin_1.slug,
-                'pk': cls.sub_plugin_contributor.id,
+                "plugin_slug": cls.plugin.slug,
+                "sub_plugin_slug": cls.sub_plugin_1.slug,
+                "pk": cls.sub_plugin_contributor.id,
             },
         )
         cls.list_path = reverse(
             viewname=cls.list_api,
             kwargs={
-                'plugin_slug': cls.plugin.slug,
-                'sub_plugin_slug': cls.sub_plugin_1.slug,
+                "plugin_slug": cls.plugin.slug,
+                "sub_plugin_slug": cls.sub_plugin_1.slug,
             },
         )
 
@@ -89,7 +91,7 @@ class SubPluginContributorViewSetTestCase(APITestCase):
         )
         self.assertEqual(
             first=SubPluginContributorViewSet.project_type,
-            second='sub-plugin',
+            second="sub-plugin",
         )
         self.assertEqual(
             first=SubPluginContributorViewSet.project_model,
@@ -101,13 +103,13 @@ class SubPluginContributorViewSetTestCase(APITestCase):
         )
         self.assertDictEqual(
             d1=SubPluginContributorViewSet.queryset.query.select_related,
-            d2={'user': {'user': {}}, 'sub_plugin': {}}
+            d2={"user": {"user": {}}, "sub_plugin": {}},
         )
 
     def test_http_method_names(self):
         self.assertTupleEqual(
             tuple1=SubPluginContributorViewSet.http_method_names,
-            tuple2=('get', 'post', 'delete', 'options'),
+            tuple2=("get", "post", "delete", "options"),
         )
 
     @override_settings(DEBUG=True)
@@ -124,9 +126,9 @@ class SubPluginContributorViewSetTestCase(APITestCase):
         self.assertDictEqual(
             d1=content["results"][0],
             d2={
-                'user': {
-                    'forum_id': self.contributor.forum_id,
-                    'username': self.contributor.user.username,
+                "user": {
+                    "forum_id": self.contributor.forum_id,
+                    "username": self.contributor.user.username,
                 },
             },
         )
@@ -144,9 +146,9 @@ class SubPluginContributorViewSetTestCase(APITestCase):
         self.assertDictEqual(
             d1=content["results"][0],
             d2={
-                'user': {
-                    'forum_id': self.contributor.forum_id,
-                    'username': self.contributor.user.username,
+                "user": {
+                    "forum_id": self.contributor.forum_id,
+                    "username": self.contributor.user.username,
                 },
             },
         )
@@ -164,9 +166,9 @@ class SubPluginContributorViewSetTestCase(APITestCase):
         self.assertDictEqual(
             d1=content["results"][0],
             d2={
-                'user': {
-                    'forum_id': self.contributor.forum_id,
-                    'username': self.contributor.user.username,
+                "user": {
+                    "forum_id": self.contributor.forum_id,
+                    "username": self.contributor.user.username,
                 },
             },
         )
@@ -184,11 +186,11 @@ class SubPluginContributorViewSetTestCase(APITestCase):
         self.assertDictEqual(
             d1=content["results"][0],
             d2={
-                'user': {
-                    'forum_id': self.contributor.forum_id,
-                    'username': self.contributor.user.username,
+                "user": {
+                    "forum_id": self.contributor.forum_id,
+                    "username": self.contributor.user.username,
                 },
-                'id': str(self.sub_plugin_contributor.id),
+                "id": str(self.sub_plugin_contributor.id),
             },
         )
 
@@ -197,8 +199,8 @@ class SubPluginContributorViewSetTestCase(APITestCase):
         list_path = reverse(
             viewname=self.list_api,
             kwargs={
-                'plugin_slug': self.plugin.slug,
-                'sub_plugin_slug': self.sub_plugin_2.slug,
+                "plugin_slug": self.plugin.slug,
+                "sub_plugin_slug": self.sub_plugin_2.slug,
             },
         )
 
@@ -237,8 +239,8 @@ class SubPluginContributorViewSetTestCase(APITestCase):
             path=reverse(
                 viewname=self.list_api,
                 kwargs={
-                    'plugin_slug': self.plugin.slug,
-                    'sub_plugin_slug': 'invalid',
+                    "plugin_slug": self.plugin.slug,
+                    "sub_plugin_slug": "invalid",
                 },
             ),
         )
@@ -249,7 +251,7 @@ class SubPluginContributorViewSetTestCase(APITestCase):
         )
         self.assertDictEqual(
             d1=response.json(),
-            d2={'detail': 'Invalid sub_plugin_slug.'},
+            d2={"detail": "Invalid sub_plugin_slug."},
         )
 
     @override_settings(DEBUG=True)
@@ -291,11 +293,11 @@ class SubPluginContributorViewSetTestCase(APITestCase):
         self.assertDictEqual(
             d1=response.json(),
             d2={
-                'user': {
-                    'forum_id': self.sub_plugin_contributor.user.forum_id,
-                    'username': self.sub_plugin_contributor.user.user.username,
+                "user": {
+                    "forum_id": self.sub_plugin_contributor.user.forum_id,
+                    "username": self.sub_plugin_contributor.user.user.username,
                 },
-                'id': str(self.sub_plugin_contributor.id),
+                "id": str(self.sub_plugin_contributor.id),
             },
         )
 
@@ -306,9 +308,9 @@ class SubPluginContributorViewSetTestCase(APITestCase):
             path=reverse(
                 viewname=self.detail_api,
                 kwargs={
-                    'plugin_slug': self.plugin.slug,
-                    'sub_plugin_slug': self.sub_plugin_1.slug,
-                    'pk': 'invalid',
+                    "plugin_slug": self.plugin.slug,
+                    "sub_plugin_slug": self.sub_plugin_1.slug,
+                    "pk": "invalid",
                 },
             ),
         )
@@ -319,14 +321,14 @@ class SubPluginContributorViewSetTestCase(APITestCase):
         )
         self.assertDictEqual(
             d1=response.json(),
-            d2={'detail': 'Not found.'},
+            d2={"detail": "Not found."},
         )
 
     def test_post(self):
         # Verify that non-logged-in user cannot add a contributor
         response = self.client.post(
             path=self.list_path,
-            data={'username': self.new_contributor.user.username},
+            data={"username": self.new_contributor.user.username},
         )
         self.assertEqual(
             first=response.status_code,
@@ -337,7 +339,7 @@ class SubPluginContributorViewSetTestCase(APITestCase):
         self.client.force_login(self.regular_user.user)
         response = self.client.post(
             path=self.list_path,
-            data={'username': self.new_contributor.user.username},
+            data={"username": self.new_contributor.user.username},
         )
         self.assertEqual(
             first=response.status_code,
@@ -348,7 +350,7 @@ class SubPluginContributorViewSetTestCase(APITestCase):
         self.client.force_login(self.contributor.user)
         response = self.client.post(
             path=self.list_path,
-            data={'username': self.new_contributor.user.username},
+            data={"username": self.new_contributor.user.username},
         )
         self.assertEqual(
             first=response.status_code,
@@ -359,7 +361,7 @@ class SubPluginContributorViewSetTestCase(APITestCase):
         self.client.force_login(self.owner.user)
         response = self.client.post(
             path=self.list_path,
-            data={'username': self.new_contributor.user.username},
+            data={"username": self.new_contributor.user.username},
         )
         self.assertEqual(
             first=response.status_code,
@@ -372,7 +374,7 @@ class SubPluginContributorViewSetTestCase(APITestCase):
         # Verify existing contributor cannot be added
         response = self.client.post(
             path=self.list_path,
-            data={'username': self.contributor.user.username},
+            data={"username": self.contributor.user.username},
         )
         self.assertEqual(
             first=response.status_code,
@@ -380,13 +382,13 @@ class SubPluginContributorViewSetTestCase(APITestCase):
         )
         self.assertDictEqual(
             d1=response.json(),
-            d2={'username': [f"User {self.contributor.user.username} is already a contributor"]},
+            d2={"username": [f"User {self.contributor.user.username} is already a contributor"]},
         )
 
         # Verify owner cannot be added
         response = self.client.post(
             path=self.list_path,
-            data={'username': self.owner.user.username},
+            data={"username": self.owner.user.username},
         )
         self.assertEqual(
             first=response.status_code,
@@ -395,17 +397,17 @@ class SubPluginContributorViewSetTestCase(APITestCase):
         self.assertDictEqual(
             d1=response.json(),
             d2={
-                'username': [
-                    f'User {self.owner.user.username} is the owner, cannot add as a contributor',
+                "username": [
+                    f"User {self.owner.user.username} is the owner, cannot add as a contributor",
                 ],
             },
         )
 
         # Verify unknown username cannot be added
-        invalid_username = 'invalid'
+        invalid_username = "invalid"
         response = self.client.post(
             path=self.list_path,
-            data={'username': invalid_username},
+            data={"username": invalid_username},
         )
         self.assertEqual(
             first=response.status_code,
@@ -413,7 +415,7 @@ class SubPluginContributorViewSetTestCase(APITestCase):
         )
         self.assertDictEqual(
             d1=response.json(),
-            d2={'username': [f'No user named "{invalid_username}".']},
+            d2={"username": [f'No user named "{invalid_username}".']},
         )
 
     def test_delete(self):
@@ -455,9 +457,9 @@ class SubPluginContributorViewSetTestCase(APITestCase):
         content = response.json()
         self.assertEqual(
             first=content["name"],
-            second=f'{self.sub_plugin_1} - Contributor',
+            second=f"{self.sub_plugin_1} - Contributor",
         )
-        self.assertNotIn(member='actions', container=content)
+        self.assertNotIn(member="actions", container=content)
 
         # Verify that normal user cannot POST
         self.client.force_login(user=self.regular_user.user)
@@ -466,9 +468,9 @@ class SubPluginContributorViewSetTestCase(APITestCase):
         content = response.json()
         self.assertEqual(
             first=content["name"],
-            second=f'{self.sub_plugin_1} - Contributor',
+            second=f"{self.sub_plugin_1} - Contributor",
         )
-        self.assertNotIn(member='actions', container=content)
+        self.assertNotIn(member="actions", container=content)
 
         # Verify that contributors cannot POST
         self.client.force_login(user=self.contributor.user)
@@ -477,9 +479,9 @@ class SubPluginContributorViewSetTestCase(APITestCase):
         content = response.json()
         self.assertEqual(
             first=content["name"],
-            second=f'{self.sub_plugin_1} - Contributor',
+            second=f"{self.sub_plugin_1} - Contributor",
         )
-        self.assertNotIn(member='actions', container=content)
+        self.assertNotIn(member="actions", container=content)
 
         # Verify that the owner can POST
         self.client.force_login(user=self.owner.user)
@@ -488,10 +490,10 @@ class SubPluginContributorViewSetTestCase(APITestCase):
         content = response.json()
         self.assertEqual(
             first=content["name"],
-            second=f'{self.sub_plugin_1} - Contributor',
+            second=f"{self.sub_plugin_1} - Contributor",
         )
-        self.assertIn(member='actions', container=content)
-        self.assertSetEqual(set1=set(content["actions"]), set2={'POST'})
+        self.assertIn(member="actions", container=content)
+        self.assertSetEqual(set1=set(content["actions"]), set2={"POST"})
 
     def test_options_object(self):
         # Verify that non-logged-in user cannot DELETE
@@ -500,9 +502,9 @@ class SubPluginContributorViewSetTestCase(APITestCase):
         content = response.json()
         self.assertEqual(
             first=content["name"],
-            second=f'{self.sub_plugin_1} - Contributor',
+            second=f"{self.sub_plugin_1} - Contributor",
         )
-        self.assertNotIn(member='actions', container=content)
+        self.assertNotIn(member="actions", container=content)
 
         # Verify that normal user cannot DELETE
         self.client.force_login(user=self.regular_user.user)
@@ -511,9 +513,9 @@ class SubPluginContributorViewSetTestCase(APITestCase):
         content = response.json()
         self.assertEqual(
             first=content["name"],
-            second=f'{self.sub_plugin_1} - Contributor',
+            second=f"{self.sub_plugin_1} - Contributor",
         )
-        self.assertNotIn(member='actions', container=content)
+        self.assertNotIn(member="actions", container=content)
 
         # Verify that contributors cannot DELETE
         self.client.force_login(user=self.contributor.user)
@@ -522,9 +524,9 @@ class SubPluginContributorViewSetTestCase(APITestCase):
         content = response.json()
         self.assertEqual(
             first=content["name"],
-            second=f'{self.sub_plugin_1} - Contributor',
+            second=f"{self.sub_plugin_1} - Contributor",
         )
-        self.assertNotIn(member='actions', container=content)
+        self.assertNotIn(member="actions", container=content)
 
         # Verify that the owner can DELETE
         self.client.force_login(user=self.owner.user)
@@ -533,7 +535,7 @@ class SubPluginContributorViewSetTestCase(APITestCase):
         content = response.json()
         self.assertEqual(
             first=content["name"],
-            second=f'{self.sub_plugin_1} - Contributor',
+            second=f"{self.sub_plugin_1} - Contributor",
         )
-        self.assertIn(member='actions', container=content)
-        self.assertSetEqual(set1=set(content["actions"]), set2={'DELETE'})
+        self.assertIn(member="actions", container=content)
+        self.assertSetEqual(set1=set(content["actions"]), set2={"DELETE"})

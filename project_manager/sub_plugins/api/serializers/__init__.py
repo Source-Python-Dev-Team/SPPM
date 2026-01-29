@@ -220,9 +220,7 @@ class SubPluginCreateSerializer(SubPluginSerializer):
     class Meta(SubPluginSerializer.Meta):
         """Define metaclass attributes."""
 
-        fields = SubPluginSerializer.Meta.fields + (
-            "releases",
-        )
+        fields = (*SubPluginSerializer.Meta.fields, "releases")
 
 
 class SubPluginGameSerializer(ProjectGameSerializer):

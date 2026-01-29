@@ -49,10 +49,10 @@ class PackageReleaseAdmin(ProjectReleaseAdmin):
 
     fieldsets = deepcopy(ProjectReleaseAdmin.fieldsets)
     fieldsets[0][1]["fields"] += ("package",)
-    list_display = ProjectReleaseAdmin.list_display + ("package",)
+    list_display = (*ProjectReleaseAdmin.list_display, "package")
     ordering = ("package", "-created")
-    readonly_fields = ProjectReleaseAdmin.readonly_fields + ("package",)
-    search_fields = ProjectReleaseAdmin.search_fields + ("package__name",)
+    readonly_fields = (*ProjectReleaseAdmin.readonly_fields, "package")
+    search_fields = (*ProjectReleaseAdmin.search_fields, "package__name")
 
     def get_queryset(self, request):
         """Cache 'package' for the queryset."""

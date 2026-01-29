@@ -10,7 +10,9 @@ from django.core.management.base import CommandError
 from django.test import TestCase
 
 # App
-from project_manager.management.commands.create_secret_key_file import ALLOWED_CHARS
+from project_manager.management.commands.create_secret_key_file import (
+    ALLOWED_CHARS,
+)
 
 
 # =============================================================================

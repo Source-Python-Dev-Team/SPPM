@@ -173,9 +173,7 @@ class PackageCreateSerializer(PackageSerializer):
     class Meta(PackageSerializer.Meta):
         """Define metaclass attributes."""
 
-        fields = PackageSerializer.Meta.fields + (
-            "releases",
-        )
+        fields = (*PackageSerializer.Meta.fields, "releases")
 
 
 class PackageGameSerializer(ProjectGameSerializer):
