@@ -321,7 +321,7 @@ class ProjectZipFile:
             )
             return
 
-        instance, created = model.objects.get_or_create(**{field: value})
+        instance, _ = model.objects.get_or_create(**{field: value})
         key = f"{group_type}_requirement"
         requirement_dict = {
             key: instance,

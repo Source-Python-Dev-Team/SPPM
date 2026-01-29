@@ -390,7 +390,7 @@ class ProjectTagSerializer(ProjectThroughMixin):
                 "tag": f"Tag already linked to {view.project_type}.",
             })
 
-        tag, created = Tag.objects.get_or_create(
+        tag, _ = Tag.objects.get_or_create(
             name=name,
             defaults={
                 "creator": view.request.user.forum_user,

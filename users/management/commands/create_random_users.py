@@ -75,7 +75,7 @@ class Command(BaseCommand):
         for index, username in enumerate(username_list):
             user = User.objects.create_user(
                 username=username,
-                password=urandom(8),
+                password=str(urandom(8)),
             )
             obj_list.append(
                 ForumUser(
