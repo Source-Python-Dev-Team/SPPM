@@ -19,7 +19,6 @@ target-version = "py313"
 # McCabe complexity (`C901`) by default.
 select = ["ALL"]
 ignore = [
-    "ANN",
     "C901",  # remove and fix
     "D100",
     "D104",
