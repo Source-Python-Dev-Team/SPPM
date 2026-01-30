@@ -3,6 +3,9 @@
 # =============================================================================
 # IMPORTS
 # =============================================================================
+# Python
+import typing
+
 # Django
 from django.core.exceptions import ValidationError
 
@@ -15,6 +18,13 @@ from project_manager.packages.constants import (
     PACKAGE_PATH,
     PACKAGE_RELEASE_URL,
 )
+
+if typing.TYPE_CHECKING:
+    from project_manager.packages.models import (
+        Package,
+        PackageImage,
+        PackageRelease,
+    )
 
 # =============================================================================
 # ALL DECLARATION
@@ -37,7 +47,7 @@ class PackageZipFile(ProjectZipFile):
     file_types = PACKAGE_ALLOWED_FILE_TYPES
     is_module = False
 
-    def find_base_info(self):
+    def find_base_info(self) -> None:
         """Store all base information for the zip file."""
         for file_path in self.file_list:
             if not file_path.startswith(PACKAGE_PATH):
@@ -66,7 +76,7 @@ class PackageZipFile(ProjectZipFile):
                     code="multiple",
                 )
 
-    def get_base_paths(self):
+    def get_base_paths(self) -> list[str]:
         """Return a list of base paths to check against."""
         if self.is_module:
             return [f"{PACKAGE_PATH}{self.basename}.py"]
@@ -76,7 +86,7 @@ class PackageZipFile(ProjectZipFile):
             f"{PACKAGE_PATH}{self.basename}/__init__.py",
         ]
 
-    def get_requirement_path(self):
+    def get_requirement_path(self) -> str:
         """Return the path for the requirements json file."""
         if self.is_module:
             return f"{PACKAGE_PATH}{self.basename}_requirements.json"
@@ -86,19 +96,22 @@ class PackageZipFile(ProjectZipFile):
 # =============================================================================
 # FUNCTIONS
 # =============================================================================
-def handle_package_zip_upload(instance):
+def handle_package_zip_upload(instance: "PackageRelease") -> str:
     """Return the path to store the zip for the current release."""
     slug = instance.package.slug
     return f"{PACKAGE_RELEASE_URL}{slug}/{slug}-v{instance.version}.zip"
 
 
-def handle_package_logo_upload(instance, filename):
+def handle_package_logo_upload(instance: "Package", filename: str) -> str:
     """Return the path to store the package's logo."""
     extension = filename.rsplit(".", 1)[1]
     return f"{PACKAGE_LOGO_URL}{instance.slug}.{extension}"
 
 
-def handle_package_image_upload(instance, filename):
+def handle_package_image_upload(
+    instance: "PackageImage",
+    filename: str,
+) -> str:
     """Return the path to store the image."""
     slug = instance.package.slug
     image_number = find_image_number(

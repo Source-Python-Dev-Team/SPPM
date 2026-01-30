@@ -100,7 +100,7 @@ class Package(Project):
         verbose_name = "Package"
         verbose_name_plural = "Packages"
 
-    def get_absolute_url(self):
+    def get_absolute_url(self) -> str:
         """Return the URL for the Package."""
         return reverse(
             viewname="packages:detail",
@@ -162,11 +162,11 @@ class PackageRelease(ProjectRelease):
         verbose_name_plural = "Package Releases"
 
     @property
-    def project(self):
+    def project(self) -> Package:
         """Return the Package."""
         return self.package
 
-    def get_absolute_url(self):
+    def get_absolute_url(self) -> str:
         """Return the URL for the PackageRelease."""
         return reverse(
             viewname="package-download",
@@ -198,7 +198,7 @@ class PackageImage(AbstractUUIDPrimaryKeyModel):
         verbose_name = "Package Image"
         verbose_name_plural = "Package Images"
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Return the proper str value of the object."""
         return f"{self.package} - {self.image}"
 
@@ -222,11 +222,11 @@ class PackageContributor(AbstractUUIDPrimaryKeyModel):
         verbose_name = "Package Contributor"
         verbose_name_plural = "Package Contributors"
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Return the base string."""
         return f"{self.package} Contributor: {self.user}"
 
-    def clean(self):
+    def clean(self) -> None:
         """Validate that the package's owner cannot be a contributor."""
         if hasattr(self, "user") and self.package.owner == self.user:
             raise ValidationError({
@@ -258,7 +258,7 @@ class PackageGame(AbstractUUIDPrimaryKeyModel):
         verbose_name = "Package Game"
         verbose_name_plural = "Package Games"
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Return the base string."""
         return f"{self.package} Game: {self.game}"
 
@@ -282,7 +282,7 @@ class PackageTag(AbstractUUIDPrimaryKeyModel):
         verbose_name = "Package Tag"
         verbose_name_plural = "Package Tags"
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Return the base string."""
         return f"{self.package} Tag: {self.tag}"
 
@@ -309,7 +309,7 @@ class PackageReleaseDownloadRequirement(AbstractUUIDPrimaryKeyModel):
         verbose_name = "Package Release Download Requirement"
         verbose_name_plural = "Package Release Download Requirements"
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Return the requirement's url."""
         return self.download_requirement.url
 
@@ -346,7 +346,7 @@ class PackageReleasePackageRequirement(AbstractUUIDPrimaryKeyModel):
         verbose_name = "Package Release Package Requirement"
         verbose_name_plural = "Package Release Package Requirements"
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Return the requirement's name and version."""
         return f"{self.package_requirement.name} - {self.version}"
 
@@ -382,7 +382,7 @@ class PackageReleasePyPiRequirement(AbstractUUIDPrimaryKeyModel):
         verbose_name = "Package Release PyPi Requirement"
         verbose_name_plural = "Package Release PyPi Requirements"
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Return the requirement's name and version."""
         return f"{self.pypi_requirement.name} - {self.version}"
 
@@ -418,6 +418,6 @@ class PackageReleaseVersionControlRequirement(AbstractUUIDPrimaryKeyModel):
         verbose_name = "Package Release Version Control Requirement"
         verbose_name_plural = "Package Release Version Control Requirements"
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Return the requirement's name and version."""
         return f"{self.vcs_requirement.url} - {self.version}"

@@ -138,7 +138,7 @@ class ProjectReleaseCreationMixin(CreateRequirementsMixin, ModelSerializer):
         )
         raise NotImplementedError(msg)
 
-    def validate(self, attrs: dict) -> dict:
+    def validate(self, attrs: dict[str, Any]) -> dict[str, Any]:
         """Validate that the new release can be created."""
         version = attrs.get("version", "")
         zip_file = attrs.get("zip_file")
@@ -251,7 +251,7 @@ class ProjectThroughMixin(ModelSerializer):
                 return *field_names, "id"
         return field_names
 
-    def validate(self, attrs: dict) -> dict:
+    def validate(self, attrs: dict[str, Any]) -> dict[str, Any]:
         """Add the project to the validated data."""
         view = self.context["view"]
         attrs[view.project_type.replace("-", "_")] = view.project

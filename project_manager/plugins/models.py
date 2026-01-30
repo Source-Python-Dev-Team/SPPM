@@ -102,7 +102,7 @@ class Plugin(Project):
         verbose_name = "Plugin"
         verbose_name_plural = "Plugins"
 
-    def get_absolute_url(self):
+    def get_absolute_url(self) -> str:
         """Return the URL for the Plugin."""
         return reverse(
             viewname="plugins:detail",
@@ -164,11 +164,11 @@ class PluginRelease(ProjectRelease):
         verbose_name_plural = "Plugin Releases"
 
     @property
-    def project(self):
+    def project(self) -> Plugin:
         """Return the Plugin."""
         return self.plugin
 
-    def get_absolute_url(self):
+    def get_absolute_url(self) -> str:
         """Return the URL for the PluginRelease."""
         return reverse(
             viewname="plugin-download",
@@ -200,7 +200,7 @@ class PluginImage(AbstractUUIDPrimaryKeyModel):
         verbose_name = "Plugin Image"
         verbose_name_plural = "Plugin Images"
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Return the proper str value of the object."""
         return f"{self.plugin} - {self.image}"
 
@@ -224,11 +224,11 @@ class PluginContributor(AbstractUUIDPrimaryKeyModel):
         verbose_name = "Plugin Contributor"
         verbose_name_plural = "Plugin Contributors"
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Return the base string."""
         return f"{self.plugin} Contributor: {self.user}"
 
-    def clean(self):
+    def clean(self) -> None:
         """Validate that the plugin's owner cannot be a contributor."""
         if hasattr(self, "user") and self.plugin.owner == self.user:
             raise ValidationError({
@@ -259,7 +259,7 @@ class PluginGame(AbstractUUIDPrimaryKeyModel):
         verbose_name = "Plugin Game"
         verbose_name_plural = "Plugin Games"
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Return the base string."""
         return f"{self.plugin} Game: {self.game}"
 
@@ -283,7 +283,7 @@ class PluginTag(AbstractUUIDPrimaryKeyModel):
         verbose_name = "Plugin Tag"
         verbose_name_plural = "Plugin Tags"
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Return the base string."""
         return f"{self.plugin} Tag: {self.tag}"
 
@@ -323,11 +323,11 @@ class SubPluginPath(AbstractUUIDPrimaryKeyModel):
         verbose_name = "SubPlugin Path"
         verbose_name_plural = "SubPlugin Paths"
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Return the path."""
         return str(self.path)
 
-    def clean(self):
+    def clean(self) -> None:
         """Validate that at least one of the `allow` fields is True."""
         errors = {}
         if not any([
@@ -377,7 +377,7 @@ class PluginReleaseDownloadRequirement(AbstractUUIDPrimaryKeyModel):
         verbose_name = "Plugin Release Download Requirement"
         verbose_name_plural = "Plugin Release Download Requirements"
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Return the requirement's url."""
         return self.download_requirement.url
 
@@ -414,7 +414,7 @@ class PluginReleasePackageRequirement(AbstractUUIDPrimaryKeyModel):
         verbose_name = "Plugin Release Package Requirement"
         verbose_name_plural = "Plugin Release Package Requirements"
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Return the requirement's name and version."""
         return f"{self.package_requirement.name} - {self.version}"
 
@@ -450,7 +450,7 @@ class PluginReleasePyPiRequirement(AbstractUUIDPrimaryKeyModel):
         verbose_name = "Plugin Release PyPi Requirement"
         verbose_name_plural = "Plugin Release PyPi Requirements"
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Return the requirement's name and version."""
         return f"{self.pypi_requirement.name} - {self.version}"
 
@@ -486,6 +486,6 @@ class PluginReleaseVersionControlRequirement(AbstractUUIDPrimaryKeyModel):
         verbose_name = "Plugin Release Version Control Requirement"
         verbose_name_plural = "Plugin Release Version Control Requirements"
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Return the requirement's name and version."""
         return f"{self.vcs_requirement.url} - {self.version}"

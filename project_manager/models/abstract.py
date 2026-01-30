@@ -1,9 +1,9 @@
 """Common models used for inheritance."""
-
 # =============================================================================
 # IMPORTS
 # =============================================================================
 # Python
+import typing
 from operator import attrgetter
 from uuid import uuid4
 
@@ -11,6 +11,7 @@ from uuid import uuid4
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db import models
+from django.db.models import QuerySet
 from django.utils.text import slugify
 
 # Third Party Django
@@ -133,11 +134,11 @@ class Project(models.Model):
 
         abstract = True
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Return the object's name when str cast."""
         return str(self.name)
 
-    def save(self, *args, **kwargs):
+    def save(self, *args: tuple, **kwargs: dict) -> None:
         """Store the slug and remove old logo if necessary."""
         self.slug = self.get_slug_value()
         if all([
@@ -153,14 +154,14 @@ class Project(models.Model):
 
         super().save(*args, **kwargs)
 
-    def get_forum_url(self):
+    def get_forum_url(self) -> type[str | None]:
         """Return the forum topic URL."""
         if self.topic is not None:
             return FORUM_THREAD_URL.format(topic=self.topic)
         return None
 
     @property
-    def handle_logo_upload(self):
+    def handle_logo_upload(self) -> typing.Callable:
         """Return the function to use for handling logo uploads."""
         msg = (
             f'Class "{self.__class__.__name__}" must implement a '
@@ -169,7 +170,7 @@ class Project(models.Model):
         raise NotImplementedError(msg)
 
     @property
-    def releases(self):
+    def releases(self) -> QuerySet:
         """Raise error if class doesn't have a related field for 'releases'."""
         msg = (
             f'Class "{self.__class__.__name__}" must implement a '
@@ -178,7 +179,7 @@ class Project(models.Model):
         raise NotImplementedError(msg)
 
     @property
-    def current_version(self):
+    def current_version(self) -> str:
         """Return the current release's version."""
         # TODO: rework this query
         return self.releases.values_list(
@@ -189,7 +190,7 @@ class Project(models.Model):
         )[0]
 
     @property
-    def total_downloads(self):
+    def total_downloads(self) -> int:
         """Return the total number of downloads for the project."""
         # TODO: rework this query
         return sum(
@@ -199,12 +200,12 @@ class Project(models.Model):
             ),
         )
 
-    def clean(self):
+    def clean(self) -> None:
         """Clean all attributes and raise any errors that occur."""
         self.clean_logo()
         return super().clean()
 
-    def clean_logo(self):
+    def clean_logo(self) -> None:
         """Verify the logo is within the proper dimensions."""
         errors = []
         if not self.logo:
@@ -222,7 +223,7 @@ class Project(models.Model):
         if errors:
             raise ValidationError(errors)
 
-    def get_slug_value(self):
+    def get_slug_value(self) -> str:
         """Return the project's slug value."""
         return slugify(self.basename).replace("_", "-")
 
@@ -258,11 +259,11 @@ class ProjectRelease(AbstractUUIDPrimaryKeyModel):
 
         abstract = True
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Return the project name + release version."""
         return f"{self.project} - {self.version}"
 
-    def save(self, *args, **kwargs):
+    def save(self, *args: tuple, **kwargs: dict) -> None:
         """Update the Project's 'updated' value to the releases 'created'."""
         pk = self.pk
         super().save(*args, **kwargs)
@@ -274,7 +275,7 @@ class ProjectRelease(AbstractUUIDPrimaryKeyModel):
             )
 
     @property
-    def project_class(self):
+    def project_class(self) -> Project:
         """Return the project's class."""
         msg = (
             f'Class "{self.__class__.__name__}" must implement a '
@@ -283,7 +284,7 @@ class ProjectRelease(AbstractUUIDPrimaryKeyModel):
         raise NotImplementedError(msg)
 
     @property
-    def project(self):
+    def project(self) -> Project:
         """Return the project's class."""
         msg = (
             f'Class "{self.__class__.__name__}" must implement a '
@@ -292,12 +293,12 @@ class ProjectRelease(AbstractUUIDPrimaryKeyModel):
         raise NotImplementedError(msg)
 
     @property
-    def file_name(self):
+    def file_name(self) -> str:
         """Return the name of the zip file."""
         return self.zip_file.name.rsplit("/", 1)[1]
 
     @property
-    def handle_zip_file_upload(self):
+    def handle_zip_file_upload(self) -> typing.Callable:
         """Return the function to use for handling zip file uploads."""
         msg = (
             f'Class "{self.__class__.__name__}" must implement a '
@@ -305,7 +306,7 @@ class ProjectRelease(AbstractUUIDPrimaryKeyModel):
         )
         raise NotImplementedError(msg)
 
-    def clean(self):
+    def clean(self) -> None:
         """Raise a proper error when setting version to an existing value."""
         if self.field_tracker.has_changed("version"):
             new_version = self.field_tracker.current()["version"]

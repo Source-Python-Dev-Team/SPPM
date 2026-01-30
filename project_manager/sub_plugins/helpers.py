@@ -6,6 +6,7 @@
 # Django
 import json
 import logging
+import typing
 from zipfile import ZipFile
 
 from django.core.exceptions import ValidationError
@@ -19,6 +20,14 @@ from project_manager.sub_plugins.constants import (
     SUB_PLUGIN_LOGO_URL,
     SUB_PLUGIN_RELEASE_URL,
 )
+
+if typing.TYPE_CHECKING:
+    from project_manager.plugins.models import Plugin
+    from project_manager.sub_plugins.models import (
+        SubPlugin,
+        SubPluginImage,
+        SubPluginRelease,
+    )
 
 # =============================================================================
 # ALL DECLARATION
@@ -48,7 +57,7 @@ class SubPluginZipFile(ProjectZipFile):
     paths = None
     is_module = False
 
-    def __init__(self, zip_file, plugin):
+    def __init__(self, zip_file: str, plugin: "Plugin") -> None:
         """Store the base attributes and the plugin."""
         self.plugin = plugin
         self.sub_plugin_paths = list(
@@ -59,7 +68,7 @@ class SubPluginZipFile(ProjectZipFile):
         )
         super().__init__(zip_file)
 
-    def _validate_path(self, path):
+    def _validate_path(self, path: str) -> bool:
         """Validate the given path is ok for the extension."""
         if path.endswith("/"):
             return True
@@ -83,7 +92,7 @@ class SubPluginZipFile(ProjectZipFile):
 
         return False
 
-    def find_base_info(self):
+    def find_base_info(self) -> None:
         """Store all base information for the zip file."""
         plugin_path = f"{PLUGIN_PATH}{self.plugin.basename}/"
         paths = list(self.plugin.paths.all())
@@ -126,7 +135,7 @@ class SubPluginZipFile(ProjectZipFile):
 
                 self.paths.add(current_path)
 
-    def validate_base_file_in_zip(self):
+    def validate_base_file_in_zip(self) -> None:
         """Verify that there is a base file within the zip file."""
         plugin_paths = {
             path.path: {
@@ -143,7 +152,11 @@ class SubPluginZipFile(ProjectZipFile):
                 path_values=path_values,
             )
 
-    def _validate_base_file_in_zip(self, base_path, path_values):
+    def _validate_base_file_in_zip(
+        self,
+        base_path: str,
+        path_values: dict,
+    ) -> None:
         """Verify a base file is found in the given path."""
         if not base_path.startswith("/"):  # pragma: no branch
             base_path = "/" + base_path
@@ -185,7 +198,7 @@ class SubPluginZipFile(ProjectZipFile):
             code="not-found",
         )
 
-    def get_requirements_file_contents(self):
+    def get_requirements_file_contents(self) -> type[dict | None]:
         """Return the contents of the requirements.json file."""
         requirement_paths = self.get_requirement_paths()
         for requirement_path in requirement_paths:
@@ -210,7 +223,7 @@ class SubPluginZipFile(ProjectZipFile):
         logger.debug("No requirement file found.")
         return None
 
-    def get_requirement_paths(self):
+    def get_requirement_paths(self) -> list[str]:
         """Return the path for the requirements json file."""
         if self.is_module:
             return [
@@ -228,7 +241,7 @@ class SubPluginZipFile(ProjectZipFile):
 # =============================================================================
 # FUNCTIONS
 # =============================================================================
-def handle_sub_plugin_zip_upload(instance):
+def handle_sub_plugin_zip_upload(instance: "SubPluginRelease") -> str:
     """Return the path to store the zip for the current release."""
     slug = instance.sub_plugin.slug
     return (
@@ -237,7 +250,7 @@ def handle_sub_plugin_zip_upload(instance):
     )
 
 
-def handle_sub_plugin_logo_upload(instance, filename):
+def handle_sub_plugin_logo_upload(instance: "SubPlugin", filename: str) -> str:
     """Return the path to store the sub-plugin's logo."""
     extension = filename.rsplit(".", 1)[1]
     return (
@@ -246,7 +259,10 @@ def handle_sub_plugin_logo_upload(instance, filename):
     )
 
 
-def handle_sub_plugin_image_upload(instance, filename):
+def handle_sub_plugin_image_upload(
+    instance: "SubPluginImage",
+    filename: str,
+) -> str:
     """Return the path to store the image."""
     plugin_slug = instance.sub_plugin.plugin.slug
     slug = instance.sub_plugin.slug

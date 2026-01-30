@@ -5,6 +5,8 @@
 # =============================================================================
 # Python
 from contextlib import suppress
+from datetime import datetime
+from typing import Any
 
 # Django
 from django.utils.timezone import now
@@ -20,11 +22,10 @@ from rest_framework.fields import (
 from rest_framework.reverse import reverse
 from rest_framework.serializers import ModelSerializer
 
+# App
 from games.api.common.serializers import MinimalGameSerializer
 from games.constants import GAME_SLUG_MAX_LENGTH
 from games.models import Game
-
-# App
 from project_manager.api.common.serializers.mixins import (
     CreateRequirementsMixin,
     ProjectLocaleMixin,
@@ -35,6 +36,7 @@ from project_manager.constants import (
     RELEASE_NOTES_MAX_LENGTH,
     RELEASE_VERSION_MAX_LENGTH,
 )
+from project_manager.models.abstract import Project, ProjectRelease
 from tags.constants import TAG_NAME_MAX_LENGTH
 from tags.models import Tag
 from users.api.common.serializers import ForumUserContributorSerializer
@@ -101,7 +103,7 @@ class ProjectSerializer(
         )
 
     @property
-    def project_type(self):
+    def project_type(self) -> str:
         """Return the project's type."""
         msg = (
             f'Class "{self.__class__.__name__}" must implement a '
@@ -110,7 +112,7 @@ class ProjectSerializer(
         raise NotImplementedError(msg)
 
     @property
-    def release_model(self):
+    def release_model(self) -> type[ProjectRelease]:
         """Return the model to use for releases."""
         msg = (
             f'Class "{self.__class__.__name__}" must implement a '
@@ -118,14 +120,14 @@ class ProjectSerializer(
         )
         raise NotImplementedError(msg)
 
-    def get_fields(self):
+    def get_fields(self) -> dict:
         """Only include contributors in the list view."""
         fields = super().get_fields()
         if self.context["view"].action != "list":
             del fields["contributors"]
         return fields
 
-    def create(self, validated_data):
+    def create(self, validated_data: dict) -> Project:
         """Create the instance and the first release of the project."""
         validated_data = self.get_extra_validated_data(validated_data)
         current_time = now()
@@ -144,11 +146,11 @@ class ProjectSerializer(
         self._create_requirements(release=release)
         return instance
 
-    def get_created(self, obj):
+    def get_created(self, obj: Project) -> dict[str, datetime]:
         """Return the project's created info."""
         return self.get_date_time_dict(timestamp=obj.created)
 
-    def get_current_release(self, obj):
+    def get_current_release(self, obj: Project) -> dict:
         """Return the current release info."""
         release = obj.releases.first()
         zip_url = reverse(
@@ -169,7 +171,7 @@ class ProjectSerializer(
         return release_dict
 
     @staticmethod
-    def get_requirements(release):
+    def get_requirements(release: ProjectRelease) -> dict[str, list[dict]]:
         """Return a dictionary of requirements for the given release."""
         project_type = release.__class__.__name__.lower()
         package_requirements = [
@@ -228,29 +230,29 @@ class ProjectSerializer(
             "download_requirements": download_requirements,
         }
 
-    def get_extra_validated_data(self, validated_data):
+    def get_extra_validated_data(self, validated_data: dict) -> dict:
         """Add any extra data to be used on create."""
         validated_data["owner"] = self.context["request"].user.forum_user
         validated_data["basename"] = self.release_dict["basename"]
         return validated_data
 
-    def get_updated(self, obj):
+    def get_updated(self, obj: Project) -> dict[str, datetime]:
         """Return the project's last updated info."""
         return self.get_date_time_dict(timestamp=obj.updated)
 
-    def validate(self, attrs):
+    def validate(self, attrs: dict[str, Any]) -> dict[str, Any]:
         """Validate the given field values."""
         self.release_dict = attrs.pop("releases", {})
         return attrs
 
-    def update(self, instance, validated_data):
+    def update(self, instance: Project, validated_data: dict) -> Project:
         """Do not allow the project's 'name' to be updated via API."""
         with suppress(KeyError):
             del validated_data["name"]
         return super().update(instance=instance, validated_data=validated_data)
 
     @staticmethod
-    def get_download_kwargs(obj, release):
+    def get_download_kwargs(obj: Project, release: ProjectRelease) -> dict:
         """Return the release's reverse kwargs."""
         return {
             "slug": obj.slug,
@@ -286,7 +288,7 @@ class ProjectReleaseSerializer(
             "vcs_requirements",
         )
 
-    def get_created(self, obj):
+    def get_created(self, obj: ProjectRelease) -> dict[str, datetime]:
         """Return the release's created info."""
         return self.get_date_time_dict(timestamp=obj.created)
 
@@ -347,7 +349,7 @@ class ProjectGameSerializer(ProjectThroughMixin):
             "game",
         )
 
-    def validate(self, attrs):
+    def validate(self, attrs: dict[str, Any]) -> dict[str, Any]:
         """Validate the given game."""
         name = attrs.pop("game_slug")
         view = self.context["view"]
@@ -381,7 +383,7 @@ class ProjectTagSerializer(ProjectThroughMixin):
             "tag",
         )
 
-    def validate(self, attrs):
+    def validate(self, attrs: dict[str, Any]) -> dict[str, Any]:
         """Validate the given tag."""
         name = attrs["tag"]
         view = self.context["view"]
@@ -424,7 +426,7 @@ class ProjectContributorSerializer(ProjectThroughMixin):
             "user",
         )
 
-    def validate(self, attrs):
+    def validate(self, attrs: dict[str, Any]) -> dict[str, Any]:
         """Validate the given username."""
         username = attrs.pop("username")
         view = self.context["view"]

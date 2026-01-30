@@ -112,11 +112,11 @@ class SubPlugin(Project):
         verbose_name = "SubPlugin"
         verbose_name_plural = "SubPlugins"
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Return the string formatted name for the sub-plugin."""
         return f"{self.plugin.name}: {self.name}"
 
-    def get_absolute_url(self):
+    def get_absolute_url(self) -> str:
         """Return the URL for the SubPlugin."""
         return reverse(
             viewname="plugins:sub-plugins:detail",
@@ -126,7 +126,7 @@ class SubPlugin(Project):
             },
         )
 
-    def save(self, *args, **kwargs):
+    def save(self, *args: tuple, **kwargs: dict) -> None:
         """Set the id using the plugin's slug and the sub_plugin's slug."""
         self.id = f"{self.plugin_id}.{self.get_slug_value()}"
         super().save(*args, **kwargs)
@@ -184,11 +184,11 @@ class SubPluginRelease(ProjectRelease):
         verbose_name_plural = "SubPlugin Releases"
 
     @property
-    def project(self):
+    def project(self) -> SubPlugin:
         """Return the SubPlugin."""
         return self.sub_plugin
 
-    def get_absolute_url(self):
+    def get_absolute_url(self) -> str:
         """Return the URL for the SubPluginRelease."""
         return reverse(
             viewname="sub-plugin-download",
@@ -221,7 +221,7 @@ class SubPluginImage(AbstractUUIDPrimaryKeyModel):
         verbose_name = "SubPlugin Image"
         verbose_name_plural = "SubPlugin Images"
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Return the proper str value of the object."""
         return f"{self.sub_plugin} - {self.image}"
 
@@ -245,11 +245,11 @@ class SubPluginContributor(AbstractUUIDPrimaryKeyModel):
         verbose_name = "SubPlugin Contributor"
         verbose_name_plural = "SubPlugin Contributors"
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Return the base string."""
         return f"{self.sub_plugin} Contributor: {self.user}"
 
-    def clean(self):
+    def clean(self) -> None:
         """Validate that the sub_plugin's owner cannot be a contributor."""
         if hasattr(self, "user") and self.sub_plugin.owner == self.user:
             raise ValidationError({
@@ -280,7 +280,7 @@ class SubPluginGame(AbstractUUIDPrimaryKeyModel):
         verbose_name = "SubPlugin Game"
         verbose_name_plural = "SubPlugin Games"
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Return the base string."""
         return f"{self.sub_plugin} Game: {self.game}"
 
@@ -304,7 +304,7 @@ class SubPluginTag(AbstractUUIDPrimaryKeyModel):
         verbose_name = "SubPlugin Tag"
         verbose_name_plural = "SubPlugin Tags"
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Return the base string."""
         return f"{self.sub_plugin} Tag: {self.tag}"
 
@@ -331,7 +331,7 @@ class SubPluginReleaseDownloadRequirement(AbstractUUIDPrimaryKeyModel):
         verbose_name = "SubPlugin Release Download Requirement"
         verbose_name_plural = "SubPlugin Release Download Requirements"
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Return the requirement's url."""
         return self.download_requirement.url
 
@@ -368,7 +368,7 @@ class SubPluginReleasePackageRequirement(AbstractUUIDPrimaryKeyModel):
         verbose_name = "SubPlugin Release Package Requirement"
         verbose_name_plural = "SubPlugin Release Package Requirements"
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Return the requirement's name and version."""
         return f"{self.package_requirement.name} - {self.version}"
 
@@ -405,7 +405,7 @@ class SubPluginReleasePyPiRequirement(AbstractUUIDPrimaryKeyModel):
         verbose_name = "SubPlugin Release PyPi Requirement"
         verbose_name_plural = "SubPlugin Release PyPi Requirements"
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Return the requirement's name and version."""
         return f"{self.pypi_requirement.name} - {self.version}"
 
@@ -441,6 +441,6 @@ class SubPluginReleaseVersionControlRequirement(AbstractUUIDPrimaryKeyModel):
         verbose_name = "SubPlugin Release Version Control Requirement"
         verbose_name_plural = "SubPlugin Release Version Control Requirements"
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Return the requirement's name and version."""
         return f"{self.vcs_requirement.url} - {self.version}"

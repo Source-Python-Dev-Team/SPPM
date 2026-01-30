@@ -3,6 +3,9 @@
 # =============================================================================
 # IMPORTS
 # =============================================================================
+# Python
+import typing
+
 # Django
 from django.core.exceptions import ValidationError
 
@@ -15,6 +18,13 @@ from project_manager.plugins.constants import (
     PLUGIN_PATH,
     PLUGIN_RELEASE_URL,
 )
+
+if typing.TYPE_CHECKING:
+    from project_manager.plugins.models import (
+        Plugin,
+        PluginImage,
+        PluginRelease,
+    )
 
 # =============================================================================
 # ALL DECLARATION
@@ -36,7 +46,7 @@ class PluginZipFile(ProjectZipFile):
     project_type = "Plugin"
     file_types = PLUGIN_ALLOWED_FILE_TYPES
 
-    def find_base_info(self):
+    def find_base_info(self) -> None:
         """Store all base information for the zip file."""
         for file_path in self.file_list:
             if not file_path.startswith(PLUGIN_PATH):
@@ -59,11 +69,11 @@ class PluginZipFile(ProjectZipFile):
                     code="multiple",
                 )
 
-    def get_base_paths(self):
+    def get_base_paths(self) -> list[str]:
         """Return a list of base paths to check against."""
         return [f"{PLUGIN_PATH}{self.basename}/{self.basename}.py"]
 
-    def get_requirement_path(self):
+    def get_requirement_path(self) -> str:
         """Return the path for the requirements json file."""
         return f"{PLUGIN_PATH}{self.basename}/requirements.json"
 
@@ -71,19 +81,19 @@ class PluginZipFile(ProjectZipFile):
 # =============================================================================
 # FUNCTIONS
 # =============================================================================
-def handle_plugin_zip_upload(instance):
+def handle_plugin_zip_upload(instance: "PluginRelease") -> str:
     """Return the path to store the zip for the current release."""
     slug = instance.plugin.slug
     return f"{PLUGIN_RELEASE_URL}{slug}/{slug}-v{instance.version}.zip"
 
 
-def handle_plugin_logo_upload(instance, filename):
+def handle_plugin_logo_upload(instance: "Plugin", filename: str) -> str:
     """Return the path to store the plugin's logo."""
     extension = filename.rsplit(".", 1)[1]
     return f"{PLUGIN_LOGO_URL}{instance.slug}.{extension}"
 
 
-def handle_plugin_image_upload(instance, filename):
+def handle_plugin_image_upload(instance: "PluginImage", filename: str) -> str:
     """Return the path to store the image."""
     slug = instance.plugin.slug
     image_number = find_image_number(

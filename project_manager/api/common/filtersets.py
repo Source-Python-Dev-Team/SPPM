@@ -4,7 +4,7 @@
 # IMPORTS
 # =============================================================================
 # Django
-from django.db.models import Q
+from django.db.models import Q, QuerySet
 
 # Third Party Django
 from django_filters.filters import CharFilter
@@ -47,7 +47,7 @@ class ProjectFilterSet(FilterSet):
         )
 
     @staticmethod
-    def filter_user(queryset, _, value):
+    def filter_user(queryset: QuerySet, _: str, value: object) -> QuerySet:
         """Filter to Projects owned or contributed to by given ForumUser."""
         return queryset.filter(
             Q(owner__user__username=value) |

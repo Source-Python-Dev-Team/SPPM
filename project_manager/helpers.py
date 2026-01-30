@@ -6,6 +6,7 @@
 # Python
 import json
 import logging
+import typing
 from collections import defaultdict
 from zipfile import BadZipFile, ZipFile
 
@@ -17,6 +18,9 @@ from django.core.exceptions import ValidationError
 # App
 from project_manager.constants import CANNOT_BE_NAMED, CANNOT_START_WITH
 
+if typing.TYPE_CHECKING:
+    from project_manager.models.abstract import Project, ProjectRelease
+
 # =============================================================================
 # ALL DECLARATION
 # =============================================================================
@@ -27,7 +31,6 @@ __all__ = (
     "handle_project_logo_upload",
     "handle_release_zip_file_upload",
 )
-
 
 # =============================================================================
 # GLOBAL VARIABLES
@@ -59,7 +62,7 @@ GROUP_QUERYSET_NAMES = {
 class ProjectZipFile:
     """Base ZipFile parsing class."""
 
-    def __init__(self, zip_file):
+    def __init__(self, zip_file: str) -> None:
         """Store the base attributes for the zip file."""
         self.zip_file = zip_file
         with ZipFile(self.zip_file) as zip_obj:
@@ -69,7 +72,7 @@ class ProjectZipFile:
         self.requirements_errors = []
 
     @property
-    def project_type(self):
+    def project_type(self) -> str:
         """Return the type of project."""
         msg = (
             f'Class "{self.__class__.__name__}" must implement a '
@@ -78,7 +81,7 @@ class ProjectZipFile:
         raise NotImplementedError(msg)
 
     @property
-    def file_types(self):
+    def file_types(self) -> dict:
         """Return the type of project."""
         msg = (
             f'Class "{self.__class__.__name__}" must implement a '
@@ -86,7 +89,7 @@ class ProjectZipFile:
         )
         raise NotImplementedError(msg)
 
-    def find_base_info(self):
+    def find_base_info(self) -> None:
         """Store all base information for the zip file."""
         msg = (
             f'Class "{self.__class__.__name__}" must implement a '
@@ -94,7 +97,7 @@ class ProjectZipFile:
         )
         raise NotImplementedError(msg)
 
-    def get_base_paths(self):
+    def get_base_paths(self) -> list[str]:
         """Return a list of base paths to check against."""
         msg = (
             f'Class "{self.__class__.__name__}" must implement a '
@@ -102,7 +105,7 @@ class ProjectZipFile:
         )
         raise NotImplementedError(msg)
 
-    def validate_file_paths(self):
+    def validate_file_paths(self) -> None:
         """Validate all paths in the zip file for their extension."""
         invalid_paths = [
             file_path
@@ -117,7 +120,7 @@ class ProjectZipFile:
                 ),
             })
 
-    def _validate_path(self, path):
+    def _validate_path(self, path: str) -> bool:
         """Validate the given path is ok for the extension."""
         if path.endswith("/"):
             return True
@@ -137,7 +140,7 @@ class ProjectZipFile:
         return False
 
     @staticmethod
-    def get_file_list(zip_obj):
+    def get_file_list(zip_obj: ZipFile) -> list[str]:
         """Return a list of all files in the given zip file."""
         try:
             return [x for x in zip_obj.namelist() if not x.endswith("/")]
@@ -146,7 +149,7 @@ class ProjectZipFile:
                 "zip_file": "Given file is not a valid zip file.",
             }) from exception
 
-    def validate_basename(self):
+    def validate_basename(self) -> None:
         """Validate that the basename is not erroneous."""
         if self.basename is None:
             raise ValidationError(
@@ -173,7 +176,7 @@ class ProjectZipFile:
                     code="invalid",
                 )
 
-    def validate_base_file_in_zip(self):
+    def validate_base_file_in_zip(self) -> None:
         """Verify that there is a base file within the zip file."""
         for path in self.get_base_paths():
             if path in self.file_list:
@@ -184,7 +187,7 @@ class ProjectZipFile:
                 code="not-found",
             )
 
-    def validate_requirements(self):
+    def validate_requirements(self) -> None:
         """Return the requirements for the release."""
         contents = self.get_requirements_file_contents()
         if contents is None:
@@ -231,7 +234,7 @@ class ProjectZipFile:
                 "zip_file": self.requirements_errors,
             })
 
-    def get_requirements_file_contents(self):
+    def get_requirements_file_contents(self) -> type[dict | None]:
         """Return the contents of the requirements.json file."""
         requirement_path = self.get_requirement_path()
         try:
@@ -253,7 +256,7 @@ class ProjectZipFile:
 
         return contents
 
-    def get_requirement_path(self):
+    def get_requirement_path(self) -> str:
         """Return the path for the requirements json file."""
         msg = (
             f'Class "{self.__class__.__name__}" must implement a '
@@ -261,7 +264,7 @@ class ProjectZipFile:
         )
         raise NotImplementedError(msg)
 
-    def _validate_custom_requirement(self, item):
+    def _validate_custom_requirement(self, item: dict) -> None:
         """Verify that the given requirement exists."""
         basename = item.get("basename")
         if basename is None:
@@ -303,8 +306,13 @@ class ProjectZipFile:
         })
 
     def _validate_requirement(
-        self, item, group_type, field, include_version=False,
-    ):
+        self,
+        item: dict,
+        group_type: str,
+        field: str,
+        *,
+        include_version: bool=False,
+    ) -> None:
         """Verify that the given requirement is valid."""
         # TODO: validate pypi requirements?
         # TODO: validate vcs requirements?
@@ -338,18 +346,18 @@ class ProjectZipFile:
 # =============================================================================
 # FUNCTIONS
 # =============================================================================
-def find_image_number(directory, slug):
+def find_image_number(directory: str, slug: str) -> str:
     """Return the next available image number."""
     path = settings.MEDIA_ROOT / "images" / directory / slug
     current_files = [x.stem for x in path.files()] if path.is_dir() else []
     return f"{max(map(int, current_files or [0])) + 1:04}"
 
 
-def handle_project_logo_upload(instance, filename):
+def handle_project_logo_upload(instance: "Project", filename: str) -> str:
     """Handle uploading the logo by directing to the proper directory."""
     return instance.handle_logo_upload(filename)
 
 
-def handle_release_zip_file_upload(instance, _):
+def handle_release_zip_file_upload(instance: "ProjectRelease", _: str) -> str:
     """Handle uploading the zip file by directing to the proper directory."""
     return instance.handle_zip_file_upload()
