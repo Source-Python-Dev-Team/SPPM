@@ -5,6 +5,8 @@
 # =============================================================================
 # Django
 from django.contrib import admin
+from django.db.models import Model
+from django.http import HttpRequest
 
 # App
 from games.models import Game
@@ -41,7 +43,7 @@ class GameAdmin(admin.ModelAdmin):
         "basename",
     )
 
-    def get_readonly_fields(self, _, obj=None):
+    def get_readonly_fields(self, _: HttpRequest, obj: Model=None) -> tuple:
         """Allow basename to be created but not edited."""
         if obj:
             return *self.readonly_fields, "basename"

@@ -5,6 +5,8 @@
 # =============================================================================
 # Django
 from django.contrib import admin
+from django.db.models import Model, QuerySet
+from django.http import HttpRequest
 
 # =============================================================================
 # ALL DECLARATION
@@ -42,7 +44,7 @@ class ProjectGameInline(admin.TabularInline):
         "game",
     )
 
-    def get_queryset(self, request):
+    def get_queryset(self, request: HttpRequest) -> QuerySet:
         """Cache the 'game' for the queryset."""
         return super().get_queryset(
             request=request,
@@ -52,7 +54,7 @@ class ProjectGameInline(admin.TabularInline):
             "game__name",
         )
 
-    def has_add_permission(self, _, __=None):
+    def has_add_permission(self, _: HttpRequest, __: Model=None) -> bool:
         """Disallow adding new games in the Admin."""
         return False
 
@@ -67,7 +69,7 @@ class ProjectTagInline(admin.TabularInline):
         "tag",
     )
 
-    def get_queryset(self, request):
+    def get_queryset(self, request: HttpRequest) -> QuerySet:
         """Cache the 'tag' for the queryset."""
         return super().get_queryset(
             request=request,
@@ -77,7 +79,7 @@ class ProjectTagInline(admin.TabularInline):
             "tag__name",
         )
 
-    def has_add_permission(self, _, __=None):
+    def has_add_permission(self, _: HttpRequest, __: Model=None) -> bool:
         """Disallow adding new tags in the Admin."""
         return False
 
@@ -94,6 +96,6 @@ class ProjectImageInline(admin.TabularInline):
         "created",
     )
 
-    def has_add_permission(self, _, __=None):
+    def has_add_permission(self, _: HttpRequest, __: Model=None) -> bool:
         """Disallow adding new images in the Admin."""
         return False

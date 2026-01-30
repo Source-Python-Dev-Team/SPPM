@@ -5,6 +5,8 @@
 # =============================================================================
 # Django
 from django.contrib import admin
+from django.db.models import Model, QuerySet
+from django.http import HttpRequest
 
 # =============================================================================
 # ALL DECLARATION
@@ -72,7 +74,7 @@ class ProjectAdmin(admin.ModelAdmin):
         "contributors__user__username",
     )
 
-    def get_queryset(self, request):
+    def get_queryset(self, request: HttpRequest) -> QuerySet:
         """Cache the 'owner' for the queryset."""
         return super().get_queryset(
             request=request,
@@ -80,11 +82,11 @@ class ProjectAdmin(admin.ModelAdmin):
             "owner__user",
         )
 
-    def has_add_permission(self, _):
+    def has_add_permission(self, _: HttpRequest) -> bool:
         """Disallow creation of a Project in the Admin."""
         return False
 
-    def has_delete_permission(self, _, __=None):
+    def has_delete_permission(self, _: HttpRequest, __: Model=None) -> bool:
         """Disallow deletion of Project in the Admin."""
         return False
 
@@ -131,7 +133,7 @@ class ProjectReleaseAdmin(admin.ModelAdmin):
     )
     view_on_site = False
 
-    def get_queryset(self, request):
+    def get_queryset(self, request: HttpRequest) -> QuerySet:
         """Cache 'created_by' for the queryset."""
         return super().get_queryset(
             request=request,
@@ -139,10 +141,10 @@ class ProjectReleaseAdmin(admin.ModelAdmin):
             "created_by__user",
         )
 
-    def has_add_permission(self, _):
+    def has_add_permission(self, _: HttpRequest) -> bool:
         """Disallow creation of a Project in the Admin."""
         return False
 
-    def has_delete_permission(self, _, __=None):
+    def has_delete_permission(self, _: HttpRequest, __: Model=None) -> bool:
         """Disallow deletion of Project in the Admin."""
         return False

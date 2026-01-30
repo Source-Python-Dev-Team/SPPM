@@ -4,11 +4,14 @@
 # IMPORTS
 # =============================================================================
 # Django
-from django.db.models import Count, F, Prefetch
+from django.db.models import Count, F, Prefetch, QuerySet
+from django.http import HttpRequest
 
 # Third Party Django
 from rest_framework.filters import OrderingFilter
 from rest_framework.mixins import ListModelMixin, RetrieveModelMixin
+from rest_framework.response import Response
+from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import GenericViewSet
 
 # App
@@ -48,7 +51,12 @@ class GameViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet):
     ordering_fields = ("basename", "name", "project_count")
     http_method_names = ("get", "options")
 
-    def retrieve(self, request, *args, **kwargs):
+    def retrieve(
+        self,
+        request: HttpRequest,
+        *args: tuple,
+        **kwargs: dict,
+    ) -> Response:
         """Overwrite the ordering fields on retrieve to exclude project_count.
 
         This helps avoid a FieldError since project_count is an annotation
@@ -57,14 +65,14 @@ class GameViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet):
         self.ordering_fields = ("basename", "name")
         return super().retrieve(request, *args, **kwargs)
 
-    def get_serializer_class(self):
+    def get_serializer_class(self) -> type[ModelSerializer]:
         """Return the correct serializer based on the action."""
         if self.action == "retrieve":
             return GameRetrieveSerializer
 
         return GameListSerializer
 
-    def get_queryset(self):
+    def get_queryset(self) -> QuerySet:
         """Add prefetching or annotation based on the action."""
         queryset = super().get_queryset()
         if self.action == "retrieve":

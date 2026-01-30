@@ -51,16 +51,16 @@ class Game(models.Model):
         verbose_name = "Game"
         verbose_name_plural = "Games"
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Return the object's name when str cast."""
         return str(self.name)
 
-    def save(self, *args, **kwargs):
+    def save(self, *args: tuple, **kwargs: dict) -> None:
         """Store the slug."""
         self.slug = slugify(self.basename).replace("_", "-")
         super().save(*args, **kwargs)
 
-    def get_absolute_url(self):
+    def get_absolute_url(self) -> str:
         """Return the URL for the Game."""
         # TODO: add tests once this view is created
         return reverse(

@@ -30,7 +30,7 @@ GAMES = {
 class Command(BaseCommand):
     """Populate the Game objects."""
 
-    def handle(self, *_, **__):
+    def handle(self, *_: tuple, **__: dict) -> None:
         """Create any missing Game objects."""
         current_games = Game.objects.values_list("basename", flat=True)
         obj_list = [
