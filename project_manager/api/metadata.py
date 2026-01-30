@@ -3,6 +3,9 @@
 # =============================================================================
 # IMPORTS
 # =============================================================================
+# Python
+import typing
+
 # Django
 from django.core.exceptions import PermissionDenied
 from django.http import HttpRequest
@@ -13,14 +16,15 @@ from rest_framework import exceptions
 from rest_framework.metadata import SimpleMetadata
 from rest_framework.request import clone_request
 
+if typing.TYPE_CHECKING:
+    from rest_framework.views import APIView
+
 # =============================================================================
 # ALL DECLARATION
 # =============================================================================
 __all__ = (
     "Metadata",
 )
-
-from rest_framework.views import APIView
 
 
 # =============================================================================
@@ -29,7 +33,7 @@ from rest_framework.views import APIView
 class Metadata(SimpleMetadata):
     """Metadata class to show all OPTIONS available to the user."""
 
-    def determine_actions(self, request: HttpRequest, view: APIView) -> dict:
+    def determine_actions(self, request: HttpRequest, view: "APIView") -> dict:
         """Override to allow returning OPTIONS for DELETE/PATCH."""
         actions = {}
         for method in {"POST", "DELETE", "PATCH"} & set(view.allowed_methods):
