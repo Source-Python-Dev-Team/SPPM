@@ -4,7 +4,7 @@
 # IMPORTS
 # =============================================================================
 # Django
-from django.db.models import Q
+from django.db.models import Q, QuerySet
 
 # Third Party Django
 from django_filters.filters import BooleanFilter
@@ -40,7 +40,11 @@ class ForumUserFilterSet(FilterSet):
         )
 
     @staticmethod
-    def filter_has_contributions(queryset, _, value):
+    def filter_has_contributions(
+        queryset: QuerySet,
+        _: str,
+        value: object,
+    ) -> QuerySet:
         """Filter down to users that do/don't have any contributions."""
         method = queryset.filter if value else queryset.exclude
         return method(

@@ -10,7 +10,12 @@ from os import urandom
 # Django
 from django.conf import settings
 from django.contrib.auth import get_user_model
-from django.core.management.base import BaseCommand, CommandError
+from django.core.management.base import (
+    BaseCommand,
+    CommandError,
+    CommandParser,
+)
+from django.db.models import QuerySet
 
 # Third Party Python
 from random_username.generate import generate_username
@@ -32,7 +37,7 @@ logger = logging.getLogger(__name__)
 class Command(BaseCommand):
     """Create some random Users."""
 
-    def add_arguments(self, parser):
+    def add_arguments(self, parser: CommandParser) -> None:
         """Add the required arguments for the command."""
         parser.add_argument(
             "count",
@@ -40,7 +45,7 @@ class Command(BaseCommand):
             help="The number of users to create.",
         )
 
-    def handle(self, *_, **options):
+    def handle(self, *_: tuple, **options: dict) -> None:
         """Verify the arguments and create the Users."""
         # Only allow this command in local development
         if not settings.LOCAL:
@@ -95,6 +100,10 @@ class Command(BaseCommand):
         )
 
     @staticmethod
-    def validate_unique_list(username_list, current_usernames, count):
+    def validate_unique_list(
+        username_list: list,
+        current_usernames: QuerySet,
+        count: int,
+    ) -> bool:
         """Validate the given list is unique and has the correct count."""
         return len(set(username_list).difference(current_usernames)) == count

@@ -9,7 +9,7 @@ import logging
 # Django
 from django.conf import settings
 from django.contrib.auth import get_user_model
-from django.core.management.base import BaseCommand, CommandError
+from django.core.management.base import BaseCommand, CommandError, CommandParser
 
 # App
 from users.models import ForumUser
@@ -28,7 +28,7 @@ logger = logging.getLogger(__name__)
 class Command(BaseCommand):
     """Create a test User."""
 
-    def add_arguments(self, parser):
+    def add_arguments(self, parser: CommandParser) -> None:
         """Add the required arguments for the command."""
         parser.add_argument(
             "username",
@@ -58,7 +58,7 @@ class Command(BaseCommand):
             help="Whether the User is a superuser.",
         )
 
-    def handle(self, *_, **options):
+    def handle(self, *_: tuple, **options: dict) -> None:
         """Verify the arguments and create the User."""
         # Only allow this command in local development
         if not settings.LOCAL:

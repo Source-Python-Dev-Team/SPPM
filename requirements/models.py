@@ -41,7 +41,7 @@ class DownloadRequirement(models.Model):
         verbose_name = "Download Requirement"
         verbose_name_plural = "Download Requirements"
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Return the object's url when str cast."""
         return str(self.url)
 
@@ -64,16 +64,16 @@ class PyPiRequirement(models.Model):
         verbose_name = "PyPi Requirement"
         verbose_name_plural = "PyPi Requirements"
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Return the object's name when str cast."""
         return str(self.name)
 
-    def save(self, *args, **kwargs):
+    def save(self, *args: tuple, **kwargs: dict) -> None:
         """Set the slug and save the Requirement."""
         self.slug = slugify(self.name)
         super().save(*args, **kwargs)
 
-    def get_pypi_url(self):
+    def get_pypi_url(self) -> str:
         """Return the PyPi URL for the requirement."""
         return PYPI_URL + f"/{self.name}"
 
@@ -91,6 +91,6 @@ class VersionControlRequirement(models.Model):
         verbose_name = "Version Control Requirement"
         verbose_name_plural = "Version Control Requirements"
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Return the object's url when str cast."""
         return str(self.url)

@@ -31,7 +31,7 @@ class StatisticsView(TemplateView):
     template_name = "statistics.html"
     http_method_names = ("get", "options")
 
-    def get_context_data(self, **kwargs):
+    def get_context_data(self, **kwargs: dict) -> dict:
         """Return all statistical context data."""
         context = super().get_context_data(**kwargs)
         package_info = PackageRelease.objects.aggregate(

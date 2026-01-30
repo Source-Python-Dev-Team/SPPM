@@ -53,11 +53,11 @@ class User(AbstractBaseUser, PermissionsMixin):
         verbose_name = "User"
         verbose_name_plural = "Users"
 
-    def get_short_name(self):
+    def get_short_name(self) -> str:
         """Return the short name for the user."""
         return self.username
 
-    def get_full_name(self):
+    def get_full_name(self) -> str:
         """Return the full name for the user."""
         return self.username
 
@@ -81,11 +81,11 @@ class ForumUser(models.Model):
         verbose_name = "Forum User"
         verbose_name_plural = "Forum Users"
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Return the ForumUser's username."""
         return self.user.username
 
-    def get_absolute_url(self):
+    def get_absolute_url(self) -> str:
         """Return the URL for the user."""
         return reverse(
             viewname="users:detail",
@@ -94,6 +94,6 @@ class ForumUser(models.Model):
             },
         )
 
-    def get_forum_url(self):
+    def get_forum_url(self) -> str:
         """Return the user's forum URL."""
         return FORUM_MEMBER_URL.format(user_id=self.forum_id)

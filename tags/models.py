@@ -1,4 +1,5 @@
 """Tag model classes."""
+from typing import Any
 
 # =============================================================================
 # IMPORTS
@@ -47,11 +48,11 @@ class Tag(models.Model):
         verbose_name = "Tag"
         verbose_name_plural = "Tags"
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Return the tag's name."""
         return str(self.name)
 
-    def save(self, *args, **kwargs):
+    def save(self, *args: tuple, **kwargs: dict[str, Any]) -> None:
         """Remove all through model instances if black-listed."""
         if self.black_listed:
             self.plugintag_set.all().delete()

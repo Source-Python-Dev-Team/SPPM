@@ -6,6 +6,7 @@
 # Django
 from django.apps import apps
 from django.contrib.auth.hashers import make_password
+from django.contrib.auth.models import User
 from django.contrib.auth.models import UserManager as DjangoUserManger
 
 # =============================================================================
@@ -22,7 +23,13 @@ __all__ = (
 class UserManager(DjangoUserManger):
     """User model manager."""
 
-    def _create_user(self, username, _, password, **extra_fields):
+    def _create_user(
+        self,
+        username: str,
+        _: str,
+        password: str,
+        **extra_fields: dict,
+    ) -> User:
         """Overwrite method to not use email."""
         if not username:
             msg = "The given username must be set"

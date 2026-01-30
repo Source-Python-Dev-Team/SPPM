@@ -5,6 +5,8 @@
 # =============================================================================
 # Django
 from django.contrib import admin
+from django.db.models import Model, QuerySet
+from django.http import HttpRequest
 
 # App
 from tags.models import Tag
@@ -42,7 +44,7 @@ class TagAdmin(admin.ModelAdmin):
         "name",
     )
 
-    def get_queryset(self, request):
+    def get_queryset(self, request: HttpRequest) -> QuerySet:
         """Cache the 'creator' for the queryset."""
         return super().get_queryset(
             request=request,
@@ -50,10 +52,10 @@ class TagAdmin(admin.ModelAdmin):
             "creator__user",
         )
 
-    def has_add_permission(self, _):
+    def has_add_permission(self, _: HttpRequest) -> bool:
         """Disallow adding of tags in the Admin."""
         return False
 
-    def has_delete_permission(self, _, __=None):
+    def has_delete_permission(self, _: HttpRequest, __: Model=None) -> bool:
         """Disallow deletion of tags in the Admin (should use black-list)."""
         return False

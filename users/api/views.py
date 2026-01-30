@@ -4,10 +4,11 @@
 # IMPORTS
 # =============================================================================
 #  Django
-from django.db.models import Count, F, Prefetch
+from django.db.models import Count, F, Prefetch, QuerySet
 
 # Third Party Django
 from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import ModelViewSet
 
 # App
@@ -53,14 +54,14 @@ class ForumUserViewSet(ModelViewSet):
     queryset = ForumUser.objects.select_related("user")
     serializer_class = ForumUserRetrieveSerializer
 
-    def get_serializer_class(self):
+    def get_serializer_class(self) -> type[ModelSerializer]:
         """Return the correct serializer based on the action."""
         if self.action == "retrieve":
             return ForumUserRetrieveSerializer
 
         return ForumUserListSerializer
 
-    def get_queryset(self):
+    def get_queryset(self) -> QuerySet:
         """Add prefetching or annotation based on the action."""
         queryset = super().get_queryset()
         if self.action == "retrieve":

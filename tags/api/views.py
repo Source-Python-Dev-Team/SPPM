@@ -4,12 +4,15 @@
 # IMPORTS
 # =============================================================================
 # Django
-from django.db.models import Count, F, Prefetch
+from django.db.models import Count, F, Prefetch, QuerySet
 
 # Third Party Django
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import OrderingFilter
 from rest_framework.mixins import ListModelMixin, RetrieveModelMixin
+from rest_framework.request import Request
+from rest_framework.response import Response
+from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import GenericViewSet
 
 # App
@@ -48,7 +51,12 @@ class TagViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet):
     ordering_fields = ("name", "project_count")
     http_method_names = ("get", "options")
 
-    def retrieve(self, request, *args, **kwargs):
+    def retrieve(
+        self,
+        request: Request,
+        *args: tuple,
+        **kwargs: dict,
+    ) -> Response:
         """Overwrite the ordering fields on retrieve to exclude project_count.
 
         This helps avoid a FieldError since project_count is an annotation
@@ -57,14 +65,14 @@ class TagViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet):
         self.ordering_fields = ("name",)
         return super().retrieve(request, *args, **kwargs)
 
-    def get_serializer_class(self):
+    def get_serializer_class(self) -> type[ModelSerializer]:
         """Return the correct serializer based on the action."""
         if self.action == "retrieve":
             return TagRetrieveSerializer
 
         return TagListSerializer
 
-    def get_queryset(self):
+    def get_queryset(self) -> QuerySet:
         """Filter the queryset to not return black-listed tags."""
         queryset = super().get_queryset().filter(
             black_listed=False,
