@@ -23,8 +23,8 @@ from project_manager.constants import (
     RELEASE_VERSION_MAX_LENGTH,
 )
 from project_manager.helpers import (
-    handle_project_logo_upload,
-    handle_release_zip_file_upload,
+    handle_logo_upload,
+    handle_zip_file_upload,
 )
 from project_manager.models.abstract import (
     AbstractUUIDPrimaryKeyModel,
@@ -141,7 +141,7 @@ class ProjectTestCase(TestCase):
         )
         self.assertEqual(
             first=field.upload_to,
-            second=handle_project_logo_upload,
+            second=handle_logo_upload,
         )
         self.assertEqual(
             first=field.help_text,
@@ -303,7 +303,7 @@ class ProjectReleaseTestCase(TestCase):
         )
         self.assertEqual(
             first=field.upload_to,
-            second=handle_release_zip_file_upload,
+            second=handle_zip_file_upload,
         )
         self.assertFalse(expr=field.blank)
         self.assertFalse(expr=field.null)

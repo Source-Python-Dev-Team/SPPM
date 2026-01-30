@@ -33,8 +33,8 @@ from project_manager.constants import (
     RELEASE_VERSION_MAX_LENGTH,
 )
 from project_manager.helpers import (
-    handle_project_logo_upload,
-    handle_release_zip_file_upload,
+    handle_logo_upload,
+    handle_zip_file_upload,
 )
 from project_manager.validators import version_validator
 
@@ -96,7 +96,7 @@ class Project(models.Model):
         ),
     )
     logo = models.ImageField(
-        upload_to=handle_project_logo_upload,
+        upload_to=handle_logo_upload,
         blank=True,
         null=True,
         help_text="The project's logo image.",
@@ -243,7 +243,7 @@ class ProjectRelease(AbstractUUIDPrimaryKeyModel):
         help_text="The notes for this particular release of the project.",
     )
     zip_file = models.FileField(
-        upload_to=handle_release_zip_file_upload,
+        upload_to=handle_zip_file_upload,
     )
     download_count = models.PositiveIntegerField(
         default=0,

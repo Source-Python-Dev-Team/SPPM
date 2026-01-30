@@ -28,8 +28,8 @@ __all__ = (
     "GROUP_QUERYSET_NAMES",
     "ProjectZipFile",
     "find_image_number",
-    "handle_project_logo_upload",
-    "handle_release_zip_file_upload",
+    "handle_logo_upload",
+    "handle_zip_file_upload",
 )
 
 # =============================================================================
@@ -353,11 +353,11 @@ def find_image_number(directory: str, slug: str) -> str:
     return f"{max(map(int, current_files or [0])) + 1:04}"
 
 
-def handle_project_logo_upload(instance: "Project", filename: str) -> str:
+def handle_logo_upload(instance: "Project", filename: str) -> str:
     """Handle uploading the logo by directing to the proper directory."""
     return instance.handle_logo_upload(filename)
 
 
-def handle_release_zip_file_upload(instance: "ProjectRelease", _: str) -> str:
+def handle_zip_file_upload(instance: "ProjectRelease", _: str) -> str:
     """Handle uploading the zip file by directing to the proper directory."""
     return instance.handle_zip_file_upload()
