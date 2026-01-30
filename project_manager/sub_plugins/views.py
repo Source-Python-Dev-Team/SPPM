@@ -6,6 +6,7 @@
 # Django
 from django.db.models import Exists, OuterRef
 from django.views.generic import TemplateView
+from path import Path
 
 # App
 from project_manager.mixins import DownloadMixin
@@ -34,7 +35,7 @@ class SubPluginReleaseDownloadView(DownloadMixin):
     model_kwarg = "sub_plugin"
     base_url = SUB_PLUGIN_RELEASE_URL
 
-    def get_instance(self, kwargs):
+    def get_instance(self, kwargs: dict) -> SubPlugin:
         """Return the project's instance."""
         instance = super().get_instance(kwargs)
         return SubPlugin.objects.get(
@@ -42,7 +43,7 @@ class SubPluginReleaseDownloadView(DownloadMixin):
             slug=self.kwargs.get("sub_plugin_slug"),
         )
 
-    def get_base_path(self):
+    def get_base_path(self) -> Path:
         """Return the base path for the download."""
         base_path = super().get_base_path()
         slug = self.kwargs.get("sub_plugin_slug")
@@ -56,7 +57,7 @@ class SubPluginView(TemplateView):
     http_method_names = ("get", "options")
 
     @staticmethod
-    def _get_title(context):
+    def _get_title(context: dict) -> str:
         slug = context.get("slug")
         try:
             plugin = Plugin.objects.annotate(
@@ -89,7 +90,7 @@ class SubPluginView(TemplateView):
         else:
             return f"{plugin.name} - {sub_plugin.name}"
 
-    def get_context_data(self, **kwargs):
+    def get_context_data(self, **kwargs: dict) -> dict:
         """Add the page title to the context."""
         context = super().get_context_data(**kwargs)
         context["title"] = self._get_title(context=context)
@@ -102,7 +103,7 @@ class SubPluginCreateView(TemplateView):
     template_name = "main.html"
     http_method_names = ("get", "options")
 
-    def get_context_data(self, **kwargs):
+    def get_context_data(self, **kwargs: dict) -> dict:
         """Add the page title to the context."""
         context = super().get_context_data(**kwargs)
         slug = context.get("slug")

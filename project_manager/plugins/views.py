@@ -1,4 +1,5 @@
 """Plugin views."""
+from typing import Any
 
 # =============================================================================
 # IMPORTS
@@ -39,7 +40,7 @@ class PluginView(TemplateView):
     template_name = "main.html"
     http_method_names = ("get", "options")
 
-    def get_context_data(self, **kwargs):
+    def get_context_data(self, **kwargs: dict[str, Any]) -> dict[str, Any]:
         """Add the page title to the context."""
         context = super().get_context_data(**kwargs)
         slug = context.get("slug")
@@ -60,7 +61,7 @@ class PluginCreateView(TemplateView):
     template_name = "main.html"
     http_method_names = ("get", "options")
 
-    def get_context_data(self, **kwargs):
+    def get_context_data(self, **kwargs: dict[str, Any]) -> dict[str, Any]:
         """Add the page title to the context."""
         context = super().get_context_data(**kwargs)
         context["title"] = "Create a Plugin"

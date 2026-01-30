@@ -8,6 +8,8 @@ from copy import deepcopy
 
 # Django
 from django.contrib import admin
+from django.db.models import QuerySet
+from django.http import HttpRequest
 
 # App
 from project_manager.admin.base import ProjectAdmin, ProjectReleaseAdmin
@@ -54,7 +56,7 @@ class PackageReleaseAdmin(ProjectReleaseAdmin):
     readonly_fields = (*ProjectReleaseAdmin.readonly_fields, "package")
     search_fields = (*ProjectReleaseAdmin.search_fields, "package__name")
 
-    def get_queryset(self, request):
+    def get_queryset(self, request: HttpRequest) -> QuerySet:
         """Cache 'package' for the queryset."""
         return super().get_queryset(
             request=request,

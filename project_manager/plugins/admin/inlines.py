@@ -5,6 +5,8 @@
 # =============================================================================
 # Django
 from django.contrib import admin
+from django.db.models import Model
+from django.http import HttpRequest
 
 # App
 from project_manager.admin.inlines import (
@@ -73,6 +75,6 @@ class SubPluginPathInline(admin.StackedInline):
     )
     model = SubPluginPath
 
-    def has_add_permission(self, _, __=None):
+    def has_add_permission(self, _: HttpRequest, __: Model=None) -> bool:
         """Disallow adding new images in the Admin."""
         return False

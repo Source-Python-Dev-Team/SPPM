@@ -25,11 +25,11 @@ class PackageReleaseBase:
     project_type = "package"
 
     @property
-    def zip_parser(self):
+    def zip_parser(self) -> type[PackageZipFile]:
         """Return the Package zip parsing function."""
         return PackageZipFile
 
-    def get_project_kwargs(self):
+    def get_project_kwargs(self) -> dict:
         """Return kwargs for the project."""
         return {
             "pk": self.context["view"].kwargs.get("package_slug"),

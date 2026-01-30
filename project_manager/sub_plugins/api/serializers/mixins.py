@@ -3,6 +3,9 @@
 # =============================================================================
 # IMPORTS
 # =============================================================================
+# Python
+from typing import Any
+
 # Django
 from django.utils.functional import cached_property
 
@@ -32,7 +35,7 @@ class SubPluginReleaseBase:
     project_type = "sub-plugin"
 
     @cached_property
-    def parent_project(self):
+    def parent_project(self) -> Plugin:
         """Return the parent plugin."""
         kwargs = self.context["view"].kwargs
         plugin_slug = kwargs.get("plugin_slug")
@@ -44,11 +47,11 @@ class SubPluginReleaseBase:
         return plugin
 
     @property
-    def zip_parser(self):
+    def zip_parser(self) -> type[SubPluginZipFile]:
         """Return the SubPlugin zip parsing function."""
         return SubPluginZipFile
 
-    def get_project_kwargs(self):
+    def get_project_kwargs(self) -> dict[str, Any]:
         """Return kwargs for the project."""
         kwargs = self.context["view"].kwargs
         return {

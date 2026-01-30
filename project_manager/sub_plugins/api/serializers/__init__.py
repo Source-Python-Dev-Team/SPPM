@@ -3,7 +3,11 @@
 # =============================================================================
 # IMPORTS
 # =============================================================================
+# Python
+from typing import Any
+
 # Django
+from django.db.models import FileField
 from django.utils.functional import cached_property
 
 # Third Party Django
@@ -150,7 +154,7 @@ class SubPluginReleaseSerializer(
 
         model = SubPluginRelease
 
-    def get_zip_file_args(self, zip_file):
+    def get_zip_file_args(self, zip_file: FileField) -> list:
         """Return the arguments necessary to instantiate the ZipFile class."""
         return [zip_file, self.parent_project]
 
@@ -165,7 +169,7 @@ class SubPluginCreateReleaseSerializer(
 
         model = SubPluginRelease
 
-    def get_zip_file_args(self, zip_file):
+    def get_zip_file_args(self, zip_file: FileField) -> list:
         """Return the arguments necessary to instantiate the ZipFile class."""
         return [zip_file, self.parent_project]
 
@@ -182,7 +186,7 @@ class SubPluginSerializer(ProjectSerializer):
         model = SubPlugin
 
     @cached_property
-    def parent_project(self):
+    def parent_project(self) -> Plugin:
         """Return the parent plugin."""
         kwargs = self.context["view"].kwargs
         plugin_slug = kwargs.get("plugin_slug")
@@ -195,7 +199,10 @@ class SubPluginSerializer(ProjectSerializer):
         return plugin
 
     @staticmethod
-    def get_download_kwargs(obj, release):
+    def get_download_kwargs(
+        obj: SubPlugin,
+        release: SubPluginRelease,
+    ) -> dict[str, Any]:
         """Return the release's reverse kwargs."""
         return {
             "slug": obj.plugin.slug,
@@ -203,7 +210,10 @@ class SubPluginSerializer(ProjectSerializer):
             "zip_file": release.file_name,
         }
 
-    def get_extra_validated_data(self, validated_data):
+    def get_extra_validated_data(
+        self,
+        validated_data: dict[str, Any],
+    ) -> dict[str, Any]:
         """Add any extra data to be used on create."""
         validated_data = super().get_extra_validated_data(validated_data)
         validated_data["plugin"] = self.parent_project

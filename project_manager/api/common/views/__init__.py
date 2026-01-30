@@ -8,7 +8,8 @@ from urllib.parse import unquote
 
 # Django
 from django.db import IntegrityError
-from django.db.models import Prefetch
+from django.db.models import Prefetch, QuerySet
+from django.http import HttpRequest
 
 # Third Party Django
 from django_filters.rest_framework import DjangoFilterBackend
@@ -17,12 +18,14 @@ from rest_framework.filters import OrderingFilter
 from rest_framework.permissions import SAFE_METHODS
 from rest_framework.response import Response
 from rest_framework.reverse import reverse
+from rest_framework.serializers import ModelSerializer
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 
 # App
 from project_manager.api.common.views.mixins import ProjectRelatedInfoMixin
 from project_manager.constants import RELEASE_VERSION_REGEX
+from project_manager.models.abstract import Project
 from users.models import ForumUser
 
 # =============================================================================
@@ -58,7 +61,7 @@ class ProjectAPIView(APIView):
     )
     base_kwargs = {}
 
-    def get(self, request):
+    def get(self, request: HttpRequest) -> Response:
         """Return all the API routes for Projects."""
         kwargs = self.get_project_kwargs()
         return Response(
@@ -77,11 +80,11 @@ class ProjectAPIView(APIView):
             },
         )
 
-    def get_view_name(self):
+    def get_view_name(self) -> str:
         """Return the project type API name."""
         return f"{self.project_type.title()} APIs"
 
-    def get_project_kwargs(self):
+    def get_project_kwargs(self) -> dict:
         """Return the reverse kwargs for the project."""
         key = f'{self.project_type.replace("-", "_")}_slug'
         return {
@@ -138,7 +141,7 @@ class ProjectViewSet(ModelViewSet):
     ordering_fields = ("name", "basename", "updated", "created")
 
     @property
-    def creation_serializer_class(self):
+    def creation_serializer_class(self) -> ModelSerializer:
         """Return the serializer class to use ONLY when creating a project."""
         msg = (
             f'Class "{self.__class__.__name__}" must implement a '
@@ -146,7 +149,11 @@ class ProjectViewSet(ModelViewSet):
         )
         raise NotImplementedError(msg)
 
-    def check_object_permissions(self, request, obj):
+    def check_object_permissions(
+        self,
+        request: HttpRequest,
+        obj: Project,
+    ) -> None:
         """Only allow the owner and contributors to update the project."""
         if request.method not in SAFE_METHODS:
             user_id = request.user.id
@@ -161,7 +168,12 @@ class ProjectViewSet(ModelViewSet):
             obj=obj,
         )
 
-    def create(self, request, *args, **kwargs):
+    def create(
+        self,
+        request: HttpRequest,
+        *args: tuple,
+        **kwargs: dict,
+    ) -> Response:
         """Store the many-to-many fields before creation."""
         try:
             return super().create(request, *args, **kwargs)
@@ -173,13 +185,13 @@ class ProjectViewSet(ModelViewSet):
                 ),
             }) from exception
 
-    def get_serializer_class(self):
+    def get_serializer_class(self) -> type[ModelSerializer]:
         """Return the serializer class for the current method."""
         if self.request.method == "POST":
             return self.creation_serializer_class
         return super().get_serializer_class()
 
-    def get_queryset(self):
+    def get_queryset(self) -> QuerySet:
         """Prefetch the contributors in the list view."""
         queryset = super().get_queryset()
         if self.action == "list":

@@ -1,8 +1,10 @@
 """API base views."""
-
 # =============================================================================
 # IMPORTS
 # =============================================================================
+# Django
+from django.http import HttpRequest
+
 # Third Party Django
 from rest_framework.response import Response
 from rest_framework.reverse import reverse
@@ -23,7 +25,7 @@ class ProjectManagerAPIView(APIView):
     """Project Manager API listing."""
 
     @staticmethod
-    def get(request):
+    def get(request: HttpRequest) -> Response:
         """Retrieve the API endpoints."""
         data = {
             "games": reverse(
@@ -54,6 +56,6 @@ class ProjectManagerAPIView(APIView):
 
         return Response(data)
 
-    def get_view_name(self):
+    def get_view_name(self) -> str:
         """Return the base API name."""
         return "Project Manager APIs"

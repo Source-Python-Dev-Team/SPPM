@@ -8,7 +8,7 @@ import string
 
 # Django
 from django.conf import settings
-from django.core.management.base import BaseCommand, CommandError
+from django.core.management.base import BaseCommand, CommandError, CommandParser
 from django.utils.crypto import get_random_string
 
 # =============================================================================
@@ -33,7 +33,7 @@ ALLOWED_CHARS = ALLOWED_CHARS.replace("`", "").split(" ", maxsplit=1)[0]
 class Command(BaseCommand):
     """Create the secret key file."""
 
-    def add_arguments(self, parser):
+    def add_arguments(self, parser: CommandParser) -> None:
         """Add the required arguments for the command."""
         parser.add_argument(
             "length",
@@ -41,7 +41,7 @@ class Command(BaseCommand):
             help="The number of characters to have in the secret key.",
         )
 
-    def handle(self, *_, **options):
+    def handle(self, *_: tuple, **options: dict) -> None:
         """Create the file to store the secret key."""
         if SECRET_FILE.is_file():
             msg = "Secret key file already exists."

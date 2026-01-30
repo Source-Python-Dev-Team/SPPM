@@ -3,15 +3,21 @@
 # =============================================================================
 # IMPORTS
 # =============================================================================
+# Python
+from datetime import datetime
+from typing import Any
+
 # Django
+from django.db.models import FileField
 from django.utils import formats
 
 # Third Party Django
 from rest_framework.exceptions import ValidationError
 from rest_framework.serializers import ModelSerializer
+from rest_framework.utils.model_meta import FieldInfo
 
 # App
-from project_manager.helpers import GROUP_QUERYSET_NAMES
+from project_manager.helpers import GROUP_QUERYSET_NAMES, ProjectZipFile
 
 # =============================================================================
 # ALL DECLARATION
@@ -23,6 +29,8 @@ __all__ = (
     "ProjectThroughMixin",
 )
 
+from project_manager.models.abstract import Project, ProjectRelease
+
 
 # =============================================================================
 # MIXINS
@@ -30,7 +38,7 @@ __all__ = (
 class ProjectLocaleMixin:
     """Mixin for getting the locale for timestamps."""
 
-    def get_date_time_dict(self, timestamp):
+    def get_date_time_dict(self, timestamp: datetime) -> dict:
         """Return a dictionary of the formatted timestamp."""
         return {
             "actual": timestamp,
@@ -45,7 +53,7 @@ class ProjectLocaleMixin:
         }
 
     @staticmethod
-    def get_date_display(date, date_format):
+    def get_date_display(date: datetime, date_format: str) -> str:
         """Return the formatted date."""
         return formats.date_format(
             value=date,
@@ -59,7 +67,7 @@ class CreateRequirementsMixin:
 
     requirements = None
 
-    def _create_requirements(self, release):
+    def _create_requirements(self, release: ProjectRelease) -> None:
         """Create all requirements for the release."""
         if not self.requirements:
             return
@@ -75,7 +83,12 @@ class CreateRequirementsMixin:
             )
 
     @staticmethod
-    def _create_group_requirements(release, project_type, group_type, group):
+    def _create_group_requirements(
+        release: ProjectRelease,
+        project_type: str,
+        group_type: str,
+        group: dict,
+    ) -> None:
         queryset_group_name = GROUP_QUERYSET_NAMES.get(group_type)
         for requirement in group:
             requirement_set = getattr(
@@ -91,7 +104,7 @@ class ProjectReleaseCreationMixin(CreateRequirementsMixin, ModelSerializer):
     requirements = None
 
     @property
-    def project_class(self):
+    def project_class(self) -> type[Project]:
         """Return the project's class."""
         msg = (
             f'Class "{self.__class__.__name__}" must implement a '
@@ -100,7 +113,7 @@ class ProjectReleaseCreationMixin(CreateRequirementsMixin, ModelSerializer):
         raise NotImplementedError(msg)
 
     @property
-    def project_type(self):
+    def project_type(self) -> str:
         """Return the project's type."""
         msg = (
             f'Class "{self.__class__.__name__}" must implement a '
@@ -109,7 +122,7 @@ class ProjectReleaseCreationMixin(CreateRequirementsMixin, ModelSerializer):
         raise NotImplementedError(msg)
 
     @property
-    def zip_parser(self):
+    def zip_parser(self) -> type[ProjectZipFile]:
         """Return the project's zip parsing function."""
         msg = (
             f'Class "{self.__class__.__name__}" must implement a '
@@ -117,7 +130,7 @@ class ProjectReleaseCreationMixin(CreateRequirementsMixin, ModelSerializer):
         )
         raise NotImplementedError(msg)
 
-    def get_project_kwargs(self):
+    def get_project_kwargs(self) -> dict[str, Any]:
         """Return kwargs for the project."""
         msg = (
             f'Class "{self.__class__.__name__}" must implement a '
@@ -125,7 +138,7 @@ class ProjectReleaseCreationMixin(CreateRequirementsMixin, ModelSerializer):
         )
         raise NotImplementedError(msg)
 
-    def validate(self, attrs):
+    def validate(self, attrs: dict) -> dict:
         """Validate that the new release can be created."""
         version = attrs.get("version", "")
         zip_file = attrs.get("zip_file")
@@ -159,18 +172,18 @@ class ProjectReleaseCreationMixin(CreateRequirementsMixin, ModelSerializer):
 
         return attrs
 
-    def get_zip_file_args(self, zip_file):
+    def get_zip_file_args(self, zip_file: FileField) -> list:
         """Return the arguments necessary to instantiate the ZipFile class."""
         return [zip_file]
 
-    def get_project(self, kwargs):
+    def get_project(self, kwargs: dict) -> type[Project | None]:
         """Return the Project for the given kwargs."""
         try:
             return self.project_class.objects.get(**kwargs)
         except self.project_class.DoesNotExist:
             return None
 
-    def run_version_validation(self, project, version):
+    def run_version_validation(self, project: Project, version: str) -> None:
         """Validate that the version does not already exist."""
         kwargs = {
             self.project_type.replace("-", "_"): project,
@@ -181,7 +194,11 @@ class ProjectReleaseCreationMixin(CreateRequirementsMixin, ModelSerializer):
                 "version": "Given version matches existing version.",
             })
 
-    def run_zip_file_validation(self, zip_validator, project_basename):
+    def run_zip_file_validation(
+        self,
+        zip_validator: ProjectZipFile,
+        project_basename: str,
+    ) -> None:
         """Validate the files inside the zip file."""
         zip_validator.find_base_info()
         zip_validator.validate_file_paths()
@@ -197,7 +214,7 @@ class ProjectReleaseCreationMixin(CreateRequirementsMixin, ModelSerializer):
                 ),
             })
 
-    def create(self, validated_data):
+    def create(self, validated_data: dict) -> Project:
         """Update the project's updated datetime when release is created."""
         # Remove the basename before creating the release
         del validated_data["basename"]
@@ -218,7 +235,7 @@ class ProjectReleaseCreationMixin(CreateRequirementsMixin, ModelSerializer):
 class ProjectThroughMixin(ModelSerializer):
     """Mixin for through model serializers."""
 
-    def get_field_names(self, declared_fields, info):
+    def get_field_names(self, declared_fields: dict, info: FieldInfo) -> tuple:
         """Add the 'id' field if necessary."""
         field_names = super().get_field_names(
             declared_fields=declared_fields,
@@ -229,12 +246,12 @@ class ProjectThroughMixin(ModelSerializer):
             view = self.context["view"]
             user = request.user.id
             if view.owner == user:
-                return (*field_names, "id")
+                return *field_names, "id"
             if user in view.contributors and not view.owner_only_id_access:
-                return (*field_names, "id")
+                return *field_names, "id"
         return field_names
 
-    def validate(self, attrs):
+    def validate(self, attrs: dict) -> dict:
         """Add the project to the validated data."""
         view = self.context["view"]
         attrs[view.project_type.replace("-", "_")] = view.project

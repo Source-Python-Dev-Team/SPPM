@@ -4,7 +4,7 @@
 # IMPORTS
 # =============================================================================
 # Django
-from django.db.models import Prefetch
+from django.db.models import Prefetch, QuerySet
 
 # Third Party Django
 from rest_framework.parsers import ParseError
@@ -91,7 +91,7 @@ class SubPluginViewSet(ProjectViewSet):
     creation_serializer_class = SubPluginCreateSerializer
     plugin = None
 
-    def get_queryset(self):
+    def get_queryset(self) -> QuerySet:
         """Filter down to only SubPlugins for the given Plugin."""
         queryset = super().get_queryset()
         if self.plugin is not None:

@@ -1,5 +1,4 @@
 """Mixins for plugin functionalities between APIs."""
-
 # =============================================================================
 # IMPORTS
 # =============================================================================
@@ -25,11 +24,11 @@ class PluginReleaseBase:
     project_type = "plugin"
 
     @property
-    def zip_parser(self):
+    def zip_parser(self) -> type[PluginZipFile]:
         """Return the Plugin zip parsing function."""
         return PluginZipFile
 
-    def get_project_kwargs(self):
+    def get_project_kwargs(self) -> dict:
         """Return kwargs for the project."""
         return {
             "pk": self.context["view"].kwargs.get("plugin_slug"),

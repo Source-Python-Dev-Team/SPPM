@@ -1,10 +1,12 @@
 """Plugin serializers for APIs."""
+from typing import Any
 
 # =============================================================================
 # IMPORTS
 # =============================================================================
 # Third Party Django
 from rest_framework.exceptions import ValidationError
+from rest_framework.utils.model_meta import FieldInfo
 
 # App
 from project_manager.api.common.serializers import (
@@ -221,7 +223,7 @@ class SubPluginPathSerializer(ProjectThroughMixin):
             "path",
         )
 
-    def get_field_names(self, declared_fields, info):
+    def get_field_names(self, declared_fields: dict, info: FieldInfo) -> tuple:
         """Remove 'path' from the PATCH field names."""
         field_names = super().get_field_names(
             declared_fields=declared_fields,
@@ -234,7 +236,7 @@ class SubPluginPathSerializer(ProjectThroughMixin):
 
         return field_names
 
-    def validate(self, attrs):
+    def validate(self, attrs: dict[str, Any]) -> dict[str, Any]:
         """Validate that at least one of the 'Allow' fields is True."""
         if not any([
             attrs.get(

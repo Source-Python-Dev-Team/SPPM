@@ -8,6 +8,8 @@ from copy import deepcopy
 
 # Django
 from django.contrib import admin
+from django.db.models import QuerySet
+from django.http import HttpRequest
 
 # App
 from project_manager.admin.base import ProjectAdmin, ProjectReleaseAdmin
@@ -61,7 +63,7 @@ class SubPluginAdmin(ProjectAdmin):
         "plugin__basename",
     )
 
-    def get_queryset(self, request):
+    def get_queryset(self, request: HttpRequest) -> QuerySet:
         """Cache 'plugin' for the queryset."""
         return super().get_queryset(
             request=request,
@@ -81,7 +83,7 @@ class SubPluginReleaseAdmin(ProjectReleaseAdmin):
     readonly_fields = (*ProjectReleaseAdmin.readonly_fields, "sub_plugin")
     search_fields = (*ProjectReleaseAdmin.search_fields, "sub_plugin__name")
 
-    def get_queryset(self, request):
+    def get_queryset(self, request: HttpRequest) -> QuerySet:
         """Cache 'plugin' for the queryset."""
         return super().get_queryset(
             request=request,

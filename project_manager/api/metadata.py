@@ -5,6 +5,7 @@
 # =============================================================================
 # Django
 from django.core.exceptions import PermissionDenied
+from django.http import HttpRequest
 from django.http.response import Http404
 
 # Third Party Django
@@ -19,6 +20,8 @@ __all__ = (
     "Metadata",
 )
 
+from rest_framework.views import APIView
+
 
 # =============================================================================
 # CLASSES
@@ -26,7 +29,7 @@ __all__ = (
 class Metadata(SimpleMetadata):
     """Metadata class to show all OPTIONS available to the user."""
 
-    def determine_actions(self, request, view):
+    def determine_actions(self, request: HttpRequest, view: APIView) -> dict:
         """Override to allow returning OPTIONS for DELETE/PATCH."""
         actions = {}
         for method in {"POST", "DELETE", "PATCH"} & set(view.allowed_methods):

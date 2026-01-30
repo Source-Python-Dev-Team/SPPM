@@ -3,8 +3,12 @@
 # =============================================================================
 # IMPORTS
 # =============================================================================
+# Python
+from typing import Any
+
 # Django
 from django.conf import settings
+from django.http import HttpRequest
 
 # App
 from project_manager.constants import (
@@ -25,7 +29,7 @@ __all__ = (
 # =============================================================================
 # FUNCTIONS
 # =============================================================================
-def add_common_context_processors(request):
+def add_common_context_processors(request: HttpRequest) -> dict[str, Any]:
     """Expose some settings and other information to all contexts."""
     return {
         "DOWNLOAD_URL": DOWNLOAD_URL,
