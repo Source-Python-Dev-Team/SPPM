@@ -71,7 +71,7 @@ class Migration(migrations.Migration):
             name="PackageImage",
             fields=[
                 ("id", models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False, verbose_name="ID")),
-                ("image", models.ImageField(upload_to=project_manager.packages.helpers.handle_package_image_upload)),
+                ("image", models.ImageField(upload_to=project_manager.helpers.handle_image_upload)),
                 ("created", model_utils.fields.AutoCreatedField(default=django.utils.timezone.now, editable=False, verbose_name="created")),
             ],
             options={
@@ -200,7 +200,7 @@ class Migration(migrations.Migration):
             name="PluginImage",
             fields=[
                 ("id", models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False, verbose_name="ID")),
-                ("image", models.ImageField(upload_to=project_manager.plugins.helpers.handle_plugin_image_upload)),
+                ("image", models.ImageField(upload_to=project_manager.helpers.handle_image_upload)),
                 ("created", model_utils.fields.AutoCreatedField(default=django.utils.timezone.now, editable=False, verbose_name="created")),
             ],
             options={
@@ -330,7 +330,7 @@ class Migration(migrations.Migration):
             name="SubPluginImage",
             fields=[
                 ("id", models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False, verbose_name="ID")),
-                ("image", models.ImageField(upload_to=project_manager.sub_plugins.helpers.handle_sub_plugin_image_upload)),
+                ("image", models.ImageField(upload_to=project_manager.helpers.handle_image_upload)),
                 ("created", model_utils.fields.AutoCreatedField(default=django.utils.timezone.now, editable=False, verbose_name="created")),
             ],
             options={

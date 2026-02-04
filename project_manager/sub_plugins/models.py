@@ -9,7 +9,6 @@ from django.db import models
 from django.urls import reverse
 
 # Third Party Django
-from model_utils.fields import AutoCreatedField
 from model_utils.tracker import FieldTracker
 
 # App
@@ -21,11 +20,14 @@ from project_manager.constants import (
 from project_manager.models.abstract import (
     AbstractUUIDPrimaryKeyModel,
     Project,
+    ProjectImage,
     ProjectRelease,
 )
-from project_manager.sub_plugins.constants import SUB_PLUGIN_LOGO_URL
+from project_manager.sub_plugins.constants import (
+    SUB_PLUGIN_IMAGE_URL,
+    SUB_PLUGIN_LOGO_URL,
+)
 from project_manager.sub_plugins.helpers import (
-    handle_sub_plugin_image_upload,
     handle_sub_plugin_logo_upload,
     handle_sub_plugin_zip_upload,
 )
@@ -200,19 +202,13 @@ class SubPluginRelease(ProjectRelease):
         )
 
 
-class SubPluginImage(AbstractUUIDPrimaryKeyModel):
+class SubPluginImage(ProjectImage):
     """SubPlugin image type model."""
 
     sub_plugin = models.ForeignKey(
         to="project_manager.SubPlugin",
         related_name="images",
         on_delete=models.CASCADE,
-    )
-    image = models.ImageField(
-        upload_to=handle_sub_plugin_image_upload,
-    )
-    created = AutoCreatedField(
-        verbose_name="created",
     )
 
     class Meta:
@@ -221,9 +217,16 @@ class SubPluginImage(AbstractUUIDPrimaryKeyModel):
         verbose_name = "SubPlugin Image"
         verbose_name_plural = "SubPlugin Images"
 
-    def __str__(self) -> str:
-        """Return the proper str value of the object."""
-        return f"{self.sub_plugin} - {self.image}"
+    @property
+    def base_directory(self) -> str:
+        """Return the base directory for the project's images."""
+        plugin_slug = self.sub_plugin.plugin.slug
+        return f"{SUB_PLUGIN_IMAGE_URL}{plugin_slug}"
+
+    @property
+    def project(self) -> SubPlugin:
+        """Return the SubPlugin."""
+        return self.sub_plugin
 
 
 class SubPluginContributor(AbstractUUIDPrimaryKeyModel):

@@ -19,7 +19,11 @@ from django.core.exceptions import ValidationError
 from project_manager.constants import CANNOT_BE_NAMED, CANNOT_START_WITH
 
 if typing.TYPE_CHECKING:
-    from project_manager.models.abstract import Project, ProjectRelease
+    from project_manager.models.abstract import (
+        Project,
+        ProjectImage,
+        ProjectRelease,
+    )
 
 # =============================================================================
 # ALL DECLARATION
@@ -28,6 +32,7 @@ __all__ = (
     "GROUP_QUERYSET_NAMES",
     "ProjectZipFile",
     "find_image_number",
+    "handle_image_upload",
     "handle_logo_upload",
     "handle_zip_file_upload",
 )
@@ -353,11 +358,16 @@ def find_image_number(directory: str, slug: str) -> str:
     return f"{max(map(int, current_files or [0])) + 1:04}"
 
 
+def handle_image_upload(instance: "ProjectImage", filename: str) -> str:
+    """Handle uploading images using the proper file path."""
+    return instance.handle_image_upload(filename)
+
+
 def handle_logo_upload(instance: "Project", filename: str) -> str:
-    """Handle uploading the logo by directing to the proper directory."""
+    """Handle uploading logos using the proper file path."""
     return instance.handle_logo_upload(filename)
 
 
 def handle_zip_file_upload(instance: "ProjectRelease", _: str) -> str:
-    """Handle uploading the zip file by directing to the proper directory."""
+    """Handle uploading zip files using the proper file path."""
     return instance.handle_zip_file_upload()

@@ -14,6 +14,7 @@ from games.constants import (
 from games.management.commands.create_game_instances import GAMES
 from games.models import Game
 from test_utils.factories.games import GameFactory
+from test_utils.helpers import get_new_fields_for_model
 
 
 # =============================================================================
@@ -21,8 +22,20 @@ from test_utils.factories.games import GameFactory
 # =============================================================================
 class GameTestCase(TestCase):
     def test_model_inheritance(self):
-        self.assertTrue(
-            expr=issubclass(Game, models.Model),
+        self.assertTupleEqual(
+            tuple1=Game.__bases__,
+            tuple2=(models.Model,),
+        )
+
+    def test_field_names(self):
+        self.assertSetEqual(
+            set1=get_new_fields_for_model(Game),
+            set2={
+                "name",
+                "basename",
+                "slug",
+                "icon",
+            },
         )
 
     def test_name_field(self):

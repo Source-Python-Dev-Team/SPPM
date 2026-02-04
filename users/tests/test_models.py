@@ -16,6 +16,7 @@ from rest_framework.reverse import reverse
 
 # App
 from test_utils.factories.users import ForumUserFactory, NonAdminUserFactory
+from test_utils.helpers import get_new_fields_for_model
 from users.constants import (
     FORUM_MEMBER_URL,
     USER_USERNAME_MAX_LENGTH,
@@ -33,8 +34,18 @@ UserModel = get_user_model()
 # =============================================================================
 class ForumUserTestCase(TestCase):
     def test_model_inheritance(self):
-        self.assertTrue(
-            expr=issubclass(ForumUser, models.Model),
+        self.assertTupleEqual(
+            tuple1=ForumUser.__bases__,
+            tuple2=(models.Model,),
+        )
+
+    def test_field_names(self):
+        self.assertSetEqual(
+            set1=get_new_fields_for_model(ForumUser),
+            set2={
+                "user",
+                "forum_id",
+            },
         )
 
     def test_user_field(self):
@@ -48,11 +59,11 @@ class ForumUserTestCase(TestCase):
             second=UserModel,
         )
         self.assertEqual(
-            first=field.remote_field.on_delete,
+            first=getattr(field.remote_field, "on_delete"),
             second=models.CASCADE,
         )
         self.assertEqual(
-            first=field.remote_field.related_name,
+            first=getattr(field.remote_field, "related_name"),
             second="forum_user",
         )
         self.assertFalse(expr=field.blank)
@@ -108,11 +119,18 @@ class ForumUserTestCase(TestCase):
 
 class UserTestCase(TestCase):
     def test_model_inheritance(self):
-        self.assertTrue(
-            expr=issubclass(User, AbstractBaseUser),
+        self.assertTupleEqual(
+            tuple1=User.__bases__,
+            tuple2=(AbstractBaseUser, PermissionsMixin),
         )
-        self.assertTrue(
-            expr=issubclass(User, PermissionsMixin),
+
+    def test_field_names(self):
+        self.assertSetEqual(
+            set1=get_new_fields_for_model(User),
+            set2={
+                "username",
+                "is_staff",
+            },
         )
 
     def test_username_field(self):

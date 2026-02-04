@@ -33,6 +33,7 @@ from project_manager.constants import (
     RELEASE_VERSION_MAX_LENGTH,
 )
 from project_manager.helpers import (
+    handle_image_upload,
     handle_logo_upload,
     handle_zip_file_upload,
 )
@@ -44,6 +45,7 @@ from project_manager.validators import version_validator
 __all__ = (
     "AbstractUUIDPrimaryKeyModel",
     "Project",
+    "ProjectImage",
     "ProjectRelease",
 )
 
@@ -288,7 +290,7 @@ class ProjectRelease(AbstractUUIDPrimaryKeyModel):
         """Return the project's class."""
         msg = (
             f'Class "{self.__class__.__name__}" must implement a '
-            '"project" property.'
+            '"project" attribute.'
         )
         raise NotImplementedError(msg)
 
@@ -316,3 +318,59 @@ class ProjectRelease(AbstractUUIDPrimaryKeyModel):
                 })
 
         return super().clean()
+
+
+class ProjectImage(AbstractUUIDPrimaryKeyModel):
+    """Base model for project images."""
+
+    image = models.ImageField(
+        upload_to=handle_image_upload,
+    )
+    created = AutoCreatedField(
+        verbose_name="created",
+    )
+
+    class Meta:
+        """Define metaclass attributes."""
+
+        abstract = True
+
+    def __str__(self) -> str:
+        """Return the proper str value of the object."""
+        return f"{self.project} - {self.image}"
+
+    @property
+    def project(self) -> Project:
+        """Return the project's class."""
+        msg = (
+            f'Class "{self.__class__.__name__}" must implement a '
+            '"project" attribute.'
+        )
+        raise NotImplementedError(msg)
+
+    @property
+    def base_directory(self) -> str:
+        """Return the base directory for the project's images."""
+        msg = (
+            f'Class "{self.__class__.__name__}" must implement a '
+            '"base_directory" attribute.'
+        )
+        raise NotImplementedError(msg)
+
+    def get_directory(self) -> str:
+        """Return the project's image directory."""
+        return f"images/{self.base_directory}/{self.project.slug}"
+
+    @staticmethod
+    def get_file_stem(directory: str) -> int:
+        """Return the next available path for the given directory."""
+        path = settings.MEDIA_ROOT / "images" / directory
+        current_files = [x.stem for x in path.files()] if path.is_dir() else []
+        return max(map(int, current_files or [0])) + 1
+
+    def handle_image_upload(self, filename: str) -> str:
+        """Return the correct file name/path for the image."""
+        directory = self.get_directory()
+        file_stem = self.get_file_stem(directory)
+        extension = filename.rsplit(".", 1)[1]
+        return f"{directory}/{file_stem}.{extension}"

@@ -9,7 +9,6 @@ from django.db import models
 from django.urls import reverse
 
 # Third Party Django
-from model_utils.fields import AutoCreatedField
 from model_utils.tracker import FieldTracker
 
 # App
@@ -21,11 +20,14 @@ from project_manager.constants import (
 from project_manager.models.abstract import (
     AbstractUUIDPrimaryKeyModel,
     Project,
+    ProjectImage,
     ProjectRelease,
 )
-from project_manager.packages.constants import PACKAGE_LOGO_URL
+from project_manager.packages.constants import (
+    PACKAGE_IMAGE_URL,
+    PACKAGE_LOGO_URL,
+)
 from project_manager.packages.helpers import (
-    handle_package_image_upload,
     handle_package_logo_upload,
     handle_package_zip_upload,
 )
@@ -177,7 +179,7 @@ class PackageRelease(ProjectRelease):
         )
 
 
-class PackageImage(AbstractUUIDPrimaryKeyModel):
+class PackageImage(ProjectImage):
     """Package image type model."""
 
     package = models.ForeignKey(
@@ -185,12 +187,8 @@ class PackageImage(AbstractUUIDPrimaryKeyModel):
         related_name="images",
         on_delete=models.CASCADE,
     )
-    image = models.ImageField(
-        upload_to=handle_package_image_upload,
-    )
-    created = AutoCreatedField(
-        verbose_name="created",
-    )
+
+    base_directory = PACKAGE_IMAGE_URL
 
     class Meta:
         """Define metaclass attributes."""
@@ -198,9 +196,10 @@ class PackageImage(AbstractUUIDPrimaryKeyModel):
         verbose_name = "Package Image"
         verbose_name_plural = "Package Images"
 
-    def __str__(self) -> str:
-        """Return the proper str value of the object."""
-        return f"{self.package} - {self.image}"
+    @property
+    def project(self) -> Package:
+        """Return the Package."""
+        return self.package
 
 
 class PackageContributor(AbstractUUIDPrimaryKeyModel):

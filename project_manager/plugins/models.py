@@ -9,7 +9,6 @@ from django.db import models
 from django.urls import reverse
 
 # Third Party Django
-from model_utils.fields import AutoCreatedField
 from model_utils.tracker import FieldTracker
 
 # App
@@ -21,11 +20,15 @@ from project_manager.constants import (
 from project_manager.models.abstract import (
     AbstractUUIDPrimaryKeyModel,
     Project,
+    ProjectImage,
     ProjectRelease,
 )
-from project_manager.plugins.constants import PATH_MAX_LENGTH, PLUGIN_LOGO_URL
+from project_manager.plugins.constants import (
+    PATH_MAX_LENGTH,
+    PLUGIN_IMAGE_URL,
+    PLUGIN_LOGO_URL,
+)
 from project_manager.plugins.helpers import (
-    handle_plugin_image_upload,
     handle_plugin_logo_upload,
     handle_plugin_zip_upload,
 )
@@ -179,7 +182,7 @@ class PluginRelease(ProjectRelease):
         )
 
 
-class PluginImage(AbstractUUIDPrimaryKeyModel):
+class PluginImage(ProjectImage):
     """Plugin image type model."""
 
     plugin = models.ForeignKey(
@@ -187,12 +190,8 @@ class PluginImage(AbstractUUIDPrimaryKeyModel):
         related_name="images",
         on_delete=models.CASCADE,
     )
-    image = models.ImageField(
-        upload_to=handle_plugin_image_upload,
-    )
-    created = AutoCreatedField(
-        verbose_name="created",
-    )
+
+    base_directory = PLUGIN_IMAGE_URL
 
     class Meta:
         """Define metaclass attributes."""
@@ -200,9 +199,10 @@ class PluginImage(AbstractUUIDPrimaryKeyModel):
         verbose_name = "Plugin Image"
         verbose_name_plural = "Plugin Images"
 
-    def __str__(self) -> str:
-        """Return the proper str value of the object."""
-        return f"{self.plugin} - {self.image}"
+    @property
+    def project(self) -> Plugin:
+        """Return the Plugin."""
+        return self.plugin
 
 
 class PluginContributor(AbstractUUIDPrimaryKeyModel):

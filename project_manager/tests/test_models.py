@@ -23,15 +23,18 @@ from project_manager.constants import (
     RELEASE_VERSION_MAX_LENGTH,
 )
 from project_manager.helpers import (
+    handle_image_upload,
     handle_logo_upload,
     handle_zip_file_upload,
 )
 from project_manager.models.abstract import (
     AbstractUUIDPrimaryKeyModel,
     Project,
+    ProjectImage,
     ProjectRelease,
 )
 from project_manager.validators import version_validator
+from test_utils.helpers import get_new_fields_for_model
 
 
 # =============================================================================
@@ -39,8 +42,17 @@ from project_manager.validators import version_validator
 # =============================================================================
 class AbstractUUIDPrimaryKeyModelTestCase(TestCase):
     def test_model_inheritance(self):
-        self.assertTrue(
-            expr=issubclass(AbstractUUIDPrimaryKeyModel, models.Model),
+        self.assertTupleEqual(
+            tuple1=AbstractUUIDPrimaryKeyModel.__bases__,
+            tuple2=(models.Model,),
+        )
+
+    def test_field_names(self):
+        self.assertSetEqual(
+            set1=get_new_fields_for_model(AbstractUUIDPrimaryKeyModel),
+            set2={
+                "id",
+            },
         )
 
     def test_id_field(self):
@@ -70,7 +82,26 @@ class AbstractUUIDPrimaryKeyModelTestCase(TestCase):
 
 class ProjectTestCase(TestCase):
     def test_model_inheritance(self):
-        self.assertTrue(expr=issubclass(Project, models.Model))
+        self.assertTupleEqual(
+            tuple1=Project.__bases__,
+            tuple2=(models.Model,),
+        )
+
+    def test_field_names(self):
+        self.assertSetEqual(
+            set1=get_new_fields_for_model(Project),
+            set2={
+                "name",
+                "configuration",
+                "description",
+                "logo",
+                "video",
+                "synopsis",
+                "topic",
+                "created",
+                "updated",
+            },
+        )
 
     def test_name_field(self):
         field = Project._meta.get_field("name")
@@ -133,14 +164,14 @@ class ProjectTestCase(TestCase):
         self.assertTrue(expr=field.blank)
         self.assertTrue(expr=field.null)
 
-    def test_image_field(self):
+    def test_logo_field(self):
         field = Project._meta.get_field("logo")
         self.assertIsInstance(
             obj=field,
             cls=models.ImageField,
         )
         self.assertEqual(
-            first=field.upload_to,
+            first=getattr(field, "upload_to"),
             second=handle_logo_upload,
         )
         self.assertEqual(
@@ -253,8 +284,21 @@ class ProjectTestCase(TestCase):
 
 class ProjectReleaseTestCase(TestCase):
     def test_model_inheritance(self):
-        self.assertTrue(
-            expr=issubclass(ProjectRelease, AbstractUUIDPrimaryKeyModel),
+        self.assertTupleEqual(
+            tuple1=ProjectRelease.__bases__,
+            tuple2=(AbstractUUIDPrimaryKeyModel,),
+        )
+
+    def test_field_names(self):
+        self.assertSetEqual(
+            set1=get_new_fields_for_model(ProjectRelease),
+            set2={
+                "created",
+                "download_count",
+                "notes",
+                "version",
+                "zip_file",
+            },
         )
 
     def test_version_field(self):
@@ -302,7 +346,7 @@ class ProjectReleaseTestCase(TestCase):
             cls=models.FileField,
         )
         self.assertEqual(
-            first=field.upload_to,
+            first=getattr(field, "upload_to"),
             second=handle_zip_file_upload,
         )
         self.assertFalse(expr=field.blank)
@@ -354,7 +398,7 @@ class ProjectReleaseTestCase(TestCase):
             first=str(context.exception),
             second=(
                 f'Class "{obj.__class__.__name__}" must implement a "project"'
-                f' property.'
+                f' attribute.'
             ),
         )
 
@@ -374,4 +418,76 @@ class ProjectReleaseTestCase(TestCase):
     def test_meta_class(self):
         self.assertTrue(
             expr=ProjectRelease._meta.abstract,
+        )
+
+
+class ProjectImageTestCase(TestCase):
+    def test_model_inheritance(self):
+        self.assertTupleEqual(
+            tuple1=ProjectImage.__bases__,
+            tuple2=(AbstractUUIDPrimaryKeyModel,),
+        )
+
+    def test_field_names(self):
+        self.assertSetEqual(
+            set1=get_new_fields_for_model(ProjectImage),
+            set2={
+                "image",
+                "created",
+            },
+        )
+
+    def test_image_field(self):
+        field = ProjectImage._meta.get_field("image")
+        self.assertIsInstance(
+            obj=field,
+            cls=models.FileField,
+        )
+        self.assertEqual(
+            first=getattr(field, "upload_to"),
+            second=handle_image_upload,
+        )
+        self.assertFalse(expr=field.blank)
+        self.assertFalse(expr=field.null)
+
+    def test_created_field(self):
+        field = ProjectImage._meta.get_field("created")
+        self.assertIsInstance(
+            obj=field,
+            cls=AutoCreatedField,
+        )
+        self.assertEqual(
+            first=field.verbose_name,
+            second="created",
+        )
+
+    def test_project_required(self):
+        obj = ""
+        with self.assertRaises(NotImplementedError) as context:
+            ProjectImage.project.fget(obj)
+
+        self.assertEqual(
+            first=str(context.exception),
+            second=(
+                f'Class "{obj.__class__.__name__}" must implement a '
+                f'"project" attribute.'
+            ),
+        )
+
+    def test_base_directory_required(self):
+        obj = ""
+        with self.assertRaises(NotImplementedError) as context:
+            ProjectImage.base_directory.fget(obj)
+
+        self.assertEqual(
+            first=str(context.exception),
+            second=(
+                f'Class "{obj.__class__.__name__}" must implement a '
+                f'"base_directory" attribute.'
+            ),
+        )
+
+    def test_meta_class(self):
+        self.assertTrue(
+            expr=ProjectImage._meta.abstract,
         )

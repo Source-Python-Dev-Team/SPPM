@@ -22,6 +22,7 @@ from test_utils.factories.requirements import (
     PyPiRequirementFactory,
     VersionControlRequirementFactory,
 )
+from test_utils.helpers import get_new_fields_for_model
 
 
 # =============================================================================
@@ -29,8 +30,17 @@ from test_utils.factories.requirements import (
 # =============================================================================
 class DownloadRequirementTestCase(TestCase):
     def test_model_inheritance(self):
-        self.assertTrue(
-            expr=issubclass(DownloadRequirement, models.Model),
+        self.assertTupleEqual(
+            tuple1=DownloadRequirement.__bases__,
+            tuple2=(models.Model,),
+        )
+
+    def test_field_names(self):
+        self.assertSetEqual(
+            set1=get_new_fields_for_model(DownloadRequirement),
+            set2={
+                "url",
+            },
         )
 
     def test_url_field(self):
@@ -66,8 +76,18 @@ class DownloadRequirementTestCase(TestCase):
 
 class PyPiRequirementTestCase(TestCase):
     def test_model_inheritance(self):
-        self.assertTrue(
-            expr=issubclass(PyPiRequirement, models.Model),
+        self.assertTupleEqual(
+            tuple1=PyPiRequirement.__bases__,
+            tuple2=(models.Model,),
+        )
+
+    def test_field_names(self):
+        self.assertSetEqual(
+            set1=get_new_fields_for_model(PyPiRequirement),
+            set2={
+                "name",
+                "slug",
+            },
         )
 
     def test_name_field(self):
@@ -125,8 +145,17 @@ class PyPiRequirementTestCase(TestCase):
 
 class VersionControlRequirementTestCase(TestCase):
     def test_model_inheritance(self):
-        self.assertTrue(
-            expr=issubclass(VersionControlRequirement, models.Model),
+        self.assertTupleEqual(
+            tuple1=VersionControlRequirement.__bases__,
+            tuple2=(models.Model,),
+        )
+
+    def test_field_names(self):
+        self.assertSetEqual(
+            set1=get_new_fields_for_model(VersionControlRequirement),
+            set2={
+                "url",
+            },
         )
 
     def test_url_field(self):

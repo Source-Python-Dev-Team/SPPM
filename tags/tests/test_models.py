@@ -13,6 +13,7 @@ from tags.constants import TAG_NAME_MAX_LENGTH
 from tags.models import Tag
 from tags.validators import tag_name_validator
 from test_utils.factories.tags import TagFactory
+from test_utils.helpers import get_new_fields_for_model
 from users.models import ForumUser
 
 
@@ -21,8 +22,19 @@ from users.models import ForumUser
 # =============================================================================
 class TagTestCase(TestCase):
     def test_model_inheritance(self):
-        self.assertTrue(
-            expr=issubclass(Tag, models.Model),
+        self.assertTupleEqual(
+            tuple1=Tag.__bases__,
+            tuple2=(models.Model,),
+        )
+
+    def test_field_names(self):
+        self.assertSetEqual(
+            set1=get_new_fields_for_model(Tag),
+            set2={
+                "name",
+                "black_listed",
+                "creator",
+            },
         )
 
     def test_name_field(self):
@@ -65,11 +77,11 @@ class TagTestCase(TestCase):
             second=ForumUser,
         )
         self.assertEqual(
-            first=field.remote_field.on_delete,
+            first=getattr(field.remote_field, "on_delete"),
             second=models.SET_NULL,
         )
         self.assertEqual(
-            first=field.remote_field.related_name,
+            first=getattr(field.remote_field, "related_name"),
             second="created_tags",
         )
         self.assertTrue(expr=field.blank)
