@@ -13,7 +13,7 @@ from project_manager.mixins import DownloadMixin
 # TEST CASES
 # =============================================================================
 class DownloadMixinTestCase(TestCase):
-    def test_model_inheritance(self):
+    def test_view_inheritance(self):
         self.assertTrue(
             expr=issubclass(DownloadMixin, View),
         )

@@ -54,7 +54,7 @@ class PackageReleaseDownloadViewTestCase(TestCase):
             },
         )
 
-    def test_model_inheritance(self):
+    def test_view_inheritance(self):
         self.assertTrue(
             expr=issubclass(PackageReleaseDownloadView, DownloadMixin),
         )
@@ -130,7 +130,7 @@ class PackageCreateViewTestCase(TestCase):
         viewname="packages:create",
     )
 
-    def test_model_inheritance(self):
+    def test_view_inheritance(self):
         self.assertTrue(
             expr=issubclass(PackageCreateView, TemplateView),
         )
@@ -170,7 +170,7 @@ class PackageCreateViewTestCase(TestCase):
 
 class PackageViewTestCase(TestCase):
 
-    def test_model_inheritance(self):
+    def test_view_inheritance(self):
         self.assertTrue(
             expr=issubclass(PackageView, TemplateView),
         )

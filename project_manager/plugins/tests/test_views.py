@@ -54,7 +54,7 @@ class PluginReleaseDownloadViewTestCase(TestCase):
             },
         )
 
-    def test_model_inheritance(self):
+    def test_view_inheritance(self):
         self.assertTrue(
             expr=issubclass(PluginReleaseDownloadView, DownloadMixin),
         )
@@ -136,7 +136,7 @@ class PluginCreateViewTestCase(TestCase):
         viewname="plugins:create",
     )
 
-    def test_model_inheritance(self):
+    def test_view_inheritance(self):
         self.assertTrue(
             expr=issubclass(PluginCreateView, TemplateView),
         )
@@ -176,7 +176,7 @@ class PluginCreateViewTestCase(TestCase):
 
 class PluginViewTestCase(TestCase):
 
-    def test_model_inheritance(self):
+    def test_view_inheritance(self):
         self.assertTrue(
             expr=issubclass(PluginView, TemplateView),
         )

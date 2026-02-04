@@ -20,7 +20,7 @@ from users.views import ForumUserView
 # =============================================================================
 class ForumUserViewTestCase(TestCase):
 
-    def test_model_inheritance(self):
+    def test_view_inheritance(self):
         self.assertTrue(
             expr=issubclass(ForumUserView, TemplateView),
         )
