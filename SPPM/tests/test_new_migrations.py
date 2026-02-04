@@ -2,7 +2,6 @@
 # IMPORTS
 # =============================================================================
 # Python
-import sys
 from io import StringIO
 
 # Django
@@ -16,12 +15,9 @@ from django.test import TestCase
 class MigrationTest(TestCase):
 
     def test_pending_migrations(self):
-        out, sys.stdout = sys.stdout, StringIO()
-        call_command("makemigrations", "--dry-run")
-        sys.stdout.seek(0)
-        output = sys.stdout.read()
-        sys.stdout = out
+        output = StringIO()
+        call_command("makemigrations", "--dry-run", stdout=output)
         self.assertEqual(
-            first=output,
+            first=output.getvalue(),
             second="No changes detected\n",
         )
