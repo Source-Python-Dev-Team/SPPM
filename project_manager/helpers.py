@@ -293,7 +293,6 @@ class ProjectZipFile:
             return
 
         version = item.get("version")
-        # TODO: update this logic to work with all version operators
         if (
             version is not None and
             not package.releases.filter(version=version).exists()
@@ -319,8 +318,6 @@ class ProjectZipFile:
         include_version: bool=False,
     ) -> None:
         """Verify that the given requirement is valid."""
-        # TODO: validate pypi requirements?
-        # TODO: validate vcs requirements?
         model = {
             "download": DownloadRequirement,
             "pypi": PyPiRequirement,

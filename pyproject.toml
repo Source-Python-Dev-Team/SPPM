@@ -19,20 +19,13 @@ target-version = "py313"
 # McCabe complexity (`C901`) by default.
 select = ["ALL"]
 ignore = [
-    "C901",  # remove and fix
-    "D100",
-    "D104",
-    "D203",
-    "D213",
-    "DJ001",  # remove
-    "FBT002",
-    "FIX002",  # remove and work on fixes
-    "N999",
-    "PT009",  # assert
-    "RUF012",  # remove
-    "SLF001",
-    "TD002",
-    "TD003",
+    "D203",     # incompatible with D211
+    "D213",     # incompatible with D212
+    "DJ001",    # remove (null=True on CharField)
+    "FIX002",   # remove and work on fixes
+    "RUF012",   # inline annotations
+    "TD002",    # Missing author in to-do
+    "TD003",    # Missing issue link for to-do
 ]
 
 # Allow fix for all enabled rules (when `--fix`) is provided.
@@ -68,3 +61,8 @@ docstring-code-format = false
 # This only has an effect when the `docstring-code-format` setting is
 # enabled.
 docstring-code-line-length = "dynamic"
+
+[tool.ruff.lint.pep8-naming]
+ignore-names = [
+    "SPPM",
+]

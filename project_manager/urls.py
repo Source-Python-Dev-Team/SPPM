@@ -87,6 +87,14 @@ urlpatterns = [
         name="sub-plugin-download",
     ),
     path(
+        route="games/",
+        view=include(
+            "games.urls",
+            namespace="games",
+        ),
+        name="games",
+    ),
+    path(
         route="users/",
         view=include(
             "users.urls",

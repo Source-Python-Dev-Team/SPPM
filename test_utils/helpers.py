@@ -1,3 +1,5 @@
+"""Helper module for test case functionality."""
+
 # =============================================================================
 # IMPORTS
 # =============================================================================
@@ -19,7 +21,7 @@ def _get_field_names_for_model(model: type[Model]) -> set:
     """Return the names of all fields in a model."""
     return {
         field.name
-        for field in model._meta.get_fields()
+        for field in vars(model)["_meta"].get_fields()
         if not field.auto_created and
         not field.name.endswith("_rendered")
     }

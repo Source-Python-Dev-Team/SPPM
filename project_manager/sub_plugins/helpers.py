@@ -92,21 +92,31 @@ class SubPluginZipFile(ProjectZipFile):
 
         return False
 
+    def file_needs_checked(self, file_path: str) -> type[str | None]:
+        """Return the relative path of the file if it needs to be checked."""
+        plugin_path = f"{PLUGIN_PATH}{self.plugin.basename}/"
+        if not file_path.startswith(plugin_path):
+            # TODO: validate not another plugin path or package
+            return None
+
+        current = file_path.split(plugin_path, 1)[1]
+        if not current:
+            return None
+
+        if not current.endswith(".py"):
+            return None
+
+        return current
+
     def find_base_info(self) -> None:
         """Store all base information for the zip file."""
-        plugin_path = f"{PLUGIN_PATH}{self.plugin.basename}/"
         paths = list(self.plugin.paths.all())
         self.paths = set()
         for file_path in self.file_list:
-            if not file_path.startswith(plugin_path):
-                # TODO: validate not another plugin path or package
-                continue
-
-            current = file_path.split(plugin_path, 1)[1]
-            if not current:
-                continue
-
-            if not file_path.endswith(".py"):
+            current = self.file_needs_checked(
+                file_path=file_path,
+            )
+            if current is None:
                 continue
 
             for current_path in paths:

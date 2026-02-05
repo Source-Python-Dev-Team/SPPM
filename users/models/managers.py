@@ -38,7 +38,7 @@ class UserManager(DjangoUserManger):
         # Lookup the real model class from the global app registry so this
         # manager method can be used in migrations. This is fine because
         # managers are by definition working on the real model.
-        meta_class = self.model._meta
+        meta_class = vars(self.model)["_meta"]
         username = apps.get_model(
             app_label=meta_class.app_label,
             model_name=meta_class.object_name,
