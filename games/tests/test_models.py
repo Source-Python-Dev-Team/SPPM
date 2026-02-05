@@ -5,6 +5,9 @@
 from django.db import models
 from django.test import TestCase
 
+# Third Party Django
+from rest_framework.reverse import reverse
+
 # App
 from games.constants import (
     GAME_BASENAME_MAX_LENGTH,
@@ -110,4 +113,16 @@ class GameTestCase(TestCase):
         self.assertEqual(
             first=str(obj),
             second=obj.name,
+        )
+
+    def test_get_absolute_url(self):
+        game = GameFactory()
+        self.assertEqual(
+            first=game.get_absolute_url(),
+            second=reverse(
+                viewname="games:detail",
+                kwargs={
+                    "pk": game.pk,
+                },
+            ),
         )

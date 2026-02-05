@@ -62,10 +62,9 @@ class Game(models.Model):
 
     def get_absolute_url(self) -> str:
         """Return the URL for the Game."""
-        # TODO: add tests once this view is created
         return reverse(
             viewname="games:detail",
             kwargs={
-                "slug": self.slug,
+                "pk": self.pk,
             },
         )
