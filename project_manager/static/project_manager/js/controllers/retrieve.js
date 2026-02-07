@@ -55,7 +55,7 @@ function showListView(urlPath) {
         })
 }
 
-function showDetailView(urlPath, projectSlug) {
+function showDetailView(urlPath) {
     document.getElementById("detail-view").style.display = "block";
     fetch(urlPath)
         .then(res => res.json())
