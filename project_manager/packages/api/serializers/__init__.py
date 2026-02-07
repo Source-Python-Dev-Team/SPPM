@@ -166,14 +166,14 @@ class PackageSerializer(ProjectSerializer):
 class PackageCreateSerializer(PackageSerializer):
     """Serializer for creating Packages."""
 
-    releases = PackageCreateReleaseSerializer(
+    initial_release = PackageCreateReleaseSerializer(
         write_only=True,
     )
 
     class Meta(PackageSerializer.Meta):
         """Define metaclass attributes."""
 
-        fields = (*PackageSerializer.Meta.fields, "releases")
+        fields = (*PackageSerializer.Meta.fields, "initial_release")
 
 
 class PackageGameSerializer(ProjectGameSerializer):

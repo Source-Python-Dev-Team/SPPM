@@ -223,14 +223,14 @@ class SubPluginSerializer(ProjectSerializer):
 class SubPluginCreateSerializer(SubPluginSerializer):
     """Serializer for creating SubPlugins."""
 
-    releases = SubPluginCreateReleaseSerializer(
+    initial_release = SubPluginCreateReleaseSerializer(
         write_only=True,
     )
 
     class Meta(SubPluginSerializer.Meta):
         """Define metaclass attributes."""
 
-        fields = (*SubPluginSerializer.Meta.fields, "releases")
+        fields = (*SubPluginSerializer.Meta.fields, "initial_release")
 
 
 class SubPluginGameSerializer(ProjectGameSerializer):

@@ -172,14 +172,14 @@ class PluginSerializer(ProjectSerializer):
 class PluginCreateSerializer(PluginSerializer):
     """Serializer for creating Plugins."""
 
-    releases = PluginCreateReleaseSerializer(
+    initial_release = PluginCreateReleaseSerializer(
         write_only=True,
     )
 
     class Meta(PluginSerializer.Meta):
         """Define metaclass attributes."""
 
-        fields = (*PluginSerializer.Meta.fields, "releases")
+        fields = (*PluginSerializer.Meta.fields, "initial_release")
 
 
 class PluginGameSerializer(ProjectGameSerializer):
