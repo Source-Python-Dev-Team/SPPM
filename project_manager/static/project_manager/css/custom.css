@@ -467,3 +467,41 @@ footer .container {
     right: inherit;
   }
 }
+
+#project-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.project-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 12px 0;
+    border-bottom: 1px solid #A44E25;
+}
+
+.project-media {
+    width: 400px;
+    height: 225px;
+    flex-shrink: 0;
+    position: relative;
+}
+
+.help-text {
+    font-size: 1rem;
+    font-style: italic;
+    color: #888;
+    display: block;
+}
+
+.required-asterisk::after {
+  content: " *";
+  color: red;
+  font-weight: bold;
+}
+
+.form-field {
+    margin-bottom: 12px;
+}
