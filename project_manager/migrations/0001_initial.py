@@ -11,9 +11,6 @@ import precise_bbcode.fields
 from django.db import migrations, models
 
 import project_manager.helpers
-import project_manager.packages.helpers
-import project_manager.plugins.helpers
-import project_manager.sub_plugins.helpers
 
 
 class Migration(migrations.Migration):
@@ -27,7 +24,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name="Package",
             fields=[
-                ("name", models.CharField(help_text="The name of the project. Do not include the version, as that is added dynamically to the project's page.", max_length=64)),
+                ("name", models.CharField(editable=False, help_text="The name of the project. Do not include the version, as that is added dynamically to the project's page.", max_length=64)),
                 ("_configuration_rendered", models.TextField(blank=True, editable=False, null=True)),
                 ("configuration", precise_bbcode.fields.BBCodeTextField(blank=True, help_text="The configuration of the project. If too long, post on the forum and provide the link here. BBCode is allowed. 1024 char limit.", max_length=1024, no_rendered_field=True, null=True)),
                 ("_description_rendered", models.TextField(blank=True, editable=False, null=True)),
@@ -86,7 +83,7 @@ class Migration(migrations.Migration):
                 ("version", models.CharField(help_text="The version for this release of the project.", max_length=8, validators=[django.core.validators.RegexValidator("^[0-9][0-9a-z.]*[0-9a-z]")])),
                 ("_notes_rendered", models.TextField(blank=True, editable=False, null=True)),
                 ("notes", precise_bbcode.fields.BBCodeTextField(blank=True, help_text="The notes for this particular release of the project.", max_length=512, no_rendered_field=True, null=True)),
-                ("zip_file", models.FileField(upload_to=project_manager.helpers.handle_zip_file_upload)),
+                ("zip_file", models.FileField(upload_to=project_manager.helpers.handle_zip_file_upload, help_text="The zip file that contains all files for the release.")),
                 ("download_count", models.PositiveIntegerField(default=0)),
                 ("created", model_utils.fields.AutoCreatedField(default=django.utils.timezone.now, editable=False, verbose_name="created")),
             ],
@@ -156,7 +153,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name="Plugin",
             fields=[
-                ("name", models.CharField(help_text="The name of the project. Do not include the version, as that is added dynamically to the project's page.", max_length=64)),
+                ("name", models.CharField(editable=False, help_text="The name of the project. Do not include the version, as that is added dynamically to the project's page.", max_length=64)),
                 ("_configuration_rendered", models.TextField(blank=True, editable=False, null=True)),
                 ("configuration", precise_bbcode.fields.BBCodeTextField(blank=True, help_text="The configuration of the project. If too long, post on the forum and provide the link here. BBCode is allowed. 1024 char limit.", max_length=1024, no_rendered_field=True, null=True)),
                 ("_description_rendered", models.TextField(blank=True, editable=False, null=True)),
@@ -215,7 +212,7 @@ class Migration(migrations.Migration):
                 ("version", models.CharField(help_text="The version for this release of the project.", max_length=8, validators=[django.core.validators.RegexValidator("^[0-9][0-9a-z.]*[0-9a-z]")])),
                 ("_notes_rendered", models.TextField(blank=True, editable=False, null=True)),
                 ("notes", precise_bbcode.fields.BBCodeTextField(blank=True, help_text="The notes for this particular release of the project.", max_length=512, no_rendered_field=True, null=True)),
-                ("zip_file", models.FileField(upload_to=project_manager.helpers.handle_zip_file_upload)),
+                ("zip_file", models.FileField(upload_to=project_manager.helpers.handle_zip_file_upload, help_text="The zip file that contains all files for the release.")),
                 ("download_count", models.PositiveIntegerField(default=0)),
                 ("created", model_utils.fields.AutoCreatedField(default=django.utils.timezone.now, editable=False, verbose_name="created")),
             ],
@@ -285,7 +282,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name="SubPlugin",
             fields=[
-                ("name", models.CharField(help_text="The name of the project. Do not include the version, as that is added dynamically to the project's page.", max_length=64)),
+                ("name", models.CharField(editable=False, help_text="The name of the project. Do not include the version, as that is added dynamically to the project's page.", max_length=64)),
                 ("_configuration_rendered", models.TextField(blank=True, editable=False, null=True)),
                 ("configuration", precise_bbcode.fields.BBCodeTextField(blank=True, help_text="The configuration of the project. If too long, post on the forum and provide the link here. BBCode is allowed. 1024 char limit.", max_length=1024, no_rendered_field=True, null=True)),
                 ("_description_rendered", models.TextField(blank=True, editable=False, null=True)),
@@ -359,7 +356,7 @@ class Migration(migrations.Migration):
                 ("version", models.CharField(help_text="The version for this release of the project.", max_length=8, validators=[django.core.validators.RegexValidator("^[0-9][0-9a-z.]*[0-9a-z]")])),
                 ("_notes_rendered", models.TextField(blank=True, editable=False, null=True)),
                 ("notes", precise_bbcode.fields.BBCodeTextField(blank=True, help_text="The notes for this particular release of the project.", max_length=512, no_rendered_field=True, null=True)),
-                ("zip_file", models.FileField(upload_to=project_manager.helpers.handle_zip_file_upload)),
+                ("zip_file", models.FileField(upload_to=project_manager.helpers.handle_zip_file_upload, help_text="The zip file that contains all files for the release.")),
                 ("download_count", models.PositiveIntegerField(default=0)),
                 ("created", model_utils.fields.AutoCreatedField(default=django.utils.timezone.now, editable=False, verbose_name="created")),
             ],

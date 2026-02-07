@@ -73,6 +73,7 @@ class Project(models.Model):
     """Base model for projects."""
 
     name = models.CharField(
+        editable=False,
         max_length=PROJECT_NAME_MAX_LENGTH,
         help_text=(
             "The name of the project. Do not include the version, as that is "
@@ -246,6 +247,7 @@ class ProjectRelease(AbstractUUIDPrimaryKeyModel):
     )
     zip_file = models.FileField(
         upload_to=handle_zip_file_upload,
+        help_text="The zip file that contains all files for the release.",
     )
     download_count = models.PositiveIntegerField(
         default=0,
