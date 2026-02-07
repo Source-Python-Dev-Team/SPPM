@@ -54,7 +54,7 @@ LOGO_MAX_HEIGHT = 200
 
 # Maximum allowed width and height for all images (not logos)
 IMAGE_MAX_WIDTH = 400
-IMAGE_MAX_HEIGHT = 400
+IMAGE_MAX_HEIGHT = 225
 
 # Maximum number of images allowed per package, plugin, or sub-plugin
 MAX_IMAGES = 10
