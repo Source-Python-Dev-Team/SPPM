@@ -12,12 +12,14 @@ from typing import Any
 from django.utils.timezone import now
 
 # Third Party Django
+from embed_video.backends import detect_backend
 from rest_framework.exceptions import ValidationError
 from rest_framework.fields import (
     CharField,
     FileField,
     IntegerField,
     SerializerMethodField,
+    URLField,
 )
 from rest_framework.reverse import reverse
 from rest_framework.serializers import ModelSerializer
@@ -33,6 +35,8 @@ from project_manager.api.common.serializers.mixins import (
     ProjectThroughMixin,
 )
 from project_manager.constants import (
+    IMAGE_MAX_HEIGHT,
+    IMAGE_MAX_WIDTH,
     RELEASE_NOTES_MAX_LENGTH,
     RELEASE_VERSION_MAX_LENGTH,
 )
@@ -58,6 +62,12 @@ __all__ = (
 
 
 # =============================================================================
+# GLOBAL VARIABLES
+# =============================================================================
+project_release_meta = vars(ProjectRelease)["_meta"]
+
+
+# =============================================================================
 # SERIALIZERS
 # =============================================================================
 class ProjectSerializer(
@@ -71,12 +81,16 @@ class ProjectSerializer(
     owner = ForumUserContributorSerializer(
         read_only=True,
     )
-    contributors = ForumUserContributorSerializer(
-        many=True,
-        read_only=True,
-    )
+    contributors = SerializerMethodField()
     created = SerializerMethodField()
     updated = SerializerMethodField()
+    video = URLField(
+        required=False,
+        write_only=True,
+    )
+    video_embed_html = SerializerMethodField(
+        read_only=True,
+    )
 
     release_dict = {}
 
@@ -95,6 +109,7 @@ class ProjectSerializer(
             "configuration",
             "logo",
             "video",
+            "video_embed_html",
             "owner",
             "contributors",
         )
@@ -123,8 +138,9 @@ class ProjectSerializer(
     def get_fields(self) -> dict:
         """Only include contributors in the list view."""
         fields = super().get_fields()
-        if self.context["view"].action != "list":
-            del fields["contributors"]
+        view = self.context.get("view")
+        if view and view.action != "list":
+            fields.pop("contributors", None)
         return fields
 
     def create(self, validated_data: dict) -> Project:
@@ -236,13 +252,37 @@ class ProjectSerializer(
         validated_data["basename"] = self.release_dict["basename"]
         return validated_data
 
+    @staticmethod
+    def get_contributors(obj: Project) -> str:
+        """Return a comma-separated list of contributors."""
+        return ", ".join(
+            contributor.user.username
+            for contributor in obj.contributors.all()
+        )
+
     def get_updated(self, obj: Project) -> dict[str, datetime]:
         """Return the project's last updated info."""
         return self.get_date_time_dict(timestamp=obj.updated)
 
+    @staticmethod
+    def get_video_embed_html(obj: Project) -> type[str | None]:
+        """Return the video embed url."""
+        if not obj.video:
+            return None
+
+        backend = detect_backend(str(obj.video))
+        code = backend.get_embed_code(
+            width=IMAGE_MAX_WIDTH,
+            height=IMAGE_MAX_HEIGHT,
+        )
+        return code.replace(
+            "></iframe>",
+            ' referrerpolicy="strict-origin-when-cross-origin"></iframe>',
+        )
+
     def validate(self, attrs: dict[str, Any]) -> dict[str, Any]:
         """Validate the given field values."""
-        self.release_dict = attrs.pop("releases", {})
+        self.release_dict = attrs.pop("initial_release", {})
         return attrs
 
     def update(self, instance: Project, validated_data: dict) -> Project:
@@ -299,13 +339,16 @@ class ProjectCreateReleaseSerializer(ProjectReleaseCreationMixin):
     notes = CharField(
         max_length=RELEASE_NOTES_MAX_LENGTH,
         allow_blank=True,
+        help_text=project_release_meta.get_field("notes").help_text,
     )
     version = CharField(
         max_length=RELEASE_VERSION_MAX_LENGTH,
         allow_blank=True,
+        help_text=project_release_meta.get_field("version").help_text,
     )
     zip_file = FileField(
         allow_null=True,
+        help_text=project_release_meta.get_field("zip_file").help_text,
     )
 
     class Meta:
