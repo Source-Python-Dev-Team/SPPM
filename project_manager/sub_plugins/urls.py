@@ -9,6 +9,8 @@ from django.urls import path
 # App
 from project_manager.sub_plugins.views import (
     SubPluginCreateView,
+    SubPluginEditView,
+    SubPluginUpdateView,
     SubPluginView,
 )
 
@@ -35,5 +37,17 @@ urlpatterns = [
         route="<slug:sub_plugin_slug>/",
         view=SubPluginView.as_view(),
         name="detail",
+    ),
+    path(
+        # /plugins/<slug>/sub-plugins/<sub_plugin_slug>/edit
+        route="<slug:sub_plugin_slug>/edit",
+        view=SubPluginEditView.as_view(),
+        name="edit",
+    ),
+    path(
+        # /plugins/<slug>/sub-plugins/<sub_plugin_slug>/update
+        route="<slug:sub_plugin_slug>/update",
+        view=SubPluginUpdateView.as_view(),
+        name="update",
     ),
 ]

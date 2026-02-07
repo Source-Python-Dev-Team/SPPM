@@ -3,6 +3,9 @@
 # =============================================================================
 # IMPORTS
 # =============================================================================
+# Python
+from typing import Any
+
 # Django
 from django.db.models import Exists, OuterRef
 from django.views.generic import TemplateView
@@ -19,7 +22,9 @@ from project_manager.sub_plugins.models import SubPlugin, SubPluginRelease
 # =============================================================================
 __all__ = (
     "SubPluginCreateView",
+    "SubPluginEditView",
     "SubPluginReleaseDownloadView",
+    "SubPluginUpdateView",
     "SubPluginView",
 )
 
@@ -118,4 +123,76 @@ class SubPluginCreateView(TemplateView):
         except Plugin.DoesNotExist:
             context["title"] = f'Plugin "{slug}" not found.'
 
+        return context
+
+
+class SubPluginEditView(TemplateView):
+    """Frontend view for editing SubPlugins."""
+
+    template_name = "edit.html"
+    http_method_names = ("get", "options")
+
+    def get_context_data(self, **kwargs: dict[str, Any]) -> dict[str, Any]:
+        """Add the page title to the context."""
+        context = super().get_context_data(**kwargs)
+        plugin_slug = context.get("slug")
+        try:
+            plugin = Plugin.objects.get(slug=plugin_slug)
+            if not plugin.paths.exists():
+                context["title"] = (
+                    f'Plugin "{plugin.name}" does not support sub-plugins.'
+                )
+            else:
+                sub_plugin_slug = context.get("sub_plugin_slug")
+                try:
+                    sub_plugin = SubPlugin.objects.get(
+                        plugin=plugin,
+                        slug=sub_plugin_slug,
+                    )
+                    context["title"] = (
+                        f"Edit {plugin.name} -> {sub_plugin.name}"
+                    )
+                except SubPlugin.DoesNotExist:
+                    context["title"] = (
+                        f'SubPlugin "{sub_plugin_slug}" not found for'
+                        f' {plugin.name}.'
+                    )
+        except Plugin.DoesNotExist:
+            context["title"] = f'Plugin "{plugin_slug}" not found.'
+        return context
+
+
+class SubPluginUpdateView(TemplateView):
+    """Frontend view for updating SubPlugins."""
+
+    template_name = "update.html"
+    http_method_names = ("get", "options")
+
+    def get_context_data(self, **kwargs: dict[str, Any]) -> dict[str, Any]:
+        """Add the page title to the context."""
+        context = super().get_context_data(**kwargs)
+        plugin_slug = context.get("slug")
+        try:
+            plugin = Plugin.objects.get(slug=plugin_slug)
+            if not plugin.paths.exists():
+                context["title"] = (
+                    f'Plugin "{plugin.name}" does not support sub-plugins.'
+                )
+            else:
+                sub_plugin_slug = context.get("sub_plugin_slug")
+                try:
+                    sub_plugin = SubPlugin.objects.get(
+                        plugin=plugin,
+                        slug=sub_plugin_slug,
+                    )
+                    context["title"] = (
+                        f"Edit {plugin.name} -> {sub_plugin.name}"
+                    )
+                except SubPlugin.DoesNotExist:
+                    context["title"] = (
+                        f'SubPlugin "{sub_plugin_slug}" not found for '
+                        f'{plugin.name}.'
+                    )
+        except Plugin.DoesNotExist:
+            context["title"] = f'Plugin "{plugin_slug}" not found.'
         return context
