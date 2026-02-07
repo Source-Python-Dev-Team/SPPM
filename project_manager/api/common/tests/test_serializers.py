@@ -15,8 +15,9 @@ from rest_framework.fields import (
     FileField,
     IntegerField,
     SerializerMethodField,
+    URLField,
 )
-from rest_framework.serializers import ListSerializer, ModelSerializer
+from rest_framework.serializers import ModelSerializer
 
 # App
 from games.api.common.serializers import MinimalGameSerializer
@@ -508,9 +509,17 @@ class ProjectSerializerTestCase(TestCase):
 
     def test_declared_fields(self):
         declared_fields = ProjectSerializer._declared_fields
-        self.assertEqual(
-            first=len(declared_fields),
-            second=5,
+        self.assertSetEqual(
+            set1=set(declared_fields),
+            set2={
+                "current_release",
+                "owner",
+                "contributors",
+                "created",
+                "updated",
+                "video",
+                "video_embed_html",
+            },
         )
 
         self.assertIn(
@@ -534,6 +543,16 @@ class ProjectSerializerTestCase(TestCase):
         self.assertTrue(expr=field.read_only)
 
         self.assertIn(
+            member="contributors",
+            container=declared_fields,
+        )
+        field = declared_fields["contributors"]
+        self.assertIsInstance(
+            obj=field,
+            cls=SerializerMethodField,
+        )
+
+        self.assertIn(
             member="created",
             container=declared_fields,
         )
@@ -552,19 +571,24 @@ class ProjectSerializerTestCase(TestCase):
         )
 
         self.assertIn(
-            member="contributors",
+            member="video",
             container=declared_fields,
         )
-        field = declared_fields["contributors"]
         self.assertIsInstance(
-            obj=field,
-            cls=ListSerializer,
+            obj=declared_fields["video"],
+            cls=URLField,
         )
-        self.assertTrue(expr=field.read_only)
-        self.assertTrue(expr=field.many)
+        field = declared_fields["video"]
+        self.assertTrue(expr=field.write_only)
+        self.assertFalse(expr=field.required)
+
+        self.assertIn(
+            member="video_embed_html",
+            container=declared_fields,
+        )
         self.assertIsInstance(
-            obj=field.child,
-            cls=ForumUserContributorSerializer,
+            obj=declared_fields["video_embed_html"],
+            cls=SerializerMethodField,
         )
 
     def test_project_type_required(self):
@@ -608,6 +632,7 @@ class ProjectSerializerTestCase(TestCase):
                 "configuration",
                 "logo",
                 "video",
+                "video_embed_html",
                 "owner",
                 "contributors",
             ),

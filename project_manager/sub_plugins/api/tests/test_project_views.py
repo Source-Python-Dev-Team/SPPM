@@ -159,21 +159,15 @@ class SubPluginViewSetTestCase(APITestCase):
             "synopsis": cls.sub_plugin_1.synopsis,
             "description": cls.sub_plugin_1.description,
             "configuration": cls.sub_plugin_1.configuration,
-            "video": cls.sub_plugin_1.video,
+            "video_embed_html": None,
             "owner": {
                 "forum_id": cls.sub_plugin_1.owner.forum_id,
                 "username": cls.sub_plugin_1.owner.user.username,
             },
-            "contributors": [
-                {
-                    "forum_id": cls.contributor_1.forum_id,
-                    "username": cls.contributor_1.user.username,
-                },
-                {
-                    "forum_id": cls.contributor_2.forum_id,
-                    "username": cls.contributor_2.user.username,
-                },
-            ],
+            "contributors": ", ".join([
+                cls.contributor_1.user.username,
+                cls.contributor_2.user.username,
+            ]),
         }
         cls.payload_2 = {
             "name": cls.sub_plugin_2.name,
@@ -213,12 +207,12 @@ class SubPluginViewSetTestCase(APITestCase):
             "description": cls.sub_plugin_2.description,
             "configuration": cls.sub_plugin_2.configuration,
             "logo": None,
-            "video": cls.sub_plugin_2.video,
+            "video_embed_html": None,
             "owner": {
                 "forum_id": cls.sub_plugin_2.owner.forum_id,
                 "username": cls.sub_plugin_2.owner.user.username,
             },
-            "contributors": [],
+            "contributors": "",
         }
 
     @classmethod
@@ -642,9 +636,9 @@ class SubPluginViewSetTestCase(APITestCase):
                 path=api_path,
                 data={
                     "name": "Test SubPlugin",
-                    "releases.notes": "",
-                    "releases.version": version,
-                    "releases.zip_file": zip_file,
+                    "initial_release.notes": "",
+                    "initial_release.version": version,
+                    "initial_release.zip_file": zip_file,
                 },
             )
 
@@ -665,9 +659,9 @@ class SubPluginViewSetTestCase(APITestCase):
                 path=api_path,
                 data={
                     "name": "Test SubPlugin",
-                    "releases.notes": "",
-                    "releases.version": version,
-                    "releases.zip_file": zip_file,
+                    "initial_release.notes": "",
+                    "initial_release.version": version,
+                    "initial_release.zip_file": zip_file,
                 },
             )
 
@@ -702,9 +696,9 @@ class SubPluginViewSetTestCase(APITestCase):
                 path=api_path,
                 data={
                     "name": "Test SubPlugin",
-                    "releases.notes": "",
-                    "releases.version": version,
-                    "releases.zip_file": zip_file,
+                    "initial_release.notes": "",
+                    "initial_release.version": version,
+                    "initial_release.zip_file": zip_file,
                 },
             )
 
@@ -767,9 +761,9 @@ class SubPluginViewSetTestCase(APITestCase):
                 ),
                 data={
                     "name": "Test Package",
-                    "releases.notes": "",
-                    "releases.version": version,
-                    "releases.zip_file": zip_file,
+                    "initial_release.notes": "",
+                    "initial_release.version": version,
+                    "initial_release.zip_file": zip_file,
                 },
             )
 

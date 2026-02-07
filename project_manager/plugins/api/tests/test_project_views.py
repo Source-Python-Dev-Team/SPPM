@@ -150,21 +150,15 @@ class PluginViewSetTestCase(APITestCase):
             "synopsis": cls.plugin_1.synopsis,
             "description": cls.plugin_1.description,
             "configuration": cls.plugin_1.configuration,
-            "video": cls.plugin_1.video,
+            "video_embed_html": None,
             "owner": {
                 "forum_id": cls.plugin_1.owner.forum_id,
                 "username": cls.plugin_1.owner.user.username,
             },
-            "contributors": [
-                {
-                    "forum_id": cls.contributor_1.forum_id,
-                    "username": cls.contributor_1.user.username,
-                },
-                {
-                    "forum_id": cls.contributor_2.forum_id,
-                    "username": cls.contributor_2.user.username,
-                },
-            ],
+            "contributors": ", ".join([
+                cls.contributor_1.user.username,
+                cls.contributor_2.user.username,
+            ]),
         }
         cls.payload_2 = {
             "name": cls.plugin_2.name,
@@ -204,12 +198,12 @@ class PluginViewSetTestCase(APITestCase):
             "description": cls.plugin_2.description,
             "configuration": cls.plugin_2.configuration,
             "logo": None,
-            "video": cls.plugin_2.video,
+            "video_embed_html": None,
             "owner": {
                 "forum_id": cls.plugin_2.owner.forum_id,
                 "username": cls.plugin_2.owner.user.username,
             },
-            "contributors": [],
+            "contributors": "",
         }
 
     @classmethod
@@ -580,9 +574,9 @@ class PluginViewSetTestCase(APITestCase):
                 path=self.list_path,
                 data={
                     "name": "Test Plugin",
-                    "releases.notes": "",
-                    "releases.version": version,
-                    "releases.zip_file": zip_file,
+                    "initial_release.notes": "",
+                    "initial_release.version": version,
+                    "initial_release.zip_file": zip_file,
                 },
             )
 
@@ -603,9 +597,9 @@ class PluginViewSetTestCase(APITestCase):
                 path=self.list_path,
                 data={
                     "name": "Test Plugin",
-                    "releases.notes": "",
-                    "releases.version": version,
-                    "releases.zip_file": zip_file,
+                    "initial_release.notes": "",
+                    "initial_release.version": version,
+                    "initial_release.zip_file": zip_file,
                 },
             )
 
@@ -640,9 +634,9 @@ class PluginViewSetTestCase(APITestCase):
                 path=self.list_path,
                 data={
                     "name": "Test Plugin",
-                    "releases.notes": "",
-                    "releases.version": version,
-                    "releases.zip_file": zip_file,
+                    "initial_release.notes": "",
+                    "initial_release.version": version,
+                    "initial_release.zip_file": zip_file,
                 },
             )
 
@@ -693,9 +687,9 @@ class PluginViewSetTestCase(APITestCase):
                 path=self.list_path,
                 data={
                     "name": "Test Plugin",
-                    "releases.notes": "",
-                    "releases.version": version,
-                    "releases.zip_file": zip_file,
+                    "initial_release.notes": "",
+                    "initial_release.version": version,
+                    "initial_release.zip_file": zip_file,
                 },
             )
 

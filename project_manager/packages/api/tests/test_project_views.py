@@ -149,21 +149,15 @@ class PackageViewSetTestCase(APITestCase):
             "synopsis": cls.package_1.synopsis,
             "description": cls.package_1.description,
             "configuration": cls.package_1.configuration,
-            "video": cls.package_1.video,
+            "video_embed_html": None,
             "owner": {
                 "forum_id": cls.package_1.owner.forum_id,
                 "username": cls.package_1.owner.user.username,
             },
-            "contributors": [
-                {
-                    "forum_id": cls.contributor_1.forum_id,
-                    "username": cls.contributor_1.user.username,
-                },
-                {
-                    "forum_id": cls.contributor_2.forum_id,
-                    "username": cls.contributor_2.user.username,
-                },
-            ],
+            "contributors": ", ".join([
+                cls.contributor_1.user.username,
+                cls.contributor_2.user.username,
+            ]),
         }
         cls.payload_2 = {
             "name": cls.package_2.name,
@@ -203,12 +197,12 @@ class PackageViewSetTestCase(APITestCase):
             "description": cls.package_2.description,
             "configuration": cls.package_2.configuration,
             "logo": None,
-            "video": cls.package_2.video,
+            "video_embed_html": None,
             "owner": {
                 "forum_id": cls.package_2.owner.forum_id,
                 "username": cls.package_2.owner.user.username,
             },
-            "contributors": [],
+            "contributors": "",
         }
 
     @classmethod
@@ -578,9 +572,9 @@ class PackageViewSetTestCase(APITestCase):
                 path=self.list_path,
                 data={
                     "name": "Test Package",
-                    "releases.notes": "",
-                    "releases.version": version,
-                    "releases.zip_file": zip_file,
+                    "initial_release.notes": "",
+                    "initial_release.version": version,
+                    "initial_release.zip_file": zip_file,
                 },
             )
 
@@ -601,9 +595,9 @@ class PackageViewSetTestCase(APITestCase):
                 path=self.list_path,
                 data={
                     "name": "Test Package",
-                    "releases.notes": "",
-                    "releases.version": version,
-                    "releases.zip_file": zip_file,
+                    "initial_release.notes": "",
+                    "initial_release.version": version,
+                    "initial_release.zip_file": zip_file,
                 },
             )
 
@@ -638,9 +632,9 @@ class PackageViewSetTestCase(APITestCase):
                 path=self.list_path,
                 data={
                     "name": "Test Package",
-                    "releases.notes": "",
-                    "releases.version": version,
-                    "releases.zip_file": zip_file,
+                    "initial_release.notes": "",
+                    "initial_release.version": version,
+                    "initial_release.zip_file": zip_file,
                 },
             )
 
@@ -691,9 +685,9 @@ class PackageViewSetTestCase(APITestCase):
                 path=self.list_path,
                 data={
                     "name": "Test Package",
-                    "releases.notes": "",
-                    "releases.version": version,
-                    "releases.zip_file": zip_file,
+                    "initial_release.notes": "",
+                    "initial_release.version": version,
+                    "initial_release.zip_file": zip_file,
                 },
             )
 

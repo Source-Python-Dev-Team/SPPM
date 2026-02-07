@@ -171,7 +171,7 @@ class SubPluginCreateViewTestCase(TestCase):
     def test_template_name(self):
         self.assertEqual(
             first=SubPluginCreateView.template_name,
-            second="main.html",
+            second="create.html",
         )
 
     def test_get(self):
@@ -268,7 +268,7 @@ class SubPluginViewTestCase(TestCase):
     def test_template_name(self):
         self.assertEqual(
             first=SubPluginView.template_name,
-            second="main.html",
+            second="retrieve.html",
         )
 
     def test_list(self):
