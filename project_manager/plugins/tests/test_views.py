@@ -19,7 +19,9 @@ from project_manager.plugins.constants import PLUGIN_RELEASE_URL
 from project_manager.plugins.models import Plugin, PluginRelease
 from project_manager.plugins.views import (
     PluginCreateView,
+    PluginEditView,
     PluginReleaseDownloadView,
+    PluginUpdateView,
     PluginView,
 )
 from test_utils.factories.plugins import PluginFactory, PluginReleaseFactory
@@ -238,6 +240,140 @@ class PluginViewTestCase(TestCase):
         response = self.client.get(
             path=reverse(
                 viewname="plugins:detail",
+                kwargs={
+                    "slug": "invalid",
+                },
+            ),
+        )
+        self.assertEqual(
+            first=response.status_code,
+            second=status.HTTP_200_OK,
+        )
+        data = dict(response.context_data)
+        del data["view"]
+        self.assertDictEqual(
+            d1=data,
+            d2={
+                "slug": "invalid",
+                "title": 'Plugin "invalid" not found.',
+            },
+        )
+
+
+class PluginEditViewTestCase(TestCase):
+
+    def test_view_inheritance(self):
+        self.assertTrue(
+            expr=issubclass(PluginEditView, TemplateView),
+        )
+
+    def test_http_method_names(self):
+        self.assertTupleEqual(
+            tuple1=PluginEditView.http_method_names,
+            tuple2=("get", "options"),
+        )
+
+    def test_template_name(self):
+        self.assertEqual(
+            first=PluginEditView.template_name,
+            second="edit.html",
+        )
+
+    def test_detail(self):
+        plugin = PluginFactory()
+        response = self.client.get(
+            path=reverse(
+                viewname="plugins:edit",
+                kwargs={
+                    "slug": plugin.slug,
+                },
+            ),
+        )
+        self.assertEqual(
+            first=response.status_code,
+            second=status.HTTP_200_OK,
+        )
+        data = dict(response.context_data)
+        del data["view"]
+        self.assertDictEqual(
+            d1=data,
+            d2={
+                "slug": plugin.slug,
+                "title": f"Edit {plugin.name}",
+            },
+        )
+
+    def test_detail_invalid_slug(self):
+        response = self.client.get(
+            path=reverse(
+                viewname="plugins:edit",
+                kwargs={
+                    "slug": "invalid",
+                },
+            ),
+        )
+        self.assertEqual(
+            first=response.status_code,
+            second=status.HTTP_200_OK,
+        )
+        data = dict(response.context_data)
+        del data["view"]
+        self.assertDictEqual(
+            d1=data,
+            d2={
+                "slug": "invalid",
+                "title": 'Plugin "invalid" not found.',
+            },
+        )
+
+
+class PluginUpdateViewTestCase(TestCase):
+
+    def test_view_inheritance(self):
+        self.assertTrue(
+            expr=issubclass(PluginUpdateView, TemplateView),
+        )
+
+    def test_http_method_names(self):
+        self.assertTupleEqual(
+            tuple1=PluginUpdateView.http_method_names,
+            tuple2=("get", "options"),
+        )
+
+    def test_template_name(self):
+        self.assertEqual(
+            first=PluginUpdateView.template_name,
+            second="update.html",
+        )
+
+    def test_detail(self):
+        plugin = PluginFactory()
+        response = self.client.get(
+            path=reverse(
+                viewname="plugins:update",
+                kwargs={
+                    "slug": plugin.slug,
+                },
+            ),
+        )
+        self.assertEqual(
+            first=response.status_code,
+            second=status.HTTP_200_OK,
+        )
+        data = dict(response.context_data)
+        del data["view"]
+        self.assertDictEqual(
+            d1=data,
+            d2={
+                "slug": plugin.slug,
+                "title": f"Update {plugin.name}",
+            },
+        )
+
+    def test_detail_invalid_slug(self):
+        response = self.client.get(
+            path=reverse(
+                viewname="plugins:update",
                 kwargs={
                     "slug": "invalid",
                 },

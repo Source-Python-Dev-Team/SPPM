@@ -19,7 +19,9 @@ from project_manager.packages.constants import PACKAGE_RELEASE_URL
 from project_manager.packages.models import Package, PackageRelease
 from project_manager.packages.views import (
     PackageCreateView,
+    PackageEditView,
     PackageReleaseDownloadView,
+    PackageUpdateView,
     PackageView,
 )
 from test_utils.factories.packages import PackageFactory, PackageReleaseFactory
@@ -232,6 +234,140 @@ class PackageViewTestCase(TestCase):
         response = self.client.get(
             path=reverse(
                 viewname="packages:detail",
+                kwargs={
+                    "slug": "invalid",
+                },
+            ),
+        )
+        self.assertEqual(
+            first=response.status_code,
+            second=status.HTTP_200_OK,
+        )
+        data = dict(response.context_data)
+        del data["view"]
+        self.assertDictEqual(
+            d1=data,
+            d2={
+                "slug": "invalid",
+                "title": 'Package "invalid" not found.',
+            },
+        )
+
+
+class PackageEditViewTestCase(TestCase):
+
+    def test_view_inheritance(self):
+        self.assertTrue(
+            expr=issubclass(PackageEditView, TemplateView),
+        )
+
+    def test_http_method_names(self):
+        self.assertTupleEqual(
+            tuple1=PackageEditView.http_method_names,
+            tuple2=("get", "options"),
+        )
+
+    def test_template_name(self):
+        self.assertEqual(
+            first=PackageEditView.template_name,
+            second="edit.html",
+        )
+
+    def test_detail(self):
+        package = PackageFactory()
+        response = self.client.get(
+            path=reverse(
+                viewname="packages:edit",
+                kwargs={
+                    "slug": package.slug,
+                },
+            ),
+        )
+        self.assertEqual(
+            first=response.status_code,
+            second=status.HTTP_200_OK,
+        )
+        data = dict(response.context_data)
+        del data["view"]
+        self.assertDictEqual(
+            d1=data,
+            d2={
+                "slug": package.slug,
+                "title": f"Edit {package.name}",
+            },
+        )
+
+    def test_detail_invalid_slug(self):
+        response = self.client.get(
+            path=reverse(
+                viewname="packages:edit",
+                kwargs={
+                    "slug": "invalid",
+                },
+            ),
+        )
+        self.assertEqual(
+            first=response.status_code,
+            second=status.HTTP_200_OK,
+        )
+        data = dict(response.context_data)
+        del data["view"]
+        self.assertDictEqual(
+            d1=data,
+            d2={
+                "slug": "invalid",
+                "title": 'Package "invalid" not found.',
+            },
+        )
+
+
+class PackageUpdateViewTestCase(TestCase):
+
+    def test_view_inheritance(self):
+        self.assertTrue(
+            expr=issubclass(PackageUpdateView, TemplateView),
+        )
+
+    def test_http_method_names(self):
+        self.assertTupleEqual(
+            tuple1=PackageUpdateView.http_method_names,
+            tuple2=("get", "options"),
+        )
+
+    def test_template_name(self):
+        self.assertEqual(
+            first=PackageUpdateView.template_name,
+            second="update.html",
+        )
+
+    def test_detail(self):
+        package = PackageFactory()
+        response = self.client.get(
+            path=reverse(
+                viewname="packages:update",
+                kwargs={
+                    "slug": package.slug,
+                },
+            ),
+        )
+        self.assertEqual(
+            first=response.status_code,
+            second=status.HTTP_200_OK,
+        )
+        data = dict(response.context_data)
+        del data["view"]
+        self.assertDictEqual(
+            d1=data,
+            d2={
+                "slug": package.slug,
+                "title": f"Update {package.name}",
+            },
+        )
+
+    def test_detail_invalid_slug(self):
+        response = self.client.get(
+            path=reverse(
+                viewname="packages:update",
                 kwargs={
                     "slug": "invalid",
                 },
