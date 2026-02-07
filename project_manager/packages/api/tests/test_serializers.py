@@ -119,7 +119,7 @@ class PackageCreateSerializerTestCase(TestCase):
             expr=issubclass(PackageCreateSerializer, PackageSerializer),
         )
 
-    def test_releases(self):
+    def test_initial_release(self):
         mock.patch(
             target=(
                 "project_manager.api.common.serializers.ProjectSerializer."
@@ -131,8 +131,8 @@ class PackageCreateSerializerTestCase(TestCase):
         obj.context["view"] = mock.Mock(
             action="list",
         )
-        self.assertIn(member="releases", container=obj.fields)
-        field = obj.fields["releases"]
+        self.assertIn(member="initial_release", container=obj.fields)
+        field = obj.fields["initial_release"]
         self.assertIsInstance(obj=field, cls=PackageCreateReleaseSerializer)
         self.assertTrue(expr=field.write_only)
 
@@ -145,7 +145,7 @@ class PackageCreateSerializerTestCase(TestCase):
         )
         self.assertEqual(
             first=PackageCreateSerializer.Meta.fields,
-            second=PackageSerializer.Meta.fields + ("releases",),
+            second=PackageSerializer.Meta.fields + ("initial_release",),
         )
 
 
@@ -432,6 +432,7 @@ class PackageSerializerTestCase(TestCase):
                 "configuration",
                 "logo",
                 "video",
+                "video_embed_html",
                 "owner",
                 "contributors",
             },
@@ -456,6 +457,7 @@ class PackageSerializerTestCase(TestCase):
                 "configuration",
                 "logo",
                 "video",
+                "video_embed_html",
                 "owner",
             },
         )

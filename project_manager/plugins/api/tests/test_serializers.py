@@ -126,7 +126,7 @@ class PluginCreateSerializerTestCase(TestCase):
             expr=issubclass(PluginCreateSerializer, PluginSerializer),
         )
 
-    def test_releases(self):
+    def test_initial_release(self):
         mock.patch(
             target=(
                 "project_manager.api.common.serializers.ProjectSerializer."
@@ -138,8 +138,8 @@ class PluginCreateSerializerTestCase(TestCase):
         obj.context["view"] = mock.Mock(
             action="list",
         )
-        self.assertIn(member="releases", container=obj.fields)
-        field = obj.fields["releases"]
+        self.assertIn(member="initial_release", container=obj.fields)
+        field = obj.fields["initial_release"]
         self.assertIsInstance(obj=field, cls=PluginCreateReleaseSerializer)
         self.assertTrue(expr=field.write_only)
 
@@ -152,7 +152,7 @@ class PluginCreateSerializerTestCase(TestCase):
         )
         self.assertEqual(
             first=PluginCreateSerializer.Meta.fields,
-            second=PluginSerializer.Meta.fields + ("releases",),
+            second=PluginSerializer.Meta.fields + ("initial_release",),
         )
 
 
@@ -439,6 +439,7 @@ class PluginSerializerTestCase(TestCase):
                 "configuration",
                 "logo",
                 "video",
+                "video_embed_html",
                 "owner",
                 "contributors",
             },
@@ -463,6 +464,7 @@ class PluginSerializerTestCase(TestCase):
                 "configuration",
                 "logo",
                 "video",
+                "video_embed_html",
                 "owner",
             },
         )
