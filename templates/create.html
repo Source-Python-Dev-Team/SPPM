@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+    {{ title }}
+{% endblock title %}
+{% block load_scripts %}
+    <script src="{% static "project_manager/js/controllers/common.js" %}"></script>
+    <script src="{% static "project_manager/js/controllers/create.js" %}"></script>
+{% endblock load_scripts %}
+
+{% block content %}
+    <div id="form-error-message"></div>
+    <div id="form-view"></div>
+
+    <div id="create-form-view" style="display:none;">
+        <h1 id="create-form-title"></h1>
+        <form id="dynamic-create-form"></form>
+    </div>
+
+{% endblock content %}

@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+    {{ title }}
+{% endblock title %}
+{% block load_scripts %}
+    <script src="{% static "project_manager/js/controllers/retrieve.js" %}"></script>
+{% endblock load_scripts %}
+
+{% block content %}
+    <div id="form-error-message"></div>
+    <div id="form-view"></div>
+
+    <div id="list-view" style="display:none;">
+        <h1>{{ title }}</h1>
+        <ul id="project-list"></ul>
+    </div>
+
+    <template id="project-item-template">
+        <li class="project-item">
+            <div class="project-media">
+                <div class="project-video" style="display:none;"></div>
+                <img class="project-logo" style="display:none;"/>
+                <img class="project-fallback" src="/static/project_manager/img/default.png" style="display:none;"/>
+            </div>
+            <div class="project-info">
+                <a class="project-link">
+                    <span class="project-name"></span>
+                    <span class="project-version"></span>
+                </a>
+            </div>
+        </li>
+    </template>
+
+    <div id="detail-view" style="display:none;">
+        <h1 id="project-name"></h1>
+        <p><strong>Version:</strong> <span id="project-version"></span></p>
+        <p><strong>Downloads:</strong> <span id="project-downloads"></span></p>
+        <p><strong>Owner:</strong> <span id="project-owner"></span></p>
+        <p><strong>Synopsis:</strong> <span id="project-synopsis"></span></p>
+    </div>
+
+{% endblock content %}

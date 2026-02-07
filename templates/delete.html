@@ -1,8 +1,12 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block title %}
     {{ title }}
 {% endblock title %}
+{% block load_scripts %}
+    <script src="{% static "project_manager/js/controllers/delete.js" %}"></script>
+{% endblock load_scripts %}
 
 {% block content %}
     <div id="form-error-message"></div>

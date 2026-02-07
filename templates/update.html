@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+    {{ title }}
+{% endblock title %}
+{% block load_scripts %}
+    <script src="{% static "project_manager/js/controllers/update.js" %}"></script>
+{% endblock load_scripts %}
+
+{% block content %}
+    <div id="form-error-message"></div>
+    <div id="form-view"></div>
+
+    <div id="update-form-view" style="display:none;">
+        <h1 id="update-form-title"></h1>
+        <form id="dynamic-update-form"></form>
+    </div>
+
+{% endblock content %}
