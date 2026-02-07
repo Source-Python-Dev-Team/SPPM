@@ -20,7 +20,9 @@ from project_manager.sub_plugins.constants import SUB_PLUGIN_RELEASE_URL
 from project_manager.sub_plugins.models import SubPluginRelease
 from project_manager.sub_plugins.views import (
     SubPluginCreateView,
+    SubPluginEditView,
     SubPluginReleaseDownloadView,
+    SubPluginUpdateView,
     SubPluginView,
 )
 from test_utils.factories.plugins import PluginFactory, SubPluginPathFactory
@@ -388,5 +390,271 @@ class SubPluginViewTestCase(TestCase):
                 "slug": self.plugin.slug,
                 "sub_plugin_slug": "invalid",
                 "title": f'SubPlugin "invalid" not found for Plugin "{self.plugin.name}".',
+            },
+        )
+
+
+class SubPluginEditViewTestCase(TestCase):
+
+    plugin = None
+
+    @classmethod
+    def setUpTestData(cls):
+        cls.plugin = PluginFactory()
+
+    def test_view_inheritance(self):
+        self.assertTrue(
+            expr=issubclass(SubPluginEditView, TemplateView),
+        )
+
+    def test_http_method_names(self):
+        self.assertTupleEqual(
+            tuple1=SubPluginEditView.http_method_names,
+            tuple2=("get", "options"),
+        )
+
+    def test_template_name(self):
+        self.assertEqual(
+            first=SubPluginEditView.template_name,
+            second="edit.html",
+        )
+
+    def test_detail(self):
+        SubPluginPathFactory(
+            plugin=self.plugin,
+        )
+        sub_plugin = SubPluginFactory(plugin=self.plugin)
+        response = self.client.get(
+            path=reverse(
+                viewname="plugins:sub-plugins:edit",
+                kwargs={
+                    "slug": self.plugin.slug,
+                    "sub_plugin_slug": sub_plugin.slug,
+                },
+            ),
+        )
+        self.assertEqual(
+            first=response.status_code,
+            second=status.HTTP_200_OK,
+        )
+        data = dict(response.context_data)
+        del data["view"]
+        self.assertDictEqual(
+            d1=data,
+            d2={
+                "slug": self.plugin.slug,
+                "sub_plugin_slug": sub_plugin.slug,
+                "title": f"Edit {self.plugin.name} -> {sub_plugin.name}",
+            },
+        )
+
+    def test_detail_invalid_plugin_slug(self):
+        response = self.client.get(
+            path=reverse(
+                viewname="plugins:sub-plugins:edit",
+                kwargs={
+                    "slug": "invalid",
+                    "sub_plugin_slug": "invalid",
+                },
+            ),
+        )
+        self.assertEqual(
+            first=response.status_code,
+            second=status.HTTP_200_OK,
+        )
+        data = dict(response.context_data)
+        del data["view"]
+        self.assertDictEqual(
+            d1=data,
+            d2={
+                "slug": "invalid",
+                "sub_plugin_slug": "invalid",
+                "title": 'Plugin "invalid" not found.',
+            },
+        )
+
+    def test_detail_plugin_does_not_support_sub_plugins(self):
+        response = self.client.get(
+            path=reverse(
+                viewname="plugins:sub-plugins:edit",
+                kwargs={
+                    "slug": self.plugin.slug,
+                    "sub_plugin_slug": "invalid",
+                },
+            ),
+        )
+        self.assertEqual(
+            first=response.status_code,
+            second=status.HTTP_200_OK,
+        )
+        data = dict(response.context_data)
+        del data["view"]
+        self.assertDictEqual(
+            d1=data,
+            d2={
+                "slug": self.plugin.slug,
+                "sub_plugin_slug": "invalid",
+                "title": f'Plugin "{self.plugin.name}" does not support sub-plugins.',
+            },
+        )
+
+    def test_detail_invalid_sub_plugin_slug(self):
+        SubPluginPathFactory(
+            plugin=self.plugin,
+        )
+        response = self.client.get(
+            path=reverse(
+                viewname="plugins:sub-plugins:edit",
+                kwargs={
+                    "slug": self.plugin.slug,
+                    "sub_plugin_slug": "invalid",
+                },
+            ),
+        )
+        self.assertEqual(
+            first=response.status_code,
+            second=status.HTTP_200_OK,
+        )
+        data = dict(response.context_data)
+        del data["view"]
+        self.assertDictEqual(
+            d1=data,
+            d2={
+                "slug": self.plugin.slug,
+                "sub_plugin_slug": "invalid",
+                "title": f'SubPlugin "invalid" not found for {self.plugin.name}.',
+            },
+        )
+
+
+class SubPluginUpdateViewTestCase(TestCase):
+
+    plugin = None
+
+    @classmethod
+    def setUpTestData(cls):
+        cls.plugin = PluginFactory()
+
+    def test_view_inheritance(self):
+        self.assertTrue(
+            expr=issubclass(SubPluginUpdateView, TemplateView),
+        )
+
+    def test_http_method_names(self):
+        self.assertTupleEqual(
+            tuple1=SubPluginUpdateView.http_method_names,
+            tuple2=("get", "options"),
+        )
+
+    def test_template_name(self):
+        self.assertEqual(
+            first=SubPluginUpdateView.template_name,
+            second="update.html",
+        )
+
+    def test_detail(self):
+        SubPluginPathFactory(
+            plugin=self.plugin,
+        )
+        sub_plugin = SubPluginFactory(plugin=self.plugin)
+        response = self.client.get(
+            path=reverse(
+                viewname="plugins:sub-plugins:update",
+                kwargs={
+                    "slug": self.plugin.slug,
+                    "sub_plugin_slug": sub_plugin.slug,
+                },
+            ),
+        )
+        self.assertEqual(
+            first=response.status_code,
+            second=status.HTTP_200_OK,
+        )
+        data = dict(response.context_data)
+        del data["view"]
+        self.assertDictEqual(
+            d1=data,
+            d2={
+                "slug": self.plugin.slug,
+                "sub_plugin_slug": sub_plugin.slug,
+                "title": f"Edit {self.plugin.name} -> {sub_plugin.name}",
+            },
+        )
+
+    def test_detail_invalid_plugin_slug(self):
+        response = self.client.get(
+            path=reverse(
+                viewname="plugins:sub-plugins:update",
+                kwargs={
+                    "slug": "invalid",
+                    "sub_plugin_slug": "invalid",
+                },
+            ),
+        )
+        self.assertEqual(
+            first=response.status_code,
+            second=status.HTTP_200_OK,
+        )
+        data = dict(response.context_data)
+        del data["view"]
+        self.assertDictEqual(
+            d1=data,
+            d2={
+                "slug": "invalid",
+                "sub_plugin_slug": "invalid",
+                "title": 'Plugin "invalid" not found.',
+            },
+        )
+
+    def test_detail_plugin_does_not_support_sub_plugins(self):
+        response = self.client.get(
+            path=reverse(
+                viewname="plugins:sub-plugins:update",
+                kwargs={
+                    "slug": self.plugin.slug,
+                    "sub_plugin_slug": "invalid",
+                },
+            ),
+        )
+        self.assertEqual(
+            first=response.status_code,
+            second=status.HTTP_200_OK,
+        )
+        data = dict(response.context_data)
+        del data["view"]
+        self.assertDictEqual(
+            d1=data,
+            d2={
+                "slug": self.plugin.slug,
+                "sub_plugin_slug": "invalid",
+                "title": f'Plugin "{self.plugin.name}" does not support sub-plugins.',
+            },
+        )
+
+    def test_detail_invalid_sub_plugin_slug(self):
+        SubPluginPathFactory(
+            plugin=self.plugin,
+        )
+        response = self.client.get(
+            path=reverse(
+                viewname="plugins:sub-plugins:update",
+                kwargs={
+                    "slug": self.plugin.slug,
+                    "sub_plugin_slug": "invalid",
+                },
+            ),
+        )
+        self.assertEqual(
+            first=response.status_code,
+            second=status.HTTP_200_OK,
+        )
+        data = dict(response.context_data)
+        del data["view"]
+        self.assertDictEqual(
+            d1=data,
+            d2={
+                "slug": self.plugin.slug,
+                "sub_plugin_slug": "invalid",
+                "title": f'SubPlugin "invalid" not found for {self.plugin.name}.',
             },
         )
