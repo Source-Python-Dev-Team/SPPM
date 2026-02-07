@@ -7,7 +7,12 @@
 from django.urls import path
 
 # App
-from project_manager.packages.views import PackageCreateView, PackageView
+from project_manager.packages.views import (
+    PackageCreateView,
+    PackageEditView,
+    PackageUpdateView,
+    PackageView,
+)
 
 # =============================================================================
 # GLOBAL VARIABLES
@@ -26,6 +31,18 @@ urlpatterns = [
         route="create",
         view=PackageCreateView.as_view(),
         name="create",
+    ),
+    path(
+        # /packages/<slug>/edit
+        route="<slug:slug>/edit",
+        view=PackageEditView.as_view(),
+        name="edit",
+    ),
+    path(
+        # /packages/<slug>/update
+        route="<slug:slug>/update",
+        view=PackageUpdateView.as_view(),
+        name="update",
     ),
     path(
         # /packages/<slug>

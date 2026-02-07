@@ -7,7 +7,12 @@
 from django.urls import include, path
 
 # App
-from project_manager.plugins.views import PluginCreateView, PluginView
+from project_manager.plugins.views import (
+    PluginCreateView,
+    PluginEditView,
+    PluginUpdateView,
+    PluginView,
+)
 
 # =============================================================================
 # GLOBAL VARIABLES
@@ -26,6 +31,18 @@ urlpatterns = [
         route="create",
         view=PluginCreateView.as_view(),
         name="create",
+    ),
+    path(
+        # /plugins/<slug>/edit
+        route="<slug:slug>/edit",
+        view=PluginEditView.as_view(),
+        name="edit",
+    ),
+    path(
+        # /plugins/<slug>/update
+        route="<slug:slug>/update",
+        view=PluginUpdateView.as_view(),
+        name="update",
     ),
     path(
         # /plugins/<slug>
