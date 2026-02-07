@@ -10,19 +10,21 @@ window.onload = function(){
     }
     const pathStrSplit = originalPath.split("/");
     const projectType = pathStrSplit[0];
-    console.log(pathStrSplit);
-    if (projectType === 'plugins' || projectType === 'packages') {
-        projectSlug = pathStrSplit[1];
-        if (projectSlug) {
-            showDetailView(projectType, projectSlug);
-        } else {
-            showListView(projectType);
-        }
+    let urlPath = "/api/" + projectType + "/projects/";
+    let projectSlug = pathStrSplit[1];
+    if (pathStrSplit[2] === "sub-plugins" && projectType === "plugins") {
+        urlPath = "/api/sub-plugins/projects/" + projectSlug + "/";
+        projectSlug = pathStrSplit[3];
+    }
+    if (projectSlug) {
+        urlPath = urlPath + projectSlug + "/";
+        showDetailView(urlPath);
+    } else {
+        showListView(urlPath);
     }
 };
 
-function showListView(projectType) {
-    const urlPath = '/api/' + projectType + '/projects/';
+function showListView(urlPath) {
     document.getElementById("list-view").style.display = "block";
     fetch(urlPath)
         .then(res => res.json())
@@ -36,7 +38,7 @@ function showListView(projectType) {
                 link.href = item.slug;
                 clone.querySelector(".project-name").textContent = item.name;
                 clone.querySelector(".project-version").textContent = ` - ${item.current_release.version}`;
-                if (item.video) {
+                if (item.video_embed_html) {
                     const videoContainer = clone.querySelector(".project-video");
                     videoContainer.innerHTML = item.video_embed_html;
                     videoContainer.style.display = "block";
@@ -53,8 +55,7 @@ function showListView(projectType) {
         })
 }
 
-function showDetailView(projectType, projectSlug) {
-    const urlPath = '/api/' + projectType + '/projects/' + projectSlug;
+function showDetailView(urlPath, projectSlug) {
     document.getElementById("detail-view").style.display = "block";
     fetch(urlPath)
         .then(res => res.json())
