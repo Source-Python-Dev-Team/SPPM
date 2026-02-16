@@ -1,14 +1,6 @@
 window.onload = function(){
-    const urlSearchParams = new URLSearchParams(window.location.search);
-    const params = Object.fromEntries(urlSearchParams.entries());
-    let originalPath = window.location.pathname;
-    if (originalPath.startsWith("/")) {
-        originalPath = originalPath.slice(1);
-    }
-    if (originalPath.endsWith("/")) {
-        originalPath = originalPath.slice(0, -1);
-    }
-    const pathStrSplit = originalPath.split("/");
+    const urlSearchParams = window.location.search;
+    const pathStrSplit = getPathSplit(window.location.pathname);
     const projectType = pathStrSplit[0];
     let urlPath = "/api/" + projectType + "/projects/";
     let projectSlug = pathStrSplit[1];
@@ -20,13 +12,14 @@ window.onload = function(){
         urlPath = urlPath + projectSlug + "/";
         showDetailView(urlPath);
     } else {
-        showListView(urlPath);
+        showListView(urlPath, urlSearchParams);
     }
 };
 
-function showListView(urlPath) {
+function showListView(urlPath, urlSearchParams) {
     document.getElementById("list-view").style.display = "block";
-    fetch(urlPath)
+    const fullApiUrl = `${urlPath}${urlSearchParams}`
+    fetch(fullApiUrl)
         .then(res => res.json())
         .then(data => {
             const container = document.getElementById("project-list");

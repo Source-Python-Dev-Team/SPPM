@@ -1,3 +1,13 @@
+function getPathSplit(originalPath) {
+    if (originalPath.startsWith("/")) {
+        originalPath = originalPath.slice(1);
+    }
+    if (originalPath.endsWith("/")) {
+        originalPath = originalPath.slice(0, -1);
+    }
+    return originalPath.split("/");
+}
+
 function isLongText(meta) {
     return !!(meta.max_length && meta.max_length > 200);
 }

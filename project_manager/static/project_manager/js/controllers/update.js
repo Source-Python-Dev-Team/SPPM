@@ -1,13 +1,6 @@
 window.onload = function(){
     console.log('update')
-    let originalPath = window.location.pathname;
-    if (originalPath.startsWith("/")) {
-        originalPath = originalPath.slice(1);
-    }
-    if (originalPath.endsWith("/")) {
-        originalPath = originalPath.slice(0, -1);
-    }
-    const pathStrSplit = originalPath.split("/");
+    const pathStrSplit = getPathSplit(window.location.pathname);
     pathStrSplit.pop();
     let urlPath;
     const successUrlPath = "/" + pathStrSplit.join("/") + "/";
